@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>CCD BRB Design System · Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="tokens.css" />
+<style>
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.55;
+    padding: var(--s-7) var(--gutter);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1 { font-size: 1.75rem; font-weight: 700; margin: 0 0 var(--s-2); letter-spacing: -0.01em; }
+  h2 { font-size: 1.125rem; font-weight: 700; margin: var(--s-7) 0 var(--s-4); letter-spacing: -0.005em; }
+  p.lede { color: var(--ink-muted); max-width: 50ch; margin: 0 0 var(--s-6); }
+  .label { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-muted); }
+  hr { border: 0; border-top: 1px solid var(--rule); margin: var(--s-7) 0; }
+
+  /* swatches */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--s-4); }
+  .swatch { background: var(--card); border: 1px solid var(--rule); border-radius: var(--r-md); overflow: hidden; }
+  .swatch__chip { aspect-ratio: 2/1; }
+  .swatch__meta { padding: var(--s-3) var(--s-4); font-size: 0.8125rem; }
+  .swatch__name { font-weight: 600; color: var(--ink); }
+  .swatch__val { color: var(--ink-muted); font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.75rem; margin-top: 2px; }
+
+  /* type scale */
+  .type-row { display: grid; grid-template-columns: 8rem 1fr; gap: var(--s-5); padding: var(--s-3) 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+  .type-row:last-child { border-bottom: 0; }
+  .type-row .label { padding-top: 4px; }
+  .h-display { font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; line-height: 1.05; letter-spacing: -0.02em; }
+  .h-section { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.01em; }
+  .h-card    { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.005em; }
+  .body      { font-size: 1rem; }
+  .body-th   { font-family: var(--thai); font-size: 0.9375rem; color: var(--ink-muted); }
+  .small     { font-size: 0.8125rem; color: var(--ink-muted); }
+
+  /* components */
+  .demo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--s-5); }
+
+  .card-demo { background: var(--card); border: 1px solid var(--rule); border-radius: var(--r-lg); padding: var(--s-5); display: flex; flex-direction: column; min-height: 220px; }
+  .card-demo__top { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--s-5); }
+  .card-demo__icon { width: 48px; height: 48px; border-radius: var(--r-md); background: var(--paper-tint); display: grid; place-items: center; color: var(--ink); }
+  .card-demo h3 { font-size: 1.25rem; font-weight: 700; margin: 0 0 var(--s-1); letter-spacing: -0.005em; }
+  .card-demo .sub { color: var(--ink-soft); font-size: 0.9375rem; font-weight: 500; margin: 0 0 var(--s-3); }
+  .card-demo .desc { color: var(--ink-muted); font-family: var(--thai); font-size: 0.9375rem; margin: 0 0 var(--s-5); }
+  .card-demo .cta { margin-top: auto; font-weight: 600; color: var(--ink); }
+
+  .pill { display: inline-flex; align-items: center; gap: var(--s-2); padding: 4px 10px; border-radius: var(--r-pill); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.02em; color: var(--ink); }
+  .pill::before { content: ""; width: 8px; height: 8px; border-radius: 50%; }
+  .pill--live { background: var(--status-live-tint); }
+  .pill--live::before { background: var(--status-live); }
+  .pill--beta { background: var(--brand-amber-tint); }
+  .pill--beta::before { background: var(--brand-amber); }
+
+  .btn { display: inline-flex; align-items: center; gap: var(--s-2); padding: var(--s-3) var(--s-5); border-radius: var(--r-sm); font-weight: 600; font-size: 0.9375rem; border: 1px solid transparent; cursor: pointer; }
+  .btn--primary { background: var(--ink); color: var(--card); }
+  .btn--ghost { background: var(--paper-tint-soft); color: var(--ink); border-color: var(--rule); }
+</style>
+</head>
+<body>
+  <h1>CCD BRB Design System</h1>
+  <p class="lede">Visual reference. Open this file in a browser to verify tokens render correctly. If something looks wrong here, it is wrong everywhere.</p>
+
+  <h2>Color</h2>
+  <p class="small">Edit values in <code>tokens.css</code>. Reload to see changes.</p>
+  <div class="swatches">
+    <div class="swatch"><div class="swatch__chip" style="background:var(--paper)"></div><div class="swatch__meta"><div class="swatch__name">paper</div><div class="swatch__val">page bg</div></div></div>
+    <div class="swatch"><div class="swatch__chip" style="background:var(--paper-tint)"></div><div class="swatch__meta"><div class="swatch__name">paper-tint</div><div class="swatch__val">soft surface</div></div></div>
+    <div class="swatch"><div class="swatch__chip" style="background:var(--paper-tint-soft)"></div><div class="swatch__meta"><div class="swatch__name">paper-tint-soft</div><div class="swatch__val">subtle wash</div></div></div>
+    <div class="swatch"><div class="swatch__chip" style="background:var(--card);border-bottom:1px solid var(--rule)"></div><div class="swatch__meta"><div class="swatch__name">card</div><div class="swatch__val">#ffffff</div></div></div>
+    <div class="swatch"><div class="swatch__chip" style="background:var(--ink)"></div><div class="swatch__meta"><div class="swatch__name">ink</div><div class="swatch__val">headlines</div></div></div>
+    <div class="swatch"><div class="swatch__chip" style="background:var(--ink-soft)"></div><div class="swatch__meta"><div class="swatch__name">ink-soft</div><div class="swatch__val">card titles</div></div></div>
+    <div class="swatch"><div class="swatch__chip" style="background:var(--ink-muted)"></div><div class="swatch__meta"><div class="swatch__name">ink-muted</div><div class="swatch__val">descriptions</div></div></div>
+    <div class="swatch"><div class="swatch__chip" style="background:var(--rule)"></div><div class="swatch__meta"><div class="swatch__name">rule</div><div class="swatch__val">borders</div></div></div>
+    <div class="swatch"><div class="swatch__chip" style="background:var(--brand-amber)"></div><div class="swatch__meta"><div class="swatch__name">brand-amber</div><div class="swatch__val">warmth accent</div></div></div>
+    <div class="swatch"><div class="swatch__chip" style="background:var(--status-live)"></div><div class="swatch__meta"><div class="swatch__name">status-live</div><div class="swatch__val">live state</div></div></div>
+  </div>
+
+  <hr />
+
+  <h2>Type scale</h2>
+  <div class="type-row"><span class="label">Display</span><span class="h-display">Better experience.</span></div>
+  <div class="type-row"><span class="label">Section</span><span class="h-section">Our Tools</span></div>
+  <div class="type-row"><span class="label">Card title</span><span class="h-card">Onboarding Survey</span></div>
+  <div class="type-row"><span class="label">Body</span><span class="body">Default body text at 16px / 1.55. The quick brown fox jumps over the lazy dog.</span></div>
+  <div class="type-row"><span class="label">Body Thai</span><span class="body-th" lang="th">เครื่องมือที่ช่วยให้เราเข้าใจคน ดูแลอย่างใส่ใจ</span></div>
+  <div class="type-row"><span class="label">Small / muted</span><span class="small">Captions, footer, sec-notes — 13px.</span></div>
+
+  <hr />
+
+  <h2>Status pills</h2>
+  <p>
+    <span class="pill pill--live">Live</span>
+    &nbsp;
+    <span class="pill pill--beta">Beta</span>
+  </p>
+
+  <h2>Buttons</h2>
+  <p>
+    <button class="btn btn--primary">Primary</button>
+    &nbsp;
+    <button class="btn btn--ghost">Ghost</button>
+  </p>
+
+  <h2>Tool card</h2>
+  <div class="demo-grid">
+    <div class="card-demo">
+      <div class="card-demo__top">
+        <span class="card-demo__icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 21V11" />
+            <path d="M12 11c0-3.5-2.5-6-6-6 0 3.5 2.5 6 6 6Z" />
+            <path d="M12 11c0-3 2-5 5-5 0 3-2 5-5 5Z" />
+            <path d="M5 21h14" />
+          </svg>
+        </span>
+        <span class="pill pill--live">Live</span>
+      </div>
+      <h3>Onboarding Survey</h3>
+      <p class="sub">Newcomer Motivation Check-Up</p>
+      <p class="desc" lang="th">ติดตามประสบการณ์และความเป็นอยู่ของพนักงานใหม่ตลอด 9 ระยะ</p>
+      <span class="cta">Open Dashboard →</span>
+    </div>
+  </div>
+
+  <hr />
+
+  <p class="small">CCD BRB Design System · Preview · <code>tokens.css</code></p>
+</body>
+</html>
