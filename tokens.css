@@ -9,28 +9,49 @@
    ============================================================ */
 
 :root {
-  /* ── Color: paper & ink ─────────────────────────────── */
-  --paper: oklch(0.978 0.011 82);          /* page background, warm off-white */
-  --paper-tint: oklch(0.93 0.025 78);      /* soft-tan surfaces (icon tiles, hero circle) */
-  --paper-tint-soft: oklch(0.96 0.014 80); /* subtle wash, halfway to paper */
-  --card: #ffffff;                          /* card surface */
+  /* ── Color: misty palette ───────────────────────────────
+     All hexes from figma.com/colors/misty-blue/, except 3 saturated
+     status dots (off-page, escape hatch — used as 7px dots only).
+     Meaning is carried by background tint hue; foreground is always ink. */
 
-  --ink: oklch(0.27 0.06 265);             /* headlines, primary text — deep navy */
-  --ink-soft: oklch(0.45 0.04 265);        /* card titles, body emphasis */
-  --ink-muted: oklch(0.6 0.025 265);       /* descriptions, captions */
+  /* Brand · 3 blues from the misty shades scale */
+  --brand-deep: #142549;       /* CCD logo navy · primary text */
+  --brand:      #4874CD;       /* primary action · links · focus */
+  --brand-soft: #B5C7EB;       /* anchor misty · soft section bg · alias of state-selected */
 
-  --rule: oklch(0.92 0.008 85);            /* card borders, dividers */
-  --rule-dashed: oklch(0.85 0.012 85);     /* placeholder card border */
+  /* Surface · scaffolding */
+  --paper:      #ffffff;       /* page background */
+  --paper-tint: #DFE7F6;       /* palest tint · soft surface */
+  --card:       #ffffff;       /* card surface */
+  --rule:       #C7D5F0;       /* borders, dividers */
 
-  /* ── Color: brand & status ──────────────────────────── */
-  --brand-amber: oklch(0.75 0.14 75);      /* brand warmth: eyebrow, hero dot, beta status */
-  --brand-amber-tint: oklch(0.97 0.03 75); /* beta pill background */
+  /* Ink · text scale (deep → muted) */
+  --ink:        #142549;       /* headlines, primary text = brand-deep */
+  --ink-soft:   #274B92;       /* card titles, body emphasis */
+  --ink-muted:  #647B9B;       /* captions, descriptions */
 
-  --status-live: oklch(0.7 0.16 145);      /* green: live / open */
-  --status-live-tint: oklch(0.96 0.04 145);
+  /* Meaning-via-tint · pastel backgrounds, fg is ink.
+     Default (white card + ink) = neutral. Pastel hue carries the state. */
+  --tint-positive: #E2EBB5;    /* live, success, done */
+  --tint-caution:  #EBDAB5;    /* pending, scheduled · soft heads-up */
+  --tint-alert:    #EBBEB5;    /* expired, at-risk, failed · hard warning */
 
-  /* Reserved for tools that need them (dashboard, comment tagging):
-     --alert-amber, --alert-red, --steady-teal — defined when adopted. */
+  /* Status dots · saturated escape hatch (3, off-page).
+     Used ONLY as 7px dots inside pills — never as fills, borders, or text. */
+  --dot-positive: #6B8C2C;     /* deep olive · matches tint-positive hue */
+  --dot-caution:  #A67C1A;     /* deep amber · matches tint-caution hue */
+  --dot-negative: #B5564A;     /* deep rust  · matches tint-alert hue */
+
+  /* State · selected / active */
+  --state-selected: #B5C7EB;   /* active tab, selected row, current chip · alias of brand-soft */
+
+  /* Heat · sequential mono-blue, lightest → deepest */
+  --heat-1: #DFE7F6;
+  --heat-2: #C7D5F0;
+  --heat-3: #B5C7EB;
+  --heat-4: #91ABE1;
+  --heat-5: #4874CD;
+  --heat-empty: #ffffff;
 
   /* ── Type stack ─────────────────────────────────────── */
   --sans: "Inter", "Noto Sans Thai", -apple-system, BlinkMacSystemFont,
@@ -49,7 +70,9 @@
   --s-9: 6rem;      /* 96 */
 
   /* ── Radii ──────────────────────────────────────────── */
+  --r-xs: 4px;
   --r-sm: 6px;
+  --r-card: 8px;       /* dashboard card / modal */
   --r-md: 12px;
   --r-lg: 16px;
   --r-pill: 999px;
@@ -58,10 +81,35 @@
   --gutter: clamp(1.5rem, 5vw, 4rem);
   --max-content: 76rem;
 
+  /* ── Elevation (shadow ramp) ────────────────────────── */
+  /* Shadows tinted with ink (deep navy), never neutral black. Use sparingly. */
+  --shadow-0: none;
+  --shadow-1: 0 1px 2px rgba(20, 37, 73, 0.04);                             /* hairline lift */
+  --shadow-2: 0 2px 6px rgba(20, 37, 73, 0.06);                             /* dropdown, popover */
+  --shadow-3: 0 8px 24px rgba(20, 37, 73, 0.08);                            /* card hover, sheet */
+  --shadow-4: 0 16px 40px rgba(20, 37, 73, 0.16);                           /* modal */
+  --shadow-glow-brand: 0 4px 12px rgba(72, 116, 205, 0.3);                  /* mid-blue brand accent */
+
+  /* ── Z-index scale ──────────────────────────────────── */
+  --z-base: 0;
+  --z-sticky: 50;
+  --z-dropdown: 100;
+  --z-modal: 200;
+  --z-toast: 300;
+
+  /* ── Focus ring ─────────────────────────────────────── */
+  --focus-ring-color: var(--ink);
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 4px;
+
   /* ── Motion ─────────────────────────────────────────── */
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --dur-instant: 0ms;
   --dur-fast: 160ms;
   --dur-base: 240ms;
+  --dur-slow: 360ms;
 
   /* ── Breakpoints (reference, not consumed by CSS) ───── */
   --bp-mobile: 540px;

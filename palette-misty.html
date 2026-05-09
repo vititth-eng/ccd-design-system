@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>CCD BRB · Misty palette test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" />
+<style>
+/* ============================================================
+   MISTY PALETTE TEST · strict-from-Figma
+   Every color below is from figma.com/colors/misty-blue/.
+   No red, no amber, no green — meaning carried by tint hue.
+   Approach: mono-blue + 3 soft warm/cool accents.
+   ============================================================ */
+
+:root {
+  /* ── BRAND (3) — all from misty-blue shades ──────────── */
+  --brand-deep:  #142549;   /* deepest shade · CCD logo navy */
+  --brand:       #4874CD;   /* mid blue · primary action, links, focus */
+  --brand-soft:  #B5C7EB;   /* anchor misty blue · soft section bg */
+
+  /* ── SURFACE (7) — tints + tones from page ───────────── */
+  --paper:       #ffffff;        /* page bg (universal) */
+  --paper-tint:  #DFE7F6;        /* palest tint · soft surface */
+  --card:        #ffffff;
+  --rule:        #C7D5F0;        /* mid-pale tint · borders */
+  --ink:         #142549;        /* primary text = brand-deep */
+  --ink-soft:    #274B92;        /* secondary text · darker shade */
+  --ink-muted:   #647B9B;        /* captions · desaturated tone */
+
+  /* ── MEANING-VIA-TINT (4) — bg colors only, fg is ink ── */
+  /* Default: white card + ink text → "neutral" */
+  --tint-positive: #E2EBB5;   /* split-comp pale green · live, success, done */
+  --tint-caution:  #EBDAB5;   /* cream · soft heads-up · pending, scheduled, awaiting */
+  --tint-alert:    #EBBEB5;   /* split-comp peach · expired, at-risk, failed (harder alarm) */
+
+  /* ── STATUS DOTS (3) — saturated escape hatch, NOT on misty page ─
+     Used ONLY as 7px dots inside pills. Never as fills, borders, or text.
+     These are the only off-page hexes in the system. */
+  --dot-positive: #6B8C2C;   /* deep olive · matches tint-positive hue */
+  --dot-caution:  #A67C1A;   /* deep amber · matches tint-caution hue */
+  --dot-negative: #B5564A;   /* deep rust  · matches tint-alert hue */
+
+  /* ── STATE (1) — selected / active ───────────────────── */
+  --state-selected: #B5C7EB;   /* anchor misty · "this is on" — active tab, selected row, current chip */
+
+  /* ── HEAT (5) — sequential blue, lightest → deepest ──── */
+  /* Mono blues mean "low value" → "high value" — clearer for sequential data */
+  --heat-1: #DFE7F6;   /* lightest tint = low */
+  --heat-2: #C7D5F0;
+  --heat-3: #B5C7EB;
+  --heat-4: #91ABE1;
+  --heat-5: #4874CD;   /* mid-saturation blue = high */
+  --heat-empty: #ffffff;
+
+  --s-2: 0.5rem; --s-3: 0.75rem; --s-4: 1rem; --s-5: 1.5rem; --s-6: 2rem; --s-7: 3rem;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0 auto; padding: var(--s-7) clamp(1.5rem, 5vw, 3rem) var(--s-7);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  background: var(--paper); color: var(--ink); line-height: 1.5;
+  max-width: 1100px;
+  -webkit-font-smoothing: antialiased;
+}
+.mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+h1 { font-size: 1.875rem; font-weight: 800; margin: 0 0 var(--s-2); letter-spacing: -0.02em; }
+h2 { font-size: 1.125rem; font-weight: 700; margin: var(--s-7) 0 var(--s-3); letter-spacing: -0.01em; padding-bottom: var(--s-3); border-bottom: 1px solid var(--rule); }
+h3 { font-size: 0.75rem; font-weight: 700; margin: var(--s-5) 0 var(--s-3); text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-soft); }
+.lede { color: var(--ink-muted); max-width: 50rem; margin: 0 0 var(--s-4); font-size: 0.9375rem; }
+code { font-family: "JetBrains Mono", monospace; font-size: 0.8125rem; background: var(--paper-tint); padding: 1px 6px; border-radius: 3px; }
+
+/* ── Swatch ───────────────────────────────────────────── */
+.swatch-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: var(--s-3); }
+.sw { background: var(--card); border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.sw__chip { aspect-ratio: 2/1; }
+.sw__meta { padding: var(--s-2) var(--s-3); }
+.sw__name { font-weight: 600; font-size: 0.8125rem; }
+.sw__hex { font-family: "JetBrains Mono", monospace; font-size: 0.6875rem; color: var(--ink-muted); margin-top: 2px; }
+.sw__role { font-size: 0.6875rem; color: var(--ink-muted); margin-top: 2px; }
+
+/* ── Lockup demo ──────────────────────────────────────── */
+.lockup-demo { background: var(--paper-tint); border: 1px solid var(--rule); border-radius: 12px; padding: var(--s-6); display: flex; align-items: center; justify-content: center; min-height: 160px; }
+.lockup-demo img { max-height: 100px; }
+
+/* ── Fake chart ───────────────────────────────────────── */
+.chart-card { background: var(--card); border: 1px solid var(--rule); border-radius: 12px; padding: var(--s-5); }
+.chart-title { font-size: 0.9375rem; font-weight: 600; margin: 0 0 var(--s-2); }
+.chart-sub { font-size: 0.75rem; color: var(--ink-muted); margin: 0 0 var(--s-5); }
+.bars { display: flex; align-items: flex-end; gap: 14px; height: 180px; padding: 0 var(--s-3) var(--s-4); border-bottom: 1px solid var(--rule); }
+.bar { flex: 1; min-width: 0; border-radius: 4px 4px 0 0; position: relative; }
+.bar::after { content: attr(data-label); position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%); font-size: 0.6875rem; color: var(--ink-muted); white-space: nowrap; }
+.bar::before { content: attr(data-val); position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 0.6875rem; font-weight: 600; color: var(--ink-soft); }
+
+/* ── KPI ──────────────────────────────────────────────── */
+.dash-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--s-4); }
+.kpi { background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: var(--s-4); }
+.kpi-label { font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-muted); }
+.kpi-value { font-size: 1.75rem; font-weight: 800; color: var(--brand-deep); margin-top: 4px; line-height: 1.05; font-variant-numeric: tabular-nums; }
+.kpi-trend { display: inline-flex; align-items: center; gap: 4px; font-size: 0.75rem; font-weight: 600; margin-top: var(--s-2); color: var(--ink-muted); }
+.kpi-spark { height: 4px; border-radius: 999px; background: var(--paper-tint); margin-top: var(--s-3); overflow: hidden; }
+.kpi-spark .fill { height: 100%; border-radius: 999px; background: var(--ink); opacity: 0.55; }
+.kpi.alarm { background: var(--tint-alert); border-color: var(--tint-alert); }
+.kpi.alarm .kpi-spark { background: rgba(20,37,73,0.10); }
+.kpi.alarm .kpi-spark .fill { background: var(--ink-soft); opacity: 0.7; }
+
+/* ── Pills ────────────────────────────────────────────── */
+/* Pastel tint bg + matched darker dot. Three semantic groups: pos / neu / neg.
+   Two saturated dot colors (#6B8C2C olive, #B5564A rust) are the only escape
+   hatch from strict-from-page — used ONLY as 7px dots, never as fills. */
+.pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; color: var(--ink); line-height: 1.4; }
+.pill::before { content: ""; width: 7px; height: 7px; border-radius: 999px; flex-shrink: 0; }
+.pill.pos { background: var(--tint-positive); }
+.pill.neu { background: var(--paper-tint); }
+.pill.cau { background: var(--tint-caution); }
+.pill.neg { background: var(--tint-alert); }
+.pill.pos::before { background: var(--dot-positive); }
+.pill.neu::before { background: var(--ink-muted); }
+.pill.cau::before { background: var(--dot-caution); }
+.pill.neg::before { background: var(--dot-negative); }
+.pill-row { display: flex; flex-wrap: wrap; gap: var(--s-2); align-items: center; }
+
+/* ── Sentiment ────────────────────────────────────────── */
+.sentiment-bar { display: flex; height: 48px; border-radius: 6px; overflow: hidden; border: 1px solid var(--rule); }
+.sentiment-bar div { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; color: var(--ink); padding: 0 6px; min-width: 0; }
+.sentiment-bar .pct { font-size: 0.9375rem; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+.sentiment-bar .lbl { font-size: 0.625rem; font-weight: 500; line-height: 1; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-muted); }
+.sentiment-bar .neg { background: var(--tint-alert); }
+.sentiment-bar .neu { background: var(--paper-tint); }
+.sentiment-bar .pos { background: var(--tint-positive); }
+
+/* ── Heat (mono-blue gradient) ────────────────────────── */
+.heat-grid { display: grid; grid-template-columns: 100px repeat(9, 1fr); gap: 2px; font-size: 0.6875rem; }
+.heat-cell { aspect-ratio: 2/1; display: flex; align-items: center; justify-content: center; color: var(--ink); font-weight: 600; border-radius: 3px; }
+.heat-cell.h5 { color: white; }
+.heat-row-label { display: flex; align-items: center; padding-right: var(--s-3); color: var(--ink-soft); font-weight: 500; }
+.heat-axis { display: grid; grid-template-columns: 100px repeat(9, 1fr); gap: 2px; font-size: 0.625rem; color: var(--ink-muted); margin-top: 4px; }
+.heat-axis div { text-align: center; }
+
+/* ── Tint principle table ─────────────────────────────── */
+.duty-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; background: var(--card); border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.duty-table th, .duty-table td { padding: var(--s-3) var(--s-4); text-align: left; border-bottom: 1px solid var(--rule); }
+.duty-table th { background: var(--paper-tint); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-muted); }
+.duty-table tr:last-child td { border-bottom: 0; }
+.duty-table .swatch-cell { display: flex; align-items: center; gap: var(--s-2); font-weight: 600; }
+.duty-table .swatch-cell::before { content: ""; width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; }
+.duty-table .positive::before { background: var(--tint-positive); border: 1px solid var(--rule); }
+.duty-table .caution::before { background: var(--tint-caution); border: 1px solid var(--rule); }
+.duty-table .alert::before { background: var(--tint-alert); border: 1px solid var(--rule); }
+
+/* ── Filter chips + tabs (selected demo) ──────────────── */
+.chip-row { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-bottom: var(--s-4); }
+.chip { padding: 6px 14px; border-radius: 999px; font-size: 0.8125rem; font-weight: 500; color: var(--ink); background: var(--paper); border: 1px solid var(--rule); cursor: default; }
+.chip.is-selected { background: var(--state-selected); border-color: var(--state-selected); font-weight: 600; }
+.tab-row { display: flex; gap: var(--s-5); border-bottom: 1px solid var(--rule); }
+.tab { padding: var(--s-3) 0; font-size: 0.875rem; font-weight: 500; color: var(--ink-muted); border-bottom: 2px solid transparent; margin-bottom: -1px; cursor: default; }
+.tab.is-active { color: var(--ink); font-weight: 600; border-bottom-color: var(--state-selected); }
+
+footer { margin-top: var(--s-7); padding-top: var(--s-5); border-top: 1px solid var(--rule); color: var(--ink-muted); font-size: 0.8125rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Misty palette · mostly-from-Figma</h1>
+  <p class="lede">All surface, brand, and tint colors come from <code>figma.com/colors/misty-blue/</code>. The only exceptions are <strong>three saturated status dots</strong> (olive, amber, rust) used only inside status pills — the misty page has no saturated red/green/yellow, so status pills get a documented escape hatch. Meaning carried by background tint hue, text is always ink.</p>
+</header>
+
+<!-- ── 1. SWATCH WALL ─────────────────────────────────── -->
+<h2>1 · The whole palette</h2>
+
+<h3>Brand · 3 blues from the shades scale</h3>
+<div class="swatch-row">
+  <div class="sw"><div class="sw__chip" style="background:var(--brand-deep)"></div><div class="sw__meta"><div class="sw__name">brand-deep</div><div class="sw__hex">#142549</div><div class="sw__role">CCD logo navy, primary text</div></div></div>
+  <div class="sw"><div class="sw__chip" style="background:var(--brand)"></div><div class="sw__meta"><div class="sw__name">brand</div><div class="sw__hex">#4874CD</div><div class="sw__role">primary action, links, focus</div></div></div>
+  <div class="sw"><div class="sw__chip" style="background:var(--brand-soft)"></div><div class="sw__meta"><div class="sw__name">brand-soft</div><div class="sw__hex">#B5C7EB</div><div class="sw__role">anchor misty · alias of state-selected</div></div></div>
+</div>
+
+<h3>Surface · scaffolding</h3>
+<div class="swatch-row">
+  <div class="sw"><div class="sw__chip" style="background:var(--paper); border-bottom: 1px solid var(--rule)"></div><div class="sw__meta"><div class="sw__name">paper</div><div class="sw__hex">#ffffff</div></div></div>
+  <div class="sw"><div class="sw__chip" style="background:var(--paper-tint)"></div><div class="sw__meta"><div class="sw__name">paper-tint</div><div class="sw__hex">#DFE7F6</div></div></div>
+  <div class="sw"><div class="sw__chip" style="background:var(--card); border-bottom: 1px solid var(--rule)"></div><div class="sw__meta"><div class="sw__name">card</div><div class="sw__hex">#ffffff</div></div></div>
+  <div class="sw"><div class="sw__chip" style="background:var(--rule)"></div><div class="sw__meta"><div class="sw__name">rule</div><div class="sw__hex">#C7D5F0</div></div></div>
+  <div class="sw"><div class="sw__chip" style="background:var(--ink)"></div><div class="sw__meta"><div class="sw__name">ink</div><div class="sw__hex">#142549</div></div></div>
+  <div class="sw"><div class="sw__chip" style="background:var(--ink-soft)"></div><div class="sw__meta"><div class="sw__name">ink-soft</div><div class="sw__hex">#274B92</div></div></div>
+  <div class="sw"><div class="sw__chip" style="background:var(--ink-muted)"></div><div class="sw__meta"><div class="sw__name">ink-muted</div><div class="sw__hex">#647B9B</div></div></div>
+</div>
+
+<h3>Meaning-via-tint · backgrounds only, text is always ink</h3>
+<div class="swatch-row">
+  <div class="sw"><div class="sw__chip" style="background:var(--tint-positive)"></div><div class="sw__meta"><div class="sw__name">tint-positive</div><div class="sw__hex">#E2EBB5</div><div class="sw__role">live, success, done</div></div></div>
+  <div class="sw"><div class="sw__chip" style="background:var(--tint-caution)"></div><div class="sw__meta"><div class="sw__name">tint-caution</div><div class="sw__hex">#EBDAB5</div><div class="sw__role">pending, scheduled · soft warning</div></div></div>
+  <div class="sw"><div class="sw__chip" style="background:var(--tint-alert)"></div><div class="sw__meta"><div class="sw__name">tint-alert</div><div class="sw__hex">#EBBEB5</div><div class="sw__role">expired, at-risk · hard warning</div></div></div>
+</div>
+
+<h3>Status dots · saturated escape hatch (3, off-page)</h3>
+<div class="swatch-row">
+  <div class="sw"><div class="sw__chip" style="background:var(--dot-positive)"></div><div class="sw__meta"><div class="sw__name">dot-positive</div><div class="sw__hex">#6B8C2C</div><div class="sw__role">olive · 7px dots only</div></div></div>
+  <div class="sw"><div class="sw__chip" style="background:var(--dot-caution)"></div><div class="sw__meta"><div class="sw__name">dot-caution</div><div class="sw__hex">#A67C1A</div><div class="sw__role">amber · 7px dots only</div></div></div>
+  <div class="sw"><div class="sw__chip" style="background:var(--dot-negative)"></div><div class="sw__meta"><div class="sw__name">dot-negative</div><div class="sw__hex">#B5564A</div><div class="sw__role">rust · 7px dots only</div></div></div>
+</div>
+
+<h3>State · selected / active</h3>
+<div class="swatch-row">
+  <div class="sw"><div class="sw__chip" style="background:var(--state-selected)"></div><div class="sw__meta"><div class="sw__name">state-selected</div><div class="sw__hex">#B5C7EB</div><div class="sw__role">active tab, selected row, current chip</div></div></div>
+</div>
+
+<h3>Heat · sequential mono-blue (low → high)</h3>
+<div class="swatch-row">
+  <div class="sw"><div class="sw__chip" style="background:var(--heat-1)"></div><div class="sw__meta"><div class="sw__name">heat-1</div><div class="sw__hex">#DFE7F6</div></div></div>
+  <div class="sw"><div class="sw__chip" style="background:var(--heat-2)"></div><div class="sw__meta"><div class="sw__name">heat-2</div><div class="sw__hex">#C7D5F0</div></div></div>
+  <div class="sw"><div class="sw__chip" style="background:var(--heat-3)"></div><div class="sw__meta"><div class="sw__name">heat-3</div><div class="sw__hex">#B5C7EB</div></div></div>
+  <div class="sw"><div class="sw__chip" style="background:var(--heat-4)"></div><div class="sw__meta"><div class="sw__name">heat-4</div><div class="sw__hex">#91ABE1</div></div></div>
+  <div class="sw"><div class="sw__chip" style="background:var(--heat-5)"></div><div class="sw__meta"><div class="sw__name">heat-5</div><div class="sw__hex">#4874CD</div></div></div>
+</div>
+
+<!-- ── 2. LOGO LOCKUP ────────────────────────────────── -->
+<h2>2 · CCD logo on misty surface</h2>
+<p class="lede">Same Singha lockup, set on a paper-tint background. The deepest shade <code>#142549</code> reads as the navy in the wordmark — same family, no mismatch.</p>
+<div class="lockup-demo">
+  <img src="assets/ccd-logo.png" alt="CCD — Corporate Capability Development Group" />
+</div>
+
+<!-- ── 3. TINT PRINCIPLE ─────────────────────────────── -->
+<h2>3 · Meaning carried by tint hue (no foreground colors)</h2>
+<p class="lede">Default = white card + ink. To mark meaning, change only the background tint. Text stays ink. The <em>hue</em> of the bg signals the state.</p>
+
+<table class="duty-table">
+  <thead>
+    <tr><th>Tint</th><th>Hue</th><th>Use for</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><span class="swatch-cell positive">tint-positive</span></td><td>pale green-yellow</td><td>live, success, done, completed</td></tr>
+    <tr><td><span class="swatch-cell caution">tint-caution</span></td><td>cream (warm yellow)</td><td>pending, scheduled, awaiting · <em>soft</em> heads-up</td></tr>
+    <tr><td><span class="swatch-cell alert">tint-alert</span></td><td>peach (warm orange-red)</td><td>expired, at-risk, failed · <em>hard</em> warning, needs action</td></tr>
+  </tbody>
+</table>
+
+<!-- ── 4. CHART ──────────────────────────────────────── -->
+<h2>4 · Bar chart — pale set, alarm swaps tint</h2>
+<p class="lede">Default bars in soft mid-blue. The low score swaps to <code>tint-alert</code> peach — warm-against-cool reads as "act on this" without needing saturation.</p>
+
+<div class="chart-card">
+  <p class="chart-title">Engagement score by department · Q2</p>
+  <p class="chart-sub">Bars in <code>--heat-4</code>. KM swaps to <code>--tint-alert</code> — warm peach signals attention.</p>
+  <div class="bars">
+    <div class="bar" style="height: 78%; background: var(--heat-4)" data-val="3.9" data-label="LD"></div>
+    <div class="bar" style="height: 64%; background: var(--heat-4)" data-val="3.2" data-label="OD"></div>
+    <div class="bar" style="height: 88%; background: var(--heat-4)" data-val="4.4" data-label="PM"></div>
+    <div class="bar" style="height: 72%; background: var(--heat-4)" data-val="3.6" data-label="EE"></div>
+    <div class="bar" style="height: 44%; background: var(--tint-alert);" data-val="2.2" data-label="KM ⚠"></div>
+    <div class="bar" style="height: 82%; background: var(--heat-4)" data-val="4.1" data-label="SA"></div>
+  </div>
+</div>
+
+<!-- ── 5. DASHBOARD ─────────────────────────────────── -->
+<h2>5 · Fake dashboard row</h2>
+
+<h3>KPI tiles · alarm tile uses tint-alert as bg</h3>
+<div class="dash-row">
+  <div class="kpi">
+    <div class="kpi-label">Active enrollments</div>
+    <div class="kpi-value">142</div>
+    <div class="kpi-trend">↑ 12% vs last month</div>
+    <div class="kpi-spark"><div class="fill" style="width: 78%"></div></div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Survey response rate</div>
+    <div class="kpi-value">68<span style="font-size:1rem;color:var(--ink-muted)">%</span></div>
+    <div class="kpi-trend">↓ 4 pts vs last wave</div>
+    <div class="kpi-spark"><div class="fill" style="width: 68%"></div></div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Avg engagement</div>
+    <div class="kpi-value">3.7<span style="font-size:1rem;color:var(--ink-muted)">/5</span></div>
+    <div class="kpi-trend">→ stable</div>
+    <div class="kpi-spark"><div class="fill" style="width: 74%"></div></div>
+  </div>
+  <div class="kpi alarm">
+    <div class="kpi-label">At-risk participants</div>
+    <div class="kpi-value">7</div>
+    <div class="kpi-trend">↑ 3 since Apr</div>
+    <div class="kpi-spark" style="background: rgba(255,255,255,0.5);"><div class="fill" style="width: 24%; background: var(--ink);"></div></div>
+  </div>
+</div>
+
+<h3>Status pills · four semantic groups</h3>
+<p class="lede">Pastel bg carries the calm; a small saturated dot carries the meaning. <strong>Positive</strong> (live, done), <strong>neutral</strong> (beta, draft, archived), <strong>caution</strong> (pending, scheduled — soft heads-up), <strong>negative</strong> (expired, at-risk, failed — needs action).</p>
+<div class="pill-row">
+  <span class="pill pos">Live</span>
+  <span class="pill pos">Done</span>
+  <span class="pill neu">Beta</span>
+  <span class="pill neu">Draft</span>
+  <span class="pill neu">Archived</span>
+  <span class="pill cau">Pending</span>
+  <span class="pill cau">Scheduled</span>
+  <span class="pill neg">Expired</span>
+  <span class="pill neg">At-risk</span>
+</div>
+
+<h3>Selected / active state · brand-soft (#B5C7EB)</h3>
+<p class="lede">When something is currently on / selected / being acted on. Deeper than <code>paper-tint</code> so it reads as "this one"; not saturated so it doesn't shout.</p>
+<div class="chip-row">
+  <span class="chip is-selected">All departments</span>
+  <span class="chip">LD</span>
+  <span class="chip">OD</span>
+  <span class="chip">PM</span>
+  <span class="chip">EE</span>
+</div>
+<div class="tab-row">
+  <span class="tab is-active">Overview</span>
+  <span class="tab">Participants</span>
+  <span class="tab">Surveys</span>
+  <span class="tab">Reports</span>
+</div>
+
+<h3 style="margin-top: var(--s-7);">Sentiment distribution</h3>
+<div class="sentiment-bar" style="margin-bottom: 6px;">
+  <div class="neg" style="width: 22%"><span class="pct">22%</span><span class="lbl">neg</span></div>
+  <div class="neu" style="width: 31%"><span class="pct">31%</span><span class="lbl">neutral</span></div>
+  <div class="pos" style="width: 47%"><span class="pct">47%</span><span class="lbl">pos</span></div>
+</div>
+<p class="chart-sub">Negative = peach · Neutral = paper-tint · Positive = pale green. Text is ink everywhere.</p>
+
+<h3>Rating heatmap · sequential mono-blue</h3>
+<div class="heat-grid">
+  <div class="heat-row-label">LD team</div>
+  <div class="heat-cell" style="background: var(--heat-3)">3.2</div>
+  <div class="heat-cell" style="background: var(--heat-4)">3.8</div>
+  <div class="heat-cell h5" style="background: var(--heat-5)">4.4</div>
+  <div class="heat-cell" style="background: var(--heat-4)">3.9</div>
+  <div class="heat-cell h5" style="background: var(--heat-5)">4.5</div>
+  <div class="heat-cell" style="background: var(--heat-3)">3.1</div>
+  <div class="heat-cell" style="background: var(--heat-2)">2.6</div>
+  <div class="heat-cell" style="background: var(--heat-empty); color: var(--ink-muted); border: 1px dashed var(--rule);">—</div>
+  <div class="heat-cell" style="background: var(--heat-3)">3.3</div>
+
+  <div class="heat-row-label">OD team</div>
+  <div class="heat-cell" style="background: var(--heat-2)">2.4</div>
+  <div class="heat-cell" style="background: var(--heat-3)">3.1</div>
+  <div class="heat-cell" style="background: var(--heat-3)">3.3</div>
+  <div class="heat-cell" style="background: var(--heat-2)">2.7</div>
+  <div class="heat-cell" style="background: var(--heat-1)">2.1</div>
+  <div class="heat-cell" style="background: var(--heat-2)">2.5</div>
+  <div class="heat-cell" style="background: var(--heat-3)">3.0</div>
+  <div class="heat-cell" style="background: var(--heat-4)">3.7</div>
+  <div class="heat-cell h5" style="background: var(--heat-5)">4.3</div>
+
+  <div class="heat-row-label">PM team</div>
+  <div class="heat-cell h5" style="background: var(--heat-5)">4.5</div>
+  <div class="heat-cell h5" style="background: var(--heat-5)">4.6</div>
+  <div class="heat-cell" style="background: var(--heat-4)">3.9</div>
+  <div class="heat-cell h5" style="background: var(--heat-5)">4.2</div>
+  <div class="heat-cell" style="background: var(--heat-4)">3.8</div>
+  <div class="heat-cell h5" style="background: var(--heat-5)">4.4</div>
+  <div class="heat-cell h5" style="background: var(--heat-5)">4.7</div>
+  <div class="heat-cell" style="background: var(--heat-4)">3.9</div>
+  <div class="heat-cell h5" style="background: var(--heat-5)">4.5</div>
+</div>
+<div class="heat-axis">
+  <div></div>
+  <div>W1</div><div>W2</div><div>W3</div><div>W4</div>
+  <div>W5</div><div>W6</div><div>W7</div><div>W8</div><div>W9</div>
+</div>
+
+<footer>
+  <p>Sandbox · sibling of <code class="mono">palette-test.html</code> · 14 colors total, all from the Figma misty-blue page · alternative to the navy+amber+state direction</p>
+</footer>
+
+</body>
+</html>
