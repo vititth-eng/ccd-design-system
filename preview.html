@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" />
 <link rel="stylesheet" href="tokens.css" />
 <link rel="stylesheet" href="layout.css" />
+<link rel="stylesheet" href="forms.css" />
 <style>
   /* ============================================================
      DESIGN BOARD · single-page everything-at-a-glance reference
@@ -257,8 +258,7 @@
   /* ── Focus demo ────────────────────────────────────── */
   .focus-box { padding: var(--s-5); border: 1px solid var(--rule); border-radius: var(--r-md); background: var(--card); }
   .focus-box p { margin: 0 0 var(--s-3); color: var(--ink-muted); font-size: 0.875rem; }
-  .focus-input { width: 100%; padding: var(--s-3); border: 1px solid var(--rule); border-radius: var(--r-sm); font-family: inherit; font-size: 0.9375rem; background: var(--paper); color: var(--ink); }
-  .focus-input:focus-visible { outline: var(--focus-ring-width) solid var(--focus-ring-color); outline-offset: var(--focus-ring-offset); /* No border-color flip — ring carries focus alone. */ }
+  /* Form control comes from forms.css (.f-control) */
 
   /* ── Controls (form widgets, locked Oct 2026) ──────── */
   .ctl-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--s-5); margin-bottom: var(--s-6); }
@@ -288,19 +288,7 @@
   .dd-menu li.is-selected { background: var(--state-selected); }
   .dd-menu li.is-selected::after { content: "✓"; color: var(--ink); font-size: 0.85rem; }
 
-  /* form input (3A) */
-  .ctl-field { display: flex; flex-direction: column; gap: var(--s-1); }
-  .ctl-field label { font-size: 0.8rem; color: var(--ink-soft); }
-  .ctl-input {
-    height: 36px; padding: 0 var(--s-3);
-    background: var(--paper); border: 1px solid var(--rule); border-radius: var(--r-sm);
-    font: inherit; color: var(--ink);
-  }
-  .ctl-input:focus-visible {
-    outline: var(--focus-ring-width) solid var(--focus-ring-color);
-    outline-offset: var(--focus-ring-offset);
-    /* Ring-only rule (§8). No border-color flip, no custom shadow. */
-  }
+  /* form input (3A) — uses .f-field + .f-control from forms.css */
 
   /* icon-only button (5A) */
   .icon-btn {
@@ -636,7 +624,7 @@
       </div>
       <div class="focus-box">
         <p>Input — focus ring appears on keyboard focus. Border stays put (ring-only rule).</p>
-        <input class="focus-input" type="text" placeholder="Type here, then tab away" />
+        <input class="f-control" type="text" placeholder="Type here, then tab away" />
       </div>
     </div>
   </section>
@@ -682,9 +670,9 @@
 
       <div class="ctl-card">
         <span class="micro">Form input · 36px · bordered</span>
-        <div class="ctl-field">
-          <label for="ctl-search">Search</label>
-          <input id="ctl-search" class="ctl-input" type="text" placeholder="Type a name…">
+        <div class="f-field">
+          <label class="f-field__label" for="ctl-search">Search</label>
+          <input id="ctl-search" class="f-control" type="text" placeholder="Type a name…">
         </div>
         <p class="ctl-card__note">Click in to see focus ring. Same height/border family as dropdown trigger.</p>
       </div>

@@ -11,6 +11,7 @@
 
 <link rel="stylesheet" href="./tokens.css" />
 <link rel="stylesheet" href="./layout.css" />
+<link rel="stylesheet" href="./forms.css" />
 
 <style>
   /* ============================================================
@@ -103,20 +104,7 @@
   .btn.ghost   { background: var(--paper); color: var(--ink); border-color: var(--rule); }
   .btn.ghost:hover { background: var(--paper-tint); border-color: var(--ink-muted); }
 
-  /* Field */
-  .field { display: flex; flex-direction: column; gap: var(--s-2); }
-  .field label { font-size: var(--fs-small); font-weight: var(--fw-semi); color: var(--ink); }
-  .field input {
-    padding: var(--s-3); border: 1px solid var(--rule);
-    border-radius: var(--r-sm); font-family: inherit;
-    font-size: var(--fs-body); background: var(--paper); color: var(--ink);
-  }
-  .field input:focus-visible {
-    outline: var(--focus-ring-width) solid var(--focus-ring-color);
-    outline-offset: var(--focus-ring-offset);
-    /* No border-color flip — the ring alone carries focus.
-       Stacking ring + ink border read as a heavy double-edge. */
-  }
+  /* Field — uses .f-field + .f-control from forms.css */
 
   /* Heat strip (sequential ramp) */
   .heat-strip { display: flex; gap: var(--s-1); }
@@ -281,9 +269,9 @@
             <button class="btn brand">Brand action</button>
             <button class="btn ghost">Ghost action</button>
           </div>
-          <div class="field" style="max-width: 320px;">
-            <label for="ks-input">Email</label>
-            <input id="ks-input" type="email" placeholder="you@boonrawd.co.th" />
+          <div class="f-field" style="max-width: 320px;">
+            <label class="f-field__label" for="ks-input">Email</label>
+            <input id="ks-input" class="f-control" type="email" placeholder="you@boonrawd.co.th" />
           </div>
         </div>
 
