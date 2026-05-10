@@ -13,6 +13,8 @@
 <link rel="stylesheet" href="icons.css" />
 <link rel="stylesheet" href="states.css" />
 <link rel="stylesheet" href="toasts.css" />
+<link rel="stylesheet" href="tables.css" />
+<link rel="stylesheet" href="modals.css" />
 <style>
   /* ============================================================
      DESIGN BOARD · single-page everything-at-a-glance reference
@@ -953,6 +955,289 @@
             const k = b.dataset.toast;
             if (k === 'burst') ['positive','neutral','caution','alert'].forEach((kind,i) => setTimeout(() => fire(kind), i*400));
             else fire(k);
+          });
+        });
+      })();
+    </script>
+  </section>
+
+  <!-- ── TABLES ──────────────────────────────────────── -->
+  <section id="tables">
+    <div class="sec-head">
+      <h2 class="sec-title">Tables</h2>
+      <p class="sec-note">Data primitive from <code>tables.css</code>: quiet rules, status pills, sortable headers, expandable rows. Wrap every table in <code>.tbl-wrap &gt; .tbl-scroll &gt; table.tbl</code> for the rounded card + horizontal scroll affordance.</p>
+    </div>
+
+    <p class="micro" style="margin: 0 0 var(--s-3)">Basic — selected row shown</p>
+    <div class="tbl-wrap" style="margin-bottom: var(--s-6)">
+      <div class="tbl-scroll">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Employee</th>
+              <th>Department</th>
+              <th>Status</th>
+              <th class="num">Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="cell-stack"><span class="cell-primary">Anchalee S.</span><span class="cell-meta">anchalee.s@brb</span></div></td>
+              <td>Brewing Ops</td>
+              <td><span class="pill is-positive">Done</span></td>
+              <td class="num">4.8</td>
+            </tr>
+            <tr class="is-selected">
+              <td><div class="cell-stack"><span class="cell-primary">Boon T.</span><span class="cell-meta">boon.t@brb</span></div></td>
+              <td>Quality Lab</td>
+              <td><span class="pill is-caution">Pending</span></td>
+              <td class="num">—</td>
+            </tr>
+            <tr>
+              <td><div class="cell-stack"><span class="cell-primary">Chai R.</span><span class="cell-meta">chai.r@brb</span></div></td>
+              <td>Logistics</td>
+              <td><span class="pill is-alert">Overdue</span></td>
+              <td class="num">—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <p class="micro" style="margin: 0 0 var(--s-3)">Sortable + status header — Score is <code>is-sorted is-desc</code></p>
+    <div class="tbl-wrap" style="margin-bottom: var(--s-6)">
+      <div class="tbl-scroll">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th class="is-sortable" data-sort="name">
+                <button type="button" class="th-inner">Employee
+                  <svg class="sort-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+                </button>
+              </th>
+              <th class="is-sortable" data-sort="dept">
+                <button type="button" class="th-inner">Department
+                  <svg class="sort-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+                </button>
+              </th>
+              <th class="is-sortable" data-sort="status">
+                <button type="button" class="th-inner">Status
+                  <svg class="sort-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+                </button>
+              </th>
+              <th class="is-sortable num is-sorted is-desc" data-sort="score">
+                <button type="button" class="th-inner">Score
+                  <svg class="sort-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+                </button>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="cell-stack"><span class="cell-primary">Daw M.</span><span class="cell-meta">daw.m@brb</span></div></td>
+              <td>HR</td>
+              <td><span class="pill is-positive">Done</span></td>
+              <td class="num">4.9</td>
+            </tr>
+            <tr>
+              <td><div class="cell-stack"><span class="cell-primary">Anchalee S.</span><span class="cell-meta">anchalee.s@brb</span></div></td>
+              <td>Brewing Ops</td>
+              <td><span class="pill is-positive">Done</span></td>
+              <td class="num">4.8</td>
+            </tr>
+            <tr>
+              <td><div class="cell-stack"><span class="cell-primary">Boon T.</span><span class="cell-meta">boon.t@brb</span></div></td>
+              <td>Quality Lab</td>
+              <td><span class="pill is-caution">Pending</span></td>
+              <td class="num">3.4</td>
+            </tr>
+            <tr>
+              <td><div class="cell-stack"><span class="cell-primary">Chai R.</span><span class="cell-meta">chai.r@brb</span></div></td>
+              <td>Logistics</td>
+              <td><span class="pill is-alert">Overdue</span></td>
+              <td class="num">2.1</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <p class="micro" style="margin: 0 0 var(--s-3)">Expandable rows — click row or press Enter</p>
+    <div class="tbl-wrap">
+      <div class="tbl-scroll">
+        <table class="tbl" id="tbl-expand-preview">
+          <thead>
+            <tr>
+              <th style="width: 32px"></th>
+              <th>Employee</th>
+              <th>Department</th>
+              <th>Status</th>
+              <th class="num">Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="is-expandable" data-key="anchalee" tabindex="0" role="button" aria-expanded="false" aria-controls="detail-anchalee-pv">
+              <td><span class="expand-caret"><svg width="14" height="14"><use href="#i-chevron-right"/></svg></span></td>
+              <td><div class="cell-stack"><span class="cell-primary">Anchalee Suk</span><span class="cell-meta">anchalee.s@brb</span></div></td>
+              <td>Brewing Ops</td>
+              <td><span class="pill is-positive">Done</span></td>
+              <td class="num">4.8</td>
+            </tr>
+            <tr class="row-detail" data-key="anchalee" id="detail-anchalee-pv" hidden>
+              <td>
+                <div class="row-detail-card">
+                  <dl class="row-detail-grid">
+                    <dt>Wave</dt><dd>W3 · Submitted 2026-04-18</dd>
+                    <dt>Manager</dt><dd>Pim Charoen</dd>
+                    <dt>Top theme</dt><dd>Onboarding clarity (mentioned 4×)</dd>
+                  </dl>
+                  <div class="row-detail-foot">
+                    <button class="btn-link" type="button">Open full record →</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+            <tr class="is-expandable" data-key="boon" tabindex="0" role="button" aria-expanded="false" aria-controls="detail-boon-pv">
+              <td><span class="expand-caret"><svg width="14" height="14"><use href="#i-chevron-right"/></svg></span></td>
+              <td><div class="cell-stack"><span class="cell-primary">Boon Thanawat</span><span class="cell-meta">boon.t@brb</span></div></td>
+              <td>Quality Lab</td>
+              <td><span class="pill is-caution">Pending</span></td>
+              <td class="num">—</td>
+            </tr>
+            <tr class="row-detail" data-key="boon" id="detail-boon-pv" hidden>
+              <td>
+                <div class="row-detail-card">
+                  <dl class="row-detail-grid">
+                    <dt>Wave</dt><dd>W2 · Reminder sent 2026-04-22</dd>
+                    <dt>Manager</dt><dd>Niran Ploy</dd>
+                    <dt>Top theme</dt><dd>Awaiting self-survey (5 days overdue)</dd>
+                  </dl>
+                  <div class="row-detail-foot">
+                    <button class="btn-link" type="button">Send reminder →</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      (() => {
+        const tbl = document.getElementById('tbl-expand-preview');
+        if (!tbl) return;
+        const colCount = tbl.querySelectorAll('thead th').length;
+        tbl.querySelectorAll('tr.row-detail > td').forEach(td => { td.colSpan = colCount; });
+        const toggle = row => {
+          const key = row.dataset.key;
+          const detail = tbl.querySelector(`tr.row-detail[data-key="${key}"]`);
+          if (!detail) return;
+          const open = !detail.hasAttribute('hidden');
+          if (open) {
+            detail.setAttribute('hidden', '');
+            row.classList.remove('is-expanded');
+            row.setAttribute('aria-expanded', 'false');
+          } else {
+            detail.removeAttribute('hidden');
+            row.classList.add('is-expanded');
+            row.setAttribute('aria-expanded', 'true');
+          }
+        };
+        tbl.addEventListener('click', e => {
+          if (e.target.closest('input, button, a')) return;
+          const row = e.target.closest('tr.is-expandable');
+          if (!row) return;
+          toggle(row);
+        });
+        tbl.addEventListener('keydown', e => {
+          if (e.key !== 'Enter' && e.key !== ' ') return;
+          const row = e.target.closest('tr.is-expandable');
+          if (!row || row !== e.target) return;
+          e.preventDefault();
+          toggle(row);
+        });
+      })();
+    </script>
+  </section>
+
+  <!-- ── MODALS ──────────────────────────────────────── -->
+  <section id="modals">
+    <div class="sec-head">
+      <h2 class="sec-title">Modals</h2>
+      <p class="sec-note">Native <code>&lt;dialog&gt;</code> with three positions from <code>modals.css</code>: centered (<code>.dlg-modal</code>), right sheet (<code>.dlg-sheet</code>), bottom sheet (<code>.dlg-bottom</code>). Backdrop click and explicit <code>[data-close]</code> both close.</p>
+    </div>
+
+    <div class="row" style="margin-bottom: var(--s-4)">
+      <button class="ctl-btn" data-open-dlg="dlg-pv-center">Centered modal</button>
+      <button class="ctl-btn" data-open-dlg="dlg-pv-sheet">Right sheet</button>
+      <button class="ctl-btn" data-open-dlg="dlg-pv-bottom">Bottom sheet</button>
+    </div>
+
+    <dialog id="dlg-pv-center" class="dlg-modal" aria-labelledby="dlg-pv-center-h">
+      <div class="dlg-head">
+        <div>
+          <h3 id="dlg-pv-center-h">Publish to dashboard?</h3>
+          <p>This makes the wave visible to all reviewers.</p>
+        </div>
+        <button class="dlg-close" data-close aria-label="Close"><svg class="icon-16"><use href="#i-x"/></svg></button>
+      </div>
+      <div class="dlg-body">
+        <p>You can revert this at any time from the wave settings panel.</p>
+      </div>
+      <div class="dlg-actions">
+        <button class="ctl-btn" data-close>Cancel</button>
+        <button class="ctl-btn" data-close style="background:var(--brand); color:var(--paper); border-color:var(--brand);">Confirm</button>
+      </div>
+    </dialog>
+
+    <dialog id="dlg-pv-sheet" class="dlg-sheet" aria-labelledby="dlg-pv-sheet-h">
+      <div class="dlg-head" style="border-bottom:1px solid var(--rule)">
+        <div>
+          <h3 id="dlg-pv-sheet-h">Site survey · Q3</h3>
+          <p>BRB-2026-0142 · Submitted by Somchai R.</p>
+        </div>
+        <button class="dlg-close" data-close aria-label="Close"><svg class="icon-16"><use href="#i-x"/></svg></button>
+      </div>
+      <div class="dlg-body">
+        <p>Persistent context drill-in. The table behind stays addressable; the sheet covers ~30% of the viewport from the right edge.</p>
+        <p>Wider canvas than the centered confirm — room for forms, detail meta, attachments.</p>
+      </div>
+      <div class="dlg-actions">
+        <button class="ctl-btn" data-close>Cancel</button>
+        <button class="ctl-btn" data-close style="background:var(--brand); color:var(--paper); border-color:var(--brand);">Confirm</button>
+      </div>
+    </dialog>
+
+    <dialog id="dlg-pv-bottom" class="dlg-bottom" aria-labelledby="dlg-pv-bottom-h">
+      <div class="grabber" aria-hidden="true"></div>
+      <div class="dlg-head">
+        <div>
+          <h3 id="dlg-pv-bottom-h">Choose an action</h3>
+          <p>Applies to the selected record.</p>
+        </div>
+        <button class="dlg-close" data-close aria-label="Close"><svg class="icon-16"><use href="#i-x"/></svg></button>
+      </div>
+      <div class="dlg-body">
+        <button class="sheet-item" data-close><svg><use href="#i-check"/></svg> Mark as done</button>
+        <button class="sheet-item" data-close><svg><use href="#i-download"/></svg> Export</button>
+        <button class="sheet-item is-danger" data-close><svg><use href="#i-x"/></svg> Delete</button>
+      </div>
+    </dialog>
+
+    <script>
+      (() => {
+        document.querySelectorAll('#modals dialog').forEach(dlg => {
+          dlg.addEventListener('click', e => {
+            if (e.target.closest('[data-close]')) { dlg.close(); return; }
+            if (e.target === dlg) dlg.close();
+          });
+        });
+        document.querySelectorAll('[data-open-dlg]').forEach(b => {
+          b.addEventListener('click', () => {
+            const dlg = document.getElementById(b.dataset.openDlg);
+            if (dlg && typeof dlg.showModal === 'function') dlg.showModal();
           });
         });
       })();

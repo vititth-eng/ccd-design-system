@@ -1,0 +1,202 @@
+/* ============================================================
+   CCD BRB Design System — Modals & Sheets
+   ------------------------------------------------------------
+   Three variants on one primitive: centered modal, right sheet,
+   bottom sheet. All ride the native <dialog> element so we get
+   focus trap, ESC, and return-focus for free.
+
+   Locked rules:
+   - Native <dialog> via showModal() — never a div-with-z-index
+     polyfill. Top-layer promotion beats every stacking context,
+     including toast regions. To surface a toast over an open
+     dialog, render it inside the dialog or use the Popover API
+     so it also enters the top-layer.
+   - Backdrop: rgba(20, 37, 73, 0.4) + 2px blur. Restrained, not
+     opaque — the page should still read faintly behind.
+   - Modal width: 440px default, 560px (--md) for forms. Never
+     wider — fields stay scannable, not journal-wide.
+   - Right sheet uses position: fixed; inset: 0 0 0 auto and a
+     [open]-scoped flex display rule. The [open] scope is
+     load-bearing: it preserves the UA's
+     `dialog:not([open]) { display: none }` so closed sheets
+     stay hidden. Removing the [open] would leave the sheet
+     visible at rest.
+   - Bottom sheet: width: min(560px, 100vw) + margin: 0 auto so
+     it caps and centers on desktop. Below 560px the rounded
+     top corners drop to 0 — at full bleed the curve looks
+     unfinished against the viewport edge.
+   - ESC + backdrop-click close via the canonical
+     `e.target === dlg` pattern (the ::backdrop forwards clicks
+     to the dialog element itself, so target equality identifies
+     a backdrop hit cleanly without geometry math).
+   - prefers-reduced-motion kills slide/pop animation.
+   - Buttons inside modals (.btn, .btn-primary, .btn-danger) are
+     consumer responsibility for now — they will graduate as
+     part of the system button later. This file ships only the
+     dialog chrome.
+
+   Depends on:
+   - tokens.css (--ink, --paper, --paper-tint, --rule,
+     --ink-muted, --s-*, --r-*, --fw-*, --shadow-4, --dur-*,
+     --ease, --z-modal, --dot-negative)
+
+   Spec: ../DESIGN-SYSTEM.md §17 Modals & Sheets
+   ============================================================ */
+
+/* ── Dialog primitive (modal + sheet base) ────────────── */
+dialog {
+  padding: 0; border: 0; color: var(--ink); background: var(--paper);
+  box-shadow: var(--shadow-4);
+}
+dialog::backdrop {
+  background: rgba(20, 37, 73, 0.4);
+  backdrop-filter: blur(2px);
+}
+dialog[open] { animation: ccd-dlg-pop var(--dur-base) var(--ease); }
+dialog[open]::backdrop { animation: ccd-dlg-fade var(--dur-base) var(--ease); }
+
+@keyframes ccd-dlg-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes ccd-dlg-pop {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Modal — centered card ────────────────────────────── */
+.dlg-modal {
+  width: min(440px, calc(100vw - 32px));
+  border-radius: var(--r-lg);
+  margin: auto;                   /* center via dialog default */
+}
+.dlg-modal--md { width: min(560px, calc(100vw - 32px)); }
+
+/* ── Head · body · actions ────────────────────────────── */
+.dlg-head {
+  padding: var(--s-5) var(--s-5) var(--s-3);
+  display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s-3);
+}
+.dlg-head h3 {
+  margin: 0;
+  font-size: var(--fs-card); font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+}
+.dlg-head p {
+  margin: var(--s-1) 0 0;
+  color: var(--ink-muted); font-size: 0.875rem;
+}
+
+.dlg-close {
+  appearance: none; background: none; border: 0; cursor: pointer;
+  width: 32px; height: 32px; border-radius: var(--r-pill);
+  display: grid; place-items: center; color: var(--ink-muted);
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+  flex: 0 0 auto;
+}
+.dlg-close:hover { background: var(--paper-tint); color: var(--ink); }
+.dlg-close svg { width: 18px; height: 18px; }
+
+.dlg-body {
+  padding: 0 var(--s-5) var(--s-5);
+  font-size: 0.9375rem; color: var(--ink-soft);
+}
+.dlg-body p { margin: 0 0 var(--s-3); }
+.dlg-body p:last-child { margin-bottom: 0; }
+
+.dlg-actions {
+  padding: var(--s-3) var(--s-5) var(--s-5);
+  display: flex; justify-content: flex-end; gap: var(--s-2);
+}
+
+/* ── Right sheet — drawer from the edge ───────────────── */
+/* The [open] scope on the flex display is load-bearing: it
+   preserves the UA `dialog:not([open]) { display: none }` so
+   closed sheets stay hidden. Don't drop the [open]. */
+.dlg-sheet {
+  position: fixed;
+  inset: 0 0 0 auto;              /* pin top/right/bottom, auto left */
+  margin: 0;
+  width: min(480px, 100vw);
+  height: 100dvh; max-height: 100dvh; max-width: 100vw;
+  border-radius: 0;
+}
+.dlg-sheet[open] { display: flex; flex-direction: column; }
+.dlg-sheet[open] { animation: ccd-sheet-in var(--dur-base) var(--ease); }
+@keyframes ccd-sheet-in {
+  from { transform: translateX(24px); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+.dlg-sheet .dlg-body {
+  flex: 1; overflow: auto; padding: var(--s-5);
+}
+.dlg-sheet .dlg-actions {
+  border-top: 1px solid var(--rule);
+  padding: var(--s-4) var(--s-5);
+  background: var(--paper);
+}
+
+/* ── Bottom sheet — pins bottom, capped + centered on desktop ── */
+.dlg-bottom {
+  position: fixed;
+  inset: auto 0 0 0;
+  margin: 0 auto;                 /* center the capped width on desktop */
+  width: min(560px, 100vw);
+  max-width: 100vw;
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+}
+/* On true mobile widths the sheet touches both viewport edges,
+   so the rounded top corners read as unfinished — drop them. */
+@media (max-width: 560px) {
+  .dlg-bottom { border-radius: 0; }
+}
+.dlg-bottom[open] { animation: ccd-bottom-in var(--dur-base) var(--ease); }
+@keyframes ccd-bottom-in {
+  from { transform: translateY(24px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+.dlg-bottom .grabber {
+  width: 40px; height: 4px; border-radius: 999px; background: var(--rule);
+  margin: var(--s-2) auto 0;
+}
+.dlg-bottom .dlg-head { padding: var(--s-3) var(--s-5) var(--s-2); }
+.dlg-bottom .dlg-body { padding: 0 0 var(--s-3); }
+
+/* ── Sheet item — full-width row inside a bottom sheet ── */
+/* Tighter than .btn, list-style, used for action menus. */
+.sheet-item {
+  appearance: none; background: none; border: 0;
+  width: 100%; padding: var(--s-3) var(--s-5);
+  display: flex; align-items: center; gap: var(--s-3);
+  font: inherit; font-size: 0.9375rem; color: var(--ink);
+  cursor: pointer; text-align: left;
+  transition: background var(--dur-fast) var(--ease);
+}
+.sheet-item:hover { background: var(--paper-tint); }
+.sheet-item svg { width: 16px; height: 16px; color: var(--ink-muted); flex: 0 0 auto; }
+.sheet-item.is-danger { color: var(--dot-negative); }
+.sheet-item.is-danger svg { color: var(--dot-negative); }
+
+/* ── Detail-sheet content (drill-in from tables) ──────── */
+.detail-meta {
+  display: grid; grid-template-columns: max-content 1fr;
+  gap: var(--s-2) var(--s-4);
+  font-size: 0.875rem;
+}
+.detail-meta dt { color: var(--ink-muted); font-weight: var(--fw-medium); }
+.detail-meta dd { margin: 0; color: var(--ink); }
+.detail-h {
+  font-size: var(--fs-card); font-weight: var(--fw-bold);
+  margin: 0 0 var(--s-1);
+}
+.detail-sub {
+  color: var(--ink-muted); font-size: 0.875rem;
+  margin: 0 0 var(--s-5);
+}
+
+/* ── Reduced motion ───────────────────────────────────── */
+/* tokens.css globally clamps animation/transition to 0.01ms
+   !important, so we must use !important to actually opt out. */
+@media (prefers-reduced-motion: reduce) {
+  dialog[open], dialog[open]::backdrop { animation: none !important; }
+}
