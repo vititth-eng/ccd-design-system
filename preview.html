@@ -186,7 +186,7 @@
   .pill::before { content: ""; width: 8px; height: 8px; border-radius: var(--r-pill); }
   .pill--live { background: var(--tint-positive); }
   .pill--live::before { background: var(--dot-positive); }
-  .pill--beta { background: var(--paper-tint); }
+  .pill--beta { background: var(--tint-neutral); }
   .pill--beta::before { background: var(--ink-muted); }
   .pill--pending { background: var(--tint-caution); }
   .pill--pending::before { background: var(--dot-caution); }
@@ -258,7 +258,7 @@
   .focus-box { padding: var(--s-5); border: 1px solid var(--rule); border-radius: var(--r-md); background: var(--card); }
   .focus-box p { margin: 0 0 var(--s-3); color: var(--ink-muted); font-size: 0.875rem; }
   .focus-input { width: 100%; padding: var(--s-3); border: 1px solid var(--rule); border-radius: var(--r-sm); font-family: inherit; font-size: 0.9375rem; background: var(--paper); color: var(--ink); }
-  .focus-input:focus-visible { outline: var(--focus-ring-width) solid var(--focus-ring-color); outline-offset: var(--focus-ring-offset); border-color: var(--ink); }
+  .focus-input:focus-visible { outline: var(--focus-ring-width) solid var(--focus-ring-color); outline-offset: var(--focus-ring-offset); /* No border-color flip — ring carries focus alone. */ }
 
   /* ── Controls (form widgets, locked Oct 2026) ──────── */
   .ctl-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--s-5); margin-bottom: var(--s-6); }
@@ -446,6 +446,7 @@
       <div class="swatch"><div class="swatch__chip" style="background:var(--tint-positive)"></div><div class="swatch__meta"><span class="swatch__name">tint-positive</span><span class="swatch__val">#E2EBB5 · live, success, done</span></div></div>
       <div class="swatch"><div class="swatch__chip" style="background:var(--tint-caution)"></div><div class="swatch__meta"><span class="swatch__name">tint-caution</span><span class="swatch__val">#EBDAB5 · pending · soft heads-up</span></div></div>
       <div class="swatch"><div class="swatch__chip" style="background:var(--tint-alert)"></div><div class="swatch__meta"><span class="swatch__name">tint-alert</span><span class="swatch__val">#EBBEB5 · expired · hard warning</span></div></div>
+      <div class="swatch"><div class="swatch__chip" style="background:var(--tint-neutral)"></div><div class="swatch__meta"><span class="swatch__name">tint-neutral</span><span class="swatch__val">#DFE7F6 · draft · undefined</span></div></div>
     </div>
 
     <p class="micro" style="margin: 0 0 var(--s-3)">Status dots · 7px only · the only off-page hexes</p>

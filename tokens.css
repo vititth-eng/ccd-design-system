@@ -35,6 +35,10 @@
   --tint-positive: #E2EBB5;    /* live, success, done */
   --tint-caution:  #EBDAB5;    /* pending, scheduled · soft heads-up */
   --tint-alert:    #EBBEB5;    /* expired, at-risk, failed · hard warning */
+  --tint-neutral:  #DFE7F6;    /* draft, none, undefined · separate from
+                                  --paper-tint so neutral pills hold against
+                                  the page canvas (same hex as --heat-1 today
+                                  but kept distinct semantically) */
 
   /* Status dots · saturated escape hatch (3, off-page).
      Used ONLY as 7px dots inside pills — never as fills, borders, or text. */

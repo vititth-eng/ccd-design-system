@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CCD BRB · System coherence test</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" />
+
+<link rel="stylesheet" href="./tokens.css" />
+<link rel="stylesheet" href="./layout.css" />
+
+<style>
+  /* ============================================================
+     Coherence test — every primitive + a real-screen mock
+     If something looks wrong here, it is wrong everywhere.
+     Bind everything to tokens. Zero raw px / hex.
+     ============================================================ */
+
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+
+  /* Per-page bits not yet in design-system primitives */
+  .page-eyebrow {
+    font-size: var(--fs-micro); font-weight: var(--fw-semi);
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--brand);
+    margin: 0 0 var(--s-2);
+  }
+  h1.page-title {
+    font-size: var(--fs-display); font-weight: var(--fw-bold);
+    line-height: var(--lh-tight); letter-spacing: -0.02em;
+    margin: 0 0 var(--s-3);
+  }
+  h2.section-title {
+    font-size: var(--fs-section); font-weight: var(--fw-bold);
+    line-height: var(--lh-snug); letter-spacing: -0.01em;
+    margin: 0 0 var(--s-3);
+  }
+  h3.card-title {
+    font-size: var(--fs-card); font-weight: var(--fw-bold);
+    line-height: var(--lh-snug); letter-spacing: -0.005em;
+    margin: 0 0 var(--s-2);
+  }
+  p.body  { font-size: var(--fs-body); line-height: var(--lh-normal); margin: 0 0 var(--s-3); }
+  p.body-th { font-family: var(--thai); font-size: var(--fs-body); line-height: var(--lh-relaxed); color: var(--ink-muted); margin: 0 0 var(--s-3); }
+  .small { font-size: var(--fs-small); color: var(--ink-muted); }
+  .micro {
+    font-size: var(--fs-micro); font-weight: var(--fw-semi);
+    letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-muted);
+  }
+
+  /* Cards */
+  .card {
+    background: var(--paper); border: 1px solid var(--rule);
+    border-radius: var(--r-card); padding: var(--s-5);
+    transition: transform var(--dur-base) var(--ease),
+                box-shadow var(--dur-base) var(--ease);
+  }
+  .card.isolated { border-radius: var(--r-md); }
+  .card.floating { border-radius: var(--r-lg); box-shadow: var(--shadow-3); border-color: transparent; }
+  .card.hover-lift:hover { transform: translateY(-2px); box-shadow: var(--shadow-3); }
+
+  /* Pills */
+  .pill {
+    display: inline-flex; align-items: center; gap: var(--s-2);
+    padding: 4px 10px; border-radius: var(--r-pill);
+    font-size: var(--fs-micro); font-weight: var(--fw-semi);
+    letter-spacing: 0.02em; color: var(--ink);
+  }
+  .pill::before { content: ""; width: 7px; height: 7px; border-radius: var(--r-pill); }
+  .pill.positive { background: var(--tint-positive); }
+  .pill.positive::before { background: var(--dot-positive); }
+  .pill.caution  { background: var(--tint-caution); }
+  .pill.caution::before  { background: var(--dot-caution); }
+  .pill.alert    { background: var(--tint-alert); }
+  .pill.alert::before    { background: var(--dot-negative); }
+  .pill.neutral  { background: var(--tint-neutral); }
+  .pill.neutral::before  { background: var(--ink-muted); }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; gap: var(--s-2);
+    padding: var(--s-3) var(--s-5);
+    border-radius: var(--r-pill);
+    font-family: inherit; font-weight: var(--fw-semi); font-size: var(--fs-body);
+    border: 1px solid transparent; cursor: pointer;
+    transition: transform var(--dur-fast) var(--ease),
+                background var(--dur-fast) var(--ease),
+                color var(--dur-fast) var(--ease),
+                box-shadow var(--dur-fast) var(--ease);
+  }
+  .btn:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+  .btn.primary { background: var(--ink); color: var(--paper); }
+  .btn.primary:hover { background: var(--ink-soft); }
+  .btn.brand   { background: var(--brand); color: var(--paper); }
+  .btn.brand:hover { box-shadow: var(--shadow-glow-brand); }
+  .btn.ghost   { background: var(--paper); color: var(--ink); border-color: var(--rule); }
+  .btn.ghost:hover { background: var(--paper-tint); border-color: var(--ink-muted); }
+
+  /* Field */
+  .field { display: flex; flex-direction: column; gap: var(--s-2); }
+  .field label { font-size: var(--fs-small); font-weight: var(--fw-semi); color: var(--ink); }
+  .field input {
+    padding: var(--s-3); border: 1px solid var(--rule);
+    border-radius: var(--r-sm); font-family: inherit;
+    font-size: var(--fs-body); background: var(--paper); color: var(--ink);
+  }
+  .field input:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+    /* No border-color flip — the ring alone carries focus.
+       Stacking ring + ink border read as a heavy double-edge. */
+  }
+
+  /* Heat strip (sequential ramp) */
+  .heat-strip { display: flex; gap: var(--s-1); }
+  .heat-cell { flex: 1; height: 8px; border-radius: var(--r-tiny); }
+  .heat-1 { background: var(--heat-1); }
+  .heat-2 { background: var(--heat-2); }
+  .heat-3 { background: var(--heat-3); }
+  .heat-4 { background: var(--heat-4); }
+  .heat-5 { background: var(--heat-5); }
+
+  /* Mini bar chart with one alarm bar (per spec) */
+  .bars { display: flex; align-items: flex-end; gap: var(--s-2); height: 96px; padding: var(--s-3) 0; }
+  .bar { flex: 1; background: var(--heat-4); border-radius: var(--r-tiny) var(--r-tiny) 0 0; min-width: 18px; }
+  .bar.alarm { background: var(--tint-alert); }
+
+  /* KPI tile */
+  .kpi { background: var(--paper); border: 1px solid var(--rule); border-radius: var(--r-card); padding: var(--s-4) var(--s-5); }
+  .kpi__label { font-size: var(--fs-micro); font-weight: var(--fw-semi); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-muted); margin: 0 0 var(--s-2); }
+  .kpi__value { font-size: 1.875rem; font-weight: var(--fw-bold); line-height: 1; letter-spacing: -0.01em; color: var(--ink); margin: 0; }
+  .kpi__delta { font-size: var(--fs-small); color: var(--ink-muted); margin: var(--s-2) 0 0; }
+
+  /* Comment row */
+  .comment { display: flex; gap: var(--s-3); padding: var(--s-3) 0; border-bottom: 1px solid var(--rule); }
+  .comment:last-child { border-bottom: 0; }
+  .comment__avatar { width: 36px; height: 36px; border-radius: var(--r-pill); background: var(--brand-soft); flex-shrink: 0; display: grid; place-items: center; font-weight: var(--fw-bold); color: var(--brand-deep); font-size: var(--fs-small); }
+  .comment__body { flex: 1; }
+  .comment__meta { display: flex; gap: var(--s-3); align-items: center; margin-bottom: 4px; }
+  .comment__author { font-size: var(--fs-small); font-weight: var(--fw-semi); color: var(--ink); }
+  .comment__time { font-size: var(--fs-small); color: var(--ink-muted); }
+  .comment__text { margin: 0; font-size: var(--fs-body); color: var(--ink); line-height: var(--lh-normal); }
+
+  /* Modal mockup (positioned in-flow, not actual overlay) */
+  .modal {
+    background: var(--paper); border-radius: var(--r-lg); padding: var(--s-6);
+    box-shadow: var(--shadow-4); max-width: 480px;
+    display: flex; flex-direction: column; gap: var(--s-3);
+  }
+  .modal__actions { display: flex; gap: var(--s-3); justify-content: flex-end; margin-top: var(--s-3); }
+
+  /* Kitchen-sink labels */
+  .ks-section + .ks-section { margin-top: var(--s-7); }
+  .ks-h {
+    font-size: var(--fs-micro); font-weight: var(--fw-semi);
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--brand); margin: 0 0 var(--s-3);
+  }
+  .swatch-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--s-3);
+  }
+  .sw { display: flex; align-items: center; gap: var(--s-3); padding: var(--s-2);
+        border: 1px solid var(--rule); border-radius: var(--r-sm); background: var(--paper); }
+  .sw__chip { width: 32px; height: 32px; border-radius: var(--r-xs); flex-shrink: 0; }
+  .sw__chip.bordered { border: 1px solid var(--rule); }
+  .sw__name { font-size: var(--fs-small); font-weight: var(--fw-semi); color: var(--ink); }
+  .sw__val  { font-family: "JetBrains Mono", ui-monospace, monospace;
+              font-size: 0.6875rem; color: var(--ink-muted); }
+
+  /* Diff highlighter — flag drift visually if it ever creeps in */
+  .verify {
+    margin-top: var(--s-7); padding: var(--s-4) var(--s-5);
+    background: var(--tint-positive); border-radius: var(--r-card);
+    color: var(--ink); font-size: var(--fs-small); line-height: var(--lh-normal);
+  }
+  .verify strong { display: block; margin-bottom: var(--s-1); font-size: var(--fs-body); }
+
+  /* Section divider */
+  .divider {
+    height: 1px; background: var(--rule); margin: var(--s-9) 0;
+    border: 0;
+  }
+</style>
+</head>
+
+<body class="l-page">
+
+  <header class="l-header">
+    <div class="l-container" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+      <span class="micro" style="margin: 0;">CCD BRB · Coherence test</span>
+      <span class="small mono">tokens.css + layout.css</span>
+    </div>
+  </header>
+
+  <main class="l-main">
+    <div class="l-container">
+
+      <!-- Page intro -->
+      <section class="l-section">
+        <p class="page-eyebrow">System diagnostic</p>
+        <h1 class="page-title">Does it all hold together?</h1>
+        <p class="body" style="max-width: 56rem;">
+          Every primitive on a single page, then a realistic screen using
+          them in context. Scroll for drift, harmony, awkward neighbours.
+          If something feels wrong here, it is wrong everywhere — fix it
+          in the system, not the page.
+        </p>
+        <p class="body-th" style="max-width: 56rem;">
+          ทุก primitive อยู่หน้าเดียวกัน แล้วตามด้วยตัวอย่างหน้าจอจริง — ดูว่ามีอะไรไม่เข้ากันบ้าง
+        </p>
+      </section>
+
+      <hr class="divider" />
+
+      <!-- KITCHEN SINK -->
+      <section class="l-section">
+        <h2 class="section-title">Kitchen sink — every primitive</h2>
+
+        <!-- Color -->
+        <div class="ks-section">
+          <p class="ks-h">Color · brand · surface · meaning · heat</p>
+          <div class="swatch-grid">
+            <div class="sw"><div class="sw__chip" style="background: var(--brand-deep)"></div><div><div class="sw__name">brand-deep</div><div class="sw__val">#142549</div></div></div>
+            <div class="sw"><div class="sw__chip" style="background: var(--brand)"></div><div><div class="sw__name">brand</div><div class="sw__val">#4874CD</div></div></div>
+            <div class="sw"><div class="sw__chip" style="background: var(--brand-soft)"></div><div><div class="sw__name">brand-soft</div><div class="sw__val">#B5C7EB</div></div></div>
+            <div class="sw"><div class="sw__chip bordered" style="background: var(--paper)"></div><div><div class="sw__name">paper</div><div class="sw__val">#ffffff</div></div></div>
+            <div class="sw"><div class="sw__chip" style="background: var(--paper-tint)"></div><div><div class="sw__name">paper-tint</div><div class="sw__val">#F6F9FD</div></div></div>
+            <div class="sw"><div class="sw__chip" style="background: var(--rule)"></div><div><div class="sw__name">rule</div><div class="sw__val">#C7D5F0</div></div></div>
+            <div class="sw"><div class="sw__chip" style="background: var(--ink)"></div><div><div class="sw__name">ink</div><div class="sw__val">#142549</div></div></div>
+            <div class="sw"><div class="sw__chip" style="background: var(--ink-soft)"></div><div><div class="sw__name">ink-soft</div><div class="sw__val">#274B92</div></div></div>
+            <div class="sw"><div class="sw__chip" style="background: var(--ink-muted)"></div><div><div class="sw__name">ink-muted</div><div class="sw__val">#647B9B</div></div></div>
+            <div class="sw"><div class="sw__chip" style="background: var(--tint-positive)"></div><div><div class="sw__name">tint-positive</div><div class="sw__val">#E2EBB5</div></div></div>
+            <div class="sw"><div class="sw__chip" style="background: var(--tint-caution)"></div><div><div class="sw__name">tint-caution</div><div class="sw__val">#EBDAB5</div></div></div>
+            <div class="sw"><div class="sw__chip" style="background: var(--tint-alert)"></div><div><div class="sw__name">tint-alert</div><div class="sw__val">#EBBEB5</div></div></div>
+          </div>
+          <div style="margin-top: var(--s-4);">
+            <p class="micro" style="margin: 0 0 var(--s-2)">Heat ramp · low → high</p>
+            <div class="heat-strip">
+              <div class="heat-cell heat-1"></div>
+              <div class="heat-cell heat-2"></div>
+              <div class="heat-cell heat-3"></div>
+              <div class="heat-cell heat-4"></div>
+              <div class="heat-cell heat-5"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Type -->
+        <div class="ks-section">
+          <p class="ks-h">Type · 6 roles · bilingual</p>
+          <div style="display: flex; flex-direction: column; gap: var(--s-2); padding: var(--s-4); background: var(--paper); border: 1px solid var(--rule); border-radius: var(--r-card);">
+            <div style="font-size: var(--fs-display); font-weight: var(--fw-bold); line-height: var(--lh-tight); letter-spacing: -0.02em;">Better experience.</div>
+            <div style="font-size: var(--fs-section); font-weight: var(--fw-bold); line-height: var(--lh-snug);">Our Tools</div>
+            <div style="font-size: var(--fs-card); font-weight: var(--fw-bold); line-height: var(--lh-snug);">Newcomer Motivation Check‑Up</div>
+            <div style="font-size: var(--fs-body); line-height: var(--lh-normal);">Default body — 17px. The quick brown fox jumps over the lazy dog.</div>
+            <div style="font-family: var(--thai); font-size: var(--fs-body); line-height: var(--lh-relaxed); color: var(--ink-muted);">เครื่องมือที่ช่วยให้เราเข้าใจคน ดูแลอย่างใส่ใจ และตัดสินใจได้ดีขึ้น</div>
+            <div class="small">Updated 2 hours ago · 248 responses</div>
+            <div class="micro">Live · HR check-up</div>
+          </div>
+        </div>
+
+        <!-- Pills + buttons + field -->
+        <div class="ks-section">
+          <p class="ks-h">Controls · pills · buttons · field</p>
+          <div style="display: flex; flex-wrap: wrap; gap: var(--s-3); align-items: center; margin-bottom: var(--s-4);">
+            <span class="pill positive">Live</span>
+            <span class="pill caution">Pending</span>
+            <span class="pill alert">Expired</span>
+            <span class="pill neutral">Draft</span>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: var(--s-3); align-items: center; margin-bottom: var(--s-4);">
+            <button class="btn primary">Primary action</button>
+            <button class="btn brand">Brand action</button>
+            <button class="btn ghost">Ghost action</button>
+          </div>
+          <div class="field" style="max-width: 320px;">
+            <label for="ks-input">Email</label>
+            <input id="ks-input" type="email" placeholder="you@boonrawd.co.th" />
+          </div>
+        </div>
+
+        <!-- Radius governance: trio in same row to feel tension -->
+        <div class="ks-section">
+          <p class="ks-h">Radius governance · default · isolated · floating</p>
+          <div class="l-grid">
+            <div class="card hover-lift" style="grid-column: span 4;">
+              <h3 class="card-title">Default card</h3>
+              <p class="small" style="margin: 0;">In a row of cards · <span class="mono">--r-card 8px</span></p>
+            </div>
+            <div class="card isolated" style="grid-column: span 4;">
+              <h3 class="card-title">Isolated panel</h3>
+              <p class="small" style="margin: 0;">Alone in its row · <span class="mono">--r-md 12px</span></p>
+            </div>
+            <div class="card floating" style="grid-column: span 4;">
+              <h3 class="card-title">Floating surface</h3>
+              <p class="small" style="margin: 0;">Overlay / modal · <span class="mono">--r-lg 16px</span></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal floating in flow -->
+        <div class="ks-section">
+          <p class="ks-h">Modal · <span class="mono">--r-lg + --shadow-4</span></p>
+          <div class="modal">
+            <h3 class="card-title" style="margin: 0;">Confirm reset</h3>
+            <p class="body" style="margin: 0;">Reset all responses for this cohort? This can't be undone.</p>
+            <p class="body-th" style="margin: 0;">รีเซ็ตคำตอบของรุ่นนี้ทั้งหมด? ทำแล้วกู้ไม่ได้</p>
+            <div class="modal__actions">
+              <button class="btn ghost">Cancel</button>
+              <button class="btn primary">Reset cohort</button>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <hr class="divider" />
+
+      <!-- REAL-SCREEN MOCK -->
+      <section class="l-section">
+        <p class="page-eyebrow">Real-screen mock · onboarding-style</p>
+        <h2 class="section-title">May 2026 cohort · Newcomer Motivation Check‑Up</h2>
+        <p class="small" style="margin-bottom: var(--s-5);">248 responses · last updated 2h ago · <span class="pill positive" style="margin-left: var(--s-2);">Live</span></p>
+
+        <!-- KPIs -->
+        <div class="l-section">
+          <div class="l-grid">
+            <div class="kpi" style="grid-column: span 3;">
+              <p class="kpi__label">Response rate</p>
+              <p class="kpi__value">82%</p>
+              <p class="kpi__delta">+4pp vs April</p>
+            </div>
+            <div class="kpi" style="grid-column: span 3;">
+              <p class="kpi__label">Clarity score</p>
+              <p class="kpi__value">7.4</p>
+              <p class="kpi__delta">/10 · steady</p>
+            </div>
+            <div class="kpi" style="grid-column: span 3;">
+              <p class="kpi__label">Manager check-ins</p>
+              <p class="kpi__value">8.1</p>
+              <p class="kpi__delta">/10 · ↑ from 7.6</p>
+            </div>
+            <div class="kpi" style="grid-column: span 3;">
+              <p class="kpi__label">Social connection</p>
+              <p class="kpi__value">5.9</p>
+              <p class="kpi__delta">/10 · ↓ watch this</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chart + status -->
+        <div class="l-section">
+          <div class="l-grid">
+
+            <!-- Chart panel (isolated → --r-md) -->
+            <div class="card isolated" style="grid-column: span 8;">
+              <h3 class="card-title">Sentiment by week</h3>
+              <p class="small" style="margin: 0 0 var(--s-3);">Bars in <span class="mono">--heat-4</span>; one alarm bar in <span class="mono">--tint-alert</span> when a week dips.</p>
+              <div class="bars" aria-label="Bar chart with one alarm bar">
+                <div class="bar" style="height: 60%"></div>
+                <div class="bar" style="height: 75%"></div>
+                <div class="bar" style="height: 70%"></div>
+                <div class="bar alarm" style="height: 38%"></div>
+                <div class="bar" style="height: 68%"></div>
+                <div class="bar" style="height: 80%"></div>
+                <div class="bar" style="height: 78%"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-top: var(--s-2);">
+                <span class="micro" style="margin: 0;">W1</span>
+                <span class="micro" style="margin: 0;">W2</span>
+                <span class="micro" style="margin: 0;">W3</span>
+                <span class="micro" style="margin: 0; color: var(--dot-negative);">W4 · alarm</span>
+                <span class="micro" style="margin: 0;">W5</span>
+                <span class="micro" style="margin: 0;">W6</span>
+                <span class="micro" style="margin: 0;">W7</span>
+              </div>
+            </div>
+
+            <!-- Sidebar status (default → --r-card) -->
+            <div style="grid-column: span 4; display: flex; flex-direction: column; gap: var(--s-4);">
+              <div class="card">
+                <p class="micro" style="margin: 0 0 var(--s-2);">Status</p>
+                <div style="display: flex; flex-direction: column; gap: var(--s-2);">
+                  <span class="pill positive" style="align-self: flex-start;">8 cohorts live</span>
+                  <span class="pill caution" style="align-self: flex-start;">2 surveys pending review</span>
+                  <span class="pill alert" style="align-self: flex-start;">1 cohort flagged</span>
+                </div>
+              </div>
+              <div class="card">
+                <p class="micro" style="margin: 0 0 var(--s-2);">Heat by department</p>
+                <div class="heat-strip" style="margin-bottom: var(--s-2);">
+                  <div class="heat-cell heat-2"></div>
+                  <div class="heat-cell heat-4"></div>
+                  <div class="heat-cell heat-5"></div>
+                  <div class="heat-cell heat-3"></div>
+                  <div class="heat-cell heat-1"></div>
+                </div>
+                <p class="small" style="margin: 0;">Brewery · Sales · HR · Finance · Logistics</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Comments (full row) -->
+        <div class="l-section">
+          <div class="card isolated">
+            <h3 class="card-title">Recent qualitative responses</h3>
+            <p class="small" style="margin: 0 0 var(--s-4);">12 of 248 · sample</p>
+
+            <div class="comment">
+              <div class="comment__avatar">PK</div>
+              <div class="comment__body">
+                <div class="comment__meta">
+                  <span class="comment__author">Pim K.</span>
+                  <span class="comment__time">3h · Brewery</span>
+                  <span class="pill positive" style="margin-left: auto;">Positive</span>
+                </div>
+                <p class="comment__text">Onboarding was clear, my manager set up weekly 1:1s right from week one — I felt anchored fast.</p>
+              </div>
+            </div>
+
+            <div class="comment">
+              <div class="comment__avatar" style="background: var(--tint-caution);">NS</div>
+              <div class="comment__body">
+                <div class="comment__meta">
+                  <span class="comment__author">Nat S.</span>
+                  <span class="comment__time">6h · Sales</span>
+                  <span class="pill caution" style="margin-left: auto;">Watch</span>
+                </div>
+                <p class="comment__text" lang="th" style="font-family: var(--thai); line-height: var(--lh-relaxed);">รู้สึกว่าตอนเริ่มงานข้อมูลเยอะมาก แต่ไม่ค่อยมีใครมาแนะนำว่าควรอ่านอะไรก่อน</p>
+              </div>
+            </div>
+
+            <div class="comment">
+              <div class="comment__avatar" style="background: var(--tint-alert);">JT</div>
+              <div class="comment__body">
+                <div class="comment__meta">
+                  <span class="comment__author">June T.</span>
+                  <span class="comment__time">1d · Logistics</span>
+                  <span class="pill alert" style="margin-left: auto;">Flag</span>
+                </div>
+                <p class="comment__text">Three weeks in and I still haven't been introduced to the team properly. Hard to know who does what.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action row (footer) -->
+        <div class="l-section">
+          <div style="display: flex; gap: var(--s-3); align-items: center; flex-wrap: wrap;">
+            <button class="btn primary">Export cohort report</button>
+            <button class="btn ghost">Share with HRBP</button>
+            <span class="small" style="margin-left: auto;">Auto-refreshed every 15 min</span>
+          </div>
+        </div>
+
+      </section>
+
+      <hr class="divider" />
+
+      <!-- Self-check -->
+      <div class="verify">
+        <strong>What to look for</strong>
+        Headings step down cleanly · pills feel like one family (same height, same dot size) · cards in a row don't fight cards alone · the alarm bar reads "act on this" without shouting · Thai and English share the same x-height step · the modal feels lifted, not stuck-on · KPIs read at a glance, comments read at reading pace. If anything jars, the system needs a fix — not the page.
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>
