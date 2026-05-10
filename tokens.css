@@ -129,9 +129,11 @@
   --z-toast: 300;
 
   /* ── Focus ring ─────────────────────────────────────── */
-  --focus-ring-color: var(--ink);
+  --focus-ring-color: var(--brand);   /* mid-blue · on-brand, softer than ink,
+                                         still WCAG AA for non-text UI */
   --focus-ring-width: 2px;
-  --focus-ring-offset: 4px;
+  --focus-ring-offset: 2px;           /* tight — ring hugs the element so it
+                                         reads as "selected", not "floating" */
 
   /* ── Motion ─────────────────────────────────────────── */
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
