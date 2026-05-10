@@ -420,9 +420,12 @@
       <a href="#motion">Motion</a>
       <a href="#focus">Focus</a>
       <a href="#controls">Controls</a>
+      <a href="#forms">Forms</a>
       <a href="#icons">Icons</a>
       <a href="#states">States</a>
       <a href="#toasts">Toasts</a>
+      <a href="#tables">Tables</a>
+      <a href="#modals">Modals</a>
       <a href="#components">Components</a>
       <a href="#hero">Hero</a>
     </nav>
@@ -595,6 +598,34 @@
       <div><dt>.l-section</dt><dd>vertical rhythm · 48px breath between blocks</dd></div>
       <div><dt>.l-grid</dt><dd>12-col grid · 24px gap · collapses at 960/540</dd></div>
     </dl>
+
+    <p class="micro" style="margin: var(--s-6) 0 var(--s-3)">Live wiring — real <code>.l-*</code> classes composed into a mock app frame</p>
+    <div style="border:1px solid var(--rule); border-radius:var(--r-card); overflow:hidden; max-height:280px;">
+      <div class="l-page" style="min-height:auto; height:280px;">
+        <header class="l-header">
+          <div class="l-container" style="display:flex; align-items:center; gap:var(--s-3); width:100%;">
+            <strong style="font-size:0.875rem;">CCD · Tool</strong>
+            <span class="grow" style="flex:1"></span>
+            <span class="micro">Header · sticky · 52px</span>
+          </div>
+        </header>
+        <main class="l-main" style="padding:var(--s-4) 0;">
+          <div class="l-container">
+            <section class="l-section">
+              <div class="l-grid">
+                <div class="span-8" style="grid-column:span 8; padding:var(--s-3); background:var(--paper); border:1px solid var(--rule); border-radius:var(--r-md); font-size:0.8125rem;">.l-grid &gt; span-8 · primary</div>
+                <div class="span-4" style="grid-column:span 4; padding:var(--s-3); background:var(--paper); border:1px solid var(--rule); border-radius:var(--r-md); font-size:0.8125rem;">span-4 · sidebar</div>
+              </div>
+            </section>
+            <section class="l-section">
+              <div class="l-grid">
+                <div style="grid-column:span 12; padding:var(--s-3); background:var(--paper); border:1px solid var(--rule); border-radius:var(--r-md); font-size:0.8125rem;">.l-section + .l-section · 48px breath above · span-12 row</div>
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
   </section>
 
   <!-- ── RADIUS ──────────────────────────────────────── -->
@@ -756,6 +787,97 @@
     </p>
   </section>
 
+  <!-- ── FORMS ──────────────────────────────────────── -->
+  <section id="forms">
+    <div class="sec-head">
+      <h2 class="sec-title">Forms</h2>
+      <p class="sec-note">Full <code>.f-*</code> vocabulary from <code>forms.css</code>: 36px row, ring-only focus, <code>.is-error</code> swap, dashed disabled, switch wrapper kept separate from <code>.f-choice</code>.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4);">
+      <div>
+        <p class="micro" style="margin: 0 0 var(--s-2)">Text input + help</p>
+        <div class="f-field">
+          <label class="f-field__label" for="f-name-pv">Full name</label>
+          <input class="f-control" type="text" id="f-name-pv" placeholder="e.g. Anchalee Suk">
+          <p class="f-field__help">As it appears on your employee record.</p>
+        </div>
+      </div>
+
+      <div>
+        <p class="micro" style="margin: 0 0 var(--s-2)">Textarea</p>
+        <div class="f-field">
+          <label class="f-field__label" for="f-notes-pv">Notes</label>
+          <textarea class="f-control" id="f-notes-pv" placeholder="Anything else we should know?"></textarea>
+        </div>
+      </div>
+
+      <div>
+        <p class="micro" style="margin: 0 0 var(--s-2)">Select (native)</p>
+        <div class="f-field">
+          <label class="f-field__label" for="f-dept-pv">Department <span class="f-req">*</span></label>
+          <select class="f-control" id="f-dept-pv">
+            <option>Brewing Ops</option>
+            <option>Quality Lab</option>
+            <option>Logistics</option>
+            <option>HR</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <p class="micro" style="margin: 0 0 var(--s-2)">Checkbox</p>
+        <div class="f-field">
+          <label class="f-choice">
+            <input type="checkbox" checked>
+            <span>Send me a copy of my responses</span>
+          </label>
+        </div>
+      </div>
+
+      <div>
+        <p class="micro" style="margin: 0 0 var(--s-2)">Radio group</p>
+        <div class="f-field" role="radiogroup" aria-label="Wave">
+          <label class="f-choice"><input type="radio" name="f-wave-pv"> <span>Wave 1 · 30-day check-in</span></label>
+          <label class="f-choice"><input type="radio" name="f-wave-pv" checked> <span>Wave 2 · 60-day check-in</span></label>
+          <label class="f-choice"><input type="radio" name="f-wave-pv"> <span>Wave 3 · 90-day check-in</span></label>
+        </div>
+      </div>
+
+      <div>
+        <p class="micro" style="margin: 0 0 var(--s-2)">Switch (toggle)</p>
+        <div class="f-field">
+          <label class="f-switch-row">
+            <span>Email me on new responses</span>
+            <span class="f-switch"><input type="checkbox" checked></span>
+          </label>
+          <label class="f-switch-row">
+            <span>Auto-archive after 90 days</span>
+            <span class="f-switch"><input type="checkbox"></span>
+          </label>
+        </div>
+      </div>
+
+      <div>
+        <p class="micro" style="margin: 0 0 var(--s-2)">Error state</p>
+        <div class="f-field">
+          <label class="f-field__label" for="f-email-pv">Work email <span class="f-req">*</span></label>
+          <input class="f-control is-error" type="email" id="f-email-pv" value="anchalee.s">
+          <p class="f-field__error">Enter a full address, e.g. anchalee.s@brb.</p>
+        </div>
+      </div>
+
+      <div>
+        <p class="micro" style="margin: 0 0 var(--s-2)">Disabled (dashed border)</p>
+        <div class="f-field">
+          <label class="f-field__label" for="f-id-pv">Employee ID</label>
+          <input class="f-control" type="text" id="f-id-pv" value="BRB-04821" disabled>
+          <p class="f-field__help">Assigned by HR; cannot be edited.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ── ICONS ──────────────────────────────────────── -->
   <section id="icons">
     <div class="sec-head">
@@ -827,6 +949,13 @@
     </div>
 
     <div style="border:1px solid var(--rule); border-radius:var(--r-md); background:var(--paper); margin-top:var(--s-4);">
+      <div class="empty-inline">
+        <svg class="icon"><use href="#i-message-square"/></svg>
+        <span>No comments on this row yet.</span>
+      </div>
+    </div>
+
+    <div style="border:1px solid var(--rule); border-radius:var(--r-md); background:var(--paper); margin-top:var(--s-4);">
       <div class="empty-page">
         <div class="empty-page-icon"><svg class="icon icon-24"><use href="#i-plus"/></svg></div>
         <p class="empty-page-title">No surveys yet</p>
@@ -839,6 +968,14 @@
       <div class="skel-card"><div class="skel skel-line w-50"></div><div class="skel skel-block" style="height:40px;"></div><div class="skel skel-line w-70"></div></div>
       <div class="skel-card"><div class="skel skel-line w-50"></div><div class="skel skel-block" style="height:40px;"></div><div class="skel skel-line w-70"></div></div>
       <div class="skel-card"><div class="skel skel-line w-50"></div><div class="skel skel-block" style="height:40px;"></div><div class="skel skel-line w-70"></div></div>
+    </div>
+
+    <div style="border:1px solid var(--rule); border-radius:var(--r-md); background:var(--paper); margin-bottom:var(--s-4); padding: var(--s-4); display:flex; align-items:center; gap: var(--s-3);">
+      <div class="skel skel-circle" aria-hidden="true"></div>
+      <div style="flex:1">
+        <div class="skel skel-line w-50"></div>
+        <div class="skel skel-line w-30"></div>
+      </div>
     </div>
 
     <div style="border:1px solid var(--rule); border-radius:var(--r-md); background:var(--paper); margin-bottom:var(--s-4);">
@@ -1004,6 +1141,64 @@
       </div>
     </div>
 
+    <p class="micro" style="margin: 0 0 var(--s-3)">Selection + drill + actions — checkbox column, hover-revealed row actions, clickable row with drill chevron</p>
+    <div class="tbl-wrap" style="margin-bottom: var(--s-6)">
+      <div class="tbl-scroll">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th class="col-check"><input type="checkbox" aria-label="Select all"></th>
+              <th>Employee</th>
+              <th>Department</th>
+              <th>Status</th>
+              <th class="col-actions"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="is-clickable" tabindex="0">
+              <td class="col-check"><input type="checkbox" aria-label="Select row"></td>
+              <td><div class="cell-stack"><span class="cell-primary">Anchalee S.</span><span class="cell-meta">anchalee.s@brb</span></div></td>
+              <td>Brewing Ops</td>
+              <td><span class="pill is-positive">Done</span></td>
+              <td class="col-actions">
+                <span class="row-actions">
+                  <button class="icon-btn" type="button" aria-label="Edit"><svg class="icon-16"><use href="#i-edit"/></svg></button>
+                  <button class="icon-btn" type="button" aria-label="More"><svg class="icon-16"><use href="#i-more-vertical"/></svg></button>
+                  <span class="drill"><svg class="icon-16"><use href="#i-chevron-right"/></svg></span>
+                </span>
+              </td>
+            </tr>
+            <tr class="is-clickable is-selected" tabindex="0">
+              <td class="col-check"><input type="checkbox" aria-label="Select row" checked></td>
+              <td><div class="cell-stack"><span class="cell-primary">Boon T.</span><span class="cell-meta">boon.t@brb</span></div></td>
+              <td>Quality Lab</td>
+              <td><span class="pill is-caution">Pending</span></td>
+              <td class="col-actions">
+                <span class="row-actions">
+                  <button class="icon-btn" type="button" aria-label="Edit"><svg class="icon-16"><use href="#i-edit"/></svg></button>
+                  <button class="icon-btn" type="button" aria-label="More"><svg class="icon-16"><use href="#i-more-vertical"/></svg></button>
+                  <span class="drill"><svg class="icon-16"><use href="#i-chevron-right"/></svg></span>
+                </span>
+              </td>
+            </tr>
+            <tr class="is-clickable" tabindex="0">
+              <td class="col-check"><input type="checkbox" aria-label="Select row"></td>
+              <td><div class="cell-stack"><span class="cell-primary">Chai R.</span><span class="cell-meta">chai.r@brb</span></div></td>
+              <td>Logistics</td>
+              <td><span class="pill is-alert">Overdue</span></td>
+              <td class="col-actions">
+                <span class="row-actions">
+                  <button class="icon-btn" type="button" aria-label="Edit"><svg class="icon-16"><use href="#i-edit"/></svg></button>
+                  <button class="icon-btn" type="button" aria-label="More"><svg class="icon-16"><use href="#i-more-vertical"/></svg></button>
+                  <span class="drill"><svg class="icon-16"><use href="#i-chevron-right"/></svg></span>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <p class="micro" style="margin: 0 0 var(--s-3)">Sortable + status header — Score is <code>is-sorted is-desc</code></p>
     <div class="tbl-wrap" style="margin-bottom: var(--s-6)">
       <div class="tbl-scroll">
@@ -1124,6 +1319,100 @@
       </div>
     </div>
 
+    <p class="micro" style="margin: var(--s-6) 0 var(--s-3)">Search + bulk + pager toolbar</p>
+    <div class="tbl-wrap" style="margin-bottom: var(--s-6)">
+      <div class="tbl-toolbar" style="padding: var(--s-3) var(--s-4) 0;">
+        <div class="tbl-search has-value">
+          <span class="icon-leading"><svg class="icon-16"><use href="#i-search"/></svg></span>
+          <input class="f-control" type="search" value="brew" placeholder="Search employees…">
+          <button class="clear-btn" type="button" aria-label="Clear"><svg class="icon-16"><use href="#i-x"/></svg></button>
+        </div>
+        <span class="grow"></span>
+        <button class="btn-soft" type="button"><svg class="icon-16"><use href="#i-filter"/></svg> Filter</button>
+        <button class="btn-soft" type="button"><svg class="icon-16"><use href="#i-download"/></svg> Export</button>
+      </div>
+      <div class="tbl-bulk is-active" style="margin: var(--s-3) var(--s-4);">
+        <span class="count">3 selected</span>
+        <span class="grow"></span>
+        <button class="bulk-btn" type="button">Send reminder</button>
+        <button class="bulk-btn" type="button">Archive</button>
+      </div>
+      <div class="tbl-scroll">
+        <table class="tbl">
+          <thead>
+            <tr><th>Employee</th><th>Department</th><th>Status</th><th class="num">Score</th></tr>
+          </thead>
+          <tbody>
+            <tr class="is-selected"><td>Anchalee S.</td><td>Brewing Ops</td><td><span class="pill is-positive">Done</span></td><td class="num">4.8</td></tr>
+            <tr class="is-selected"><td>Boon T.</td><td>Quality Lab</td><td><span class="pill is-caution">Pending</span></td><td class="num">—</td></tr>
+            <tr class="is-selected"><td>Chai R.</td><td>Logistics</td><td><span class="pill is-alert">Overdue</span></td><td class="num">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tbl-footer">
+        <span>Showing 3 of 47</span>
+        <div class="pager">
+          <button class="page-btn" type="button" aria-label="Prev"><svg class="icon-16"><use href="#i-chevron-left"/></svg></button>
+          <button class="page-btn is-current" type="button">1</button>
+          <button class="page-btn" type="button">2</button>
+          <button class="page-btn" type="button">3</button>
+          <button class="page-btn" type="button" aria-label="Next"><svg class="icon-16"><use href="#i-chevron-right"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <p class="micro" style="margin: 0 0 var(--s-3)">Sticky header — scroll the body</p>
+    <div class="tbl-wrap" style="margin-bottom: var(--s-6)">
+      <div class="tbl-scroll is-sticky" style="max-height: 200px;">
+        <table class="tbl">
+          <thead>
+            <tr><th>Employee</th><th>Department</th><th>Status</th><th class="num">Score</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Anchalee S.</td><td>Brewing Ops</td><td><span class="pill is-positive">Done</span></td><td class="num">4.8</td></tr>
+            <tr><td>Boon T.</td><td>Quality Lab</td><td><span class="pill is-caution">Pending</span></td><td class="num">3.4</td></tr>
+            <tr><td>Chai R.</td><td>Logistics</td><td><span class="pill is-alert">Overdue</span></td><td class="num">2.1</td></tr>
+            <tr><td>Daw M.</td><td>HR</td><td><span class="pill is-positive">Done</span></td><td class="num">4.9</td></tr>
+            <tr><td>Eak P.</td><td>Marketing</td><td><span class="pill is-positive">Done</span></td><td class="num">4.6</td></tr>
+            <tr><td>Fern L.</td><td>Finance</td><td><span class="pill is-caution">Pending</span></td><td class="num">3.8</td></tr>
+            <tr><td>Gan W.</td><td>Brewing Ops</td><td><span class="pill is-positive">Done</span></td><td class="num">4.7</td></tr>
+            <tr><td>Hom K.</td><td>Quality Lab</td><td><span class="pill is-alert">Overdue</span></td><td class="num">2.4</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <p class="micro" style="margin: 0 0 var(--s-3)">Skeleton rows — 44px row height preserved while data loads</p>
+    <div class="tbl-wrap" style="margin-bottom: var(--s-6)">
+      <div class="tbl-scroll">
+        <table class="tbl">
+          <thead>
+            <tr><th>Employee</th><th>Department</th><th>Status</th><th class="num">Score</th></tr>
+          </thead>
+          <tbody>
+            <tr class="tbl-skel">
+              <td><div class="skel skel-line w-70"></div></td>
+              <td><div class="skel skel-line w-50"></div></td>
+              <td><div class="skel skel-line w-30"></div></td>
+              <td class="num"><div class="skel skel-line w-30" style="margin-left:auto"></div></td>
+            </tr>
+            <tr class="tbl-skel">
+              <td><div class="skel skel-line w-90"></div></td>
+              <td><div class="skel skel-line w-50"></div></td>
+              <td><div class="skel skel-line w-30"></div></td>
+              <td class="num"><div class="skel skel-line w-30" style="margin-left:auto"></div></td>
+            </tr>
+            <tr class="tbl-skel">
+              <td><div class="skel skel-line w-50"></div></td>
+              <td><div class="skel skel-line w-70"></div></td>
+              <td><div class="skel skel-line w-30"></div></td>
+              <td class="num"><div class="skel skel-line w-30" style="margin-left:auto"></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <script>
       (() => {
         const tbl = document.getElementById('tbl-expand-preview');
@@ -1171,9 +1460,51 @@
 
     <div class="row" style="margin-bottom: var(--s-4)">
       <button class="ctl-btn" data-open-dlg="dlg-pv-center">Centered modal</button>
+      <button class="ctl-btn" data-open-dlg="dlg-pv-wide">Wide modal (.dlg-modal--md)</button>
       <button class="ctl-btn" data-open-dlg="dlg-pv-sheet">Right sheet</button>
+      <button class="ctl-btn" data-open-dlg="dlg-pv-detail">Detail sheet</button>
       <button class="ctl-btn" data-open-dlg="dlg-pv-bottom">Bottom sheet</button>
     </div>
+
+    <dialog id="dlg-pv-wide" class="dlg-modal dlg-modal--md" aria-labelledby="dlg-pv-wide-h">
+      <div class="dlg-head">
+        <div>
+          <h3 id="dlg-pv-wide-h">Edit survey wave</h3>
+          <p>560px width — room for form fields without going journal-wide.</p>
+        </div>
+        <button class="dlg-close" data-close aria-label="Close"><svg class="icon-16"><use href="#i-x"/></svg></button>
+      </div>
+      <div class="dlg-body">
+        <p>Use <code>.dlg-modal--md</code> when the centered 440px is too tight — typical case is a form with paired fields.</p>
+      </div>
+      <div class="dlg-actions">
+        <button class="ctl-btn" data-close>Cancel</button>
+        <button class="ctl-btn" data-close style="background:var(--brand); color:var(--paper); border-color:var(--brand);">Save</button>
+      </div>
+    </dialog>
+
+    <dialog id="dlg-pv-detail" class="dlg-sheet" aria-labelledby="dlg-pv-detail-h">
+      <div class="dlg-head" style="border-bottom:1px solid var(--rule)">
+        <div style="flex:1">
+          <h3 id="dlg-pv-detail-h" class="detail-h">Anchalee Suk</h3>
+          <p class="detail-sub">BRB-2026-0142 · Wave 3 · Submitted 2026-04-18</p>
+        </div>
+        <button class="dlg-close" data-close aria-label="Close"><svg class="icon-16"><use href="#i-x"/></svg></button>
+      </div>
+      <div class="dlg-body">
+        <dl class="detail-meta">
+          <dt>Department</dt><dd>Brewing Ops</dd>
+          <dt>Manager</dt><dd>Pim Charoen</dd>
+          <dt>Status</dt><dd><span class="pill is-positive">Done</span></dd>
+          <dt>Score</dt><dd>4.8</dd>
+          <dt>Top theme</dt><dd>Onboarding clarity (mentioned 4×)</dd>
+        </dl>
+      </div>
+      <div class="dlg-actions">
+        <button class="ctl-btn" data-close>Close</button>
+        <button class="ctl-btn" data-close style="background:var(--brand); color:var(--paper); border-color:var(--brand);">Open full record</button>
+      </div>
+    </dialog>
 
     <dialog id="dlg-pv-center" class="dlg-modal" aria-labelledby="dlg-pv-center-h">
       <div class="dlg-head">
