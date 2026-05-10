@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  CCD BRB Design System — Icon sprite
-  ----------------------------------------------------------
+  CCD BRB Design System · Icon sprite
+
   34 utility icons, derived from Lucide v0.x (ISC license).
   All symbols share: viewBox 24x24, stroke="currentColor",
   stroke-width=2, round caps & joins, no fills.
 
   Two ways to consume:
-  (a) Inline — paste this entire <svg> block once at the top of
-      <body> (preferred, no CORS, no extra request).
-  (b) External — <svg><use href="icons.svg#i-name"/></svg>.
-      Same-origin only. Browsers will not load cross-origin
-      sprite symbols, so this won't work via CDN.
+  (a) Inline · paste this entire svg block once at the top of
+      body (preferred, no CORS, no extra request).
+  (b) External · svg use href="icons.svg#i-name". Same-origin
+      only. Browsers will not load cross-origin sprite symbols,
+      so this won't work via CDN.
 
-  Reference each glyph with: <svg class="icon"><use href="#i-name"/></svg>
-  Sizing + spin classes live in icons.css.
+  Reference each glyph with: svg class="icon" / use href="#i-name"
+  Sizing and spin classes live in icons.css.
 
-  Spec: ../DESIGN-SYSTEM.md §15 Icons
+  Spec: DESIGN-SYSTEM.md §9 Iconography
 -->
 <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true">
 
