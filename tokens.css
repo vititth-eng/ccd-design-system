@@ -20,8 +20,8 @@
   --brand-soft: #B5C7EB;       /* anchor misty · soft section bg · alias of state-selected */
 
   /* Surface · scaffolding */
-  --paper:      #ffffff;       /* page background */
-  --paper-tint: #DFE7F6;       /* palest tint · soft surface */
+  --paper:      #ffffff;       /* document surface · card · centered page block */
+  --paper-tint: #F6F9FD;       /* softest misty wash · outer canvas, card icon bg */
   --card:       #ffffff;       /* card surface */
   --rule:       #C7D5F0;       /* borders, dividers */
 
@@ -79,7 +79,7 @@
 
   /* ── Layout ─────────────────────────────────────────── */
   --gutter: clamp(1.5rem, 5vw, 4rem);
-  --max-content: 76rem;
+  --max-content: 75rem;        /* 1200px · canonical content width */
 
   /* ── Elevation (shadow ramp) ────────────────────────── */
   /* Shadows tinted with ink (deep navy), never neutral black. Use sparingly. */
