@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="./tokens.css" />
 <link rel="stylesheet" href="./layout.css" />
 <link rel="stylesheet" href="./forms.css" />
+<link rel="stylesheet" href="./buttons.css" />
 
 <style>
   /* ============================================================
@@ -81,28 +82,7 @@
   .pill.neutral  { background: var(--tint-neutral); }
   .pill.neutral::before  { background: var(--ink-muted); }
 
-  /* Buttons */
-  .btn {
-    display: inline-flex; align-items: center; gap: var(--s-2);
-    padding: var(--s-3) var(--s-5);
-    border-radius: var(--r-pill);
-    font-family: inherit; font-weight: var(--fw-semi); font-size: var(--fs-body);
-    border: 1px solid transparent; cursor: pointer;
-    transition: transform var(--dur-fast) var(--ease),
-                background var(--dur-fast) var(--ease),
-                color var(--dur-fast) var(--ease),
-                box-shadow var(--dur-fast) var(--ease);
-  }
-  .btn:focus-visible {
-    outline: var(--focus-ring-width) solid var(--focus-ring-color);
-    outline-offset: var(--focus-ring-offset);
-  }
-  .btn.primary { background: var(--ink); color: var(--paper); }
-  .btn.primary:hover { background: var(--ink-soft); }
-  .btn.brand   { background: var(--brand); color: var(--paper); }
-  .btn.brand:hover { box-shadow: var(--shadow-glow-brand); }
-  .btn.ghost   { background: var(--paper); color: var(--ink); border-color: var(--rule); }
-  .btn.ghost:hover { background: var(--paper-tint); border-color: var(--ink-muted); }
+  /* Buttons live in buttons.css (Phase 1.16) */
 
   /* Field — uses .f-field + .f-control from forms.css */
 
@@ -265,9 +245,9 @@
             <span class="pill neutral">Draft</span>
           </div>
           <div style="display: flex; flex-wrap: wrap; gap: var(--s-3); align-items: center; margin-bottom: var(--s-4);">
-            <button class="btn primary">Primary action</button>
-            <button class="btn brand">Brand action</button>
-            <button class="btn ghost">Ghost action</button>
+            <button class="btn btn-strong">Primary action</button>
+            <button class="btn btn-primary">Brand action</button>
+            <button class="btn btn-ghost">Ghost action</button>
           </div>
           <div class="f-field" style="max-width: 320px;">
             <label class="f-field__label" for="ks-input">Email</label>
@@ -302,8 +282,8 @@
             <p class="body" style="margin: 0;">Reset all responses for this cohort? This can't be undone.</p>
             <p class="body-th" style="margin: 0;">รีเซ็ตคำตอบของรุ่นนี้ทั้งหมด? ทำแล้วกู้ไม่ได้</p>
             <div class="modal__actions">
-              <button class="btn ghost">Cancel</button>
-              <button class="btn primary">Reset cohort</button>
+              <button class="btn btn-ghost">Cancel</button>
+              <button class="btn btn-strong">Reset cohort</button>
             </div>
           </div>
         </div>
@@ -445,8 +425,8 @@
         <!-- Action row (footer) -->
         <div class="l-section">
           <div style="display: flex; gap: var(--s-3); align-items: center; flex-wrap: wrap;">
-            <button class="btn primary">Export cohort report</button>
-            <button class="btn ghost">Share with HRBP</button>
+            <button class="btn btn-strong">Export cohort report</button>
+            <button class="btn btn-ghost">Share with HRBP</button>
             <span class="small" style="margin-left: auto;">Auto-refreshed every 15 min</span>
           </div>
         </div>

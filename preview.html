@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="toasts.css" />
 <link rel="stylesheet" href="tables.css" />
 <link rel="stylesheet" href="modals.css" />
+<link rel="stylesheet" href="buttons.css" />
 <style>
   /* ============================================================
      DESIGN BOARD · single-page everything-at-a-glance reference
@@ -199,23 +200,7 @@
   .pill--alert { background: var(--tint-alert); }
   .pill--alert::before { background: var(--dot-negative); }
 
-  .btn {
-    display: inline-flex; align-items: center; gap: var(--s-2);
-    padding: var(--s-3) var(--s-5);
-    border-radius: var(--r-sm);
-    font-family: inherit; font-weight: 600; font-size: 0.9375rem;
-    border: 1px solid transparent; cursor: pointer;
-    transition: transform var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
-  }
-  .btn:focus-visible { outline: var(--focus-ring-width) solid var(--focus-ring-color); outline-offset: var(--focus-ring-offset); }
-  .btn--primary { background: var(--ink); color: var(--card); }
-  .btn--primary:hover { background: var(--ink-soft); }
-  .btn--primary:active { transform: scale(0.98); }
-  .btn--ghost { background: var(--card); color: var(--ink); border-color: var(--rule); }
-  .btn--ghost:hover { background: var(--paper-tint); border-color: var(--ink-muted); }
-  .btn--ghost:active { transform: scale(0.98); }
-  .btn--brand { background: var(--brand); color: var(--card); }
-  .btn--brand:hover { box-shadow: var(--shadow-glow-brand); }
+  /* Buttons live in buttons.css (Phase 1.16) */
 
   .row { display: flex; flex-wrap: wrap; gap: var(--s-3); align-items: center; }
 
@@ -698,9 +683,12 @@
       <div class="focus-box">
         <p>Buttons — keyboard focus shows the ring; mouse click does not (`:focus-visible`).</p>
         <div class="row">
-          <button class="btn btn--primary">Primary</button>
-          <button class="btn btn--ghost">Ghost</button>
-          <button class="btn btn--brand">Brand</button>
+          <button class="btn btn-primary">Primary</button>
+          <button class="btn btn-strong">Strong</button>
+          <button class="btn btn-ghost">Ghost</button>
+          <button class="btn btn-soft">Soft</button>
+          <button class="btn btn-link">Link</button>
+          <button class="btn btn-danger">Danger</button>
         </div>
       </div>
       <div class="focus-box">
@@ -1287,7 +1275,7 @@
                     <dt>Top theme</dt><dd>Onboarding clarity (mentioned 4×)</dd>
                   </dl>
                   <div class="row-detail-foot">
-                    <button class="btn-link" type="button">Open full record →</button>
+                    <button class="btn btn-link" type="button">Open full record →</button>
                   </div>
                 </div>
               </td>
@@ -1309,7 +1297,7 @@
                     <dt>Top theme</dt><dd>Awaiting self-survey (5 days overdue)</dd>
                   </dl>
                   <div class="row-detail-foot">
-                    <button class="btn-link" type="button">Send reminder →</button>
+                    <button class="btn btn-link" type="button">Send reminder →</button>
                   </div>
                 </div>
               </td>
@@ -1328,8 +1316,8 @@
           <button class="clear-btn" type="button" aria-label="Clear"><svg class="icon-16"><use href="#i-x"/></svg></button>
         </div>
         <span class="grow"></span>
-        <button class="btn-soft" type="button"><svg class="icon-16"><use href="#i-filter"/></svg> Filter</button>
-        <button class="btn-soft" type="button"><svg class="icon-16"><use href="#i-download"/></svg> Export</button>
+        <button class="btn btn-ghost btn-sm" type="button"><svg class="icon-16"><use href="#i-filter"/></svg> Filter</button>
+        <button class="btn btn-ghost btn-sm" type="button"><svg class="icon-16"><use href="#i-download"/></svg> Export</button>
       </div>
       <div class="tbl-bulk is-active" style="margin: var(--s-3) var(--s-4);">
         <span class="count">3 selected</span>

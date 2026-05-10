@@ -245,15 +245,7 @@ table.tbl {
   outline-offset: var(--focus-ring-offset);
 }
 
-.btn-soft {
-  appearance: none; background: var(--paper); color: var(--ink);
-  border: 1px solid var(--rule); border-radius: var(--r-pill);
-  height: 36px; padding: 0 var(--s-4);
-  font: inherit; font-size: 0.8125rem; font-weight: var(--fw-medium);
-  cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
-  transition: background var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
-}
-.btn-soft:hover { background: var(--paper-tint); border-color: var(--brand-soft); }
+/* Buttons live in buttons.css (Phase 1.16). Toolbar markup uses .btn .btn-ghost. */
 
 /* ── Bulk-action bar ──────────────────────────────────── */
 /* Appears when rows are selected. Occupies the toolbar slot —
@@ -389,10 +381,4 @@ table.tbl {
   border-top: 1px solid var(--rule);
   display: flex; gap: var(--s-2);
 }
-.row-detail-foot .btn-link {
-  appearance: none; background: none; border: 0;
-  color: var(--brand); font: inherit; font-size: 0.875rem; font-weight: var(--fw-semi);
-  cursor: pointer; padding: 4px 8px; border-radius: var(--r-xs);
-  transition: background var(--dur-fast) var(--ease);
-}
-.row-detail-foot .btn-link:hover { background: var(--paper); }
+/* .row-detail-foot uses .btn .btn-link from buttons.css (Phase 1.16). */
