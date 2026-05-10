@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="layout.css" />
 <link rel="stylesheet" href="forms.css" />
 <link rel="stylesheet" href="icons.css" />
+<link rel="stylesheet" href="states.css" />
 <style>
   /* ============================================================
      DESIGN BOARD · single-page everything-at-a-glance reference
@@ -417,6 +418,7 @@
       <a href="#focus">Focus</a>
       <a href="#controls">Controls</a>
       <a href="#icons">Icons</a>
+      <a href="#states">States</a>
       <a href="#components">Components</a>
       <a href="#hero">Hero</a>
     </nav>
@@ -792,6 +794,75 @@
       <div style="display:flex; flex-direction:column; align-items:center; gap:var(--s-2); padding:var(--s-4) var(--s-2); border:1px solid var(--rule); border-radius:var(--r-md);"><svg class="icon"><use href="#i-tag"/></svg><span class="mono" style="font-size:0.7rem;">tag</span></div>
       <div style="display:flex; flex-direction:column; align-items:center; gap:var(--s-2); padding:var(--s-4) var(--s-2); border:1px solid var(--rule); border-radius:var(--r-md);"><svg class="icon"><use href="#i-clipboard-check"/></svg><span class="mono" style="font-size:0.7rem;">clipboard-check</span></div>
       <div style="display:flex; flex-direction:column; align-items:center; gap:var(--s-2); padding:var(--s-4) var(--s-2); border:1px solid var(--rule); border-radius:var(--r-md);"><svg class="icon"><use href="#i-briefcase"/></svg><span class="mono" style="font-size:0.7rem;">briefcase</span></div>
+    </div>
+  </section>
+
+  <!-- ── STATES ──────────────────────────────────────── -->
+  <section id="states">
+    <div class="sec-head">
+      <h2 class="sec-title">States</h2>
+      <p class="sec-note">Empty · loading · error · notice. One vocabulary across every consumer. See <code>states.css</code>.</p>
+    </div>
+
+    <h3 style="margin:var(--s-5) 0 var(--s-3); font-size:var(--fs-card);">Empty</h3>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: var(--s-4);">
+      <div style="border:1px solid var(--rule); border-radius:var(--r-card); background:var(--paper);">
+        <div class="empty-block">
+          <svg class="icon icon-24"><use href="#i-message-square"/></svg>
+          <p class="empty-block-title">Nothing here yet</p>
+          <p class="empty-block-body">When teammates post feedback, it'll show up here.</p>
+        </div>
+      </div>
+      <div style="border:1px solid var(--rule); border-radius:var(--r-card); background:var(--paper);">
+        <div class="empty-block">
+          <svg class="icon icon-24"><use href="#i-filter"/></svg>
+          <p class="empty-block-title">No results</p>
+          <p class="empty-block-body">Try widening the date range or clearing tag filters.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="border:1px solid var(--rule); border-radius:var(--r-md); background:var(--paper); margin-top:var(--s-4);">
+      <div class="empty-page">
+        <div class="empty-page-icon"><svg class="icon icon-24"><use href="#i-plus"/></svg></div>
+        <p class="empty-page-title">No surveys yet</p>
+        <p class="empty-page-body">Create your first onboarding survey to start collecting check-in feedback from new hires.</p>
+      </div>
+    </div>
+
+    <h3 style="margin:var(--s-6) 0 var(--s-3); font-size:var(--fs-card);">Loading</h3>
+    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-3); margin-bottom:var(--s-4);">
+      <div class="skel-card"><div class="skel skel-line w-50"></div><div class="skel skel-block" style="height:40px;"></div><div class="skel skel-line w-70"></div></div>
+      <div class="skel-card"><div class="skel skel-line w-50"></div><div class="skel skel-block" style="height:40px;"></div><div class="skel skel-line w-70"></div></div>
+      <div class="skel-card"><div class="skel skel-line w-50"></div><div class="skel skel-block" style="height:40px;"></div><div class="skel skel-line w-70"></div></div>
+    </div>
+
+    <div style="border:1px solid var(--rule); border-radius:var(--r-md); background:var(--paper); margin-bottom:var(--s-4);">
+      <div class="loading-block">
+        <svg class="icon icon-24 spin"><use href="#i-loader"/></svg>
+        <span class="loading-label">Loading…</span>
+      </div>
+    </div>
+
+    <h3 style="margin:var(--s-6) 0 var(--s-3); font-size:var(--fs-card);">Error</h3>
+    <div style="border:1px solid var(--rule); border-radius:var(--r-md); background:var(--paper); margin-bottom:var(--s-4);">
+      <div class="error-page">
+        <div class="error-page-icon"><svg class="icon icon-24"><use href="#i-alert-triangle"/></svg></div>
+        <p class="error-page-title">Couldn't load surveys</p>
+        <p class="error-page-body">Something went wrong on our end. Try again — if it keeps happening, the team has been notified.</p>
+        <p class="error-detail">Request ID: 7f3a-2c81 · 502 Bad Gateway</p>
+      </div>
+    </div>
+
+    <div class="notice-banner is-alert" style="margin-bottom:var(--s-3);">
+      <svg class="icon icon-20"><use href="#i-alert-circle"/></svg>
+      <div class="notice-banner-text"><strong>Save failed</strong>Network dropped while saving. Your changes are still here — try save again.</div>
+    </div>
+
+    <h3 style="margin:var(--s-6) 0 var(--s-3); font-size:var(--fs-card);">Notice</h3>
+    <div class="notice-banner is-caution">
+      <svg class="icon icon-20"><use href="#i-help-circle"/></svg>
+      <div class="notice-banner-text"><strong>Read-only</strong>You don't have edit access in this workspace. Ask the owner to change your role.</div>
     </div>
   </section>
 
