@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="forms.css" />
 <link rel="stylesheet" href="icons.css" />
 <link rel="stylesheet" href="states.css" />
+<link rel="stylesheet" href="toasts.css" />
 <style>
   /* ============================================================
      DESIGN BOARD · single-page everything-at-a-glance reference
@@ -419,6 +420,7 @@
       <a href="#controls">Controls</a>
       <a href="#icons">Icons</a>
       <a href="#states">States</a>
+      <a href="#toasts">Toasts</a>
       <a href="#components">Components</a>
       <a href="#hero">Hero</a>
     </nav>
@@ -864,6 +866,97 @@
       <svg class="icon icon-20"><use href="#i-help-circle"/></svg>
       <div class="notice-banner-text"><strong>Read-only</strong>You don't have edit access in this workspace. Ask the owner to change your role.</div>
     </div>
+  </section>
+
+  <!-- ── TOASTS ──────────────────────────────────────── -->
+  <section id="toasts">
+    <div class="sec-head">
+      <h2 class="sec-title">Toasts</h2>
+      <p class="sec-note">Transient cousin of the §15 notice-banner. Floats top-right, max 3 visible, auto-dismiss varies by intent. See <code>toasts.css</code>.</p>
+    </div>
+
+    <p style="font-size:var(--fs-small); color:var(--ink-muted); margin: var(--s-3) 0 var(--s-3);">Click to fire. Stack caps at 3 — 4th evicts oldest.</p>
+    <div style="display:flex; flex-wrap:wrap; gap:var(--s-2); margin-bottom:var(--s-4);">
+      <button class="ctl-btn" type="button" data-toast="positive">Fire · positive</button>
+      <button class="ctl-btn" type="button" data-toast="neutral">Fire · neutral</button>
+      <button class="ctl-btn" type="button" data-toast="caution">Fire · caution</button>
+      <button class="ctl-btn" type="button" data-toast="alert">Fire · alert</button>
+      <button class="ctl-btn" type="button" data-toast="burst">Burst (4)</button>
+    </div>
+
+    <p style="font-size:var(--fs-small); color:var(--ink-muted); margin: var(--s-4) 0 var(--s-3);">Static showcase — all four intents as they appear in the stack.</p>
+    <div style="display:flex; flex-direction:column; gap:var(--s-2); align-items:flex-end; padding:var(--s-4); background:var(--paper-tint); border-radius:var(--r-card);">
+      <div class="toast is-positive" style="animation:none;" role="status">
+        <svg class="icon toast-icon"><use href="#i-check-circle"/></svg>
+        <div class="toast-text"><strong>Saved</strong>Your changes are live.</div>
+        <button class="toast-dismiss" aria-label="Dismiss" type="button"><svg class="icon-16"><use href="#i-x"/></svg></button>
+      </div>
+      <div class="toast is-caution" style="animation:none;" role="status">
+        <svg class="icon toast-icon"><use href="#i-help-circle"/></svg>
+        <div class="toast-text"><strong>Heads-up</strong>Quota is at 90%. Review before the month ends.</div>
+        <button class="toast-dismiss" aria-label="Dismiss" type="button"><svg class="icon-16"><use href="#i-x"/></svg></button>
+      </div>
+      <div class="toast is-alert" style="animation:none;" role="alert">
+        <svg class="icon toast-icon"><use href="#i-alert-triangle"/></svg>
+        <div class="toast-text"><strong>Couldn't save</strong>Network dropped. <a href="#">Retry</a></div>
+        <button class="toast-dismiss" aria-label="Dismiss" type="button"><svg class="icon-16"><use href="#i-x"/></svg></button>
+      </div>
+      <div class="toast is-neutral" style="animation:none;" role="status">
+        <svg class="icon toast-icon"><use href="#i-message-square"/></svg>
+        <div class="toast-text">New comment on your draft.</div>
+        <button class="toast-dismiss" aria-label="Dismiss" type="button"><svg class="icon-16"><use href="#i-x"/></svg></button>
+      </div>
+    </div>
+
+    <div class="toast-region" id="preview-toast-region" aria-live="polite" aria-relevant="additions"></div>
+
+    <script>
+      (function () {
+        const region = document.getElementById('preview-toast-region');
+        const PRESETS = {
+          positive: { icon: 'i-check-circle',   title: 'Saved',          body: 'Your changes are live.',     ttl: 4000 },
+          neutral:  { icon: 'i-message-square', title: '',               body: 'New comment on your draft.', ttl: 5000 },
+          caution:  { icon: 'i-help-circle',    title: 'Heads-up',       body: 'Quota is at 90%.',           ttl: 7000 },
+          alert:    { icon: 'i-alert-triangle', title: "Couldn't save",  body: 'Network dropped.',           ttl: 0 },
+        };
+        const MAX = 3, LEAVE = 480;
+        function dismiss(el) {
+          if (!el.isConnected || el.classList.contains('is-leaving')) return;
+          el.classList.add('is-leaving');
+          el.addEventListener('transitionend', e => { if (e.propertyName === 'max-height') el.remove(); });
+        }
+        function makeRoom(cb) {
+          const live = [...region.children].filter(c => !c.classList.contains('is-leaving'));
+          const overflow = live.length - (MAX - 1);
+          if (overflow > 0) {
+            for (let i = 0; i < overflow; i++) dismiss(live[live.length - 1 - i]);
+            setTimeout(cb, LEAVE);
+          } else cb();
+        }
+        function fire(kind) {
+          const p = PRESETS[kind];
+          const el = document.createElement('div');
+          el.className = `toast is-${kind}`;
+          el.setAttribute('role', kind === 'alert' ? 'alert' : 'status');
+          el.innerHTML = `
+            <svg class="icon toast-icon"><use href="#${p.icon}"/></svg>
+            <div class="toast-text">${p.title ? `<strong>${p.title}</strong>` : ''}${p.body}</div>
+            <button class="toast-dismiss" aria-label="Dismiss" type="button"><svg class="icon-16"><use href="#i-x"/></svg></button>`;
+          el.querySelector('.toast-dismiss').addEventListener('click', () => dismiss(el));
+          makeRoom(() => {
+            region.prepend(el);
+            if (p.ttl > 0) setTimeout(() => dismiss(el), p.ttl);
+          });
+        }
+        document.querySelectorAll('[data-toast]').forEach(b => {
+          b.addEventListener('click', () => {
+            const k = b.dataset.toast;
+            if (k === 'burst') ['positive','neutral','caution','alert'].forEach((kind,i) => setTimeout(() => fire(kind), i*400));
+            else fire(k);
+          });
+        });
+      })();
+    </script>
   </section>
 
   <!-- ── COMPONENTS ──────────────────────────────────── -->
