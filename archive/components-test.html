@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Components — A/B/C sandbox</title>
+<link rel="stylesheet" href="tokens.css">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: var(--sans);
+    color: var(--ink);
+    background: var(--paper-tint);
+    margin: 0;
+    padding: var(--s-6) var(--gutter);
+    line-height: 1.5;
+  }
+  h1 { font-size: 1.5rem; margin: 0 0 var(--s-2); }
+  .lede { color: var(--ink-muted); margin: 0 0 var(--s-7); max-width: 60ch; }
+
+  section { margin-bottom: var(--s-8); }
+  h2 {
+    font-size: 1.05rem;
+    margin: 0 0 var(--s-2);
+    display: flex; align-items: baseline; gap: var(--s-3);
+  }
+  h2 .num {
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-muted);
+    font-weight: 500;
+  }
+  .hint { color: var(--ink-muted); font-size: 0.875rem; margin: 0 0 var(--s-4); }
+
+  .row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--s-4);
+  }
+  @media (max-width: 760px) { .row { grid-template-columns: 1fr; } }
+
+  .opt {
+    background: var(--paper);
+    border-radius: var(--r-card);
+    padding: var(--s-5);
+    border: 1px solid var(--rule);
+    min-height: 180px;
+    display: flex; flex-direction: column;
+  }
+  .opt-tag {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--ink-muted);
+    margin-bottom: var(--s-1);
+  }
+  .opt-name {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    margin: 0 0 var(--s-4);
+  }
+  .opt-body { flex: 1; display: flex; flex-direction: column; gap: var(--s-3); justify-content: center; }
+  .opt-note {
+    font-size: 0.75rem;
+    color: var(--ink-muted);
+    margin-top: var(--s-4);
+    padding-top: var(--s-3);
+    border-top: 1px dashed var(--rule);
+  }
+
+  /* ============== 1. DROPDOWN TRIGGER ============== */
+  .dd-trigger {
+    display: inline-flex; align-items: center; gap: var(--s-2);
+    font: inherit; cursor: pointer;
+    padding: 0 var(--s-3);
+    height: 36px;
+    color: var(--ink);
+  }
+  .dd-trigger svg { width: 16px; height: 16px; flex: none; }
+
+  .dd-A { background: var(--paper-tint); border: 0; border-radius: var(--r-sm); }
+  .dd-B { background: var(--paper); border: 1px solid var(--rule); border-radius: var(--r-sm); }
+  .dd-B[aria-expanded="true"] svg { transform: rotate(180deg); }
+  .dd-B svg { transition: transform var(--dur-fast) var(--ease); }
+  .dd-C { background: transparent; border: 0; border-bottom: 1px solid var(--rule); border-radius: 0; padding-left: 0; padding-right: var(--s-2); }
+
+  /* ============== 2. DROPDOWN MENU ============== */
+  .menu {
+    list-style: none; margin: 0;
+    background: var(--paper);
+    border-radius: var(--r-md);
+    width: 200px;
+    font-size: 0.9rem;
+  }
+  .menu li {
+    padding: var(--s-2) var(--s-3);
+    border-radius: var(--r-xs);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .menu li.is-hover { background: var(--paper-tint); }
+  .menu li.is-selected { background: var(--state-selected); }
+  .menu li.is-selected::after {
+    content: "✓"; color: var(--ink); font-size: 0.85rem;
+  }
+
+  .menu-A { box-shadow: var(--shadow-2); padding: var(--s-2); }
+  .menu-B { border: 1px solid var(--rule); padding: var(--s-2); }
+  .menu-C { box-shadow: var(--shadow-3); padding: var(--s-3); }
+  .menu-C li { padding: var(--s-3); }
+
+  /* ============== 3. FORM INPUT ============== */
+  .field { display: flex; flex-direction: column; gap: var(--s-1); width: 100%; max-width: 260px; }
+  .field label { font-size: 0.8rem; color: var(--ink-soft); }
+  .field input {
+    font: inherit; color: var(--ink);
+    width: 100%;
+    transition: all var(--dur-fast) var(--ease);
+  }
+  .field input:focus { outline: none; }
+
+  .in-A input {
+    height: 36px; padding: 0 var(--s-3);
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-sm);
+  }
+  .in-A input:focus {
+    border-color: var(--brand);
+    box-shadow: 0 0 0 2px rgba(72,116,205,0.25);
+  }
+
+  .in-B input {
+    height: 40px; padding: 0 var(--s-3);
+    background: var(--paper-tint);
+    border: 1px solid transparent;
+    border-radius: var(--r-sm);
+  }
+  .in-B input:focus {
+    background: #ECF1FA;
+    border-color: var(--brand);
+    box-shadow: 0 0 0 2px rgba(72,116,205,0.2);
+  }
+
+  .in-C input {
+    height: 44px; padding: 0;
+    background: transparent;
+    border: 0; border-bottom: 1px solid var(--rule);
+    border-radius: 0;
+  }
+  .in-C input:focus {
+    border-bottom-width: 2px;
+    border-bottom-color: var(--brand);
+    padding-bottom: 0;
+  }
+
+  /* ============== 4. ICON SCALE ============== */
+  .iconrow { display: flex; align-items: end; gap: var(--s-5); flex-wrap: wrap; }
+  .iconrow .ic { display: flex; flex-direction: column; align-items: center; gap: var(--s-1); color: var(--ink); }
+  .iconrow .ic span { font-size: 0.7rem; color: var(--ink-muted); font-variant-numeric: tabular-nums; }
+  .iconrow svg { stroke-width: 1.5; }
+
+  /* ============== 5. ICON-ONLY BUTTON ============== */
+  .iconbtn {
+    border: 0; cursor: pointer; color: var(--ink);
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: background var(--dur-fast) var(--ease);
+  }
+  .iconbtn svg { width: 18px; height: 18px; }
+  .ib-A { width: 32px; height: 32px; background: transparent; border-radius: var(--r-pill); }
+  .ib-A:hover { background: var(--paper-tint); }
+  .ib-B { width: 36px; height: 36px; background: var(--paper-tint); border-radius: var(--r-pill); }
+  .ib-B:hover { background: var(--rule); }
+  .ib-C { width: 40px; height: 40px; background: transparent; border-radius: var(--r-sm); border: 1px solid transparent; }
+  .ib-C:hover { border-color: var(--rule); }
+
+  .ibrow { display: flex; gap: var(--s-3); align-items: center; }
+
+  /* ============== 6. TABLE ROW ============== */
+  table {
+    width: 100%; border-collapse: collapse; font-size: 0.875rem;
+    background: var(--paper);
+  }
+  thead th {
+    text-align: left; font-weight: 600; color: var(--ink-muted);
+    font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase;
+    padding: var(--s-2) var(--s-3);
+    border-bottom: 1px solid var(--rule);
+  }
+  td { padding: 0 var(--s-3); color: var(--ink); }
+
+  .tb-A tr { height: 44px; }
+  .tb-A tbody tr { border-bottom: 1px solid var(--rule); }
+  .tb-A tbody tr:hover td { background: var(--paper-tint); }
+
+  .tb-B tr { height: 52px; }
+  .tb-B tbody tr:nth-child(even) td { background: var(--paper-tint); }
+  .tb-B tbody tr:hover td { background: #D5E0F2; }
+
+  .tb-C tr { height: 40px; }
+  .tb-C tbody tr td:first-child { position: relative; }
+  .tb-C tbody tr:hover td:first-child::before {
+    content: ""; position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px;
+    background: var(--brand); border-radius: 2px;
+  }
+  .tb-C tbody tr:hover td { background: var(--paper-tint); }
+
+  /* sticky cheatsheet */
+  .pickform {
+    position: sticky; top: var(--s-3);
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-md);
+    padding: var(--s-3) var(--s-4);
+    margin-bottom: var(--s-6);
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    box-shadow: var(--shadow-1);
+  }
+  .pickform code { font-family: ui-monospace, monospace; background: var(--paper-tint); padding: 1px 6px; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<h1>Components — pick one per row</h1>
+<p class="lede">All variants use existing tokens from <code>tokens.css</code>. Hover, focus, click to feel the difference. Reply with picks like <code>1A 2A 3B 4B 5A 6A</code>.</p>
+
+<div class="pickform">
+  Reply format: <code>1_ 2_ 3_ 4_ 5_ 6_</code> — e.g. <code>1A 2A 3B 4B 5A 6A</code>
+</div>
+
+<!-- ============== 1. DROPDOWN TRIGGER ============== -->
+<section>
+  <h2><span class="num">1</span> Dropdown trigger <span style="color:var(--ink-muted);font-weight:400;font-size:0.85rem">— closed state</span></h2>
+  <p class="hint">The button you click to open the menu. Click each to toggle.</p>
+  <div class="row">
+    <div class="opt">
+      <div class="opt-tag">A</div>
+      <div class="opt-name">Borderless · misty fill</div>
+      <div class="opt-body">
+        <button class="dd-trigger dd-A" onclick="this.setAttribute('aria-expanded', this.getAttribute('aria-expanded')==='true'?'false':'true')">
+          All departments
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+      </div>
+      <div class="opt-note">Quietest. Reads as a chip more than a control.</div>
+    </div>
+    <div class="opt">
+      <div class="opt-tag">B</div>
+      <div class="opt-name">Bordered · chevron rotates</div>
+      <div class="opt-body">
+        <button class="dd-trigger dd-B" aria-expanded="false" onclick="const v=this.getAttribute('aria-expanded')==='true';this.setAttribute('aria-expanded',!v)">
+          All departments
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+      </div>
+      <div class="opt-note">Standard. Most legible as "click me to pick".</div>
+    </div>
+    <div class="opt">
+      <div class="opt-tag">C</div>
+      <div class="opt-name">Underline · Material-ish</div>
+      <div class="opt-body">
+        <button class="dd-trigger dd-C">
+          All departments
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+      </div>
+      <div class="opt-note">Sharpest. Feels like a form field, not a filter.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 2. DROPDOWN MENU ============== -->
+<section>
+  <h2><span class="num">2</span> Dropdown menu <span style="color:var(--ink-muted);font-weight:400;font-size:0.85rem">— open state</span></h2>
+  <p class="hint">The list that appears. Hover rows to see hover state; one row is pre-selected.</p>
+  <div class="row">
+    <div class="opt">
+      <div class="opt-tag">A</div>
+      <div class="opt-name">Shadow · tight</div>
+      <div class="opt-body">
+        <ul class="menu menu-A">
+          <li>All departments</li>
+          <li class="is-hover">Brewing</li>
+          <li class="is-selected">Logistics</li>
+          <li>Sales</li>
+          <li>HR</li>
+        </ul>
+      </div>
+      <div class="opt-note">Soft shadow, no border. Floats.</div>
+    </div>
+    <div class="opt">
+      <div class="opt-tag">B</div>
+      <div class="opt-name">Border · flat</div>
+      <div class="opt-body">
+        <ul class="menu menu-B">
+          <li>All departments</li>
+          <li class="is-hover">Brewing</li>
+          <li class="is-selected">Logistics</li>
+          <li>Sales</li>
+          <li>HR</li>
+        </ul>
+      </div>
+      <div class="opt-note">No shadow. Stays inside the document plane.</div>
+    </div>
+    <div class="opt">
+      <div class="opt-tag">C</div>
+      <div class="opt-name">Panel · roomier</div>
+      <div class="opt-body">
+        <ul class="menu menu-C">
+          <li>All departments</li>
+          <li class="is-hover">Brewing</li>
+          <li class="is-selected">Logistics</li>
+          <li>Sales</li>
+          <li>HR</li>
+        </ul>
+      </div>
+      <div class="opt-note">Bigger shadow, taller rows. Reads as a panel.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 3. FORM INPUT ============== -->
+<section>
+  <h2><span class="num">3</span> Form input</h2>
+  <p class="hint">Click into each to see the focus state.</p>
+  <div class="row">
+    <div class="opt">
+      <div class="opt-tag">A</div>
+      <div class="opt-name">36px · bordered · ring on focus</div>
+      <div class="opt-body">
+        <div class="field in-A">
+          <label for="ia">Search</label>
+          <input id="ia" type="text" placeholder="Type a name…">
+        </div>
+      </div>
+      <div class="opt-note">Compact. Best for dashboard density.</div>
+    </div>
+    <div class="opt">
+      <div class="opt-tag">B</div>
+      <div class="opt-name">40px · misty fill · no border</div>
+      <div class="opt-body">
+        <div class="field in-B">
+          <label for="ib">Search</label>
+          <input id="ib" type="text" placeholder="Type a name…">
+        </div>
+      </div>
+      <div class="opt-note">Softer. Matches misty paper-tint surfaces.</div>
+    </div>
+    <div class="opt">
+      <div class="opt-tag">C</div>
+      <div class="opt-name">44px · underline only</div>
+      <div class="opt-body">
+        <div class="field in-C">
+          <label for="ic">Search</label>
+          <input id="ic" type="text" placeholder="Type a name…">
+        </div>
+      </div>
+      <div class="opt-note">Editorial feel. Less obvious as a control.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 4. ICON SCALE ============== -->
+<section>
+  <h2><span class="num">4</span> Icon scale</h2>
+  <p class="hint">Same icon at each proposed size. Look for which scale has clearly distinct steps.</p>
+  <div class="row">
+    <div class="opt">
+      <div class="opt-tag">A</div>
+      <div class="opt-name">16 / 20 / 24 — three sizes</div>
+      <div class="opt-body">
+        <div class="iconrow">
+          <div class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>16</span></div>
+          <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>20</span></div>
+          <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>24</span></div>
+        </div>
+      </div>
+      <div class="opt-note">Tight, dashboard-friendly. 16=inline, 20=button, 24=tile.</div>
+    </div>
+    <div class="opt">
+      <div class="opt-tag">B</div>
+      <div class="opt-name">14 / 18 / 22 / 28 — four sizes</div>
+      <div class="opt-body">
+        <div class="iconrow">
+          <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>14</span></div>
+          <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>18</span></div>
+          <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>22</span></div>
+          <div class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>28</span></div>
+        </div>
+      </div>
+      <div class="opt-note">Matches existing 22px (card tile) and 14px (pill dot).</div>
+    </div>
+    <div class="opt">
+      <div class="opt-tag">C</div>
+      <div class="opt-name">18 / 24 — two sizes only</div>
+      <div class="opt-body">
+        <div class="iconrow">
+          <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>18</span></div>
+          <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>24</span></div>
+        </div>
+      </div>
+      <div class="opt-note">Forces restraint. May feel cramped for pill dots.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 5. ICON-ONLY BUTTON ============== -->
+<section>
+  <h2><span class="num">5</span> Icon-only button</h2>
+  <p class="hint">Hover each. The hit target matters more than the icon size.</p>
+  <div class="row">
+    <div class="opt">
+      <div class="opt-tag">A</div>
+      <div class="opt-name">32×32 · circle on hover</div>
+      <div class="opt-body">
+        <div class="ibrow">
+          <button class="iconbtn ib-A" aria-label="More"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/></svg></button>
+          <button class="iconbtn ib-A" aria-label="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 20h4l10-10-4-4L4 16v4z"/></svg></button>
+          <button class="iconbtn ib-A" aria-label="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button>
+        </div>
+      </div>
+      <div class="opt-note">Quietest. May feel small on touch.</div>
+    </div>
+    <div class="opt">
+      <div class="opt-tag">B</div>
+      <div class="opt-name">36×36 · always faint bg</div>
+      <div class="opt-body">
+        <div class="ibrow">
+          <button class="iconbtn ib-B" aria-label="More"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/></svg></button>
+          <button class="iconbtn ib-B" aria-label="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 20h4l10-10-4-4L4 16v4z"/></svg></button>
+          <button class="iconbtn ib-B" aria-label="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button>
+        </div>
+      </div>
+      <div class="opt-note">Always visible. Feels like a real control.</div>
+    </div>
+    <div class="opt">
+      <div class="opt-tag">C</div>
+      <div class="opt-name">40×40 · square · border on hover</div>
+      <div class="opt-body">
+        <div class="ibrow">
+          <button class="iconbtn ib-C" aria-label="More"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/></svg></button>
+          <button class="iconbtn ib-C" aria-label="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 20h4l10-10-4-4L4 16v4z"/></svg></button>
+          <button class="iconbtn ib-C" aria-label="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button>
+        </div>
+      </div>
+      <div class="opt-note">Largest target. Squarer feels more "toolbar-y".</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 6. TABLE ROW ============== -->
+<section>
+  <h2><span class="num">6</span> Table row</h2>
+  <p class="hint">Hover rows to see the hover treatment.</p>
+  <div class="row">
+    <div class="opt">
+      <div class="opt-tag">A</div>
+      <div class="opt-name">44px · dividers · misty hover</div>
+      <div class="opt-body">
+        <table class="tb-A">
+          <thead><tr><th>Name</th><th>Dept</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Somchai P.</td><td>Brewing</td><td>Active</td></tr>
+            <tr><td>Niran K.</td><td>Logistics</td><td>Pending</td></tr>
+            <tr><td>Apinya R.</td><td>Sales</td><td>Active</td></tr>
+            <tr><td>Watcharee S.</td><td>HR</td><td>Active</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="opt-note">Standard. Reads as a list.</div>
+    </div>
+    <div class="opt">
+      <div class="opt-tag">B</div>
+      <div class="opt-name">52px · zebra · no dividers</div>
+      <div class="opt-body">
+        <table class="tb-B">
+          <thead><tr><th>Name</th><th>Dept</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Somchai P.</td><td>Brewing</td><td>Active</td></tr>
+            <tr><td>Niran K.</td><td>Logistics</td><td>Pending</td></tr>
+            <tr><td>Apinya R.</td><td>Sales</td><td>Active</td></tr>
+            <tr><td>Watcharee S.</td><td>HR</td><td>Active</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="opt-note">Roomier, scan-friendly. Costs vertical space.</div>
+    </div>
+    <div class="opt">
+      <div class="opt-tag">C</div>
+      <div class="opt-name">40px · accent bar on hover</div>
+      <div class="opt-body">
+        <table class="tb-C">
+          <thead><tr><th>Name</th><th>Dept</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Somchai P.</td><td>Brewing</td><td>Active</td></tr>
+            <tr><td>Niran K.</td><td>Logistics</td><td>Pending</td></tr>
+            <tr><td>Apinya R.</td><td>Sales</td><td>Active</td></tr>
+            <tr><td>Watcharee S.</td><td>HR</td><td>Active</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="opt-note">Densest. Accent bar gives a sharp signal.</div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
