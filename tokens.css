@@ -70,16 +70,21 @@
   --s-9: 6rem;      /* 96 */
 
   /* ── Radii ──────────────────────────────────────────── */
+  /* Rule: bigger + more isolated = bigger radius.
+     Default to --r-card (8px). Bump to --r-md when surface is alone on its
+     row. Bump to --r-lg when surface floats (modal, sheet, big popover). */
+  --r-tiny: 3px;       /* tags, query chips, tiny badges <12px tall */
   --r-xs: 4px;
   --r-sm: 6px;
-  --r-card: 8px;       /* dashboard card / modal */
-  --r-md: 12px;
-  --r-lg: 16px;
-  --r-pill: 999px;
+  --r-card: 8px;       /* default card · KPI, feature, list item */
+  --r-md: 12px;        /* large isolated surface · hero block, single full-row card */
+  --r-lg: 16px;        /* overlay / floating · modal, sheet, image-led hero */
+  --r-pill: 999px;     /* buttons, status pills, badges */
 
   /* ── Layout ─────────────────────────────────────────── */
   --gutter: clamp(1.5rem, 5vw, 4rem);
-  --max-content: 75rem;        /* 1200px · canonical content width */
+  --max-content: 70rem;        /* 1120px · canonical content width — text/reading optimised */
+  --header-h: 52px;            /* utility header height (in-app); landing carries fuller lockup */
 
   /* ── Elevation (shadow ramp) ────────────────────────── */
   /* Shadows tinted with ink (deep navy), never neutral black. Use sparingly. */

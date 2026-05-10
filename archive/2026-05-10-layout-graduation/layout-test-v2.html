@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Layout sandbox v2 — CCD BRB Design</title>
+<link rel="stylesheet" href="tokens.css" />
+<style>
+  /* ============================================================
+     LAYOUT SANDBOX V2 — locked decisions
+     ------------------------------------------------------------
+     1. Header  → utility strip, 52px, lockup only on landing hero
+     2. Width   → 1120px max-content
+     3. Section → 48px (--s-7) gap
+     4. Radius  → 8px cards, pill buttons, 12 isolated, 16 floating
+
+     v2 fixes from v1 review:
+     - Workshop sidebar = flat rail (no card chrome)
+     - Workshop toolbar = merged into canvas card, not own card
+     - Dashboard page action = sits next to title, not stranded right
+     ============================================================ */
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--sans);
+    color: var(--ink);
+    background: var(--paper-tint);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  a { color: var(--brand); text-decoration: none; }
+  h1, h2, h3 { margin: 0; line-height: 1.2; color: var(--ink); }
+  p { margin: 0; color: var(--ink-soft); }
+
+  /* ── Frame primitives (the lock) ──────────────────────── */
+  .l-page { min-height: 100vh; display: flex; flex-direction: column; }
+
+  .l-header {
+    height: 52px;                       /* DECISION 1 — utility strip */
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+    display: flex; align-items: center;
+    position: sticky; top: 0;
+    z-index: var(--z-sticky);
+  }
+  .l-container {
+    width: 100%;
+    max-width: 70rem;                   /* DECISION 2 — 1120px */
+    margin: 0 auto;
+    padding-left: var(--gutter);
+    padding-right: var(--gutter);
+  }
+  .l-main { flex: 1; padding: var(--s-7) 0 var(--s-9); }
+  .l-section + .l-section { margin-top: var(--s-7); }   /* DECISION 3 — 48px */
+
+  .l-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--s-5);
+  }
+
+  /* ── Header content ───────────────────────────────────── */
+  .h-row { display: flex; align-items: center; gap: var(--s-5); width: 100%; }
+  /* In-app header: just a small mark + tool name */
+  .h-mark {
+    width: 22px; height: 22px; border-radius: var(--r-sm);
+    background: var(--brand); display: grid; place-items: center;
+    color: var(--paper); font-weight: 700; font-size: 12px; letter-spacing: -0.02em;
+  }
+  .h-tool { font-weight: 600; color: var(--ink); font-size: 14px; letter-spacing: -0.005em; }
+  .h-tool span { color: var(--ink-muted); font-weight: 400; margin-right: 4px; }
+  .h-nav { display: flex; gap: var(--s-5); margin-left: auto; }
+  .h-nav a { color: var(--ink-muted); font-size: 13px; }
+  .h-nav a.active { color: var(--ink); font-weight: 600; }
+
+  /* On the landing pane only, header carries the full lockup, no tool name */
+  .h-lockup { font-weight: 700; color: var(--ink); letter-spacing: -0.01em; font-size: 15px; }
+  .h-lockup .dot { color: var(--brand); }
+
+  /* ── Sandbox switcher (chrome, not part of system) ────── */
+  .switcher {
+    position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+    background: var(--paper); border: 1px solid var(--rule);
+    border-radius: var(--r-pill); padding: 4px;
+    display: flex; gap: 2px; z-index: var(--z-toast);
+    box-shadow: var(--shadow-3); font-size: 13px;
+  }
+  .switcher button {
+    border: 0; background: transparent; cursor: pointer;
+    padding: 6px 14px; border-radius: var(--r-pill);
+    font: inherit; color: var(--ink-muted);
+  }
+  .switcher button.on { background: var(--state-selected); color: var(--ink); }
+  .pane { display: none; }
+  .pane.on { display: block; }
+
+  /* ── Card primitive ───────────────────────────────────── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-card);       /* DECISION 4 — 8px default */
+    padding: var(--s-5);
+  }
+  .card-md { border-radius: var(--r-md); }   /* large isolated */
+  .eyebrow {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ink-muted); font-weight: 600;
+  }
+
+  /* Buttons — pill (DECISION 4) */
+  .btn {
+    display: inline-flex; align-items: center; gap: var(--s-2);
+    padding: 9px 16px; border-radius: var(--r-pill);
+    font: inherit; font-size: 13px; font-weight: 600;
+    border: 1px solid transparent; cursor: pointer;
+  }
+  .btn-primary { background: var(--brand); color: var(--paper); }
+  .btn-ghost   { background: transparent; color: var(--ink); border-color: var(--rule); }
+  .btn-sm { padding: 6px 12px; font-size: 12px; }
+
+  /* ============================================================
+     PANE 1 · LANDING
+     ============================================================ */
+  .hero { padding: var(--s-8) 0 var(--s-7); }
+  .hero h1 { font-size: clamp(2rem, 4.5vw, 3rem); letter-spacing: -0.02em; max-width: 18ch; }
+  .hero p  { font-size: 1.0625rem; margin-top: var(--s-4); max-width: 38ch; }
+  .hero .cta { margin-top: var(--s-5); display: flex; gap: var(--s-3); }
+  .hero .lockup-mark {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-bottom: var(--s-4);
+    font-weight: 700; font-size: 14px; color: var(--ink);
+  }
+  .hero .lockup-mark .m { width: 24px; height: 24px; border-radius: var(--r-sm);
+                         background: var(--brand); display: grid; place-items: center;
+                         color: var(--paper); font-weight: 700; font-size: 13px; }
+
+  .feature { grid-column: span 4; }
+  .feature .icon {
+    width: 36px; height: 36px; border-radius: var(--r-sm);
+    background: var(--paper-tint); display: grid; place-items: center;
+    color: var(--brand); font-weight: 700; margin-bottom: var(--s-3);
+  }
+  .feature h3 { font-size: 1.0625rem; }
+  .feature p  { margin-top: var(--s-2); color: var(--ink-muted); font-size: 14px; }
+
+  /* ============================================================
+     PANE 2 · DASHBOARD
+     ============================================================ */
+  .page-head { display: flex; align-items: baseline; gap: var(--s-4); flex-wrap: wrap; }
+  .page-head .titleblock { display: flex; flex-direction: column; gap: var(--s-2); }
+  .page-head h1 { font-size: 1.625rem; letter-spacing: -0.01em; }
+  .page-head .meta { color: var(--ink-muted); font-size: 13px; }
+  .page-head .actions { margin-left: var(--s-4); display: flex; gap: var(--s-2); }
+
+  .kpi { grid-column: span 3; }
+  .kpi .label { color: var(--ink-muted); font-size: 13px; }
+  .kpi .value { font-size: 2rem; font-weight: 700; margin-top: var(--s-2); letter-spacing: -0.02em; }
+  .kpi .delta { font-size: 12px; margin-top: var(--s-1); color: var(--ink-soft); }
+
+  .chart { grid-column: span 8; min-height: 260px; }
+  .side  { grid-column: span 4; }
+  .chart .placeholder, .side .placeholder {
+    margin-top: var(--s-3);
+    background: linear-gradient(180deg, var(--heat-1), var(--paper));
+    border-radius: var(--r-sm);
+    height: 200px;
+  }
+  .table-wrap { grid-column: span 12; padding: 0; overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 12px var(--s-5); border-bottom: 1px solid var(--rule); }
+  th { background: var(--paper-tint); color: var(--ink-muted); font-weight: 600; font-size: 12px;
+       text-transform: uppercase; letter-spacing: 0.06em; }
+  tr:last-child td { border-bottom: 0; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 2px 10px; border-radius: var(--r-pill); font-size: 12px; font-weight: 600;
+    color: var(--ink);
+  }
+  .pill .d { width: 7px; height: 7px; border-radius: 50%; }
+  .pill.pos { background: var(--tint-positive); } .pill.pos .d { background: var(--dot-positive); }
+  .pill.cau { background: var(--tint-caution); }  .pill.cau .d { background: var(--dot-caution); }
+  .pill.alt { background: var(--tint-alert); }    .pill.alt .d { background: var(--dot-negative); }
+
+  /* ============================================================
+     PANE 3 · WORKSHOP TOOL
+     ============================================================ */
+  .split { display: grid; grid-template-columns: 220px 1fr; gap: var(--s-6); align-items: start; }
+  /* Sidebar: FLAT RAIL, no card chrome (v2 fix) */
+  .nav-rail h4 { font-size: 11px; color: var(--ink-muted);
+                 text-transform: uppercase; letter-spacing: 0.08em;
+                 margin: 0 12px var(--s-2); font-weight: 600; }
+  .nav-rail ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1px; }
+  .nav-rail li a {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 7px 12px; border-radius: var(--r-sm);
+    color: var(--ink-soft); font-size: 13.5px;
+  }
+  .nav-rail li a .ct { color: var(--ink-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+  .nav-rail li a:hover { background: var(--paper); }
+  .nav-rail li a.active { background: var(--state-selected); color: var(--ink); font-weight: 600; }
+  .nav-rail li a.active .ct { color: var(--ink); }
+
+  /* Work area: ONE card with toolbar built in (v2 fix) */
+  .work-card { padding: 0; overflow: hidden; }
+  .work-card .toolbar {
+    display: flex; align-items: center; gap: var(--s-2);
+    padding: var(--s-3) var(--s-5);
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper-tint);
+  }
+  .work-card .toolbar .right { margin-left: auto; color: var(--ink-muted); font-size: 13px; }
+  .work-card .canvas {
+    min-height: 380px;
+    background: repeating-linear-gradient(45deg,
+      var(--paper-tint), var(--paper-tint) 12px,
+      var(--paper) 12px, var(--paper) 24px);
+    display: grid; place-items: center;
+    color: var(--ink-muted); font-size: 13px;
+  }
+
+  /* ── Responsive ──────────────────────────────────────── */
+  @media (max-width: 960px) {
+    .feature { grid-column: span 6; }
+    .kpi     { grid-column: span 6; }
+    .chart   { grid-column: span 12; }
+    .side    { grid-column: span 12; }
+    .split   { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 540px) {
+    .feature, .kpi { grid-column: span 12; }
+    .h-nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="switcher" role="tablist" aria-label="Layout examples">
+  <button class="on" data-pane="landing">Landing</button>
+  <button data-pane="dashboard">Dashboard</button>
+  <button data-pane="workshop">Workshop</button>
+</div>
+
+<!-- ============================================================
+     PANE 1 · LANDING — header carries full lockup
+     ============================================================ -->
+<div class="pane on" id="pane-landing">
+  <div class="l-page">
+    <header class="l-header">
+      <div class="l-container h-row">
+        <div class="h-lockup">CCD<span class="dot">·</span>BRB</div>
+        <nav class="h-nav">
+          <a class="active" href="#">Home</a>
+          <a href="#">Tools</a>
+          <a href="#">Docs</a>
+          <a href="#">Sign in</a>
+        </nav>
+      </div>
+    </header>
+    <main class="l-main">
+      <div class="l-container">
+        <section class="l-section hero">
+          <div class="lockup-mark"><span class="m">B</span> CCD·BRB</div>
+          <h1>One workspace for HR, ops &amp; insight.</h1>
+          <p>A small set of focused tools, built and maintained by CCD for Boon Rawd Brewery teams. Quiet by default. Loud when it matters.</p>
+          <div class="cta">
+            <button class="btn btn-primary">Open dashboard</button>
+            <button class="btn btn-ghost">See all tools →</button>
+          </div>
+        </section>
+
+        <section class="l-section">
+          <div class="l-grid">
+            <div class="card feature">
+              <div class="icon">D</div>
+              <h3>Onboarding Dashboard</h3>
+              <p>Track new-hire check-ups, NPS, and risk signals in one view.</p>
+            </div>
+            <div class="card feature">
+              <div class="icon">C</div>
+              <h3>Comment Tagging</h3>
+              <p>Cluster open-text feedback into themes without losing nuance.</p>
+            </div>
+            <div class="card feature">
+              <div class="icon">W</div>
+              <h3>Workshop Tools</h3>
+              <p>Lightweight facilitator aids for in-person sessions.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ============================================================
+     PANE 2 · DASHBOARD — utility header (mark + tool name)
+     ============================================================ -->
+<div class="pane" id="pane-dashboard">
+  <div class="l-page">
+    <header class="l-header">
+      <div class="l-container h-row">
+        <div class="h-mark">B</div>
+        <div class="h-tool"><span>CCD·BRB</span> Onboarding</div>
+        <nav class="h-nav">
+          <a href="#">Switch tool</a>
+          <a href="#">Sign out</a>
+        </nav>
+      </div>
+    </header>
+    <main class="l-main">
+      <div class="l-container">
+
+        <section class="l-section">
+          <div class="page-head">
+            <div class="titleblock">
+              <div class="eyebrow">Onboarding · Q2 2026</div>
+              <h1>New-hire health</h1>
+              <div class="meta">Cohort starting Apr 2026 · 142 hires across 7 plants</div>
+            </div>
+            <div class="actions">
+              <button class="btn btn-ghost btn-sm">Export ↓</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="l-section">
+          <div class="l-grid">
+            <div class="card kpi">
+              <div class="label">Response rate</div>
+              <div class="value">87%</div>
+              <div class="delta">▲ 4 pts vs Q1</div>
+            </div>
+            <div class="card kpi">
+              <div class="label">eNPS</div>
+              <div class="value">+42</div>
+              <div class="delta">▲ 6 pts vs Q1</div>
+            </div>
+            <div class="card kpi">
+              <div class="label">At-risk hires</div>
+              <div class="value">9</div>
+              <div class="delta">▼ 3 vs Q1</div>
+            </div>
+            <div class="card kpi">
+              <div class="label">Avg time-to-feedback</div>
+              <div class="value">2.3d</div>
+              <div class="delta">flat</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="l-section">
+          <div class="l-grid">
+            <div class="card chart card-md">
+              <div class="eyebrow">Sentiment over check-ups</div>
+              <div class="placeholder"></div>
+            </div>
+            <div class="card side">
+              <div class="eyebrow">Top themes</div>
+              <ul style="list-style:none;padding:0;margin:var(--s-3) 0 0;display:flex;flex-direction:column;gap:var(--s-2);font-size:14px;">
+                <li>Manager onboarding clarity</li>
+                <li>Plant safety briefings</li>
+                <li>Cafeteria &amp; benefits</li>
+                <li>IT setup speed</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="l-section">
+          <div class="card table-wrap">
+            <table>
+              <thead><tr>
+                <th>Plant</th><th>Hires</th><th>Response</th><th>Status</th>
+              </tr></thead>
+              <tbody>
+                <tr><td>Pathum Thani</td><td>34</td><td>91%</td><td><span class="pill pos"><span class="d"></span>On track</span></td></tr>
+                <tr><td>Khon Kaen</td><td>28</td><td>82%</td><td><span class="pill cau"><span class="d"></span>Watch</span></td></tr>
+                <tr><td>Ayutthaya</td><td>22</td><td>76%</td><td><span class="pill alt"><span class="d"></span>At risk</span></td></tr>
+                <tr><td>Chiang Mai</td><td>19</td><td>89%</td><td><span class="pill pos"><span class="d"></span>On track</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ============================================================
+     PANE 3 · WORKSHOP — flat sidebar + merged toolbar
+     ============================================================ -->
+<div class="pane" id="pane-workshop">
+  <div class="l-page">
+    <header class="l-header">
+      <div class="l-container h-row">
+        <div class="h-mark">B</div>
+        <div class="h-tool"><span>CCD·BRB</span> Comment Tagging</div>
+        <nav class="h-nav">
+          <a href="#">Switch tool</a>
+          <a href="#">Sign out</a>
+        </nav>
+      </div>
+    </header>
+    <main class="l-main">
+      <div class="l-container">
+
+        <section class="l-section">
+          <div class="page-head">
+            <div class="titleblock">
+              <div class="eyebrow">Project · Onboarding Q2</div>
+              <h1>Tag &amp; cluster</h1>
+              <div class="meta">414 open-text responses · 312 tagged · 102 left</div>
+            </div>
+            <div class="actions">
+              <button class="btn btn-primary btn-sm">Save batch</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="l-section split">
+          <aside class="nav-rail">
+            <h4>Themes</h4>
+            <ul>
+              <li><a class="active" href="#">All untagged <span class="ct">102</span></a></li>
+              <li><a href="#">Manager clarity <span class="ct">48</span></a></li>
+              <li><a href="#">Safety briefing <span class="ct">31</span></a></li>
+              <li><a href="#">Benefits <span class="ct">27</span></a></li>
+              <li><a href="#">IT setup <span class="ct">19</span></a></li>
+              <li><a href="#">Other <span class="ct">12</span></a></li>
+            </ul>
+          </aside>
+          <div class="card work-card card-md">
+            <div class="toolbar">
+              <button class="btn btn-ghost btn-sm">Filter</button>
+              <button class="btn btn-ghost btn-sm">Sort: newest</button>
+              <span class="right">Reviewer: Vitit T.</span>
+            </div>
+            <div class="canvas">[ tagging canvas — comment cards drop here ]</div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+  const panes = document.querySelectorAll('.pane');
+  document.querySelectorAll('.switcher button[data-pane]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.pane;
+      document.querySelectorAll('.switcher button[data-pane]').forEach(b => b.classList.toggle('on', b === btn));
+      panes.forEach(p => p.classList.toggle('on', p.id === 'pane-' + id));
+    });
+  });
+</script>
+</body>
+</html>
