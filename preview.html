@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" />
 <link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="layout.css" />
 <style>
   /* ============================================================
      DESIGN BOARD · single-page everything-at-a-glance reference
@@ -78,14 +79,14 @@
   .type-row { display: grid; grid-template-columns: 8rem 1fr; gap: var(--s-5); padding: var(--s-3) 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
   .type-row:last-child { border-bottom: 0; }
   .type-row .label { padding-top: 4px; }
-  .h-display { font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; line-height: 1.05; letter-spacing: -0.02em; }
-  .h-section { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.01em; }
-  .h-card    { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.005em; }
-  .body-l    { font-size: 1.0625rem; line-height: 1.6; }
-  .body      { font-size: 1rem; }
-  .body-th   { font-family: var(--thai); font-size: 0.9375rem; color: var(--ink-muted); }
-  .small     { font-size: 0.8125rem; color: var(--ink-muted); }
-  .micro     { font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-muted); }
+  .h-display { font-size: var(--fs-display); font-weight: var(--fw-bold); line-height: var(--lh-tight); letter-spacing: -0.02em; }
+  .h-section { font-size: var(--fs-section); font-weight: var(--fw-bold); letter-spacing: -0.01em; }
+  .h-card    { font-size: var(--fs-card); font-weight: var(--fw-bold); letter-spacing: -0.005em; }
+  .body-l    { font-size: var(--fs-body); line-height: var(--lh-normal); }
+  .body      { font-size: var(--fs-body); line-height: var(--lh-normal); }
+  .body-th   { font-family: var(--thai); font-size: var(--fs-body); line-height: var(--lh-relaxed); color: var(--ink-muted); }
+  .small     { font-size: var(--fs-small); color: var(--ink-muted); }
+  .micro     { font-size: var(--fs-micro); font-weight: var(--fw-semi); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-muted); }
 
   /* ── Spacing ruler ─────────────────────────────────── */
   .ruler { display: flex; flex-direction: column; gap: var(--s-2); }
@@ -100,6 +101,74 @@
   .radius-tile__chip { aspect-ratio: 1; background: var(--paper-tint); border: 1px solid var(--rule); margin-bottom: var(--s-2); }
   .radius-tile__name { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.6875rem; color: var(--ink); }
   .radius-tile__val { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.625rem; color: var(--ink-muted); }
+
+  /* ── Radius governance (bigger + isolated = bigger) ── */
+  .gov-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-4); margin-top: var(--s-5); }
+  @media (max-width: 760px) { .gov-grid { grid-template-columns: 1fr; } }
+  .gov-tile { background: var(--paper-tint); border: 1px dashed var(--rule); padding: var(--s-5); display: flex; flex-direction: column; gap: var(--s-3); }
+  .gov-tile__sample { background: var(--card); border: 1px solid var(--rule); padding: var(--s-4); min-height: 96px; display: grid; place-items: center; color: var(--ink-muted); font-size: 0.8125rem; }
+  .gov-tile__sample.r-card { border-radius: var(--r-card); }
+  .gov-tile__sample.r-md   { border-radius: var(--r-md); }
+  .gov-tile__sample.r-lg   { border-radius: var(--r-lg); box-shadow: var(--shadow-3); border-color: transparent; }
+  .gov-tile__rule  { font-size: 0.8125rem; color: var(--ink); margin: 0; line-height: 1.55; }
+  .gov-tile__rule strong { color: var(--ink); }
+  .gov-tile__token { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.75rem; color: var(--brand); }
+
+  /* ── Layout primitives ─────────────────────────────── */
+  .layout-mock {
+    border: 1px solid var(--rule); border-radius: var(--r-md);
+    background: var(--paper-tint);
+    overflow: hidden;
+    font-size: 0.8125rem;
+  }
+  .layout-mock__header {
+    height: 52px; background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+    display: flex; align-items: center; padding: 0 var(--s-5);
+    color: var(--ink-muted);
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 0.6875rem;
+  }
+  .layout-mock__main { padding: var(--s-5); }
+  .layout-mock__container {
+    max-width: 100%; background: var(--paper);
+    border: 1px dashed var(--rule); border-radius: var(--r-card);
+    padding: var(--s-5);
+    display: flex; flex-direction: column; gap: var(--s-5);
+  }
+  .layout-mock__section {
+    background: var(--paper-tint); border: 1px dashed var(--rule);
+    border-radius: var(--r-card); padding: var(--s-4);
+  }
+  .layout-mock__section + .layout-mock__section { /* visual cue for .l-section + .l-section */ }
+  .layout-mock__label {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 0.625rem; letter-spacing: 0.04em;
+    color: var(--brand); text-transform: uppercase;
+    margin: 0 0 var(--s-3);
+  }
+  .layout-mock__grid {
+    display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--s-3);
+  }
+  .layout-mock__cell {
+    background: var(--card); border: 1px solid var(--rule);
+    border-radius: var(--r-xs);
+    padding: var(--s-3) var(--s-2); text-align: center;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 0.625rem; color: var(--ink-muted);
+  }
+  .layout-mock__cell.span-3 { grid-column: span 3; }
+  .layout-mock__cell.span-4 { grid-column: span 4; }
+  .layout-mock__cell.span-6 { grid-column: span 6; }
+  .layout-mock__cell.span-8 { grid-column: span 8; }
+  .layout-mock__cell.span-12 { grid-column: span 12; background: var(--paper-tint); }
+
+  .layout-legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--s-3); margin-top: var(--s-5); }
+  .layout-legend dt {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 0.75rem; color: var(--brand); margin-bottom: 4px;
+  }
+  .layout-legend dd { margin: 0; font-size: 0.8125rem; color: var(--ink-muted); line-height: 1.5; }
 
   /* ── Shadow ramp ───────────────────────────────────── */
   .shadow-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: var(--s-5); }
@@ -307,6 +376,7 @@
       <a href="#color">Color</a>
       <a href="#type">Type</a>
       <a href="#space">Spacing</a>
+      <a href="#layout">Layout</a>
       <a href="#radius">Radius</a>
       <a href="#shadow">Shadow</a>
       <a href="#motion">Motion</a>
@@ -401,13 +471,12 @@
       <h2 class="sec-title">Type</h2>
       <p class="sec-note">Inter for Latin, Noto Sans Thai for Thai. Same x-height, mixed inline without restyling.</p>
     </div>
-    <div class="type-row"><span class="label">Display</span><span class="h-display">Better experience.</span></div>
-    <div class="type-row"><span class="label">Section</span><span class="h-section">Our Tools</span></div>
-    <div class="type-row"><span class="label">Card title</span><span class="h-card">Onboarding Survey</span></div>
-    <div class="type-row"><span class="label">Body L</span><span><span class="body-l">Larger reading size for landing copy and intros — 17px / 1.6.</span><br/><span class="body-l" lang="th" style="color:var(--ink-muted)">เครื่องมือที่ช่วยให้เราเข้าใจคน ดูแลอย่างใส่ใจ</span></span></div>
-    <div class="type-row"><span class="label">Body</span><span><span class="body">Default body. The quick brown fox jumps over the lazy dog. 16px / 1.55.</span><br/><span class="body" lang="th" style="color:var(--ink-muted)">ติดตามประสบการณ์และความเป็นอยู่ของพนักงานใหม่ตลอด 9 ระยะ</span></span></div>
-    <div class="type-row"><span class="label">Small</span><span class="small">Captions, footer, sec-notes — 13px.</span></div>
-    <div class="type-row"><span class="label">Micro</span><span class="micro">Eyebrows · 11px tracked uppercase</span></div>
+    <div class="type-row"><span class="label">--fs-display</span><span class="h-display">Better experience.</span></div>
+    <div class="type-row"><span class="label">--fs-section</span><span class="h-section">Our Tools</span></div>
+    <div class="type-row"><span class="label">--fs-card</span><span class="h-card">Newcomer Motivation Check‑Up</span></div>
+    <div class="type-row"><span class="label">--fs-body</span><span><span class="body">Default body — 17px / 1.6. The quick brown fox jumps over the lazy dog.</span><br/><span class="body-th">ติดตามประสบการณ์และความเป็นอยู่ของพนักงานใหม่ตลอด 9 ระยะ</span></span></div>
+    <div class="type-row"><span class="label">--fs-small</span><span class="small">Captions, footer, sec-notes — 13px.</span></div>
+    <div class="type-row"><span class="label">--fs-micro</span><span class="micro">Eyebrows · 12px · 600 · 0.06em · UPPER</span></div>
   </section>
 
   <!-- ── SPACING ─────────────────────────────────────── -->
@@ -429,19 +498,92 @@
     </div>
   </section>
 
+  <!-- ── LAYOUT ──────────────────────────────────────── -->
+  <section id="layout">
+    <div class="sec-head">
+      <h2 class="sec-title">Layout</h2>
+      <p class="sec-note">Shared frame primitives from <code>layout.css</code>. Tools opt-in by importing this on top of <code>tokens.css</code> — that prevents each tool from reinventing its own container/grid and quietly diverging.</p>
+    </div>
+
+    <div class="layout-mock" aria-label="Layout primitives diagram">
+      <div class="layout-mock__header">.l-header · 52px · sticky · paper bg + 1px rule</div>
+      <div class="layout-mock__main">
+        <div class="layout-mock__container">
+          <p class="layout-mock__label">.l-container · max-width 1120 · gutter</p>
+
+          <div class="layout-mock__section">
+            <p class="layout-mock__label">.l-section · .l-grid · 12-col · 24px gap</p>
+            <div class="layout-mock__grid">
+              <div class="layout-mock__cell span-4">span-4 · KPI</div>
+              <div class="layout-mock__cell span-4">span-4 · KPI</div>
+              <div class="layout-mock__cell span-4">span-4 · KPI</div>
+            </div>
+          </div>
+
+          <div class="layout-mock__section">
+            <p class="layout-mock__label">.l-section · split panel</p>
+            <div class="layout-mock__grid">
+              <div class="layout-mock__cell span-8">span-8 · primary content</div>
+              <div class="layout-mock__cell span-4">span-4 · sidebar</div>
+            </div>
+          </div>
+
+          <div class="layout-mock__section">
+            <p class="layout-mock__label">.l-section · half-and-half</p>
+            <div class="layout-mock__grid">
+              <div class="layout-mock__cell span-6">span-6 · paired</div>
+              <div class="layout-mock__cell span-6">span-6 · paired</div>
+            </div>
+          </div>
+
+          <div class="layout-mock__section">
+            <p class="layout-mock__label">.l-section · full-bleed row</p>
+            <div class="layout-mock__grid">
+              <div class="layout-mock__cell span-12">span-12 · table or banner</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <dl class="layout-legend">
+      <div><dt>.l-page</dt><dd>page wrapper · paper-tint canvas · column flex</dd></div>
+      <div><dt>.l-header</dt><dd>utility top bar · 52px · sticky · paper bg</dd></div>
+      <div><dt>.l-container</dt><dd>max-width <code>--max-content</code> (1120px) + responsive gutter</dd></div>
+      <div><dt>.l-section</dt><dd>vertical rhythm · 48px breath between blocks</dd></div>
+      <div><dt>.l-grid</dt><dd>12-col grid · 24px gap · collapses at 960/540</dd></div>
+    </dl>
+  </section>
+
   <!-- ── RADIUS ──────────────────────────────────────── -->
   <section id="radius">
     <div class="sec-head">
       <h2 class="sec-title">Radius</h2>
-      <p class="sec-note">Pick from the scale. Don't invent intermediate values.</p>
+      <p class="sec-note">Pick from the scale. Don't invent intermediate values. Governance rule: <strong>bigger + more isolated = bigger radius.</strong></p>
     </div>
     <div class="radii">
+      <div class="radius-tile"><div class="radius-tile__chip" style="border-radius:var(--r-tiny)"></div><div class="radius-tile__name">--r-tiny</div><div class="radius-tile__val">3px</div></div>
       <div class="radius-tile"><div class="radius-tile__chip" style="border-radius:var(--r-xs)"></div><div class="radius-tile__name">--r-xs</div><div class="radius-tile__val">4px</div></div>
       <div class="radius-tile"><div class="radius-tile__chip" style="border-radius:var(--r-sm)"></div><div class="radius-tile__name">--r-sm</div><div class="radius-tile__val">6px</div></div>
       <div class="radius-tile"><div class="radius-tile__chip" style="border-radius:var(--r-card)"></div><div class="radius-tile__name">--r-card</div><div class="radius-tile__val">8px</div></div>
       <div class="radius-tile"><div class="radius-tile__chip" style="border-radius:var(--r-md)"></div><div class="radius-tile__name">--r-md</div><div class="radius-tile__val">12px</div></div>
       <div class="radius-tile"><div class="radius-tile__chip" style="border-radius:var(--r-lg)"></div><div class="radius-tile__name">--r-lg</div><div class="radius-tile__val">16px</div></div>
       <div class="radius-tile"><div class="radius-tile__chip" style="border-radius:var(--r-pill)"></div><div class="radius-tile__name">--r-pill</div><div class="radius-tile__val">999px</div></div>
+    </div>
+
+    <div class="gov-grid">
+      <div class="gov-tile">
+        <div class="gov-tile__sample r-card">card · in a row of cards</div>
+        <p class="gov-tile__rule"><strong>Default — <span class="gov-tile__token">--r-card · 8px</span></strong><br>Card sits next to siblings on the same row. KPI tiles, list rows, feature cards.</p>
+      </div>
+      <div class="gov-tile">
+        <div class="gov-tile__sample r-md">isolated · alone on its row</div>
+        <p class="gov-tile__rule"><strong>Bump — <span class="gov-tile__token">--r-md · 12px</span></strong><br>Surface alone in its row. Hero block, single full-row banner, large data panel.</p>
+      </div>
+      <div class="gov-tile">
+        <div class="gov-tile__sample r-lg">floating · overlay surface</div>
+        <p class="gov-tile__rule"><strong>Bump again — <span class="gov-tile__token">--r-lg · 16px</span></strong><br>Surface floats above the page. Modal, sheet, image-led hero, big popover.</p>
+      </div>
     </div>
   </section>
 
