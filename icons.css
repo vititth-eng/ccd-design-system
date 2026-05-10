@@ -28,6 +28,6 @@
 .icon-16.spin,
 .icon-20.spin,
 .icon-24.spin {
-  animation: ccd-icon-spin 1s linear infinite;
+  animation: ccd-icon-spin 2.4s linear infinite;
   transform-origin: center;
 }
