@@ -30,21 +30,28 @@
   --ink-soft:   #274B92;       /* card titles, body emphasis */
   --ink-muted:  #647B9B;       /* captions, descriptions */
 
-  /* Meaning-via-tint · pastel backgrounds, fg is ink.
-     Default (white card + ink) = neutral. Pastel hue carries the state. */
+  /* Status — 9-color system (Phase 1.18).
+     Three families × three states. Rule: small → tint, large → wash, text → dot.
+     See DESIGN-SYSTEM.md §"Status palette · 9-color rule" for usage. */
+
+  /* Tint · small surfaces (pills, badges, inline tags) */
   --tint-positive: #E2EBB5;    /* live, success, done */
   --tint-caution:  #EBDAB5;    /* pending, scheduled · soft heads-up */
   --tint-alert:    #EBBEB5;    /* expired, at-risk, failed · hard warning */
-  --tint-neutral:  #DFE7F6;    /* draft, none, undefined · separate from
-                                  --paper-tint so neutral pills hold against
-                                  the page canvas (same hex as --heat-1 today
-                                  but kept distinct semantically) */
+  --tint-neutral:  #DFE7F6;    /* draft, none, undefined · holds against page canvas */
 
-  /* Status dots · saturated escape hatch (3, off-page).
-     Used ONLY as 7px dots inside pills — never as fills, borders, or text. */
-  --dot-positive: #6B8C2C;     /* deep olive · matches tint-positive hue */
-  --dot-caution:  #A67C1A;     /* deep amber · matches tint-caution hue */
-  --dot-negative: #B5564A;     /* deep rust  · matches tint-alert hue */
+  /* Wash · large content surfaces (banners, callouts, KPI status borders).
+     Derived 10% blend of dot + paper — calm reading surface, dot+rail carry signal. */
+  --wash-positive: color-mix(in srgb, #6B8C2C 10%, #ffffff);
+  --wash-caution:  color-mix(in srgb, #C97E1A 10%, #ffffff);
+  --wash-alert:    color-mix(in srgb, #C84A3A 10%, #ffffff);
+
+  /* Dot · accent + status text color.
+     Used as 7px dots in pills, as colored rail on banners, or as text color
+     for delta lines / inline emphasis. Never as a fill at button/banner scale. */
+  --dot-positive: #6B8C2C;     /* deep olive — unchanged */
+  --dot-caution:  #C97E1A;     /* punched amber (was #A67C1A · +chroma) */
+  --dot-negative: #C84A3A;     /* punched rust  (was #B5564A · +chroma) */
 
   /* State · selected / active */
   --state-selected: #B5C7EB;   /* active tab, selected row, current chip · alias of brand-soft */
@@ -56,6 +63,37 @@
   --heat-4: #91ABE1;
   --heat-5: #4874CD;
   --heat-empty: #ffffff;
+
+  /* ── Data viz · Tier-2 ──────────────────────────────────
+     Additional colors charts need that Tier-1 misty can't supply.
+     Two families. Tools must consume these directly or via a local
+     prefixed alias (e.g. --ot-perspective-nh: var(--cat-1)).
+     RULE: tools never own a separate tokens file. One source of truth.
+     See DESIGN-SYSTEM.md §"Data viz · Tier-2" for usage rules.
+
+     Single-series chart paint = --brand (Tier-1).
+     Sequential chart paint = --heat-1..5 (Tier-1).
+     Diverging = --sd-1..5 (here).
+     Categorical = --cat-1..6 (here).
+     Outlier-alert swap = --dot-negative (Tier-1). */
+
+  /* Diverging · 5 stops · ordered with meaningful midpoint.
+     Use for ± deviation, score with neutral middle, change ±. */
+  --sd-1: #588C44;    /* calmer green · one pole */
+  --sd-2: #9BC3B7;    /* clean light sage */
+  --sd-3: #F4F4F4;    /* barely-warm neutral · midpoint */
+  --sd-4: #EFC4C4;    /* dusty pink, soft */
+  --sd-5: #C9596A;    /* rose-red · opposite pole */
+
+  /* Categorical · 6 hues · distinct identities, no order.
+     Use for series, groups, categories. Caps at 6 — more = group instead.
+     --cat-1..3 is the strongest starter set; most charts use 2–3. */
+  --cat-1: #4874CD;   /* brand blue · 220° · anchor */
+  --cat-2: #B86E5F;   /* soft rust  ·  12° */
+  --cat-3: #7DA382;   /* sage       · 135° */
+  --cat-4: #8B6CA0;   /* soft plum  · 285° */
+  --cat-5: #C49C5B;   /* clean amber ·  40° */
+  --cat-6: #3E8B89;   /* muted teal · 178° */
 
   /* ── Type stack ─────────────────────────────────────── */
   --sans: "Inter", "Noto Sans Thai", -apple-system, BlinkMacSystemFont,

@@ -40,8 +40,13 @@
      Used ONLY as 7px dots inside pills. Never as fills, borders, or text.
      These are the only off-page hexes in the system. */
   --dot-positive: #6B8C2C;   /* deep olive · matches tint-positive hue */
-  --dot-caution:  #A67C1A;   /* deep amber · matches tint-caution hue */
-  --dot-negative: #B5564A;   /* deep rust  · matches tint-alert hue */
+  --dot-caution:  #C97E1A;   /* punched amber · matches tint-caution hue */
+  --dot-negative: #C84A3A;   /* punched rust  · matches tint-alert hue */
+
+  /* Wash · large content surfaces (banners, callouts, KPI borders) */
+  --wash-positive: color-mix(in srgb, #6B8C2C 10%, #ffffff);
+  --wash-caution:  color-mix(in srgb, #C97E1A 10%, #ffffff);
+  --wash-alert:    color-mix(in srgb, #C84A3A 10%, #ffffff);
 
   /* ── STATE (1) — selected / active ───────────────────── */
   --state-selected: #B5C7EB;   /* anchor misty · "this is on" — active tab, selected row, current chip */
@@ -200,8 +205,8 @@ footer { margin-top: var(--s-7); padding-top: var(--s-5); border-top: 1px solid 
 <h3>Status dots · saturated escape hatch (3, off-page)</h3>
 <div class="swatch-row">
   <div class="sw"><div class="sw__chip" style="background:var(--dot-positive)"></div><div class="sw__meta"><div class="sw__name">dot-positive</div><div class="sw__hex">#6B8C2C</div><div class="sw__role">olive · 7px dots only</div></div></div>
-  <div class="sw"><div class="sw__chip" style="background:var(--dot-caution)"></div><div class="sw__meta"><div class="sw__name">dot-caution</div><div class="sw__hex">#A67C1A</div><div class="sw__role">amber · 7px dots only</div></div></div>
-  <div class="sw"><div class="sw__chip" style="background:var(--dot-negative)"></div><div class="sw__meta"><div class="sw__name">dot-negative</div><div class="sw__hex">#B5564A</div><div class="sw__role">rust · 7px dots only</div></div></div>
+  <div class="sw"><div class="sw__chip" style="background:var(--dot-caution)"></div><div class="sw__meta"><div class="sw__name">dot-caution</div><div class="sw__hex">#C97E1A</div><div class="sw__role">amber · dots + colored rail + status text</div></div></div>
+  <div class="sw"><div class="sw__chip" style="background:var(--dot-negative)"></div><div class="sw__meta"><div class="sw__name">dot-negative</div><div class="sw__hex">#C84A3A</div><div class="sw__role">rust · dots + colored rail + status text</div></div></div>
 </div>
 
 <h3>State · selected / active</h3>
