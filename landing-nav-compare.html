@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Landing nav · A/B compare</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" />
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="nav.css" />
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--sans);background:var(--paper);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+
+  /* Compare layout */
+  .compare-label{
+    font-size:var(--fs-nano);color:var(--ink-muted);
+    text-transform:uppercase;letter-spacing:0.12em;font-weight:600;
+    padding:18px 24px 8px
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     CURRENT LANDING TOPBAR (forked from page-skeleton)
+     ───────────────────────────────────────────────────────────── */
+  .topbar{
+    background:var(--paper);border-bottom:1px solid var(--rule);
+    padding:0 24px;
+    display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px;
+    height:56px
+  }
+  .topbar .brand{justify-self:start;display:flex;align-items:center;height:100%;line-height:0;cursor:pointer}
+  .topbar .brand img{height:32px;width:auto;display:block}
+  .topbar .nav-local{display:flex;gap:2px;justify-self:center;align-items:stretch}
+  .topbar .nav-local > button,
+  .topbar .nav-local .nav-item > button{
+    position:relative;
+    padding:0 12px;height:56px;
+    border:0;background:transparent;color:var(--ink-muted);
+    font-family:inherit;font-size:var(--fs-small);font-weight:500;
+    cursor:pointer;letter-spacing:-0.05px;
+    display:inline-flex;align-items:center;gap:4px
+  }
+  .topbar .nav-local button:hover{color:var(--ink)}
+  .topbar .nav-local button[aria-pressed="true"]{color:var(--brand-deep);font-weight:600}
+  .topbar .nav-local button[aria-pressed="true"]::after{
+    content:"";position:absolute;left:12px;right:12px;bottom:0;height:2px;background:var(--brand)
+  }
+  .topbar .nav-local .caret{font-size:9px;opacity:0.7;transition:transform var(--dur-base) var(--ease)}
+  .topbar .meta{
+    justify-self:end;
+    font-size:var(--fs-nano);color:var(--ink-muted);
+    letter-spacing:0.04em;
+    font-variant-numeric:tabular-nums;
+    white-space:nowrap
+  }
+  .topbar .meta strong{color:var(--ink);font-weight:600;font-size:var(--fs-small);margin-right:4px}
+
+  /* ─────────────────────────────────────────────────────────────
+     C · HYBRID — A's shape + B's mechanics (proposed landing topbar)
+     - Keeps: 56px, 3-col grid, full lockup, 13px text
+     - Borrows: border-bottom underline, focus ring, transition tokens,
+       --fw-med for inactive, neutral tracking
+     ───────────────────────────────────────────────────────────── */
+  .topbar-c{
+    background:var(--paper);border-bottom:1px solid var(--rule);
+    padding:0 24px;
+    display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px;
+    height:56px
+  }
+  .topbar-c .brand{justify-self:start;display:flex;align-items:center;height:100%;line-height:0;cursor:pointer}
+  .topbar-c .brand img{height:32px;width:auto;display:block}
+  .topbar-c .nav-local{display:flex;gap:0;justify-self:center;align-self:stretch}
+  .topbar-c .nav-local > button,
+  .topbar-c .nav-local .nav-item > button{
+    /* shape kept from A */
+    padding:0 12px;height:56px;
+    background:transparent;border:0;
+    font-family:inherit;font-size:var(--fs-small);
+    color:var(--ink-muted);font-weight:var(--fw-medium);
+    cursor:pointer;
+    display:inline-flex;align-items:center;gap:4px;
+    /* mechanics borrowed from nav.css */
+    border-bottom:2px solid transparent;
+    transition:
+      color var(--dur-fast) var(--ease),
+      border-color var(--dur-fast) var(--ease);
+  }
+  .topbar-c .nav-local button:hover{color:var(--ink)}
+  .topbar-c .nav-local button[aria-pressed="true"]{
+    color:var(--brand-deep);
+    font-weight:var(--fw-semi);
+    border-bottom-color:var(--brand);
+  }
+  .topbar-c .nav-local button:focus-visible{
+    outline:var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset:-2px;
+    border-radius:var(--r-xs);
+  }
+  .topbar-c .nav-local .caret{font-size:9px;opacity:0.7;transition:transform var(--dur-base) var(--ease)}
+  .topbar-c .meta{
+    justify-self:end;
+    font-size:var(--fs-nano);color:var(--ink-muted);
+    letter-spacing:0.04em;font-variant-numeric:tabular-nums;
+    white-space:nowrap
+  }
+  .topbar-c .meta strong{color:var(--ink);font-weight:var(--fw-semi);font-size:var(--fs-small);margin-right:4px}
+
+  /* ─────────────────────────────────────────────────────────────
+     SYSTEM .nav variant (consumes nav.css verbatim, ticker in actions slot)
+     ───────────────────────────────────────────────────────────── */
+  .nav-sys-wrap{} /* uses .nav from nav.css directly */
+  .nav__meta{
+    font-size:var(--fs-nano);color:var(--ink-muted);
+    letter-spacing:0.04em;font-variant-numeric:tabular-nums;
+    white-space:nowrap;padding:0 var(--s-2)
+  }
+  .nav__meta strong{color:var(--ink);font-weight:600;font-size:var(--fs-small);margin-right:4px}
+
+  /* Tools dropdown caret (decorative, kept in both versions) */
+  .has-caret{position:relative}
+  .has-caret .caret{display:inline-block;margin-left:4px;font-size:9px;opacity:0.7}
+
+  /* Hero (shared) so both navs sit above the same content for fair compare */
+  .hero{text-align:center;padding:60px 24px 30px;max-width:920px;margin:0 auto}
+  .hero h1{font-size:clamp(1.875rem,4vw,3rem);line-height:1.1;letter-spacing:-0.025em;font-weight:800;color:var(--ink);margin-bottom:var(--s-3);text-wrap:balance}
+  .hero p.sub{font-size:var(--fs-body);color:var(--ink-soft);font-weight:500;margin-bottom:var(--s-3)}
+  .hero p.pulse{
+    margin-top:var(--s-3);font-size:var(--fs-nano);color:var(--ink-muted);
+    letter-spacing:0.06em;text-transform:uppercase;font-variant-numeric:tabular-nums
+  }
+  .hero .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--dot-positive,#4a8a3a);margin-right:6px;vertical-align:1px}
+  .hero .sep{opacity:0.5;margin:0 8px}
+
+  /* Divider between the two stacked variants */
+  .divider{
+    height:80px;background:var(--paper-tint);
+    display:flex;align-items:center;justify-content:center;
+    font-size:var(--fs-nano);color:var(--ink-muted);
+    text-transform:uppercase;letter-spacing:0.14em;font-weight:600
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════ A · CURRENT LANDING TOPBAR ════════════ -->
+<p class="compare-label">A · Current landing — bespoke .topbar (56px, 3-col grid, plain &lt;img&gt; lockup)</p>
+
+<header class="topbar">
+  <a class="brand" href="#">
+    <img src="https://cdn.jsdelivr.net/gh/vititth-eng/ccd-design-system@main/assets/ccd-full.svg" alt="CCD" />
+  </a>
+  <nav class="nav-local" aria-label="Primary">
+    <button type="button" data-route="" aria-pressed="true">Home</button>
+    <div class="nav-item">
+      <button type="button" aria-haspopup="true" aria-expanded="false">Tools <span class="caret">▾</span></button>
+    </div>
+    <button type="button" data-route="/about" aria-pressed="false">About Us</button>
+  </nav>
+  <div class="meta"><strong>2,642</strong> days till 100 years</div>
+</header>
+
+<section class="hero">
+  <h1>Internal tools by CCD</h1>
+  <p class="sub">For everyone at Boon Rawd Brewery</p>
+  <p class="pulse"><span class="dot" aria-hidden="true"></span>2 tools<span class="sep">·</span>1 live<span class="sep">·</span>1 in beta</p>
+</section>
+
+
+<div class="divider">↓ A's shape + B's mechanics ↓</div>
+
+
+<!-- ════════════ C · HYBRID (proposed landing topbar) ════════════ -->
+<p class="compare-label">C · Hybrid — A's structure (56px · grid · full lockup · 13px) + B's mechanics (border-bottom underline · focus ring · transitions · --fw-med)</p>
+
+<header class="topbar-c">
+  <a class="brand" href="#">
+    <img src="https://cdn.jsdelivr.net/gh/vititth-eng/ccd-design-system@main/assets/ccd-full.svg" alt="CCD" />
+  </a>
+  <nav class="nav-local" aria-label="Primary">
+    <button type="button" data-route="" aria-pressed="true">Home</button>
+    <div class="nav-item">
+      <button type="button" aria-haspopup="true" aria-expanded="false">Tools <span class="caret">▾</span></button>
+    </div>
+    <button type="button" data-route="/about" aria-pressed="false">About Us</button>
+  </nav>
+  <div class="meta"><strong>2,642</strong> days till 100 years</div>
+</header>
+
+<section class="hero">
+  <h1>Internal tools by CCD</h1>
+  <p class="sub">For everyone at Boon Rawd Brewery</p>
+  <p class="pulse"><span class="dot" aria-hidden="true"></span>2 tools<span class="sep">·</span>1 live<span class="sep">·</span>1 in beta</p>
+</section>
+
+
+<div class="divider">↓ system primitive, head-to-head ↓</div>
+
+
+<!-- ════════════ B · SYSTEM .nav (nav.css Phase 1.19) ════════════ -->
+<p class="compare-label">B · System .nav — consumes nav.css directly (52px, mask-icon brand, .nav__link underline, ticker in __actions slot)</p>
+
+<header class="nav" aria-label="Primary">
+  <a href="#" class="nav__brand">
+    <span class="nav__brand-mark" aria-hidden="true"></span>
+    <span>CCD</span>
+    <span class="nav__brand-sub">· Internal Tools</span>
+  </a>
+
+  <span class="nav__spacer"></span>
+
+  <nav class="nav__links">
+    <a href="#" class="nav__link" aria-current="page">Home</a>
+    <a href="#" class="nav__link has-caret">Tools <span class="caret">▾</span></a>
+    <a href="#about" class="nav__link">About Us</a>
+  </nav>
+
+  <span class="nav__spacer"></span>
+
+  <div class="nav__actions">
+    <span class="nav__meta"><strong>2,642</strong> days till 100 years</span>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>Internal tools by CCD</h1>
+  <p class="sub">For everyone at Boon Rawd Brewery</p>
+  <p class="pulse"><span class="dot" aria-hidden="true"></span>2 tools<span class="sep">·</span>1 live<span class="sep">·</span>1 in beta</p>
+</section>
+
+
+<div class="divider">notes</div>
+
+<section style="max-width:720px;margin:0 auto;padding:24px;font-size:var(--fs-small);color:var(--ink-soft);line-height:1.7">
+  <p><strong style="color:var(--ink)">What system .nav already gives us:</strong></p>
+  <ul style="margin:12px 0 18px 20px;padding:0">
+    <li>52px header height via <code>--header-h</code> (vs 56px bespoke)</li>
+    <li>Mark via CSS mask + <code>currentColor</code> — recolorable, no &lt;img&gt; download</li>
+    <li>Underline-active on <code>[aria-current="page"]</code> — matches tabs doctrine</li>
+    <li>Right utility slot (<code>.nav__actions</code>) already designed for icons, avatar, OR text</li>
+    <li>Focus ring, hover (color-only), keyboard tab order all baked in</li>
+  </ul>
+  <p><strong style="color:var(--ink)">What still needs decisions if landing consumes .nav:</strong></p>
+  <ul style="margin:12px 0 0 20px;padding:0">
+    <li>Brand sub-text (<code>· Internal Tools</code>) — keep or drop? Above I included it. Bespoke version doesn't show it.</li>
+    <li>Dropdown chevron — current .nav has no dropdown variant. Easy to add a <code>.nav__link--menu</code> modifier.</li>
+    <li>Ticker is text-in-actions. If we want it to be a first-class right slot, document as <code>.nav__meta</code> in nav.css.</li>
+  </ul>
+</section>
+
+</body>
+</html>
