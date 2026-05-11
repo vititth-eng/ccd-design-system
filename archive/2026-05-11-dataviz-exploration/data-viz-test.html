@@ -1,0 +1,1358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data-viz v1 (misty-aligned) + card explorations · sandbox</title>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="layout.css">
+<link rel="stylesheet" href="icons.css">
+<style>
+  /* sandbox-only — misty-aligned data-viz vocabulary + card redesign explorations */
+
+  /* — sandbox-only proposal tokens (misty-aligned) — */
+  /* These would graduate INTO tokens.css (or a new tokens-data.css), replacing
+     the off-palette dashboard tokens at Phase 2A. */
+  :root {
+    /* Score heatmap — 5-band, all misty pastels (rust → peach → amber → yellow-green → olive) */
+    --score-1: #EBBEB5;  /* = --tint-alert     · worst */
+    --score-2: #EBCAB5;  /* mid alert→caution  · warm peach */
+    --score-3: #EBDAB5;  /* = --tint-caution   · amber pastel */
+    --score-4: #E6E2B5;  /* mid caution→positive · warm yellow-green */
+    --score-5: #E2EBB5;  /* = --tint-positive  · olive pastel */
+    --score-empty: var(--paper-tint);
+
+    /* Sentiment 3-band — uses misty status hues directly */
+    --sent-neg: var(--dot-negative);
+    --sent-neu: var(--ink-muted);
+    --sent-pos: var(--dot-positive);
+    --sent-neg-tint: var(--tint-alert);
+    --sent-neu-tint: var(--rule);
+    --sent-pos-tint: var(--tint-positive);
+
+    /* Severity (replaces dashboard --alert-*) — straight aliases of misty status */
+    --sev-deep:    var(--dot-negative);   /* >1.0 magnitude */
+    --sev-mild:    var(--dot-caution);    /* 0.2–1.0 */
+    --sev-aligned: var(--ink-muted);      /* ≤0.2 */
+    --sev-missing: var(--ink-muted);      /* null/insufficient */
+
+    /* Perspective pair experiments — see §4 for A/B/C */
+    --persp-A-nh: var(--brand-deep);
+    --persp-A-sp: var(--brand);
+    --persp-A-mt: var(--brand-soft);
+
+    --persp-B-nh: var(--brand-deep);
+    --persp-B-sp: var(--brand);
+    --persp-B-mt: #8C6F2C;  /* proposed --brand-warm · misty-aligned warm tan */
+
+    /* C uses no color encoding for perspective — text + glyph only */
+  }
+
+  body { background: var(--paper-tint); color: var(--ink); font-family: var(--sans); font-size: var(--fs-body); line-height: var(--lh-normal); margin: 0; }
+  main { max-width: var(--max-content); margin: 0 auto; padding: var(--s-7) var(--gutter); }
+  h1 { font-size: var(--fs-display); line-height: var(--lh-tight); letter-spacing: -0.02em; margin: 0 0 var(--s-2); color: var(--ink); }
+  h2 { font-size: var(--fs-section); line-height: var(--lh-snug); margin: var(--s-7) 0 var(--s-3); padding-bottom: var(--s-2); border-bottom: 1px solid var(--rule); color: var(--ink); }
+  h3 { font-size: var(--fs-card); line-height: var(--lh-snug); margin: var(--s-5) 0 var(--s-3); color: var(--ink-soft); }
+  p, li { color: var(--ink-soft); }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.875em; background: var(--paper); padding: 1px 5px; border-radius: var(--r-xs); border: 1px solid var(--rule); }
+  .lede { color: var(--ink-soft); font-size: var(--fs-body); max-width: 60ch; margin: 0 0 var(--s-5); }
+  .meta { font-size: var(--fs-small); color: var(--ink-muted); }
+  .panel { background: var(--paper); border: 1px solid var(--rule); border-radius: var(--r-card); padding: var(--s-5); margin: var(--s-3) 0; }
+  .row { display: flex; gap: var(--s-5); flex-wrap: wrap; align-items: flex-start; }
+  .row > * { flex: 1 1 280px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-4); }
+  @media (max-width: 720px) { .grid-3 { grid-template-columns: 1fr; } }
+
+  /* — RAMPS (misty) — */
+  .ramp { display: flex; gap: 0; border-radius: var(--r-xs); overflow: hidden; height: 36px; border: 1px solid var(--rule); }
+  .ramp > span { flex: 1; display: grid; place-items: center; font-size: var(--fs-micro); color: var(--ink); font-variant-numeric: tabular-nums; font-weight: var(--fw-semi); letter-spacing: 0.02em; }
+  .ramp-score > .s1 { background: var(--score-1); }
+  .ramp-score > .s2 { background: var(--score-2); }
+  .ramp-score > .s3 { background: var(--score-3); }
+  .ramp-score > .s4 { background: var(--score-4); }
+  .ramp-score > .s5 { background: var(--score-5); }
+  .ramp-sent > .neg { background: var(--sent-neg); color: #fff; }
+  .ramp-sent > .neu { background: var(--sent-neu); color: #fff; }
+  .ramp-sent > .pos { background: var(--sent-pos); color: #fff; }
+  .ramp-seq > span:nth-child(1) { background: var(--heat-1); }
+  .ramp-seq > span:nth-child(2) { background: var(--heat-2); }
+  .ramp-seq > span:nth-child(3) { background: var(--heat-3); }
+  .ramp-seq > span:nth-child(4) { background: var(--heat-4); }
+  .ramp-seq > span:nth-child(5) { background: var(--heat-5); color: #fff; }
+
+  /* — SCORE HEATMAP — */
+  .dv-heat { width: 100%; border-collapse: separate; border-spacing: 2px; font-size: var(--fs-small); font-variant-numeric: tabular-nums; }
+  .dv-heat th { font-size: var(--fs-micro); font-weight: var(--fw-semi); color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.04em; text-align: center; padding: var(--s-2) var(--s-1); }
+  .dv-heat th:first-child { text-align: left; padding-left: var(--s-3); width: 38%; }
+  .dv-heat td { text-align: center; padding: var(--s-3) var(--s-1); border-radius: var(--r-xs); color: var(--ink); font-weight: var(--fw-semi); }
+  .dv-heat td.q { text-align: left; padding-left: var(--s-3); font-weight: var(--fw-regular); color: var(--ink-soft); background: transparent; }
+  .dv-heat td.s1 { background: var(--score-1); }
+  .dv-heat td.s2 { background: var(--score-2); }
+  .dv-heat td.s3 { background: var(--score-3); }
+  .dv-heat td.s4 { background: var(--score-4); }
+  .dv-heat td.s5 { background: var(--score-5); }
+  .dv-heat td.empty { background: var(--score-empty); color: var(--ink-muted); font-weight: var(--fw-regular); }
+
+  /* — SENTIMENT — */
+  .dv-sent { height: 10px; display: flex; border-radius: var(--r-tiny); overflow: hidden; background: var(--paper-tint); }
+  .dv-sent > .neg { background: var(--sent-neg); }
+  .dv-sent > .neu { background: var(--sent-neu); }
+  .dv-sent > .pos { background: var(--sent-pos); }
+  .dv-sent-row { display: grid; grid-template-columns: 1fr 100px 16ch; gap: var(--s-3); align-items: center; padding: var(--s-2) 0; }
+  .dv-sent-row .label { font-size: var(--fs-small); color: var(--ink); }
+  .dv-sent-row .counts { font-size: var(--fs-micro); color: var(--ink-muted); font-variant-numeric: tabular-nums; text-align: right; }
+
+  /* — PERSPECTIVE PAIR variants — */
+  .dv-persp { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-micro); font-weight: var(--fw-semi); padding: 2px var(--s-2); border-radius: var(--r-tiny); letter-spacing: 0.02em; }
+  .dv-persp > .dot { width: 7px; height: 7px; border-radius: 50%; }
+  /* Variant A — three blues */
+  .dv-persp.A.nh { background: color-mix(in srgb, var(--persp-A-nh) 10%, var(--paper)); color: var(--persp-A-nh); }
+  .dv-persp.A.nh > .dot { background: var(--persp-A-nh); }
+  .dv-persp.A.sp { background: color-mix(in srgb, var(--persp-A-sp) 10%, var(--paper)); color: var(--persp-A-sp); }
+  .dv-persp.A.sp > .dot { background: var(--persp-A-sp); }
+  .dv-persp.A.mt { background: color-mix(in srgb, var(--persp-A-mt) 30%, var(--paper)); color: var(--brand-deep); }
+  .dv-persp.A.mt > .dot { background: var(--persp-A-mt); }
+  /* Variant B — two blues + one warm */
+  .dv-persp.B.nh { background: color-mix(in srgb, var(--persp-B-nh) 10%, var(--paper)); color: var(--persp-B-nh); }
+  .dv-persp.B.nh > .dot { background: var(--persp-B-nh); }
+  .dv-persp.B.sp { background: color-mix(in srgb, var(--persp-B-sp) 10%, var(--paper)); color: var(--persp-B-sp); }
+  .dv-persp.B.sp > .dot { background: var(--persp-B-sp); }
+  .dv-persp.B.mt { background: color-mix(in srgb, var(--persp-B-mt) 12%, var(--paper)); color: var(--persp-B-mt); }
+  .dv-persp.B.mt > .dot { background: var(--persp-B-mt); }
+  /* Variant C — text-only, no color encoding */
+  .dv-persp.C { background: var(--paper); color: var(--ink-soft); border: 1px solid var(--rule); padding: 2px 8px; }
+  .dv-persp.C .glyph { font-weight: var(--fw-bold); color: var(--ink); margin-right: 2px; letter-spacing: 0.04em; }
+
+  /* — TREND ARROWS — */
+  .dv-trend { font-variant-numeric: tabular-nums; font-weight: var(--fw-semi); display: inline-flex; align-items: baseline; gap: 4px; }
+  .dv-trend .arrow { font-weight: var(--fw-bold); }
+  .dv-trend.is-aligned { color: var(--sev-aligned); }
+  .dv-trend.is-mild    { color: var(--sev-mild); }
+  .dv-trend.is-deep    { color: var(--sev-deep); }
+  .dv-trend.is-split   { color: var(--sev-deep); }
+  .dv-trend.is-missing { color: var(--sev-missing); }
+
+  /* — KPI VARIANTS (3 cards explorations) — */
+  /* Variant A — 3px inset shadow tone (current direction, refined) */
+  .kpi-A { padding: var(--s-5); border-radius: var(--r-card); background: var(--paper); border: 1px solid var(--rule); display: flex; flex-direction: column; gap: var(--s-2); }
+  .kpi-A .label { font-size: var(--fs-micro); color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: var(--fw-semi); }
+  .kpi-A .value { font-size: 28px; font-weight: var(--fw-bold); color: var(--ink); line-height: 1.05; font-variant-numeric: tabular-nums; }
+  .kpi-A .value .unit { font-size: 14px; font-weight: var(--fw-semi); color: var(--ink-muted); margin-left: 4px; }
+  .kpi-A .sub { font-size: var(--fs-micro); color: var(--ink-muted); }
+  .kpi-A[data-tone="good"]  { box-shadow: inset 3px 0 0 var(--dot-positive); }
+  .kpi-A[data-tone="warn"]  { box-shadow: inset 3px 0 0 var(--dot-caution); }
+  .kpi-A[data-tone="bad"]   { box-shadow: inset 3px 0 0 var(--dot-negative); }
+  .kpi-A[data-tone="muted"] { box-shadow: inset 3px 0 0 var(--ink-muted); }
+
+  /* Variant B — tone dot in label row, no left bar */
+  .kpi-B { padding: var(--s-5); border-radius: var(--r-card); background: var(--paper); border: 1px solid var(--rule); display: flex; flex-direction: column; gap: var(--s-3); }
+  .kpi-B .head { display: flex; align-items: center; gap: 6px; }
+  .kpi-B .label { font-size: var(--fs-micro); color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: var(--fw-semi); }
+  .kpi-B .tone-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ink-muted); }
+  .kpi-B[data-tone="good"]  .tone-dot { background: var(--dot-positive); }
+  .kpi-B[data-tone="warn"]  .tone-dot { background: var(--dot-caution); }
+  .kpi-B[data-tone="bad"]   .tone-dot { background: var(--dot-negative); }
+  .kpi-B .value { font-size: 32px; font-weight: var(--fw-bold); color: var(--ink); line-height: 1; font-variant-numeric: tabular-nums; }
+  .kpi-B .value .unit { font-size: 16px; font-weight: var(--fw-medium); color: var(--ink-muted); margin-left: 4px; }
+  .kpi-B .foot { display: flex; justify-content: space-between; align-items: baseline; padding-top: var(--s-3); border-top: 1px solid var(--rule); font-size: var(--fs-micro); color: var(--ink-muted); }
+  .kpi-B .foot .delta { font-weight: var(--fw-semi); font-variant-numeric: tabular-nums; }
+  .kpi-B .foot .delta.up   { color: var(--sev-mild); }
+  .kpi-B .foot .delta.down { color: var(--sev-deep); }
+  .kpi-B .foot .delta.flat { color: var(--ink-muted); }
+
+  /* Variant C — minimal, label tone, no chrome */
+  .kpi-C { padding: var(--s-4) var(--s-5); display: flex; flex-direction: column; gap: var(--s-2); border-left: 1px solid var(--rule); }
+  .kpi-C:first-child { border-left: none; }
+  .kpi-C .label { font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: 0.06em; font-weight: var(--fw-semi); color: var(--ink-muted); }
+  .kpi-C[data-tone="bad"]  .label { color: var(--dot-negative); }
+  .kpi-C[data-tone="warn"] .label { color: var(--dot-caution); }
+  .kpi-C[data-tone="good"] .label { color: var(--dot-positive); }
+  .kpi-C .value { font-size: 30px; font-weight: var(--fw-bold); color: var(--ink); line-height: 1; font-variant-numeric: tabular-nums; }
+  .kpi-C .value .unit { font-size: 15px; font-weight: var(--fw-medium); color: var(--ink-muted); margin-left: 4px; }
+  .kpi-C .sub { font-size: var(--fs-micro); color: var(--ink-muted); }
+  .kpi-rail { display: grid; grid-template-columns: repeat(4, 1fr); background: var(--paper); border: 1px solid var(--rule); border-radius: var(--r-card); }
+
+  /* — TABLE CARD — */
+  .tcard { background: var(--paper); border: 1px solid var(--rule); border-radius: var(--r-card); overflow: hidden; }
+  .tcard .tcard-head { display: flex; align-items: baseline; justify-content: space-between; padding: var(--s-4) var(--s-5); border-bottom: 1px solid var(--rule); }
+  .tcard .tcard-head h3 { font-size: var(--fs-card); margin: 0; color: var(--ink); }
+  .tcard .tcard-head .meta { font-size: var(--fs-micro); color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  .tcard .tcard-body { padding: var(--s-3) var(--s-5) var(--s-5); }
+  .tcard .tcard-foot { padding: var(--s-3) var(--s-5); border-top: 1px solid var(--rule); background: var(--paper-tint); font-size: var(--fs-micro); color: var(--ink-muted); display: flex; justify-content: space-between; align-items: center; }
+
+  /* — ALERT GROUP CARD — */
+  .acard { background: var(--paper); border: 1px solid var(--rule); border-radius: var(--r-card); padding: var(--s-4) var(--s-5); display: flex; flex-direction: column; gap: var(--s-3); position: relative; }
+  .acard.is-deep { box-shadow: inset 3px 0 0 var(--dot-negative); }
+  .acard.is-mild { box-shadow: inset 3px 0 0 var(--dot-caution); }
+  .acard .ahead { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); }
+  .acard .atitle { font-size: var(--fs-body); font-weight: var(--fw-semi); color: var(--ink); }
+  .acard .apill { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: var(--r-tiny); font-size: var(--fs-micro); font-weight: var(--fw-semi); letter-spacing: 0.04em; text-transform: uppercase; }
+  .acard.is-deep .apill { background: var(--tint-alert); color: var(--ink); }
+  .acard.is-deep .apill .dot { background: var(--dot-negative); }
+  .acard.is-mild .apill { background: var(--tint-caution); color: var(--ink); }
+  .acard.is-mild .apill .dot { background: var(--dot-caution); }
+  .acard .apill .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .acard .ameta { display: flex; gap: var(--s-3); flex-wrap: wrap; font-size: var(--fs-micro); color: var(--ink-muted); }
+  .acard .abody { font-size: var(--fs-small); color: var(--ink-soft); line-height: var(--lh-normal); }
+  .acard .afoot { display: flex; justify-content: flex-end; gap: var(--s-2); padding-top: var(--s-2); border-top: 1px dashed var(--rule); font-size: var(--fs-micro); color: var(--ink-muted); }
+
+  /* — THEME CARD — */
+  .thcard { background: var(--paper); border: 1px solid var(--rule); border-radius: var(--r-card); padding: var(--s-4) var(--s-5); display: flex; flex-direction: column; gap: var(--s-3); }
+  .thcard .ttitle { font-size: var(--fs-body); font-weight: var(--fw-semi); color: var(--ink); }
+  .thcard .tbar { height: 8px; border-radius: var(--r-pill); overflow: hidden; display: flex; background: var(--rule); }
+  .thcard .tbar > span { display: block; height: 100%; }
+  .thcard .tbar .neg { background: var(--sent-neg); }
+  .thcard .tbar .neu { background: var(--sent-neu); }
+  .thcard .tbar .pos { background: var(--sent-pos); }
+  .thcard .tcounts { display: flex; gap: var(--s-4); font-size: var(--fs-micro); color: var(--ink-muted); font-variant-numeric: tabular-nums; }
+  .thcard .tcounts .v { font-weight: var(--fw-semi); color: var(--ink); margin-right: 4px; }
+  .thcard .texcerpt { font-size: var(--fs-small); color: var(--ink-soft); line-height: var(--lh-normal); padding: var(--s-2) var(--s-3); background: var(--paper-tint); border-left: 2px solid var(--rule); border-radius: 0 var(--r-xs) var(--r-xs) 0; }
+
+  /* — HORIZONTAL % BAR (refreshed with misty) — */
+  .dv-pct { display: grid; grid-template-columns: 12ch 1fr 6ch 8ch; gap: var(--s-3); align-items: center; padding: var(--s-2) 0; font-size: var(--fs-small); }
+  .dv-pct .lab { color: var(--ink); }
+  .dv-pct .track { height: 8px; background: var(--rule); border-radius: var(--r-pill); overflow: hidden; }
+  .dv-pct .fill { height: 100%; background: var(--brand); border-radius: var(--r-pill); }
+  .dv-pct .fill.is-alert { background: var(--dot-negative); }
+  .dv-pct .pct { font-weight: var(--fw-semi); color: var(--ink); font-variant-numeric: tabular-nums; text-align: right; }
+  .dv-pct .denom { color: var(--ink-muted); font-variant-numeric: tabular-nums; font-size: var(--fs-micro); }
+
+  /* — VERTICAL BAR — */
+  .dv-bars { display: grid; grid-template-columns: repeat(7, 1fr); gap: var(--s-2); align-items: end; height: 160px; padding: 0 var(--s-3) var(--s-3); border-bottom: 1px solid var(--rule); }
+  .dv-bars > .bar { background: var(--heat-4); border-radius: var(--r-tiny) var(--r-tiny) 0 0; position: relative; min-height: 2px; }
+  .dv-bars > .bar.is-alert { background: var(--dot-negative); }
+  .dv-bars > .bar > .v { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: var(--fs-micro); color: var(--ink); font-variant-numeric: tabular-nums; }
+  .dv-bars-x { display: grid; grid-template-columns: repeat(7, 1fr); gap: var(--s-2); padding: var(--s-2) var(--s-3) 0; }
+  .dv-bars-x > span { text-align: center; font-size: var(--fs-micro); color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+
+  /* — EMPTY — */
+  .dv-empty { padding: var(--s-6) var(--s-5); text-align: center; color: var(--ink-muted); font-size: var(--fs-small); border: 1px dashed var(--rule); border-radius: var(--r-card); background: var(--paper-tint); }
+  .dv-empty .em { font-size: 24px; line-height: 1; color: var(--rule); margin-bottom: var(--s-2); }
+  .dv-empty .copy { color: var(--ink-soft); }
+
+  /* — note blocks — */
+  .anti, .ok, .pick { display: grid; grid-template-columns: 24px 1fr; gap: var(--s-3); padding: var(--s-3); margin: var(--s-2) 0; border-radius: var(--r-xs); font-size: var(--fs-small); }
+  .anti { background: color-mix(in srgb, var(--dot-negative) 8%, var(--paper)); border-left: 3px solid var(--dot-negative); }
+  .anti::before { content: "✕"; color: var(--dot-negative); font-weight: var(--fw-bold); }
+  .ok { background: color-mix(in srgb, var(--dot-positive) 8%, var(--paper)); border-left: 3px solid var(--dot-positive); }
+  .ok::before { content: "✓"; color: var(--dot-positive); font-weight: var(--fw-bold); }
+  .pick { background: var(--tint-neutral); border-left: 3px solid var(--brand); }
+  .pick::before { content: "?"; color: var(--brand); font-weight: var(--fw-bold); }
+
+  /* — TOC — */
+  .toc { position: sticky; top: 0; background: color-mix(in srgb, var(--paper-tint) 92%, transparent); backdrop-filter: blur(6px); border-bottom: 1px solid var(--rule); padding: var(--s-3) var(--gutter); font-size: var(--fs-small); display: flex; gap: var(--s-4); flex-wrap: wrap; z-index: var(--z-sticky); }
+  .toc a { color: var(--ink-soft); text-decoration: none; }
+  .toc a:hover { color: var(--ink); }
+
+  /* — SOURCE TABLE — */
+  .src-table { width: 100%; border-collapse: collapse; font-size: var(--fs-small); margin: var(--s-3) 0; }
+  .src-table th, .src-table td { text-align: left; padding: var(--s-2) var(--s-3); border-bottom: 1px solid var(--rule); vertical-align: top; }
+  .src-table th { font-size: var(--fs-micro); color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.04em; font-weight: var(--fw-semi); }
+  .src-table td.tok { font-family: ui-monospace, "SF Mono", Menlo, monospace; color: var(--ink-soft); }
+  .src-table td.swatch { width: 28px; }
+  .src-table td.swatch > i { display: block; width: 20px; height: 20px; border-radius: 4px; border: 1px solid var(--rule); }
+</style>
+</head>
+<body>
+
+<nav class="toc">
+  <strong>Data-viz v1 (misty) + cards</strong>
+  <a href="#ramps">Ramps</a>
+  <a href="#heatmap">Heatmap</a>
+  <a href="#sentiment">Sentiment</a>
+  <a href="#perspective">Perspective A/B/C</a>
+  <a href="#trend">Trend</a>
+  <a href="#bars">Bars</a>
+  <a href="#kpi">KPI cards</a>
+  <a href="#tcard">Table card</a>
+  <a href="#acard">Alert card</a>
+  <a href="#thcard">Theme card</a>
+  <a href="#anti">Anti-patterns</a>
+</nav>
+
+<main>
+  <header style="margin-bottom: var(--s-6)">
+    <h1>Data-viz v1 — misty-aligned</h1>
+    <p class="lede">Phase 1.17 sandbox, take 2. The dashboard layer's teal/purple/web-red colors are off-palette — graduating them would enshrine drift. This rebuild stays inside the locked misty discipline (rust / amber / olive / blues + 5 heat blues) and asks you to pick a perspective-pair direction. Card shapes also redesigned for breathing room and quieter chrome.</p>
+    <p class="meta">Sandbox-only proposal tokens at top of <code>&lt;style&gt;</code>. None ship until graduation.</p>
+  </header>
+
+  <!-- ============ 1 RAMPS ============ -->
+  <h2 id="ramps">1 · Ramps (misty)</h2>
+
+  <div class="panel">
+    <h3>Score heatmap — 5-band, all misty</h3>
+    <p class="meta">Bands: <code>s1 &lt;2.0</code> · <code>s2 2.0–2.9</code> · <code>s3 3.0–3.9</code> · <code>s4 4.0–4.4</code> · <code>s5 ≥4.5</code>. <strong>Tradeoff:</strong> the directional axis is now warm-warm (rust → olive yellow-green) instead of warm-cool (rust → cool green). Less visual drama, but stays inside the palette.</p>
+    <div class="ramp ramp-score" aria-label="Score heatmap ramp">
+      <span class="s1">&lt;2.0</span>
+      <span class="s2">2.0–2.9</span>
+      <span class="s3">3.0–3.9</span>
+      <span class="s4">4.0–4.4</span>
+      <span class="s5">≥4.5</span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Sentiment — 3-band (pure misty status)</h3>
+    <p class="meta">Reuses the locked status hues directly: <code>--dot-negative</code> · <code>--ink-muted</code> · <code>--dot-positive</code>. No new tokens.</p>
+    <div class="ramp ramp-sent" aria-label="Sentiment ramp">
+      <span class="neg">negative</span>
+      <span class="neu">neutral</span>
+      <span class="pos">positive</span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Sequential — 5-step mono-blue (already locked Phase 1.6)</h3>
+    <p class="meta">Tokens: <code>--heat-1..5</code>. For <em>amounts</em>, never scores. Bars in <code>--heat-4</code>; one outlier swaps to <code>--dot-negative</code>.</p>
+    <div class="ramp ramp-seq" aria-label="Sequential mono-blue">
+      <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+    </div>
+  </div>
+
+  <!-- ============ 2 HEATMAP ============ -->
+  <h2 id="heatmap">2 · Score heatmap (cells)</h2>
+  <div class="panel">
+    <table class="dv-heat">
+      <thead>
+        <tr><th>Question</th><th>W1</th><th>W2</th><th>W3</th><th>Overall</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="q">Belonging to the team</td>      <td class="s5">4.6</td><td class="s5">4.7</td><td class="s4">4.3</td><td class="s5">4.5</td></tr>
+        <tr><td class="q">Manager support</td>            <td class="s4">4.2</td><td class="s4">4.0</td><td class="s3">3.8</td><td class="s4">4.0</td></tr>
+        <tr><td class="q">Clarity of expectations</td>    <td class="s3">3.7</td><td class="s3">3.6</td><td class="s2">2.9</td><td class="s3">3.4</td></tr>
+        <tr><td class="q">Workload balance</td>           <td class="s2">2.8</td><td class="s2">2.6</td><td class="s1">1.9</td><td class="s2">2.4</td></tr>
+        <tr><td class="q">Tools &amp; access</td>          <td class="s4">4.1</td><td class="empty">—</td><td class="s4">4.0</td><td class="s4">4.05</td></tr>
+      </tbody>
+    </table>
+    <p class="meta" style="margin-top: var(--s-3)">Open question: does the warm-warm gradient still read as "bad → good" at-a-glance? Compare the bottom row (workload, all warm-pink) against top (belonging, yellow-green). If the contrast feels insufficient, the next move is desaturating s1 toward a deeper rust or punching s5 to a more saturated olive.</p>
+  </div>
+
+  <!-- ============ 3 SENTIMENT ============ -->
+  <h2 id="sentiment">3 · Sentiment stacked bar</h2>
+  <div class="panel">
+    <div class="dv-sent-row">
+      <span class="label">Onboarding pace</span>
+      <div class="dv-sent" role="img" aria-label="34% negative, 28% neutral, 38% positive">
+        <span class="neg" style="width: 34%"></span>
+        <span class="neu" style="width: 28%"></span>
+        <span class="pos" style="width: 38%"></span>
+      </div>
+      <span class="counts">▼12 · 10 · ▲13</span>
+    </div>
+    <div class="dv-sent-row">
+      <span class="label">Manager 1:1s</span>
+      <div class="dv-sent">
+        <span class="neg" style="width: 8%"></span>
+        <span class="neu" style="width: 22%"></span>
+        <span class="pos" style="width: 70%"></span>
+      </div>
+      <span class="counts">▼3 · 8 · ▲25</span>
+    </div>
+    <div class="dv-sent-row">
+      <span class="label">Workload</span>
+      <div class="dv-sent">
+        <span class="neg" style="width: 60%"></span>
+        <span class="neu" style="width: 25%"></span>
+        <span class="pos" style="width: 15%"></span>
+      </div>
+      <span class="counts">▼21 · 9 · ▲5</span>
+    </div>
+  </div>
+
+  <!-- ============ 4 PERSPECTIVE A/B/C ============ -->
+  <h2 id="perspective">4 · Perspective pair — pick A, B, or C</h2>
+  <p>Misty has no purple. The question: how do we encode three perspectives (NH / SP / MT) without inventing off-palette hues? Three options below, all visible side-by-side.</p>
+
+  <div class="panel">
+    <h3>A — Three blues (deep / mid / soft)</h3>
+    <p class="meta">No new tokens. NH = <code>--brand-deep</code>, SP = <code>--brand</code>, MT = <code>--brand-soft</code>. Risk: at 7px dot scale the difference between brand and brand-soft might blur, especially against the dashboard's cool backgrounds.</p>
+    <p>
+      <span class="dv-persp A nh"><span class="dot"></span>NH — New Hire</span>
+      <span class="dv-persp A sp"><span class="dot"></span>SP — Self</span>
+      <span class="dv-persp A mt"><span class="dot"></span>MT — Manager</span>
+    </p>
+    <p class="meta">Inline use: avg score across <span class="dv-persp A nh"><span class="dot"></span>NH</span> 4.2 / <span class="dv-persp A sp"><span class="dot"></span>SP</span> 3.8 / <span class="dv-persp A mt"><span class="dot"></span>MT</span> 3.1.</p>
+  </div>
+
+  <div class="panel">
+    <h3>B — Two blues + one warm tan</h3>
+    <p class="meta">Introduces ONE new token: <code>--brand-warm: #8C6F2C</code> (a misty-derived warm tan). NH = <code>--brand-deep</code>, SP = <code>--brand</code>, MT = <code>--brand-warm</code>. Maximum chromatic distance, minimum palette drift.</p>
+    <p>
+      <span class="dv-persp B nh"><span class="dot"></span>NH — New Hire</span>
+      <span class="dv-persp B sp"><span class="dot"></span>SP — Self</span>
+      <span class="dv-persp B mt"><span class="dot"></span>MT — Manager</span>
+    </p>
+    <p class="meta">Inline use: avg score across <span class="dv-persp B nh"><span class="dot"></span>NH</span> 4.2 / <span class="dv-persp B sp"><span class="dot"></span>SP</span> 3.8 / <span class="dv-persp B mt"><span class="dot"></span>MT</span> 3.1.</p>
+  </div>
+
+  <div class="panel">
+    <h3>C — No color encoding · text + glyph only</h3>
+    <p class="meta">Zero new tokens, zero risk. Perspective is carried by the 2-letter glyph alone. Works because the perspectives are <em>known</em> (anyone reading the dashboard already knows NH/SP/MT) — color is paying for nothing. Tradeoff: harder to scan one perspective across a dense table at-a-glance.</p>
+    <p>
+      <span class="dv-persp C"><span class="glyph">NH</span>New Hire</span>
+      <span class="dv-persp C"><span class="glyph">SP</span>Self</span>
+      <span class="dv-persp C"><span class="glyph">MT</span>Manager</span>
+    </p>
+    <p class="meta">Inline use: avg score across <span class="dv-persp C"><span class="glyph">NH</span></span> 4.2 / <span class="dv-persp C"><span class="glyph">SP</span></span> 3.8 / <span class="dv-persp C"><span class="glyph">MT</span></span> 3.1.</p>
+  </div>
+
+  <div class="pick"><span><b>Decision needed.</b> A, B, or C — pick before graduation. My read: B if you scan perspective often (real second hue earns its place); C if perspective is just metadata that sits next to the score.</span></div>
+
+  <!-- ============ 5 TREND ============ -->
+  <h2 id="trend">5 · Severity-coded trend arrows</h2>
+  <p>Magnitude drives color, not direction. Positive movement is never green.</p>
+  <div class="panel">
+    <table class="src-table">
+      <thead><tr><th>Pattern</th><th>Glyph</th><th>Color token</th><th>Trigger</th></tr></thead>
+      <tbody>
+        <tr><td>aligned</td>  <td><span class="dv-trend is-aligned"><span class="arrow">↔</span> 0.1</span></td>  <td class="tok">--ink-muted</td>      <td>|gap| ≤ 0.2</td></tr>
+        <tr><td>mild up</td>  <td><span class="dv-trend is-mild"><span class="arrow">▲</span> 0.7</span></td>     <td class="tok">--dot-caution</td>    <td>0.2 &lt; |gap| ≤ 1.0</td></tr>
+        <tr><td>mild down</td><td><span class="dv-trend is-mild"><span class="arrow">▼</span> 0.5</span></td>     <td class="tok">--dot-caution</td>    <td>0.2 &lt; |gap| ≤ 1.0</td></tr>
+        <tr><td>deep up</td>  <td><span class="dv-trend is-deep"><span class="arrow">▲</span> 1.4</span></td>     <td class="tok">--dot-negative</td>   <td>|gap| &gt; 1.0</td></tr>
+        <tr><td>deep down</td><td><span class="dv-trend is-deep"><span class="arrow">▼</span> 1.6</span></td>     <td class="tok">--dot-negative</td>   <td>|gap| &gt; 1.0</td></tr>
+        <tr><td>split</td>    <td><span class="dv-trend is-split"><span class="arrow">⇅</span> 1.1</span></td>    <td class="tok">--dot-negative</td>   <td>SP/MT opposite signs, mag &gt; 0.2</td></tr>
+        <tr><td>missing</td>  <td><span class="dv-trend is-missing"><span class="arrow">—</span></span></td>      <td class="tok">--ink-muted</td>      <td>null / insufficient n</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ============ 6 BARS ============ -->
+  <h2 id="bars">6 · Bars</h2>
+
+  <div class="panel">
+    <h3>Horizontal % bar matrix</h3>
+    <div class="dv-pct"><span class="lab">W1 · NH</span><div class="track"><span class="fill" style="width: 92%"></span></div><span class="pct">92%</span><span class="denom">46/50</span></div>
+    <div class="dv-pct"><span class="lab">W1 · SP</span><div class="track"><span class="fill" style="width: 78%"></span></div><span class="pct">78%</span><span class="denom">39/50</span></div>
+    <div class="dv-pct"><span class="lab">W1 · MT</span><div class="track"><span class="fill is-alert" style="width: 32%"></span></div><span class="pct">32%</span><span class="denom">16/50</span></div>
+    <div class="dv-pct"><span class="lab">W2 · NH</span><div class="track"><span class="fill" style="width: 84%"></span></div><span class="pct">84%</span><span class="denom">42/50</span></div>
+  </div>
+
+  <div class="panel">
+    <h3>Vertical bar — one-outlier-alert</h3>
+    <div class="dv-bars">
+      <div class="bar" style="height: 75%"><span class="v">3.8</span></div>
+      <div class="bar" style="height: 80%"><span class="v">4.0</span></div>
+      <div class="bar is-alert" style="height: 38%"><span class="v">1.9</span></div>
+      <div class="bar" style="height: 72%"><span class="v">3.6</span></div>
+      <div class="bar" style="height: 78%"><span class="v">3.9</span></div>
+      <div class="bar" style="height: 82%"><span class="v">4.1</span></div>
+      <div class="bar" style="height: 90%"><span class="v">4.5</span></div>
+    </div>
+    <div class="dv-bars-x">
+      <span>Q1</span><span>Q2</span><span>Q3</span><span>Q4</span><span>Q5</span><span>Q6</span><span>Q7</span>
+    </div>
+  </div>
+
+  <!-- ============ 7 KPI CARDS ============ -->
+  <h2 id="kpi">7 · KPI card — pick A, B, or C</h2>
+  <p>Three card shapes. Same data, three chromas of "tone." The dashboard's current KPI tile is closest to A but with cooler chrome and more padding-noise. Try all three on real screens before graduation.</p>
+
+  <div class="panel">
+    <h3>A — 3px inset shadow tone (refined current)</h3>
+    <p class="meta">Subtle left bar carries tone. Quietest of the three; tone whispers from the edge.</p>
+    <div class="grid-3">
+      <div class="kpi-A" data-tone="good">
+        <span class="label">Response rate</span>
+        <span class="value">82<span class="unit">%</span></span>
+        <span class="sub">41 of 50 invited</span>
+      </div>
+      <div class="kpi-A" data-tone="warn">
+        <span class="label">Avg score</span>
+        <span class="value">3.4<span class="unit">/ 5</span></span>
+        <span class="sub">across 12 questions</span>
+      </div>
+      <div class="kpi-A" data-tone="bad">
+        <span class="label">Open alerts</span>
+        <span class="value">7</span>
+        <span class="sub">3 deep · 4 mild</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>B — Tone dot in label, delta in foot</h3>
+    <p class="meta">Dot + label is the tone signal; the foot adds a delta-since-last reading. Card is the same width but more layered. Best when delta-vs-prev matters as much as the absolute value.</p>
+    <div class="grid-3">
+      <div class="kpi-B" data-tone="good">
+        <span class="head"><span class="tone-dot"></span><span class="label">Response rate</span></span>
+        <span class="value">82<span class="unit">%</span></span>
+        <div class="foot"><span>vs W1</span><span class="delta up">▲ 6 pts</span></div>
+      </div>
+      <div class="kpi-B" data-tone="warn">
+        <span class="head"><span class="tone-dot"></span><span class="label">Avg score</span></span>
+        <span class="value">3.4<span class="unit">/ 5</span></span>
+        <div class="foot"><span>vs W1</span><span class="delta down">▼ 0.3</span></div>
+      </div>
+      <div class="kpi-B" data-tone="bad">
+        <span class="head"><span class="tone-dot"></span><span class="label">Open alerts</span></span>
+        <span class="value">7</span>
+        <div class="foot"><span>vs W1</span><span class="delta up">▲ 4</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" style="padding: 0; overflow: hidden">
+    <h3 style="padding: var(--s-5) var(--s-5) 0">C — Rail (no tile, just dividers)</h3>
+    <p class="meta" style="padding: 0 var(--s-5) var(--s-3)">Single card with internal dividers. Quietest possible. Tone shows as a colored label only when it matters; "good" and "muted" share the muted gray label so the eye lands on real signals (warn / bad). For dashboards where 4–5 KPIs sit on top.</p>
+    <div class="kpi-rail">
+      <div class="kpi-C" data-tone="good">
+        <span class="label">Response rate</span>
+        <span class="value">82<span class="unit">%</span></span>
+        <span class="sub">41/50</span>
+      </div>
+      <div class="kpi-C" data-tone="warn">
+        <span class="label">Avg score</span>
+        <span class="value">3.4<span class="unit">/ 5</span></span>
+        <span class="sub">across 12</span>
+      </div>
+      <div class="kpi-C" data-tone="bad">
+        <span class="label">Open alerts</span>
+        <span class="value">7</span>
+        <span class="sub">3 deep · 4 mild</span>
+      </div>
+      <div class="kpi-C" data-tone="muted">
+        <span class="label">Active cohort</span>
+        <span class="value">14<span class="unit">NH</span></span>
+        <span class="sub">no scheduled</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="pick"><span><b>Decision needed.</b> A is the safest evolution. B adds delta-vs-prior (often the most useful number on a dashboard). C is the quietest and best for &gt;3 KPIs. Pick one as v1; the other two stay as variants for special cases.</span></div>
+
+  <!-- ============ 8 TABLE CARD ============ -->
+  <h2 id="tcard">8 · Table card</h2>
+  <p>Wraps the §17 table primitive in a card chrome. Header carries title + meta; foot carries pager or summary, on a faintly tinted strip so it reads as "secondary info, not a row."</p>
+  <div class="tcard">
+    <div class="tcard-head">
+      <h3>Score by question</h3>
+      <span class="meta">Wave 2 · 41 responses</span>
+    </div>
+    <div class="tcard-body">
+      <table class="dv-heat">
+        <thead><tr><th>Question</th><th>NH</th><th>SP</th><th>MT</th><th>Δ</th></tr></thead>
+        <tbody>
+          <tr><td class="q">Belonging</td>     <td class="s5">4.6</td><td class="s5">4.5</td><td class="s4">4.2</td><td><span class="dv-trend is-aligned"><span class="arrow">↔</span> 0.1</span></td></tr>
+          <tr><td class="q">Manager support</td><td class="s4">4.0</td><td class="s4">4.1</td><td class="s3">3.6</td><td><span class="dv-trend is-mild"><span class="arrow">▼</span> 0.5</span></td></tr>
+          <tr><td class="q">Clarity</td>        <td class="s3">3.6</td><td class="s3">3.4</td><td class="s2">2.7</td><td><span class="dv-trend is-deep"><span class="arrow">▼</span> 1.1</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="tcard-foot">
+      <span>Showing 3 of 12 questions</span>
+      <span>Updated 2026-05-10 · 14:22</span>
+    </div>
+  </div>
+
+  <!-- ============ 9 ALERT CARD ============ -->
+  <h2 id="acard">9 · Alert group card</h2>
+  <p>Replaces the dashboard's <code>.alert-group</code>. The 3px inset shadow on the left carries severity (instead of left-border which fights the card radius). Pill carries the same severity word + dot. Footer dashes-rule keeps actions visually distinct from body.</p>
+
+  <div class="row">
+    <div class="acard is-deep">
+      <div class="ahead">
+        <span class="atitle">Workload — W2 dropped 1.4 pts</span>
+        <span class="apill"><span class="dot"></span>Deep</span>
+      </div>
+      <div class="ameta">
+        <span>Cohort · Marketing intake 2026-04</span>
+        <span>·</span>
+        <span>9 of 12 respondents</span>
+      </div>
+      <div class="abody">"Workload" question fell from 3.8 (W1) to 2.4 (W2). Three free-text responses cite week-2 onboarding sessions overlapping with first project deliverables.</div>
+      <div class="afoot">Open thread · Mark read</div>
+    </div>
+
+    <div class="acard is-mild">
+      <div class="ahead">
+        <span class="atitle">Manager 1:1s — split signal</span>
+        <span class="apill"><span class="dot"></span>Mild</span>
+      </div>
+      <div class="ameta">
+        <span>Cohort · Sales intake 2026-04</span>
+        <span>·</span>
+        <span>SP/MT split &gt; 0.8</span>
+      </div>
+      <div class="abody">SP rated 4.2, MT rated 3.0. New hires perceive 1:1 quality higher than managers do — usually a calibration drift, not an alarm.</div>
+      <div class="afoot">Open thread · Mark read</div>
+    </div>
+  </div>
+
+  <!-- ============ 10 THEME CARD ============ -->
+  <h2 id="thcard">10 · Theme card (sentiment + excerpt)</h2>
+  <p>For Voices / Sounding-Board summaries. Title + sentiment bar + counts + a quoted excerpt as the proof. The quote sits in a paper-tint inset with a faint left rule — quiet enough not to fight the card, present enough to read as "voice from the data."</p>
+
+  <div class="row">
+    <div class="thcard">
+      <div class="ttitle">Onboarding pace</div>
+      <div class="tbar">
+        <span class="neg" style="width: 34%"></span>
+        <span class="neu" style="width: 28%"></span>
+        <span class="pos" style="width: 38%"></span>
+      </div>
+      <div class="tcounts">
+        <span><span class="v">12</span>negative</span>
+        <span><span class="v">10</span>neutral</span>
+        <span><span class="v">13</span>positive</span>
+      </div>
+      <div class="texcerpt">"The first two weeks moved fast — I appreciated the structure but couldn't keep up with the reading on top of meetings."</div>
+    </div>
+
+    <div class="thcard">
+      <div class="ttitle">Manager 1:1s</div>
+      <div class="tbar">
+        <span class="neg" style="width: 8%"></span>
+        <span class="neu" style="width: 22%"></span>
+        <span class="pos" style="width: 70%"></span>
+      </div>
+      <div class="tcounts">
+        <span><span class="v">3</span>negative</span>
+        <span><span class="v">8</span>neutral</span>
+        <span><span class="v">25</span>positive</span>
+      </div>
+      <div class="texcerpt">"My manager set the rhythm right — weekly 30-min, no agenda required, just talk."</div>
+    </div>
+  </div>
+
+  <!-- ============ 11 ANTI ============ -->
+  <h2 id="anti">11 · Anti-patterns &amp; deferred</h2>
+  <div class="panel">
+    <div class="anti"><span><b>No off-palette hue tokens.</b> Teal, purple, web-orange, web-red are forbidden. The dashboard layer's <code>--alert-*</code>, <code>--steady-teal</code>, <code>--perspective-mt</code>, <code>--sent-*</code>, <code>--heat-score-*</code> are deprecated and reskin to misty at Phase 2A.</span></div>
+    <div class="anti"><span><b>No pie / donut charts.</b> Same as v1.</span></div>
+    <div class="anti"><span><b>No green-for-up.</b> Magnitude not direction.</span></div>
+    <div class="anti"><span><b>No two-bar alert.</b> Multiple lows → switch to heatmap.</span></div>
+    <div class="anti"><span><b>No inline-styled hex for chart fills.</b> Propose a token, graduate, then consume.</span></div>
+    <div class="anti"><span><b>No new chart-specific gray.</b> <code>--ink-muted</code> covers neutral / missing / aligned.</span></div>
+
+    <h3 style="margin-top: var(--s-5)">Explicitly deferred to v2 (when a real consumer arrives)</h3>
+    <div class="ok"><span><b>Categorical palette beyond perspective pair.</b> Wait for a real cohort/department breakdown.</span></div>
+    <div class="ok"><span><b>Real sparklines / time-series.</b> Reserve the <code>spark*</code> name.</span></div>
+    <div class="ok"><span><b>Tooltip / legend / axis primitives.</b> No SVG charts in flight.</span></div>
+    <div class="ok"><span><b>Annotation / threshold lines.</b> No consumer.</span></div>
+    <div class="ok"><span><b>Number abbreviation (1.2k / 3.4M).</b> Cohorts are small.</span></div>
+  </div>
+
+  <!-- ============ 12 CURATED DATA PALETTE (Tier 2 — exploration) ============ -->
+  <style>
+    /* — Three diverging-ramp candidates — */
+    :root {
+      /* Candidate 1 — ColorBrewer RdYlGn (5) — classic, colorblind-aware */
+      --c1-1: #d7191c;
+      --c1-2: #fdae61;
+      --c1-3: #ffffbf;
+      --c1-4: #a6d96a;
+      --c1-5: #1a9641;
+
+      /* Candidate 2 — Misty-tuned RdYlGn (5) — dustier, cooler reds & greens */
+      --c2-1: #C26757;
+      --c2-2: #E8B27A;
+      --c2-3: #F0E3A8;
+      --c2-4: #9BB87C;
+      --c2-5: #4A7C3A;
+
+      /* Candidate 3 — Cool-only diverging (5) — blue→teal→green, no warm side */
+      --c3-1: #2A4C8C;
+      --c3-2: #5A8FA8;
+      --c3-3: #C4D8C4;
+      --c3-4: #5AAE82;
+      --c3-5: #1E6B4A;
+
+      /* Categorical 6 — Okabe-Ito-derived, misty-harmonized */
+      --cat-1: #4874CD;  /* misty brand blue */
+      --cat-2: #C87864;  /* dusty rust */
+      --cat-3: #2C8C5E;  /* deep teal-green */
+      --cat-4: #A67C1A;  /* deep amber (= --dot-caution) */
+      --cat-5: #6B5A8C;  /* muted slate-purple */
+      --cat-6: #5A8FA8;  /* slate cyan */
+
+      /* Sentiment 3-band (data palette) */
+      --sd-neg: #C26757;
+      --sd-neu: #B0B8C4;
+      --sd-pos: #4A7C3A;
+    }
+
+    /* shared layout */
+    .pal-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-4); }
+    @media (max-width: 880px) { .pal-row { grid-template-columns: 1fr; } }
+    .pal-card { background: var(--paper); border: 1px solid var(--rule); border-radius: var(--r-card); padding: var(--s-4); }
+    .pal-card h4 { font-size: var(--fs-small); font-weight: var(--fw-semi); color: var(--ink); margin: 0 0 var(--s-2); text-transform: uppercase; letter-spacing: 0.04em; }
+    .pal-card .pal-meta { font-size: var(--fs-micro); color: var(--ink-muted); margin: 0 0 var(--s-3); }
+
+    /* swatches */
+    .swatches { display: flex; gap: 0; border-radius: var(--r-xs); overflow: hidden; height: 28px; border: 1px solid var(--rule); margin-bottom: var(--s-2); }
+    .swatches > span { flex: 1; display: grid; place-items: center; font-size: 9px; color: rgba(0,0,0,0.55); font-variant-numeric: tabular-nums; font-weight: var(--fw-semi); }
+    .sw-c1 > :nth-child(1){background:var(--c1-1);color:#fff}
+    .sw-c1 > :nth-child(2){background:var(--c1-2)}
+    .sw-c1 > :nth-child(3){background:var(--c1-3)}
+    .sw-c1 > :nth-child(4){background:var(--c1-4)}
+    .sw-c1 > :nth-child(5){background:var(--c1-5);color:#fff}
+    .sw-c2 > :nth-child(1){background:var(--c2-1);color:#fff}
+    .sw-c2 > :nth-child(2){background:var(--c2-2)}
+    .sw-c2 > :nth-child(3){background:var(--c2-3)}
+    .sw-c2 > :nth-child(4){background:var(--c2-4)}
+    .sw-c2 > :nth-child(5){background:var(--c2-5);color:#fff}
+    .sw-c3 > :nth-child(1){background:var(--c3-1);color:#fff}
+    .sw-c3 > :nth-child(2){background:var(--c3-2);color:#fff}
+    .sw-c3 > :nth-child(3){background:var(--c3-3)}
+    .sw-c3 > :nth-child(4){background:var(--c3-4);color:#fff}
+    .sw-c3 > :nth-child(5){background:var(--c3-5);color:#fff}
+    .sw-cat { height: 28px; }
+    .sw-cat > :nth-child(1){background:var(--cat-1);color:#fff}
+    .sw-cat > :nth-child(2){background:var(--cat-2);color:#fff}
+    .sw-cat > :nth-child(3){background:var(--cat-3);color:#fff}
+    .sw-cat > :nth-child(4){background:var(--cat-4);color:#fff}
+    .sw-cat > :nth-child(5){background:var(--cat-5);color:#fff}
+    .sw-cat > :nth-child(6){background:var(--cat-6);color:#fff}
+
+    /* heatmap variants */
+    .pal-heat { width: 100%; border-collapse: separate; border-spacing: 2px; font-size: var(--fs-micro); font-variant-numeric: tabular-nums; }
+    .pal-heat th { font-size: 10px; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.04em; padding: 4px 2px; text-align: center; font-weight: var(--fw-semi); }
+    .pal-heat th:first-child { text-align: left; width: 50%; padding-left: var(--s-2); }
+    .pal-heat td { padding: 6px 4px; text-align: center; border-radius: var(--r-xs); font-weight: var(--fw-semi); color: var(--ink); }
+    .pal-heat td.q { text-align: left; padding-left: var(--s-2); font-weight: var(--fw-regular); color: var(--ink-soft); background: transparent; }
+    /* c1 ramp cells */
+    .heat-c1 td.s1 { background: var(--c1-1); color: #fff; }
+    .heat-c1 td.s2 { background: var(--c1-2); }
+    .heat-c1 td.s3 { background: var(--c1-3); }
+    .heat-c1 td.s4 { background: var(--c1-4); }
+    .heat-c1 td.s5 { background: var(--c1-5); color: #fff; }
+    /* c2 ramp cells */
+    .heat-c2 td.s1 { background: var(--c2-1); color: #fff; }
+    .heat-c2 td.s2 { background: var(--c2-2); }
+    .heat-c2 td.s3 { background: var(--c2-3); }
+    .heat-c2 td.s4 { background: var(--c2-4); }
+    .heat-c2 td.s5 { background: var(--c2-5); color: #fff; }
+    /* c3 ramp cells */
+    .heat-c3 td.s1 { background: var(--c3-1); color: #fff; }
+    .heat-c3 td.s2 { background: var(--c3-2); color: #fff; }
+    .heat-c3 td.s3 { background: var(--c3-3); }
+    .heat-c3 td.s4 { background: var(--c3-4); color: #fff; }
+    .heat-c3 td.s5 { background: var(--c3-5); color: #fff; }
+
+    /* sentiment-style stacked bar */
+    .pal-sent { height: 10px; display: flex; border-radius: var(--r-tiny); overflow: hidden; background: var(--paper-tint); margin: 6px 0; }
+    .pal-sent > span { display: block; height: 100%; }
+    .sent-c1 .neg{background:var(--c1-1)} .sent-c1 .neu{background:var(--c1-3)} .sent-c1 .pos{background:var(--c1-5)}
+    .sent-c2 .neg{background:var(--c2-1)} .sent-c2 .neu{background:var(--c2-3)} .sent-c2 .pos{background:var(--c2-5)}
+    .sent-c3 .neg{background:var(--c3-1)} .sent-c3 .neu{background:var(--c3-3)} .sent-c3 .pos{background:var(--c3-5)}
+    .sent-row { display: grid; grid-template-columns: 8ch 1fr 14ch; gap: var(--s-2); align-items: center; font-size: 11px; color: var(--ink); }
+    .sent-row .ct { color: var(--ink-muted); font-variant-numeric: tabular-nums; font-size: 10px; text-align: right; }
+
+    /* categorical bar chart (svg-free, css) */
+    .cat-bars { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--s-2); align-items: end; height: 120px; padding: 0 var(--s-1) var(--s-1); border-bottom: 1px solid var(--rule); }
+    .cat-bars > div { border-radius: var(--r-tiny) var(--r-tiny) 0 0; position: relative; }
+    .cat-bars > div .v { position: absolute; top: -16px; left: 50%; transform: translateX(-50%); font-size: 10px; color: var(--ink); font-variant-numeric: tabular-nums; }
+    .cat-bars-x { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--s-2); padding: var(--s-1); font-size: 10px; color: var(--ink-muted); text-align: center; text-transform: uppercase; letter-spacing: 0.04em; }
+    .cat-bars .b1{background:var(--cat-1)} .cat-bars .b2{background:var(--cat-2)} .cat-bars .b3{background:var(--cat-3)}
+    .cat-bars .b4{background:var(--cat-4)} .cat-bars .b5{background:var(--cat-5)} .cat-bars .b6{background:var(--cat-6)}
+
+    /* horizontal stacked categorical (departments by cohort) */
+    .stack-row { display: grid; grid-template-columns: 10ch 1fr 6ch; gap: var(--s-2); align-items: center; font-size: 11px; padding: 3px 0; }
+    .stack-row .lab { color: var(--ink); }
+    .stack-row .bar { height: 16px; display: flex; border-radius: var(--r-xs); overflow: hidden; background: var(--paper-tint); }
+    .stack-row .bar > span { display: block; height: 100%; }
+    .stack-row .ct { font-variant-numeric: tabular-nums; color: var(--ink-muted); font-size: 10px; text-align: right; }
+    .stack-row .bar .e1{background:var(--cat-1)} .stack-row .bar .e2{background:var(--cat-2)} .stack-row .bar .e3{background:var(--cat-3)}
+    .stack-row .bar .e4{background:var(--cat-4)} .stack-row .bar .e5{background:var(--cat-5)} .stack-row .bar .e6{background:var(--cat-6)}
+
+    .cat-legend { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-3); font-size: 10px; color: var(--ink-soft); }
+    .cat-legend > span { display: inline-flex; align-items: center; gap: 4px; }
+    .cat-legend > span i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+
+    /* mini multi-line trend (SVG) */
+    .pal-trend { width: 100%; height: 140px; }
+    .pal-trend .axis { stroke: var(--rule); stroke-width: 1; }
+    .pal-trend .grid { stroke: var(--rule); stroke-width: 1; stroke-dasharray: 2 3; opacity: 0.6; }
+    .pal-trend .ax-lab { font-size: 10px; fill: var(--ink-muted); font-family: var(--sans); }
+    .pal-trend .line { fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .pal-trend .dot { stroke: var(--paper); stroke-width: 1.5; }
+
+    /* coexistence test: mix paper-tint surface + data colors */
+    .coexist { background: var(--paper-tint); border: 1px solid var(--rule); border-radius: var(--r-card); padding: var(--s-5); }
+    .coexist .kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-3); margin-bottom: var(--s-4); }
+    .coexist .kpi-strip > div { background: var(--paper); border: 1px solid var(--rule); border-radius: var(--r-card); padding: var(--s-3) var(--s-4); }
+    .coexist .kpi-strip .lab { font-size: 10px; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: var(--fw-semi); }
+    .coexist .kpi-strip .v { font-size: 24px; font-weight: var(--fw-bold); color: var(--ink); line-height: 1.1; font-variant-numeric: tabular-nums; }
+    .coexist .kpi-strip .s { font-size: 11px; color: var(--ink-muted); }
+
+    .pal-vote { display: flex; gap: var(--s-2); flex-wrap: wrap; margin-top: var(--s-3); }
+    .pal-vote span { padding: 4px 10px; border-radius: var(--r-pill); font-size: var(--fs-micro); border: 1px solid var(--rule); background: var(--paper); color: var(--ink-soft); }
+  </style>
+
+  <h2 id="palette">12 · Tier-2 data palette — curated, side-by-side</h2>
+  <p>Three diverging ramps + one categorical scale, applied to the same data so coexistence with misty surfaces is visible. The point of this section: look at all three ramps reading the same heatmap and notice which one actually says "bad → good" fastest. The categorical is shown against multi-department / multi-cohort data — the use case future tools will hit.</p>
+
+  <h3>12.1 — Diverging ramp candidates (score heatmap)</h3>
+
+  <div class="pal-row">
+    <div class="pal-card">
+      <h4>C1 · ColorBrewer RdYlGn</h4>
+      <p class="pal-meta">Classic. Red → yellow → green. Used widely in scientific viz. Colorblind-aware (RdYlGn is one of CB's perceptually balanced diverging ramps). Drama high.</p>
+      <div class="swatches sw-c1"><span>&lt;2</span><span>2-2.9</span><span>3-3.9</span><span>4-4.4</span><span>≥4.5</span></div>
+      <table class="pal-heat heat-c1">
+        <thead><tr><th>Question</th><th>W1</th><th>W2</th><th>W3</th><th>Σ</th></tr></thead>
+        <tbody>
+          <tr><td class="q">Belonging</td>     <td class="s5">4.6</td><td class="s5">4.7</td><td class="s4">4.3</td><td class="s5">4.5</td></tr>
+          <tr><td class="q">Mgr support</td>   <td class="s4">4.2</td><td class="s4">4.0</td><td class="s3">3.8</td><td class="s4">4.0</td></tr>
+          <tr><td class="q">Clarity</td>       <td class="s3">3.7</td><td class="s3">3.6</td><td class="s2">2.9</td><td class="s3">3.4</td></tr>
+          <tr><td class="q">Workload</td>      <td class="s2">2.8</td><td class="s2">2.6</td><td class="s1">1.9</td><td class="s2">2.4</td></tr>
+          <tr><td class="q">Tools</td>         <td class="s4">4.1</td><td class="s3">3.9</td><td class="s4">4.0</td><td class="s4">4.0</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pal-card">
+      <h4>C2 · Misty-tuned RdYlGn</h4>
+      <p class="pal-meta">Same warm-cool axis as C1 but dustier — reds pull toward rust, greens toward moss. Quieter, more in conversation with paper-tint. Drama medium.</p>
+      <div class="swatches sw-c2"><span>&lt;2</span><span>2-2.9</span><span>3-3.9</span><span>4-4.4</span><span>≥4.5</span></div>
+      <table class="pal-heat heat-c2">
+        <thead><tr><th>Question</th><th>W1</th><th>W2</th><th>W3</th><th>Σ</th></tr></thead>
+        <tbody>
+          <tr><td class="q">Belonging</td>     <td class="s5">4.6</td><td class="s5">4.7</td><td class="s4">4.3</td><td class="s5">4.5</td></tr>
+          <tr><td class="q">Mgr support</td>   <td class="s4">4.2</td><td class="s4">4.0</td><td class="s3">3.8</td><td class="s4">4.0</td></tr>
+          <tr><td class="q">Clarity</td>       <td class="s3">3.7</td><td class="s3">3.6</td><td class="s2">2.9</td><td class="s3">3.4</td></tr>
+          <tr><td class="q">Workload</td>      <td class="s2">2.8</td><td class="s2">2.6</td><td class="s1">1.9</td><td class="s2">2.4</td></tr>
+          <tr><td class="q">Tools</td>         <td class="s4">4.1</td><td class="s3">3.9</td><td class="s4">4.0</td><td class="s4">4.0</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pal-card">
+      <h4>C3 · Cool-only (blue→green)</h4>
+      <p class="pal-meta">No warm side. Deep blue → cream → deep teal-green. Breaks the "bad reads warm" convention but stays totally on-brand with misty. Drama low — closest to "system speaks softly."</p>
+      <div class="swatches sw-c3"><span>&lt;2</span><span>2-2.9</span><span>3-3.9</span><span>4-4.4</span><span>≥4.5</span></div>
+      <table class="pal-heat heat-c3">
+        <thead><tr><th>Question</th><th>W1</th><th>W2</th><th>W3</th><th>Σ</th></tr></thead>
+        <tbody>
+          <tr><td class="q">Belonging</td>     <td class="s5">4.6</td><td class="s5">4.7</td><td class="s4">4.3</td><td class="s5">4.5</td></tr>
+          <tr><td class="q">Mgr support</td>   <td class="s4">4.2</td><td class="s4">4.0</td><td class="s3">3.8</td><td class="s4">4.0</td></tr>
+          <tr><td class="q">Clarity</td>       <td class="s3">3.7</td><td class="s3">3.6</td><td class="s2">2.9</td><td class="s3">3.4</td></tr>
+          <tr><td class="q">Workload</td>      <td class="s2">2.8</td><td class="s2">2.6</td><td class="s1">1.9</td><td class="s2">2.4</td></tr>
+          <tr><td class="q">Tools</td>         <td class="s4">4.1</td><td class="s3">3.9</td><td class="s4">4.0</td><td class="s4">4.0</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <h3>12.2 — Diverging applied to sentiment</h3>
+  <div class="pal-row">
+    <div class="pal-card">
+      <h4>C1 sentiment</h4>
+      <div class="sent-row"><span>Pace</span><div class="pal-sent sent-c1"><span class="neg" style="width:34%"></span><span class="neu" style="width:28%"></span><span class="pos" style="width:38%"></span></div><span class="ct">▼12 · 10 · ▲13</span></div>
+      <div class="sent-row"><span>1:1s</span><div class="pal-sent sent-c1"><span class="neg" style="width:8%"></span><span class="neu" style="width:22%"></span><span class="pos" style="width:70%"></span></div><span class="ct">▼3 · 8 · ▲25</span></div>
+      <div class="sent-row"><span>Workload</span><div class="pal-sent sent-c1"><span class="neg" style="width:60%"></span><span class="neu" style="width:25%"></span><span class="pos" style="width:15%"></span></div><span class="ct">▼21 · 9 · ▲5</span></div>
+    </div>
+    <div class="pal-card">
+      <h4>C2 sentiment</h4>
+      <div class="sent-row"><span>Pace</span><div class="pal-sent sent-c2"><span class="neg" style="width:34%"></span><span class="neu" style="width:28%"></span><span class="pos" style="width:38%"></span></div><span class="ct">▼12 · 10 · ▲13</span></div>
+      <div class="sent-row"><span>1:1s</span><div class="pal-sent sent-c2"><span class="neg" style="width:8%"></span><span class="neu" style="width:22%"></span><span class="pos" style="width:70%"></span></div><span class="ct">▼3 · 8 · ▲25</span></div>
+      <div class="sent-row"><span>Workload</span><div class="pal-sent sent-c2"><span class="neg" style="width:60%"></span><span class="neu" style="width:25%"></span><span class="pos" style="width:15%"></span></div><span class="ct">▼21 · 9 · ▲5</span></div>
+    </div>
+    <div class="pal-card">
+      <h4>C3 sentiment</h4>
+      <div class="sent-row"><span>Pace</span><div class="pal-sent sent-c3"><span class="neg" style="width:34%"></span><span class="neu" style="width:28%"></span><span class="pos" style="width:38%"></span></div><span class="ct">▼12 · 10 · ▲13</span></div>
+      <div class="sent-row"><span>1:1s</span><div class="pal-sent sent-c3"><span class="neg" style="width:8%"></span><span class="neu" style="width:22%"></span><span class="pos" style="width:70%"></span></div><span class="ct">▼3 · 8 · ▲25</span></div>
+      <div class="sent-row"><span>Workload</span><div class="pal-sent sent-c3"><span class="neg" style="width:60%"></span><span class="neu" style="width:25%"></span><span class="pos" style="width:15%"></span></div><span class="ct">▼21 · 9 · ▲5</span></div>
+    </div>
+  </div>
+
+  <h3>12.3 — Categorical 6 (departments / cohorts)</h3>
+  <div class="panel">
+    <p class="meta">Six hues, Okabe-Ito-derived, misty-harmonized. Tokens: <code>--cat-1..6</code>. Used for categorical breakdowns where N≤6 (departments, cohorts, programs). Perspective pair (NH/SP/MT) takes 3 of these (e.g. <code>--cat-1 / --cat-2 / --cat-4</code>) and stops there. Above 6, switch primitive — don't add a 7th color.</p>
+    <div class="swatches sw-cat">
+      <span>cat-1 · blue</span><span>cat-2 · rust</span><span>cat-3 · teal-green</span>
+      <span>cat-4 · amber</span><span>cat-5 · slate-purple</span><span>cat-6 · cyan</span>
+    </div>
+
+    <h4 style="margin-top: var(--s-4)">Vertical bar chart — score by department</h4>
+    <div class="cat-bars">
+      <div class="b1" style="height: 88%"><span class="v">4.4</span></div>
+      <div class="b2" style="height: 64%"><span class="v">3.2</span></div>
+      <div class="b3" style="height: 80%"><span class="v">4.0</span></div>
+      <div class="b4" style="height: 72%"><span class="v">3.6</span></div>
+      <div class="b5" style="height: 50%"><span class="v">2.5</span></div>
+      <div class="b6" style="height: 78%"><span class="v">3.9</span></div>
+    </div>
+    <div class="cat-bars-x">
+      <span>Sales</span><span>Mktg</span><span>Ops</span><span>Eng</span><span>HR</span><span>Legal</span>
+    </div>
+
+    <h4 style="margin-top: var(--s-5)">Horizontal stacked — cohort composition by department</h4>
+    <div class="stack-row"><span class="lab">2026-Q1</span><div class="bar"><span class="e1" style="width:24%"></span><span class="e2" style="width:18%"></span><span class="e3" style="width:14%"></span><span class="e4" style="width:22%"></span><span class="e5" style="width:10%"></span><span class="e6" style="width:12%"></span></div><span class="ct">n=50</span></div>
+    <div class="stack-row"><span class="lab">2026-Q2</span><div class="bar"><span class="e1" style="width:30%"></span><span class="e2" style="width:14%"></span><span class="e3" style="width:18%"></span><span class="e4" style="width:20%"></span><span class="e5" style="width:8%"></span><span class="e6" style="width:10%"></span></div><span class="ct">n=62</span></div>
+    <div class="stack-row"><span class="lab">2026-Q3</span><div class="bar"><span class="e1" style="width:22%"></span><span class="e2" style="width:20%"></span><span class="e3" style="width:16%"></span><span class="e4" style="width:18%"></span><span class="e5" style="width:12%"></span><span class="e6" style="width:12%"></span></div><span class="ct">n=58</span></div>
+    <div class="stack-row"><span class="lab">2026-Q4</span><div class="bar"><span class="e1" style="width:26%"></span><span class="e2" style="width:16%"></span><span class="e3" style="width:20%"></span><span class="e4" style="width:18%"></span><span class="e5" style="width:10%"></span><span class="e6" style="width:10%"></span></div><span class="ct">n=64</span></div>
+    <div class="cat-legend">
+      <span><i style="background:var(--cat-1)"></i>Sales</span>
+      <span><i style="background:var(--cat-2)"></i>Marketing</span>
+      <span><i style="background:var(--cat-3)"></i>Ops</span>
+      <span><i style="background:var(--cat-4)"></i>Engineering</span>
+      <span><i style="background:var(--cat-5)"></i>HR</span>
+      <span><i style="background:var(--cat-6)"></i>Legal</span>
+    </div>
+
+    <h4 style="margin-top: var(--s-5)">Multi-line trend — score over 4 waves, 3 perspectives</h4>
+    <svg class="pal-trend" viewBox="0 0 600 140" preserveAspectRatio="none">
+      <!-- grid -->
+      <line class="grid" x1="40" x2="580" y1="20" y2="20"/>
+      <line class="grid" x1="40" x2="580" y1="60" y2="60"/>
+      <line class="grid" x1="40" x2="580" y1="100" y2="100"/>
+      <line class="axis" x1="40" x2="580" y1="120" y2="120"/>
+      <text class="ax-lab" x="8" y="24">5</text>
+      <text class="ax-lab" x="8" y="64">4</text>
+      <text class="ax-lab" x="8" y="104">3</text>
+      <text class="ax-lab" x="8" y="124">2</text>
+      <text class="ax-lab" x="80" y="135">W1</text>
+      <text class="ax-lab" x="220" y="135">W2</text>
+      <text class="ax-lab" x="360" y="135">W3</text>
+      <text class="ax-lab" x="500" y="135">W4</text>
+
+      <!-- NH (cat-1 blue) — 4.4, 4.2, 4.3, 4.1 -->
+      <path class="line" stroke="var(--cat-1)" d="M 90 36 L 230 44 L 370 40 L 510 48"/>
+      <circle class="dot" cx="90" cy="36"  r="4" fill="var(--cat-1)"/>
+      <circle class="dot" cx="230" cy="44" r="4" fill="var(--cat-1)"/>
+      <circle class="dot" cx="370" cy="40" r="4" fill="var(--cat-1)"/>
+      <circle class="dot" cx="510" cy="48" r="4" fill="var(--cat-1)"/>
+
+      <!-- SP (cat-2 rust) — 3.8, 3.6, 3.4, 3.5 -->
+      <path class="line" stroke="var(--cat-2)" d="M 90 64 L 230 72 L 370 80 L 510 76"/>
+      <circle class="dot" cx="90" cy="64"  r="4" fill="var(--cat-2)"/>
+      <circle class="dot" cx="230" cy="72" r="4" fill="var(--cat-2)"/>
+      <circle class="dot" cx="370" cy="80" r="4" fill="var(--cat-2)"/>
+      <circle class="dot" cx="510" cy="76" r="4" fill="var(--cat-2)"/>
+
+      <!-- MT (cat-4 amber) — 3.0, 2.8, 2.4, 2.6 -->
+      <path class="line" stroke="var(--cat-4)" d="M 90 96 L 230 104 L 370 112 L 510 108"/>
+      <circle class="dot" cx="90" cy="96"   r="4" fill="var(--cat-4)"/>
+      <circle class="dot" cx="230" cy="104" r="4" fill="var(--cat-4)"/>
+      <circle class="dot" cx="370" cy="112" r="4" fill="var(--cat-4)"/>
+      <circle class="dot" cx="510" cy="108" r="4" fill="var(--cat-4)"/>
+    </svg>
+    <div class="cat-legend" style="margin-top: 4px">
+      <span><i style="background:var(--cat-1)"></i>NH — New Hire</span>
+      <span><i style="background:var(--cat-2)"></i>SP — Self</span>
+      <span><i style="background:var(--cat-4)"></i>MT — Manager</span>
+    </div>
+  </div>
+
+  <h3>12.4 — Coexistence test (data palette on misty surface)</h3>
+  <p>Real-screen mock: paper-tint canvas, KPI tiles + heatmap (using each candidate ramp) + categorical bars together. The question to answer is whether the data palette feels like a sibling or a guest.</p>
+
+  <div class="pal-row">
+    <div class="coexist">
+      <h4 style="margin: 0 0 var(--s-3); font-size: var(--fs-small); color: var(--ink); text-transform: uppercase; letter-spacing: 0.04em;">Mock — using C1</h4>
+      <div class="kpi-strip">
+        <div><div class="lab">Response</div><div class="v">82%</div><div class="s">41/50</div></div>
+        <div><div class="lab">Avg score</div><div class="v">3.4</div><div class="s">across 12 Q</div></div>
+        <div><div class="lab">Alerts</div><div class="v">7</div><div class="s">3 deep · 4 mild</div></div>
+        <div><div class="lab">Cohort</div><div class="v">14</div><div class="s">no scheduled</div></div>
+      </div>
+      <table class="pal-heat heat-c1" style="background: var(--paper); border-radius: var(--r-card); border: 1px solid var(--rule); padding: var(--s-2)">
+        <thead><tr><th>Question</th><th>NH</th><th>SP</th><th>MT</th></tr></thead>
+        <tbody>
+          <tr><td class="q">Belonging</td><td class="s5">4.6</td><td class="s5">4.5</td><td class="s4">4.2</td></tr>
+          <tr><td class="q">Workload</td><td class="s2">2.8</td><td class="s2">2.6</td><td class="s1">1.9</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="coexist">
+      <h4 style="margin: 0 0 var(--s-3); font-size: var(--fs-small); color: var(--ink); text-transform: uppercase; letter-spacing: 0.04em;">Mock — using C2</h4>
+      <div class="kpi-strip">
+        <div><div class="lab">Response</div><div class="v">82%</div><div class="s">41/50</div></div>
+        <div><div class="lab">Avg score</div><div class="v">3.4</div><div class="s">across 12 Q</div></div>
+        <div><div class="lab">Alerts</div><div class="v">7</div><div class="s">3 deep · 4 mild</div></div>
+        <div><div class="lab">Cohort</div><div class="v">14</div><div class="s">no scheduled</div></div>
+      </div>
+      <table class="pal-heat heat-c2" style="background: var(--paper); border-radius: var(--r-card); border: 1px solid var(--rule); padding: var(--s-2)">
+        <thead><tr><th>Question</th><th>NH</th><th>SP</th><th>MT</th></tr></thead>
+        <tbody>
+          <tr><td class="q">Belonging</td><td class="s5">4.6</td><td class="s5">4.5</td><td class="s4">4.2</td></tr>
+          <tr><td class="q">Workload</td><td class="s2">2.8</td><td class="s2">2.6</td><td class="s1">1.9</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="coexist">
+      <h4 style="margin: 0 0 var(--s-3); font-size: var(--fs-small); color: var(--ink); text-transform: uppercase; letter-spacing: 0.04em;">Mock — using C3</h4>
+      <div class="kpi-strip">
+        <div><div class="lab">Response</div><div class="v">82%</div><div class="s">41/50</div></div>
+        <div><div class="lab">Avg score</div><div class="v">3.4</div><div class="s">across 12 Q</div></div>
+        <div><div class="lab">Alerts</div><div class="v">7</div><div class="s">3 deep · 4 mild</div></div>
+        <div><div class="lab">Cohort</div><div class="v">14</div><div class="s">no scheduled</div></div>
+      </div>
+      <table class="pal-heat heat-c3" style="background: var(--paper); border-radius: var(--r-card); border: 1px solid var(--rule); padding: var(--s-2)">
+        <thead><tr><th>Question</th><th>NH</th><th>SP</th><th>MT</th></tr></thead>
+        <tbody>
+          <tr><td class="q">Belonging</td><td class="s5">4.6</td><td class="s5">4.5</td><td class="s4">4.2</td></tr>
+          <tr><td class="q">Workload</td><td class="s2">2.8</td><td class="s2">2.6</td><td class="s1">1.9</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top: var(--s-5)">
+    <h3>What to look for</h3>
+    <ul>
+      <li><b>Speed of read.</b> Which heatmap lets you find the "workload row is bad" without thinking? That's the directional axis working.</li>
+      <li><b>Calmness on the surface.</b> Does the ramp shout against paper-tint, or sit in the same room? C3 is calmest, C1 loudest.</li>
+      <li><b>Colorblind sanity check.</b> Squint your eyes (or use a colorblind sim) — if s1 and s5 look the same, the ramp is failing. C1 is best-tested for this; C3 needs verification.</li>
+      <li><b>Categorical separability at dot scale.</b> Look at the 7×7 dots in the multi-line legend — can you tell cat-1 from cat-2 from cat-4 at that size? On dashboards, dots get small.</li>
+    </ul>
+    <div class="pal-vote">
+      <span>Pick a diverging ramp: C1 / C2 / C3</span>
+      <span>Categorical 6: accept as-is, or recolor?</span>
+      <span>Decide: data palette tokens live in <code>tokens-data.css</code> (new file) or merged into <code>tokens-dashboard.css</code> after the deprecations clear?</span>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       §13 · Tier-2 inventory (proposed final scope)
+       ============================================================ -->
+  <section style="margin-top: var(--s-7)">
+    <h2 style="border-bottom-color: var(--brand)">§13 · Tier-2 inventory (proposed final scope)</h2>
+    <p class="lede">
+      Total <b>10 named tokens + 2 reference gradients</b>. Each color earns its slot.
+      Discipline rule: a new Tier-2 token requires a real chart in a real tool that can't be served by what's here or <code>color-mix()</code>. No speculative additions.
+    </p>
+
+    <style>
+      .t2-block { background: var(--paper); border: 1px solid var(--rule); border-radius: var(--r-card); padding: var(--s-5); margin: var(--s-3) 0; }
+      .t2-block h3 { margin-top: 0; color: var(--ink); display: flex; align-items: baseline; gap: var(--s-3); }
+      .t2-block h3 .tag { font-size: var(--fs-small); color: var(--ink-muted); font-weight: 400; padding: 2px 8px; border: 1px solid var(--rule); border-radius: 999px; }
+      .t2-swatches { display: flex; gap: 0; margin: var(--s-3) 0; border-radius: var(--r-sm); overflow: hidden; border: 1px solid var(--rule); }
+      .t2-sw { flex: 1; height: 64px; display: flex; flex-direction: column; justify-content: flex-end; padding: var(--s-2); font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: var(--ink-cool); background: var(--paper-cool-tint); }
+      .t2-sw.dark { color: var(--paper); }
+      .t2-sw .name { font-weight: 600; }
+      .t2-sw .hex { opacity: 0.85; }
+      .t2-grad { height: 48px; border-radius: var(--r-sm); border: 1px solid var(--rule); margin: var(--s-3) 0; }
+      .t2-use { font-size: var(--fs-small); color: var(--ink-muted); margin: var(--s-2) 0 0; }
+      .t2-use b { color: var(--ink-soft); font-weight: 600; }
+      .t2-count { display: inline-block; font-family: ui-monospace, Menlo, monospace; font-size: 11px; padding: 2px 6px; background: var(--paper-cool-tint); border-radius: var(--r-xs); color: var(--ink-cool); }
+      .t2-summary { display: grid; grid-template-columns: 2fr 1fr 2fr; gap: var(--s-3); align-items: center; padding: var(--s-3) 0; border-bottom: 1px solid var(--rule); }
+      .t2-summary:last-child { border-bottom: 0; }
+      .t2-summary .label { font-weight: 600; color: var(--ink); }
+      .t2-summary .swatchrow { display: flex; gap: 4px; }
+      .t2-summary .sw-mini { width: 28px; height: 28px; border-radius: var(--r-xs); border: 1px solid var(--rule); }
+      .t2-summary .sw-mini.grad-1 { background: linear-gradient(to right, #488f31, #f6f6f6, #de425b); width: 96px; }
+      .t2-summary .sw-mini.grad-2 { background: linear-gradient(to right, #7cb6c1, #ba66cb); width: 96px; }
+    </style>
+
+    <!-- Summary table -->
+    <div class="panel" style="margin-bottom: var(--s-5)">
+      <h3 style="margin-top: 0">Roster — 5 roles, 10 tokens + 2 gradients</h3>
+      <div class="t2-summary">
+        <div><span class="label">Divergent</span><br><span class="meta">ordered with neutral midpoint · sentiment, Δ vs baseline, score</span></div>
+        <div class="swatchrow">
+          <div class="sw-mini" style="background:#488f31"></div>
+          <div class="sw-mini" style="background:#8fbeaf"></div>
+          <div class="sw-mini" style="background:#f6f6f6"></div>
+          <div class="sw-mini" style="background:#f3bcbc"></div>
+          <div class="sw-mini" style="background:#de425b"></div>
+        </div>
+        <div><span class="t2-count">5 tokens</span> · <code>--sd-1..5</code></div>
+      </div>
+      <div class="t2-summary">
+        <div><span class="label">Categorical (limited)</span><br><span class="meta">identity, no order · perspective NH/SP/MT only — capped at 3</span></div>
+        <div class="swatchrow">
+          <div class="sw-mini" style="background:#64aad5"></div>
+          <div class="sw-mini" style="background:#7497e3"></div>
+          <div class="sw-mini" style="background:#a279db"></div>
+        </div>
+        <div><span class="t2-count">3 tokens</span> · <code>--perspective-nh/sp/mt</code></div>
+      </div>
+      <div class="t2-summary">
+        <div><span class="label">Sequential</span><br><span class="meta">ordered without midpoint · time cohorts, waves, stages</span></div>
+        <div class="swatchrow">
+          <div class="sw-mini grad-2"></div>
+        </div>
+        <div><span class="t2-count">gradient only</span> · <code>--seq-gradient</code></div>
+      </div>
+      <div class="t2-summary">
+        <div><span class="label">Alert</span><br><span class="meta">UI status, not data · severity arrows, threshold breach, oncall — <b>reuses Tier-1 misty identity, no new tokens</b></span></div>
+        <div class="swatchrow">
+          <div class="sw-mini" style="background:#6B8C2C"></div>
+          <div class="sw-mini" style="background:#A67C1A"></div>
+          <div class="sw-mini" style="background:#B5564A"></div>
+        </div>
+        <div><span class="t2-count">0 new</span> · <code>--dot-positive/caution/negative</code></div>
+      </div>
+      <div class="t2-summary">
+        <div><span class="label">Gradient (continuous)</span><br><span class="meta">smooth fills · choropleth, KDE, progress fade — derived from divergent + sequential endpoints</span></div>
+        <div class="swatchrow">
+          <div class="sw-mini grad-1"></div>
+        </div>
+        <div><span class="t2-count">2 gradients</span> · <code>--sd-gradient</code>, <code>--seq-gradient</code></div>
+      </div>
+    </div>
+
+    <!-- 1. Divergent -->
+    <div class="t2-block">
+      <h3>1 · Divergent <span class="tag">5 tokens · discrete</span></h3>
+      <p class="meta">Two hues meeting at neutral. Sentiment neg/neu/pos · Δ vs baseline · score 1→5.</p>
+      <div class="t2-swatches">
+        <div class="t2-sw" style="background:#488f31; color:#fff"><span class="name">--sd-1</span><span class="hex">#488f31</span></div>
+        <div class="t2-sw" style="background:#8fbeaf"><span class="name">--sd-2</span><span class="hex">#8fbeaf</span></div>
+        <div class="t2-sw" style="background:#f6f6f6"><span class="name">--sd-3</span><span class="hex">#f6f6f6</span></div>
+        <div class="t2-sw" style="background:#f3bcbc"><span class="name">--sd-4</span><span class="hex">#f3bcbc</span></div>
+        <div class="t2-sw" style="background:#de425b; color:#fff"><span class="name">--sd-5</span><span class="hex">#de425b</span></div>
+      </div>
+      <p class="t2-use"><b>Aliases:</b> <code>--sd-pos</code>=<code>--sd-1</code>, <code>--sd-neu</code>=<code>--sd-3</code>, <code>--sd-neg</code>=<code>--sd-5</code>. <b>Score reuse:</b> <code>--score-1</code>=worst=<code>--sd-5</code>, <code>--score-5</code>=best=<code>--sd-1</code> (same ramp, reversed semantics).</p>
+    </div>
+
+    <!-- 2. Categorical -->
+    <div class="t2-block">
+      <h3>2 · Categorical (limited) <span class="tag">3 tokens · discrete</span></h3>
+      <p class="meta">Cool blue-purple subset of the sequential ramp — picks 3, 5, 7 with maximum perceptual distance within the family. <b>Capped at 3 because adjacent steps of a cool-only ramp can't carry true categorical load past 3-4 series.</b> If a tool needs team breakdown &gt; 3, that's a Phase 1.18 question.</p>
+      <div class="t2-swatches">
+        <div class="t2-sw" style="background:#64aad5"><span class="name">--perspective-nh</span><span class="hex">#64aad5</span></div>
+        <div class="t2-sw" style="background:#7497e3; color:#fff"><span class="name">--perspective-sp</span><span class="hex">#7497e3</span></div>
+        <div class="t2-sw" style="background:#a279db; color:#fff"><span class="name">--perspective-mt</span><span class="hex">#a279db</span></div>
+      </div>
+      <p class="t2-use"><b>Where used:</b> perspective tags, multi-line trend (NH/SP/MT lines), perspective legend dots. <b>Not used for:</b> team A/B/C breakdowns, region splits, anything with no fixed identity meaning.</p>
+    </div>
+
+    <!-- 3. Sequential -->
+    <div class="t2-block">
+      <h3>3 · Sequential <span class="tag">gradient only · no named steps</span></h3>
+      <p class="meta">Ordered without a midpoint — cohorts over time, process stages, waves. <b>Ships as gradient only, no discrete tokens.</b> Pull N stops via <code>color-mix()</code> or SVG <code>&lt;linearGradient&gt;</code> stops when needed.</p>
+      <div class="t2-grad" style="background: linear-gradient(to right, #7cb6c1, #6cb1cb, #64aad5, #66a2de, #7497e3, #8a8ae3, #a279db, #ba66cb)"></div>
+      <p class="t2-use"><b>Token:</b> <code>--seq-gradient</code>. <b>Endpoints:</b> <code>#7cb6c1</code> (start) → <code>#ba66cb</code> (end). <b>Example use:</b> 8-quarter cohort heatmap, wave-1-to-wave-N trend bands.</p>
+    </div>
+
+    <!-- 4. Alert -->
+    <div class="t2-block">
+      <h3>4 · Alert <span class="tag">Tier-1 reuse · 0 new tokens</span></h3>
+      <p class="meta">Severity arrows, threshold breaches, oncall pulses. <b>Alert is UI status, not data</b> — so it stays on Tier-1 misty identity. This is the deliberate boundary: charts use Tier-2 paint, UI status uses Tier-1 paint.</p>
+      <div class="t2-swatches">
+        <div class="t2-sw" style="background: var(--dot-positive); color: #fff"><span class="name">--dot-positive</span><span class="hex">#6B8C2C</span></div>
+        <div class="t2-sw" style="background: var(--dot-caution); color: #fff"><span class="name">--dot-caution</span><span class="hex">#A67C1A</span></div>
+        <div class="t2-sw" style="background: var(--dot-negative); color: #fff"><span class="name">--dot-negative</span><span class="hex">#B5564A</span></div>
+      </div>
+      <p class="t2-use"><b>Subtle but important:</b> the misty rust <code>#B5564A</code> is quieter than the Tier-2 <code>--sd-5</code> rust-pink <code>#de425b</code>. That's intentional — alert pills should feel disciplined, chart fills can be louder. <b>Anti-pattern:</b> don't use <code>--dot-negative</code> as a chart fill, and don't use <code>--sd-5</code> as a status pill.</p>
+    </div>
+
+    <!-- 5. Gradient -->
+    <div class="t2-block">
+      <h3>5 · Gradient (continuous) <span class="tag">2 tokens · linear-gradient strings</span></h3>
+      <p class="meta">For smooth fills — choropleth maps, KDE plots, progress shading, sparkline area fills. Derived from divergent + sequential endpoints — no new colors introduced.</p>
+
+      <p style="margin-top: var(--s-4); font-weight: 600; color: var(--ink-soft); font-size: var(--fs-small)"><code>--sd-gradient</code> · divergent · green ↔ neutral ↔ rust</p>
+      <div class="t2-grad" style="background: linear-gradient(to right, #488f31, #8fbeaf, #f6f6f6, #f3bcbc, #de425b)"></div>
+
+      <p style="margin-top: var(--s-4); font-weight: 600; color: var(--ink-soft); font-size: var(--fs-small)"><code>--seq-gradient</code> · sequential · cool blue → purple</p>
+      <div class="t2-grad" style="background: linear-gradient(to right, #7cb6c1, #ba66cb)"></div>
+
+      <p class="t2-use"><b>Compose anywhere:</b> <code>background: var(--sd-gradient)</code> on a div fills it with the diverging axis. For SVG, use stops <code>#488f31 / #f6f6f6 / #de425b</code> in <code>&lt;linearGradient&gt;</code>.</p>
+    </div>
+
+    <!-- Tally -->
+    <div class="panel" style="margin-top: var(--s-5); background: var(--paper-cool-tint)">
+      <h3 style="margin-top: 0">Final tally</h3>
+      <ul style="margin: 0; padding-left: var(--s-4)">
+        <li><b>Tier-1 misty (identity):</b> 22 tokens — unchanged</li>
+        <li><b>Tier-2 data (this phase):</b> <span class="t2-count">5</span> divergent + <span class="t2-count">3</span> perspective + <span class="t2-count">2</span> gradients = <b>10 tokens total</b></li>
+        <li><b>Alert reuses Tier-1</b> — no new tokens for status colors</li>
+        <li><b>Categorical &gt; 3 series</b> — deferred to Phase 1.18 (or whenever a real tool needs it)</li>
+      </ul>
+      <p style="margin: var(--s-3) 0 0; font-size: var(--fs-small); color: var(--ink-muted)">
+        Compare: IBM Carbon ships ~30 data-viz tokens, Atlassian ~24. Ten is tight, on purpose. Each unused token would become a drift vector.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       §14 · Alert at scale — Tier-1 vs Tier-1.5 vs Carbon
+       ============================================================ -->
+  <section style="margin-top: var(--s-7)">
+    <h2 style="border-bottom-color: var(--brand)">§14 · Alert at scale — which loudness wins?</h2>
+    <p class="lede">
+      Misty dots are designed for 7px pills. At banner/KPI-tile scale they may read sleepy. Carbon-style alert palettes shout. The question: does our system need a <b>third tier</b> between them, or is quiet correct?
+    </p>
+
+    <style>
+      .a14-tokens-misty   { --a-ok: #6B8C2C; --a-warn: #A67C1A; --a-error: #B5564A; }
+      .a14-tokens-mid     { --a-ok: #6B8C2C; --a-warn: #C97E1A; --a-error: #C84A3A; }
+      .a14-tokens-carbon  { --a-ok: #198038; --a-warn: #ff832b; --a-error: #da1e28; }
+
+      .a14-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-4); margin: var(--s-4) 0; }
+      .a14-col { background: var(--paper); border: 1px solid var(--rule); border-radius: var(--r-card); padding: var(--s-4); }
+      .a14-col > h3 { margin: 0 0 var(--s-3); padding-bottom: var(--s-2); border-bottom: 1px solid var(--rule); display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-3); }
+      .a14-col > h3 .lbl { font-size: var(--fs-card); color: var(--ink); font-weight: 600; }
+      .a14-col > h3 .tag { font-size: var(--fs-small); color: var(--ink-muted); font-weight: 400; padding: 2px 8px; border: 1px solid var(--rule); border-radius: 999px; }
+      .a14-col .hexrow { display: flex; gap: 4px; margin: 0 0 var(--s-4); font-family: ui-monospace, Menlo, monospace; font-size: 10px; color: var(--ink-cool); }
+      .a14-col .hexrow span { padding: 2px 6px; border-radius: var(--r-xs); background: var(--paper-cool-tint); }
+
+      /* Banner */
+      .a14-banner { display: flex; align-items: center; gap: var(--s-3); padding: var(--s-3) var(--s-4); border-left: 4px solid; border-radius: var(--r-sm); margin: var(--s-2) 0; font-size: var(--fs-small); color: var(--ink); }
+      .a14-banner.ok    { border-left-color: var(--a-ok);    background: color-mix(in srgb, var(--a-ok) 10%, var(--paper)); }
+      .a14-banner.warn  { border-left-color: var(--a-warn);  background: color-mix(in srgb, var(--a-warn) 10%, var(--paper)); }
+      .a14-banner.error { border-left-color: var(--a-error); background: color-mix(in srgb, var(--a-error) 10%, var(--paper)); }
+      .a14-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+      .a14-banner.ok    .a14-dot { background: var(--a-ok); }
+      .a14-banner.warn  .a14-dot { background: var(--a-warn); }
+      .a14-banner.error .a14-dot { background: var(--a-error); }
+      .a14-banner b { color: var(--ink); font-weight: 600; }
+
+      /* KPI tile with status border */
+      .a14-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-2); margin: var(--s-4) 0 var(--s-2); }
+      .a14-kpi { background: var(--paper); border: 1px solid var(--rule); border-top: 3px solid; border-radius: var(--r-sm); padding: var(--s-3); }
+      .a14-kpi.ok    { border-top-color: var(--a-ok); }
+      .a14-kpi.warn  { border-top-color: var(--a-warn); }
+      .a14-kpi.error { border-top-color: var(--a-error); }
+      .a14-kpi .k-lbl { font-size: 10px; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+      .a14-kpi .k-val { font-size: var(--fs-card); font-weight: 600; color: var(--ink); margin: 4px 0 0; line-height: 1; }
+      .a14-kpi .k-delta { font-size: 11px; margin-top: 4px; }
+      .a14-kpi.ok    .k-delta { color: var(--a-ok); }
+      .a14-kpi.warn  .k-delta { color: var(--a-warn); }
+      .a14-kpi.error .k-delta { color: var(--a-error); }
+
+      /* Big severity arrow + small pill comparison */
+      .a14-arrows { display: flex; align-items: center; gap: var(--s-4); margin: var(--s-3) 0 var(--s-2); padding: var(--s-3); background: var(--paper-cool-tint); border-radius: var(--r-sm); }
+      .a14-arrow-big { font-size: 32px; line-height: 1; font-weight: 700; }
+      .a14-arrow-big.ok    { color: var(--a-ok); }
+      .a14-arrow-big.warn  { color: var(--a-warn); }
+      .a14-arrow-big.error { color: var(--a-error); }
+      .a14-pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px; background: var(--paper); border: 1px solid var(--rule); font-size: 11px; color: var(--ink-soft); }
+      .a14-pill .dot { width: 7px; height: 7px; border-radius: 50%; }
+      .a14-pill.ok    .dot { background: var(--a-ok); }
+      .a14-pill.warn  .dot { background: var(--a-warn); }
+      .a14-pill.error .dot { background: var(--a-error); }
+
+      .a14-caption { font-size: 11px; color: var(--ink-muted); margin: var(--s-2) 0 0; }
+    </style>
+
+    <div class="a14-grid">
+      <!-- Column 1: Misty Tier-1 (current) -->
+      <div class="a14-col a14-tokens-misty">
+        <h3><span class="lbl">A · Misty Tier-1</span><span class="tag">current</span></h3>
+        <div class="hexrow">
+          <span>#6B8C2C</span><span>#A67C1A</span><span>#B5564A</span>
+        </div>
+
+        <div class="a14-banner ok"><span class="a14-dot"></span><span><b>All clear.</b> Wave 5 closed, response rate 94%.</span></div>
+        <div class="a14-banner warn"><span class="a14-dot"></span><span><b>Attention.</b> 3 alerts pending review past 48h.</span></div>
+        <div class="a14-banner error"><span class="a14-dot"></span><span><b>Action required.</b> SLA breach — workload deep alerts trending.</span></div>
+
+        <div class="a14-kpis">
+          <div class="a14-kpi ok"><div class="k-lbl">Response</div><div class="k-val">94%</div><div class="k-delta">▲ 3 pts</div></div>
+          <div class="a14-kpi warn"><div class="k-lbl">Pending</div><div class="k-val">12</div><div class="k-delta">▲ 4</div></div>
+          <div class="a14-kpi error"><div class="k-lbl">Breach</div><div class="k-val">2</div><div class="k-delta">▼ SLA</div></div>
+        </div>
+
+        <div class="a14-arrows">
+          <span class="a14-arrow-big ok">▲</span>
+          <span class="a14-arrow-big warn">▲</span>
+          <span class="a14-arrow-big error">▲</span>
+          <span style="margin-left: auto; display: inline-flex; gap: 6px;">
+            <span class="a14-pill ok"><span class="dot"></span>ok</span>
+            <span class="a14-pill warn"><span class="dot"></span>warn</span>
+            <span class="a14-pill error"><span class="dot"></span>err</span>
+          </span>
+        </div>
+        <p class="a14-caption">Designed for 7px pills. Calm at small scale; arguably sleepy at banner scale.</p>
+      </div>
+
+      <!-- Column 2: Tier-1.5 proposed -->
+      <div class="a14-col a14-tokens-mid">
+        <h3><span class="lbl">B · Tier-1.5 alert</span><span class="tag">proposed</span></h3>
+        <div class="hexrow">
+          <span>#6B8C2C</span><span>#C97E1A</span><span>#C84A3A</span>
+        </div>
+
+        <div class="a14-banner ok"><span class="a14-dot"></span><span><b>All clear.</b> Wave 5 closed, response rate 94%.</span></div>
+        <div class="a14-banner warn"><span class="a14-dot"></span><span><b>Attention.</b> 3 alerts pending review past 48h.</span></div>
+        <div class="a14-banner error"><span class="a14-dot"></span><span><b>Action required.</b> SLA breach — workload deep alerts trending.</span></div>
+
+        <div class="a14-kpis">
+          <div class="a14-kpi ok"><div class="k-lbl">Response</div><div class="k-val">94%</div><div class="k-delta">▲ 3 pts</div></div>
+          <div class="a14-kpi warn"><div class="k-lbl">Pending</div><div class="k-val">12</div><div class="k-delta">▲ 4</div></div>
+          <div class="a14-kpi error"><div class="k-lbl">Breach</div><div class="k-val">2</div><div class="k-delta">▼ SLA</div></div>
+        </div>
+
+        <div class="a14-arrows">
+          <span class="a14-arrow-big ok">▲</span>
+          <span class="a14-arrow-big warn">▲</span>
+          <span class="a14-arrow-big error">▲</span>
+          <span style="margin-left: auto; display: inline-flex; gap: 6px;">
+            <span class="a14-pill ok"><span class="dot"></span>ok</span>
+            <span class="a14-pill warn"><span class="dot"></span>warn</span>
+            <span class="a14-pill error"><span class="dot"></span>err</span>
+          </span>
+        </div>
+        <p class="a14-caption">Same earth-family hues, boosted chroma. Olive ok unchanged (scales fine), amber + rust punched for banner load.</p>
+      </div>
+
+      <!-- Column 3: Carbon -->
+      <div class="a14-col a14-tokens-carbon">
+        <h3><span class="lbl">C · IBM Carbon</span><span class="tag">reference · too loud</span></h3>
+        <div class="hexrow">
+          <span>#198038</span><span>#ff832b</span><span>#da1e28</span>
+        </div>
+
+        <div class="a14-banner ok"><span class="a14-dot"></span><span><b>All clear.</b> Wave 5 closed, response rate 94%.</span></div>
+        <div class="a14-banner warn"><span class="a14-dot"></span><span><b>Attention.</b> 3 alerts pending review past 48h.</span></div>
+        <div class="a14-banner error"><span class="a14-dot"></span><span><b>Action required.</b> SLA breach — workload deep alerts trending.</span></div>
+
+        <div class="a14-kpis">
+          <div class="a14-kpi ok"><div class="k-lbl">Response</div><div class="k-val">94%</div><div class="k-delta">▲ 3 pts</div></div>
+          <div class="a14-kpi warn"><div class="k-lbl">Pending</div><div class="k-val">12</div><div class="k-delta">▲ 4</div></div>
+          <div class="a14-kpi error"><div class="k-lbl">Breach</div><div class="k-val">2</div><div class="k-delta">▼ SLA</div></div>
+        </div>
+
+        <div class="a14-arrows">
+          <span class="a14-arrow-big ok">▲</span>
+          <span class="a14-arrow-big warn">▲</span>
+          <span class="a14-arrow-big error">▲</span>
+          <span style="margin-left: auto; display: inline-flex; gap: 6px;">
+            <span class="a14-pill ok"><span class="dot"></span>ok</span>
+            <span class="a14-pill warn"><span class="dot"></span>warn</span>
+            <span class="a14-pill error"><span class="dot"></span>err</span>
+          </span>
+        </div>
+        <p class="a14-caption">Full-strength signal colors. Registers instantly but shouts against paper-tint. Off-brand for "unhurried" voice.</p>
+      </div>
+    </div>
+
+    <!-- Coexistence test -->
+    <div class="panel" style="margin-top: var(--s-5)">
+      <h3 style="margin-top: 0">Coexistence test — all three on the same canvas</h3>
+      <p class="meta">Same three banners, same canvas. Squint and see which one feels right against paper-tint.</p>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--s-3); margin-top: var(--s-3)">
+        <div class="a14-tokens-misty">
+          <p style="margin: 0 0 var(--s-2); font-size: 10px; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.06em">A — Misty</p>
+          <div class="a14-banner error"><span class="a14-dot"></span><span>SLA breach — workload deep alerts trending.</span></div>
+        </div>
+        <div class="a14-tokens-mid">
+          <p style="margin: 0 0 var(--s-2); font-size: 10px; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.06em">B — Tier-1.5</p>
+          <div class="a14-banner error"><span class="a14-dot"></span><span>SLA breach — workload deep alerts trending.</span></div>
+        </div>
+        <div class="a14-tokens-carbon">
+          <p style="margin: 0 0 var(--s-2); font-size: 10px; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.06em">C — Carbon</p>
+          <div class="a14-banner error"><span class="a14-dot"></span><span>SLA breach — workload deep alerts trending.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top: var(--s-4); background: var(--paper-cool-tint)">
+      <h3 style="margin-top: 0">What to look for</h3>
+      <ul>
+        <li><b>Banner urgency.</b> Does the "Action required" banner read as something you'd act on within 5 minutes, or something you'd notice tomorrow?</li>
+        <li><b>Calm canvas.</b> Does any column make the whole page feel anxious? That's the loudness penalty — Carbon's signal cost.</li>
+        <li><b>Pill→banner consistency.</b> The pills (top-right of each column) and the banners use the same token. If the pill feels right but the banner doesn't, that's the scale problem talking — case for Tier-1.5.</li>
+        <li><b>Warn legibility.</b> Misty's <code>#A67C1A</code> at banner size — does it read as "warning" or just "brown text"? This is where Tier-1.5 earns its keep, if anywhere.</li>
+      </ul>
+      <div class="pal-vote">
+        <span>Pick a column: <b>A</b> (do nothing) · <b>B</b> (add Tier-1.5 alert) · <b>C</b> (reject — too loud, sanity check)</span>
+      </div>
+    </div>
+  </section>
+
+  <footer style="margin-top: var(--s-7); padding-top: var(--s-4); border-top: 1px solid var(--rule); font-size: var(--fs-small); color: var(--ink-muted)">
+    Sandbox · CCD BRB Design · Phase 1.17 data-viz · §13 Tier-2 inventory · §14 alert-at-scale comparison (A misty / B Tier-1.5 / C Carbon).
+  </footer>
+</main>
+</body>
+</html>
