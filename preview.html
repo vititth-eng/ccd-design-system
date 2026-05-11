@@ -16,6 +16,7 @@
 <link rel="stylesheet" href="tables.css" />
 <link rel="stylesheet" href="modals.css" />
 <link rel="stylesheet" href="buttons.css" />
+<link rel="stylesheet" href="nav.css" />
 <style>
   /* ============================================================
      DESIGN BOARD · single-page everything-at-a-glance reference
@@ -411,6 +412,7 @@
       <a href="#toasts">Toasts</a>
       <a href="#tables">Tables</a>
       <a href="#modals">Modals</a>
+      <a href="#nav">Nav</a>
       <a href="#components">Components</a>
       <a href="#hero">Hero</a>
     </nav>
@@ -1579,6 +1581,69 @@
           });
         });
       })();
+    </script>
+  </section>
+
+  <!-- ── NAV (tabs · breadcrumbs · top nav) ────────────── -->
+  <section id="nav">
+    <div class="sec-head">
+      <h2 class="sec-title">Nav</h2>
+      <p class="sec-note">Three primitives co-designed because they share one active-state language — <code>--brand</code> underline. Top nav (header strip), breadcrumbs (hierarchy trail), tabs (section switcher). Sits in <code>nav.css</code>.</p>
+    </div>
+
+    <h3 style="font-size:0.875rem;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink-muted);margin:0 0 var(--s-3);">Top nav</h3>
+    <div class="nav" style="border:1px solid var(--rule); border-radius:var(--r-md); margin-bottom:var(--s-6);">
+      <a href="#" class="nav__brand">
+        <span class="nav__brand-mark">CCD</span>
+        <span>Onboarding</span>
+      </a>
+      <nav class="nav__links" aria-label="Primary">
+        <a href="#" class="nav__link">Dashboard</a>
+        <a href="#" class="nav__link" aria-current="page">Responses</a>
+        <a href="#" class="nav__link">Cohorts</a>
+        <a href="#" class="nav__link">Settings</a>
+      </nav>
+      <div class="nav__spacer"></div>
+      <div class="nav__actions">
+        <button class="nav__icon-btn" aria-label="Search"><svg class="icon"><use href="#i-search"/></svg></button>
+        <button class="nav__icon-btn" aria-label="Help"><svg class="icon"><use href="#i-help-circle"/></svg></button>
+        <button class="nav__avatar" aria-label="Account">VT</button>
+      </div>
+    </div>
+
+    <h3 style="font-size:0.875rem;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink-muted);margin:0 0 var(--s-3);">Breadcrumbs</h3>
+    <nav class="crumbs" aria-label="Breadcrumb" style="margin-bottom:var(--s-4);">
+      <a href="#">Tools</a>
+      <span class="crumbs__sep" aria-hidden="true"><svg class="icon"><use href="#i-chevron-right"/></svg></span>
+      <a href="#">Onboarding</a>
+      <span class="crumbs__sep" aria-hidden="true"><svg class="icon"><use href="#i-chevron-right"/></svg></span>
+      <a href="#">Cohort · 2026 Q2</a>
+      <span class="crumbs__sep" aria-hidden="true"><svg class="icon"><use href="#i-chevron-right"/></svg></span>
+      <span class="crumbs__current" aria-current="page">Response 0247</span>
+    </nav>
+    <a class="crumbs-back" href="#">
+      <svg class="icon"><use href="#i-chevron-left"/></svg>
+      <span>Back to Cohort · 2026 Q2</span>
+    </a>
+
+    <h3 style="font-size:0.875rem;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink-muted);margin:var(--s-6) 0 var(--s-3);">Tabs</h3>
+    <div class="tabs" role="tablist">
+      <button class="tabs__tab" role="tab" aria-selected="true">Overview</button>
+      <button class="tabs__tab" role="tab" aria-selected="false">Responses <span class="tabs__count">248</span></button>
+      <button class="tabs__tab" role="tab" aria-selected="false">Comments <span class="tabs__count">42</span></button>
+      <button class="tabs__tab" role="tab" aria-selected="false">Settings</button>
+    </div>
+
+    <p class="callout" style="margin-top:var(--s-5);"><strong>Anti-patterns.</strong> Don't mix active-state languages on one screen. Don't combine full breadcrumb + back-arrow at the same hierarchy level — back-arrow is a companion on detail screens, not an alternative.</p>
+
+    <script>
+      document.querySelectorAll('#nav [role="tablist"]').forEach(list => {
+        list.addEventListener('click', e => {
+          const tab = e.target.closest('[role="tab"]');
+          if (!tab) return;
+          list.querySelectorAll('[role="tab"]').forEach(t => t.setAttribute('aria-selected', t === tab ? 'true' : 'false'));
+        });
+      });
     </script>
   </section>
 
