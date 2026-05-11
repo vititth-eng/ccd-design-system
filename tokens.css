@@ -100,15 +100,20 @@
           "Segoe UI", system-ui, sans-serif;
   --thai: "Noto Sans Thai", "Inter", sans-serif;
 
-  /* ── Type scale (Phase 1.9 · "B / as-shipping") ──────
-     Six roles. Sizes match what landing already serves;
-     graduating to tokens so other tools converge. */
+  /* ── Type scale (Phase 1.9 base · Phase 2A.2 +data/+nano) ──────
+     Eight roles. Body (17px) is paragraph default; data (14px) is the
+     density-first scan size for tabular/dashboard tools (Onboarding,
+     Sounding Board). Nano (11px) is reserved for sub-micro decoration
+     (sort indicators, wave-pill day labels) — accessibility floor;
+     never used for primary content. */
   --fs-display: clamp(2rem, 4vw, 3rem);  /* hero · 32→48px */
   --fs-section: 1.5rem;                  /* 24px · section heading */
   --fs-card:    1.25rem;                 /* 20px · card / panel title */
   --fs-body:    1.0625rem;               /* 17px · paragraph default */
+  --fs-data:    0.875rem;                /* 14px · dense tabular / dashboard */
   --fs-small:   0.8125rem;               /* 13px · caption / meta */
   --fs-micro:   0.75rem;                 /* 12px · eyebrow / pill / label */
+  --fs-nano:    0.6875rem;               /* 11px · sub-micro decoration only */
 
   /* ── Weight ─────────────────────────────────────────── */
   --fw-regular: 400;
