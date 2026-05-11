@@ -50,16 +50,17 @@
   white-space: nowrap;
 }
 .nav__brand-mark {
-  width: 24px;
-  height: 24px;
-  background: var(--brand-deep);
-  border-radius: var(--r-sm);
-  display: inline-grid;
-  place-items: center;
-  color: var(--paper);
-  font-size: 0.6875rem;
-  font-weight: var(--fw-bold);
-  letter-spacing: 0.04em;
+  display: inline-block;
+  width: 28px;
+  height: 26px;
+  background-color: currentColor;
+  -webkit-mask: url('assets/ccd-mark-full.svg') center/contain no-repeat;
+  mask: url('assets/ccd-mark-full.svg') center/contain no-repeat;
+  color: var(--brand-deep);
+}
+.nav__brand-mark--wireframe {
+  -webkit-mask-image: url('assets/ccd-mark-wireframe.svg');
+  mask-image: url('assets/ccd-mark-wireframe.svg');
 }
 .nav__brand-sub { color: var(--ink-muted); font-weight: var(--fw-med); }
 
