@@ -144,9 +144,10 @@
   --duration-slow: var(--dur-slow);
 
   /* ── Breakpoints ───────────────────────────────────── */
-  --breakpoint-mobile: var(--bp-mobile);
-  --breakpoint-tablet: var(--bp-tablet);
-  --breakpoint-desktop: var(--bp-desktop);
+  /* literal px — CSS @media disallows var(); do not switch back to var(--bp-*) */
+  --breakpoint-mobile: 540px;
+  --breakpoint-tablet: 760px;
+  --breakpoint-desktop: 960px;
 
   /* ── Container ─────────────────────────────────────── */
   --container-content: var(--max-content);
