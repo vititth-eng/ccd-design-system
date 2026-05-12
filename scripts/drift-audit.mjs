@@ -29,6 +29,7 @@ const walk = (dir, out = []) => {
 const all = walk(root);
 const cssFiles = all.filter(f => f.endsWith(".css"));
 const htmlFiles = all.filter(f => f.endsWith(".html"));
+const jsxFiles = all.filter(f => /\.(tsx|jsx|ts|js|mjs)$/.test(f));
 if (cssFiles.length + htmlFiles.length === 0) {
   console.error(`no .css or .html under ${root}`);
   process.exit(2);
@@ -83,19 +84,36 @@ const bespoke = BESPOKE_SELECTORS.map(({ label, pat, replace }) => {
   return n > 0 ? { sel: label, n, replace } : null;
 }).filter(Boolean);
 
+// Connection signals can live in HTML (vanilla tools) or CSS (build-tool
+// consumers like Next.js where there's no source HTML — the CDN import sits
+// in app/globals.css). Check both. Inter/Noto can also arrive via the token
+// font-family stack rather than a Google Fonts <link>.
 const htmlBlob = html.map(x => x.src).join("\n");
-const hasCdn = /cdn\.jsdelivr\.net\/gh\/vititth-eng\/ccd-design-system/.test(htmlBlob);
-const hasInter = /family=Inter/.test(htmlBlob);
-const hasNoto = /family=Noto\+Sans\+Thai/.test(htmlBlob);
+const connectionBlob = htmlBlob + "\n" + cssAll;
+const hasCdn = /cdn\.jsdelivr\.net\/gh\/vititth-eng\/ccd-design-system/.test(connectionBlob);
+// Fonts arrive three ways: Google Fonts <link> (vanilla HTML), @font-face /
+// "Inter" referenced in consumer CSS (rare; tokens.css already does this but
+// lives at CDN, so a literal match here means the consumer also references
+// the family), or next/font/google in Next.js tools. Any of the three counts.
+const jsxBlob = jsxFiles.map(f => { try { return readFileSync(f, "utf8"); } catch { return ""; } }).join("\n");
+const NEXT_FONT_INTER = /from\s+["']next\/font\/google["'][\s\S]{0,400}\bInter\b|\bInter\s*\(/;
+const NEXT_FONT_NOTO = /from\s+["']next\/font\/google["'][\s\S]{0,400}Noto[_\s]*Sans[_\s]*Thai|Noto_Sans_Thai\s*\(/;
+const hasInter = /family=Inter/.test(htmlBlob) || NEXT_FONT_INTER.test(jsxBlob);
+const hasNoto = /family=Noto\+Sans\+Thai/.test(htmlBlob) || NEXT_FONT_NOTO.test(jsxBlob);
 const hasMark = /ccd-mark-(full|wireframe)\.svg/.test(htmlBlob);
 const hasLockup = /ccd-(full|wireframe)\.svg/.test(htmlBlob);
 
-// Derive the system-token allowlist from tokens.css at runtime so the audit
-// stays in sync with whatever the design system actually ships.
+// Derive the system-token allowlist from tokens.css AND tailwind-preset.css
+// at runtime so the audit stays in sync with whatever the design system
+// actually ships. The preset re-exposes tokens under Tailwind v4 @theme
+// namespaces (--color-*, --text-*, --spacing-*, etc.) which build-tool
+// consumers reference directly.
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const systemTokensSrc = readFileSync(join(scriptDir, "..", "tokens.css"), "utf8");
+let presetTokensSrc = "";
+try { presetTokensSrc = readFileSync(join(scriptDir, "..", "tailwind-preset.css"), "utf8"); } catch {}
 const SYSTEM_TOKENS = new Set(
-  [...systemTokensSrc.matchAll(/--([a-zA-Z][a-zA-Z0-9-]*)\s*:/g)].map(m => m[1])
+  [...(systemTokensSrc + "\n" + presetTokensSrc).matchAll(/--([a-zA-Z][a-zA-Z0-9-]*)\s*:/g)].map(m => m[1])
 );
 const TOOL_LOCAL_OK_PREFIXES = ["ot-"];
 const isSystemToken = name => SYSTEM_TOKENS.has(name);
