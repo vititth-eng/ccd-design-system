@@ -51,7 +51,7 @@ const CHROME_CSS = `
     transition:transform var(--dur-base) var(--ease),opacity var(--dur-base) var(--ease);
   }
   .ccd-topbar .nav-item.open > button .caret{transform:rotate(180deg);opacity:0.9}
-  .ccd-topbar .nav-item > button .caret svg{width:100%;height:100%;display:block}
+  .ccd-topbar .nav-item > button .caret svg{width:100%;height:100%;display:block;cursor:inherit}
   .ccd-topbar .dropdown{
     position:absolute;top:calc(100% + 4px);left:50%;transform:translateX(-50%);
     background:var(--paper);border:1px solid var(--rule);border-radius:10px;
@@ -81,6 +81,33 @@ const CHROME_CSS = `
     text-align:center;color:var(--ink-muted);font-size:var(--fs-small);letter-spacing:-0.05px;
   }
   .ccd-footer .sep{opacity:0.5;margin:0 8px}
+  .ccd-topbar .nav__avatar{
+    width:28px;height:28px;border-radius:50%;
+    background:var(--brand-soft);color:var(--ink);
+    display:inline-grid;place-items:center;
+    font-size:0.75rem;font-weight:var(--fw-bold,700);
+    cursor:pointer;border:0;font-family:inherit;
+    transition:opacity var(--dur-fast) var(--ease);
+  }
+  .ccd-topbar .nav__avatar:hover{opacity:0.8}
+  .ccd-topbar .nav__avatar:focus-visible{
+    outline:var(--focus-ring-width,2px) solid var(--focus-ring-color,var(--brand));
+    outline-offset:2px;
+  }
+  .ccd-topbar #ccd-auth-item .dropdown{
+    left:auto;right:0;transform:none;min-width:200px;
+  }
+  .ccd-topbar .auth-email{
+    padding:10px 12px 8px;font-size:var(--fs-small);
+    color:var(--ink-muted);border-bottom:1px solid var(--rule);margin-bottom:4px;
+    word-break:break-all;
+  }
+  .ccd-topbar .auth-signout{
+    display:block;padding:8px 12px;border-radius:6px;width:100%;text-align:left;
+    font-size:var(--fs-small);font-family:inherit;color:var(--ink);
+    background:none;border:0;cursor:pointer;
+  }
+  .ccd-topbar .auth-signout:hover{background:var(--paper-tint)}
   @media (max-width: 540px){
     .ccd-topbar{grid-template-columns:auto 1fr auto}
     .ccd-topbar nav.nav{justify-self:end}
@@ -116,7 +143,9 @@ function topbarHTML() {
         <a href="${BASE}/" data-nav-route="" ${onHome ? 'aria-current="page"' : ''}>Home</a>
         ${toolsDropdownHTML()}
         <a href="${BASE}/#about" data-nav-route="/about">About Us</a>
-        <button type="button" id="ccd-auth-btn">Sign in</button>
+        <div class="nav-item" id="ccd-auth-item">
+          <button type="button" id="ccd-auth-btn" style="visibility:hidden">Sign in</button>
+        </div>
       </nav>
       <span class="meta" aria-live="polite" data-ccd-ticker>—</span>
     </div>
@@ -168,29 +197,52 @@ function wireDropdown(root) {
 }
 
 async function wireAuth() {
+  const item = document.getElementById('ccd-auth-item');
   const btn = document.getElementById('ccd-auth-btn');
-  if (!btn) return;
+  if (!btn || !item) return;
+
   let auth;
   try {
     const authURL = new URL('/js/auth.js', document.baseURI).href;
     auth = await import(authURL);
   } catch {
+    btn.textContent = 'Sign in';
+    btn.style.visibility = '';
     btn.addEventListener('click', () => { window.location.href = `${BASE}/login`; });
     return;
   }
+
   let session = null;
   try { session = await auth.getSession(); } catch { /* unauth-friendly */ }
-  const setSignedOut = () => { btn.textContent = 'Sign in'; btn.title = ''; };
-  const setSignedIn = (email) => { btn.textContent = 'Sign out'; btn.title = email || ''; };
-  if (session?.user) setSignedIn(session.user.email); else setSignedOut();
-  btn.addEventListener('click', async () => {
-    const cur = await auth.getSession().catch(() => null);
-    if (cur?.user) {
-      await auth.signOut();
-      window.location.reload();
-    } else {
-      window.location.href = `${BASE}/login`;
-    }
+
+  if (!session?.user) {
+    btn.textContent = 'Sign in';
+    btn.style.visibility = '';
+    btn.addEventListener('click', () => { window.location.href = `${BASE}/login`; });
+    return;
+  }
+
+  // Signed in — replace plain button with avatar + dropdown
+  const email = session.user.email || '';
+  const initial = email[0]?.toUpperCase() || '?';
+  item.innerHTML = `
+    <button type="button" class="nav__avatar" aria-expanded="false" aria-haspopup="menu" title="${email}">${initial}</button>
+    <div class="dropdown" role="menu">
+      <div class="auth-email">${email}</div>
+      <button type="button" class="auth-signout" role="menuitem">Sign out</button>
+    </div>
+  `;
+
+  const avatar = item.querySelector('.nav__avatar');
+  const open  = () => { item.classList.add('open');    avatar.setAttribute('aria-expanded', 'true'); };
+  const close = () => { item.classList.remove('open'); avatar.setAttribute('aria-expanded', 'false'); };
+  avatar.addEventListener('click', e => { e.stopPropagation(); item.classList.contains('open') ? close() : open(); });
+  document.addEventListener('click', e => { if (!item.contains(e.target)) close(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+
+  item.querySelector('.auth-signout').addEventListener('click', async () => {
+    await auth.signOut();
+    window.location.reload();
   });
 }
 
