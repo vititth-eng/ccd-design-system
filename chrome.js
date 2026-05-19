@@ -25,8 +25,8 @@ const CHROME_CSS = `
   }
   .ccd-topbar nav.nav{display:flex;gap:0;justify-self:center;align-self:stretch}
   .ccd-topbar nav.nav > a,
-  .ccd-topbar nav.nav > button,
-  .ccd-topbar nav.nav .nav-item > button{
+  .ccd-topbar nav.nav > button:not(.nav__avatar),
+  .ccd-topbar nav.nav .nav-item > button:not(.nav__avatar){
     padding:0 12px;height:44px;
     background:transparent;border:0;border-bottom:2px solid transparent;
     color:var(--ink-muted);text-decoration:none;
@@ -35,7 +35,7 @@ const CHROME_CSS = `
     transition:color var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease);
   }
   .ccd-topbar nav.nav > a:hover,
-  .ccd-topbar nav.nav button:hover{color:var(--ink)}
+  .ccd-topbar nav.nav button:not(.nav__avatar):hover{color:var(--ink)}
   .ccd-topbar nav.nav > a[aria-current="page"],
   .ccd-topbar nav.nav button[aria-pressed="true"]{
     color:var(--brand-deep);font-weight:var(--fw-semi);border-bottom-color:var(--brand);
@@ -87,6 +87,7 @@ const CHROME_CSS = `
     display:inline-grid;place-items:center;
     font-size:0.75rem;font-weight:var(--fw-bold,700);
     cursor:pointer;border:0;font-family:inherit;
+    align-self:center;margin:0 8px;
     transition:opacity var(--dur-fast) var(--ease);
   }
   .ccd-topbar .nav__avatar:hover{opacity:0.8}
