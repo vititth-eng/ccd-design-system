@@ -13,6 +13,8 @@ const TOOLS = [
 const CHROME_CSS = `
   body{background:var(--paper-tint)}
   header[data-chrome="topbar"]{position:sticky;top:0;z-index:50;cursor:default}
+  header[data-chrome="topbar"] a,
+  header[data-chrome="topbar"] button{cursor:pointer}
   .ccd-topbar{
     background:var(--paper);border-bottom:1px solid var(--rule);
     padding:0 24px;
