@@ -45,7 +45,7 @@ const CHROME_CSS = `
     outline:var(--focus-ring-width,2px) solid var(--focus-ring-color,var(--brand));
     outline-offset:-2px;border-radius:var(--r-xs,4px);
   }
-  .ccd-topbar .nav-item{position:relative;display:flex;cursor:pointer}
+  .ccd-topbar .nav-item{position:relative;display:flex}
   .ccd-topbar .nav-item > button .caret{
     width:10px;height:10px;display:inline-grid;place-items:center;color:currentColor;opacity:0.55;
     transition:transform var(--dur-base) var(--ease),opacity var(--dur-base) var(--ease);
