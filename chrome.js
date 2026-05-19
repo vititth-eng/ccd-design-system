@@ -97,6 +97,7 @@ const CHROME_CSS = `
     outline:var(--focus-ring-width,2px) solid var(--focus-ring-color,var(--brand));
     outline-offset:2px;
   }
+  .ccd-topbar #ccd-auth-item{cursor:default}
   .ccd-topbar #ccd-auth-item .dropdown{
     left:auto;right:0;transform:none;min-width:200px;
   }
