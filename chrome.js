@@ -160,15 +160,17 @@ function wireTicker(root) {
   let MILESTONE = 100;
   let target = new Date(FOUNDED_YEAR + MILESTONE, ANNIV_MONTH - 1, ANNIV_DAY);
   while (target < new Date()) { MILESTONE += 25; target = new Date(FOUNDED_YEAR + MILESTONE, ANNIV_MONTH - 1, ANNIV_DAY); }
-  const n = v => `<strong>${String(v).padStart(2,'0')}</strong>`;
+  // Build DOM once — only update textContent in the interval to avoid
+  // innerHTML replacement causing a browser cursor-state reset each second.
+  el.innerHTML = `<strong>--</strong>s <strong>--</strong>m <strong>--</strong>h <strong>---</strong>d till ${MILESTONE} years`;
+  const [tS, tM, tH, tD] = el.querySelectorAll('strong');
   function render() {
     const diff = target - new Date();
-    if (diff <= 0) { el.innerHTML = `<strong>${MILESTONE}</strong> years today`; return; }
-    const s = Math.floor(diff / 1000) % 60;
-    const m = Math.floor(diff / 60000) % 60;
-    const h = Math.floor(diff / 3600000) % 24;
-    const d = Math.floor(diff / 86400000);
-    el.innerHTML = `${n(s)}s ${n(m)}m ${n(h)}h <strong>${d.toLocaleString()}</strong>d till ${MILESTONE} years`;
+    if (diff <= 0) { el.textContent = `${MILESTONE} years today`; return; }
+    tS.textContent = String(Math.floor(diff / 1000) % 60).padStart(2, '0');
+    tM.textContent = String(Math.floor(diff / 60000) % 60).padStart(2, '0');
+    tH.textContent = String(Math.floor(diff / 3600000) % 24).padStart(2, '0');
+    tD.textContent = Math.floor(diff / 86400000).toLocaleString();
   }
   render();
   setInterval(render, 1000);
