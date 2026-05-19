@@ -23,7 +23,7 @@ const CHROME_CSS = `
     justify-self:start;display:flex;align-items:center;height:100%;line-height:0;
     color:var(--ink);text-decoration:none;font-weight:var(--fw-semi,600);letter-spacing:0.04em;
   }
-  .ccd-topbar nav.nav{display:flex;gap:0;justify-self:center;align-self:stretch}
+  .ccd-topbar nav.nav{display:flex;gap:0;justify-self:center;align-self:stretch;cursor:pointer}
   .ccd-topbar nav.nav > a,
   .ccd-topbar nav.nav > button:not(.nav__avatar),
   .ccd-topbar nav.nav .nav-item > button:not(.nav__avatar){
