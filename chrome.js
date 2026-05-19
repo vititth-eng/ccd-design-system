@@ -17,7 +17,7 @@ const CHROME_CSS = `
     background:var(--paper);border-bottom:1px solid var(--rule);
     padding:0 24px;
     display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px;
-    height:44px;
+    height:44px;cursor:default;
   }
   .ccd-topbar .brand{
     justify-self:start;display:flex;align-items:center;height:100%;line-height:0;
