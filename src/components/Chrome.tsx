@@ -95,7 +95,7 @@ export function ChromeHeader({ user, onSignOut }: ChromeHeaderProps) {
         <div className={s.navItem} ref={toolsRef}>
           <button
             type="button"
-            className={`${s.navBtn} ${toolsOpen || isOnTool ? s.navBtnActive : ''}`}
+            className={`${s.navBtn} ${isOnTool ? s.navBtnActive : ''}`}
             aria-expanded={toolsOpen}
             aria-haspopup="menu"
             aria-pressed={isOnTool || undefined}
