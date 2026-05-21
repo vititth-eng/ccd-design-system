@@ -129,9 +129,11 @@ function injectStyles() {
 
 function toolsDropdownHTML() {
   const items = TOOLS.map(t => `<a href="${t.href}" role="menuitem">${t.label} <span class="status ${t.cls}">${t.status}</span></a>`).join('');
+  const path = window.location.pathname;
+  const onTool = /^\/(onboarding|sounding-board|multi-rater)(\/|$)/.test(path);
   return `
     <div class="nav-item" data-dropdown="tools">
-      <button type="button" aria-expanded="false" aria-haspopup="menu">Tools<span class="caret" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4 L5 6.5 L7.5 4"/></svg></span></button>
+      <button type="button" aria-expanded="false" aria-haspopup="menu"${onTool ? ' aria-pressed="true"' : ''}>Tools<span class="caret" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4 L5 6.5 L7.5 4"/></svg></span></button>
       <div class="dropdown" role="menu">${items}</div>
     </div>
   `;
