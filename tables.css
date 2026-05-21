@@ -124,7 +124,7 @@ table.tbl {
    the header is enough — no shadow needed at rest. */
 .tbl-scroll.is-sticky { max-height: 320px; overflow-y: auto; }
 .tbl-scroll.is-sticky thead th {
-  position: sticky; top: 0; z-index: 1;
+  position: sticky; top: 0; z-index: var(--z-sticky);
 }
 
 /* ── Numeric columns ──────────────────────────────────── */
