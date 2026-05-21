@@ -39,7 +39,7 @@ const CHROME_CSS = `
   .ccd-topbar nav.nav > a:hover,
   .ccd-topbar nav.nav button:not(.nav__avatar):hover{color:var(--ink)}
   .ccd-topbar nav.nav > a[aria-current="page"],
-  .ccd-topbar nav.nav button[aria-pressed="true"]{
+  .ccd-topbar nav.nav .nav-item > button[aria-pressed="true"]{
     color:var(--brand-deep);font-weight:var(--fw-semi);border-bottom-color:var(--brand);
   }
   .ccd-topbar nav.nav button:focus{outline:none}
