@@ -1,6 +1,6 @@
 {
   "name": "@ccd/design-system",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Shared React components, CSS tokens, and chrome for ccd-brb-* apps.",
   "type": "module",
   "exports": {

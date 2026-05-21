@@ -77,6 +77,7 @@ export function ChromeHeader({ user, onSignOut }: ChromeHeaderProps) {
   const isHome = pathname === '/';
   const isAbout = pathname === '/about';
   const isLogin = pathname === '/login';
+  const isOnTool = /^\/(onboarding|sounding-board|multi-rater)(\/|$)/.test(pathname || '');
 
   return (
     <header className={s.topbar}>
@@ -94,9 +95,10 @@ export function ChromeHeader({ user, onSignOut }: ChromeHeaderProps) {
         <div className={s.navItem} ref={toolsRef}>
           <button
             type="button"
-            className={`${s.navBtn} ${toolsOpen ? s.navBtnActive : ''}`}
+            className={`${s.navBtn} ${toolsOpen || isOnTool ? s.navBtnActive : ''}`}
             aria-expanded={toolsOpen}
             aria-haspopup="menu"
+            aria-pressed={isOnTool || undefined}
             onClick={() => setToolsOpen(o => !o)}
           >
             Tools
