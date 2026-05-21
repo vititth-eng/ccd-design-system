@@ -1,0 +1,44 @@
+{
+  "name": "@ccd/design-system",
+  "version": "0.1.0",
+  "description": "Shared React components, CSS tokens, and chrome for ccd-brb-* apps.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./tokens.css": "./tokens.css",
+    "./tokens-dashboard.css": "./tokens-dashboard.css",
+    "./buttons.css": "./buttons.css",
+    "./forms.css": "./forms.css",
+    "./tables.css": "./tables.css",
+    "./modals.css": "./modals.css",
+    "./layout.css": "./layout.css",
+    "./nav.css": "./nav.css",
+    "./states.css": "./states.css",
+    "./toasts.css": "./toasts.css",
+    "./icons.css": "./icons.css",
+    "./icons.svg": "./icons.svg",
+    "./tailwind-preset.css": "./tailwind-preset.css"
+  },
+  "files": [
+    "src",
+    "*.css",
+    "*.svg",
+    "README.md",
+    "INTEGRATION.md"
+  ],
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.6.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vititth-eng/ccd-design-system.git"
+  },
+  "license": "UNLICENSED",
+  "private": false
+}
