@@ -81,24 +81,44 @@ export function ChromeHeader({ user, onSignOut, isOnTool }: ChromeHeaderProps) {
     };
   }, []);
 
-  const isHome = pathname === '/';
-  const isAbout = pathname === '/about';
-  const isLogin = pathname === '/login';
   const isOnToolPath = /^\/(onboarding|sounding-board|multi-rater)(\/|$)/.test(pathname || '');
   const toolActive = isOnTool ?? isOnToolPath;
 
+  // When running inside a tool app (isOnTool=true), landing-bound nav must
+  // be plain anchors with absolute URLs — Next Link would resolve them
+  // relative to the tool's basePath. aria-current also only makes sense
+  // inside landing, where these routes actually exist.
+  const external = toolActive;
+  const isHome = !external && pathname === '/';
+  const isAbout = !external && pathname === '/about';
+  const isLogin = !external && pathname === '/login';
+
+  const homeHref = external ? BASE || '/' : '/';
+  const aboutHref = external ? `${BASE}/about` : '/about';
+  const loginHref = external ? `${BASE}/login` : '/login';
+
+  const Brand = external
+    ? <a href={homeHref} className={s.brand} aria-label="CCD home" />
+    : <Link href="/" className={s.brand} aria-label="CCD home" />;
+
+  const HomeLink = external
+    ? <a href={homeHref} className={s.navLink}>Home</a>
+    : <Link href="/" className={s.navLink} aria-current={isHome ? 'page' : undefined}>Home</Link>;
+
+  const AboutLink = external
+    ? <a href={aboutHref} className={s.navLink}>About Us</a>
+    : <Link href="/about" className={s.navLink} aria-current={isAbout ? 'page' : undefined}>About Us</Link>;
+
+  const SignInLink = external
+    ? <a href={loginHref} className={s.navLink}>Sign in</a>
+    : <Link href="/login" className={s.navLink} aria-current={isLogin ? 'page' : undefined}>Sign in</Link>;
+
   return (
     <header className={s.topbar}>
-      <Link href="/" className={s.brand} aria-label="CCD home" />
+      {Brand}
 
       <nav className={s.nav} aria-label="Site navigation">
-        <Link
-          href="/"
-          className={s.navLink}
-          aria-current={isHome ? 'page' : undefined}
-        >
-          Home
-        </Link>
+        {HomeLink}
 
         <div className={s.navItem} ref={toolsRef}>
           <button
@@ -130,13 +150,7 @@ export function ChromeHeader({ user, onSignOut, isOnTool }: ChromeHeaderProps) {
           )}
         </div>
 
-        <Link
-          href="/about"
-          className={s.navLink}
-          aria-current={isAbout ? 'page' : undefined}
-        >
-          About Us
-        </Link>
+        {AboutLink}
 
         {user ? (
           <div className={s.navItem} ref={authRef}>
@@ -166,9 +180,7 @@ export function ChromeHeader({ user, onSignOut, isOnTool }: ChromeHeaderProps) {
             )}
           </div>
         ) : (
-          <Link href="/login" className={s.navLink} aria-current={isLogin ? 'page' : undefined}>
-            Sign in
-          </Link>
+          SignInLink
         )}
       </nav>
 
