@@ -1,6 +1,6 @@
 {
   "name": "@ccd/design-system",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Shared React components, CSS tokens, and chrome for ccd-brb-* apps.",
   "type": "module",
   "exports": {
@@ -28,7 +28,8 @@
   ],
   "peerDependencies": {
     "react": ">=18",
-    "react-dom": ">=18"
+    "react-dom": ">=18",
+    "next": ">=14"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",

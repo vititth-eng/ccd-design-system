@@ -1,1 +1,2 @@
-export const PACKAGE_VERSION = '0.1.0';
+export { ChromeHeader, ChromeFooter } from './components/Chrome';
+export type { ChromeHeaderProps, ChromeUser } from './components/Chrome';
