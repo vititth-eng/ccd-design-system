@@ -48,9 +48,16 @@ export interface ChromeUser {
 export interface ChromeHeaderProps {
   user: ChromeUser | null;
   onSignOut: () => void | Promise<void>;
+  /**
+   * Force the "Tools" nav item to render as active. Consumers running with
+   * a basePath (e.g. onboarding's `/onboarding`) should pass `true` because
+   * Next.js strips the basePath from `usePathname()`, so the default
+   * pathname-based detection can't see they're on a tool.
+   */
+  isOnTool?: boolean;
 }
 
-export function ChromeHeader({ user, onSignOut }: ChromeHeaderProps) {
+export function ChromeHeader({ user, onSignOut, isOnTool }: ChromeHeaderProps) {
   const pathname = usePathname();
   const tick = useTicker();
   const [toolsOpen, setToolsOpen] = useState(false);
@@ -77,7 +84,8 @@ export function ChromeHeader({ user, onSignOut }: ChromeHeaderProps) {
   const isHome = pathname === '/';
   const isAbout = pathname === '/about';
   const isLogin = pathname === '/login';
-  const isOnTool = /^\/(onboarding|sounding-board|multi-rater)(\/|$)/.test(pathname || '');
+  const isOnToolPath = /^\/(onboarding|sounding-board|multi-rater)(\/|$)/.test(pathname || '');
+  const toolActive = isOnTool ?? isOnToolPath;
 
   return (
     <header className={s.topbar}>
@@ -95,10 +103,10 @@ export function ChromeHeader({ user, onSignOut }: ChromeHeaderProps) {
         <div className={s.navItem} ref={toolsRef}>
           <button
             type="button"
-            className={`${s.navBtn} ${isOnTool ? s.navBtnActive : ''}`}
+            className={`${s.navBtn} ${toolActive ? s.navBtnActive : ''}`}
             aria-expanded={toolsOpen}
             aria-haspopup="menu"
-            aria-pressed={isOnTool || undefined}
+            aria-pressed={toolActive || undefined}
             onClick={() => setToolsOpen(o => !o)}
           >
             Tools
