@@ -11,7 +11,6 @@ All assets served from `vititth-eng/ccd-design-system` via jsdelivr. Always use 
 | Asset | URL |
 |---|---|
 | Tokens (color, type, spacing, motion) | `https://cdn.jsdelivr.net/gh/vititth-eng/ccd-design-system@main/tokens.css` |
-| Chrome (topbar + footer) | `https://cdn.jsdelivr.net/gh/vititth-eng/ccd-design-system@main/chrome.js` |
 | Nav primitives | `https://cdn.jsdelivr.net/gh/vititth-eng/ccd-design-system@main/nav.css` |
 | Tailwind preset | `https://cdn.jsdelivr.net/gh/vititth-eng/ccd-design-system@main/tailwind-preset.css` |
 | CCD mark (nav chrome) | `https://cdn.jsdelivr.net/gh/vititth-eng/ccd-design-system@main/assets/ccd-mark-full.svg` |
@@ -75,40 +74,31 @@ Full spec → `DESIGN-SYSTEM.md` in this repo.
 
 ## Chrome (topbar + footer)
 
-Every tool gets the same topbar and footer via `chrome.js`. Three things required:
+Chrome is a **React component** shipped from this repo's npm-style package. Install via git URL pinned to a tag:
 
-**1. In `<head>`:**
-```html
-<link rel="modulepreload" href="https://cdn.jsdelivr.net/gh/vititth-eng/ccd-design-system@main/chrome.js" />
+```bash
+npm install "@ccd/design-system@github:vititth-eng/ccd-design-system#v0.4.0"
 ```
 
-**2. In `<style>` (CSS placeholder — prevents layout jump before chrome mounts):**
-```css
-header[data-chrome="topbar"] {
-  height: 44px;
-  background: var(--paper);
-  border-bottom: 1px solid var(--rule);
-  position: sticky;
-  top: 0;
-  z-index: 50;
+In `next.config.ts`:
+```ts
+transpilePackages: ['@ccd/design-system'],
+```
+
+Wrap chrome in a per-tool client component that wires auth (consumers own their Supabase client). Pass `isOnTool` when running outside the landing app so nav links resolve to absolute URLs:
+
+```tsx
+'use client';
+import { ChromeHeader as SharedChromeHeader, type ChromeUser } from '@ccd/design-system';
+export { ChromeFooter } from '@ccd/design-system';
+
+export function ChromeHeader() {
+  // wire user + onSignOut from your auth client, then:
+  return <SharedChromeHeader user={user} onSignOut={handleSignOut} isOnTool />;
 }
 ```
 
-**3. In `<body>`:**
-```html
-<header data-chrome="topbar"></header>
-
-<!-- your page content -->
-
-<footer data-chrome="footer"></footer>
-<script type="module" src="https://cdn.jsdelivr.net/gh/vititth-eng/ccd-design-system@main/chrome.js"></script>
-```
-
-Chrome handles: sticky topbar · tools dropdown · anniversary ticker · Sign in/out auth state · footer. No extra JS needed.
-
-### Auth behavior
-
-Chrome auto-detects auth state by importing `/js/auth.js` from the page's own domain. On landing (`ccd-brb.vercel.app`) this resolves to the real auth module. On other domains it falls back gracefully — Sign in redirects to `https://ccd-brb.vercel.app/login`.
+Chrome handles: sticky topbar · tools dropdown · anniversary ticker · Sign in/out · footer.
 
 ---
 
@@ -133,7 +123,7 @@ node scripts/drift-audit.mjs <tool-path>
 | Change | Where |
 |---|---|
 | Color, type, spacing, motion tokens | This repo (`tokens.css`) |
-| Topbar, footer, shared chrome | This repo (`chrome.js`) |
+| Topbar, footer, shared chrome | This repo (`src/components/Chrome.tsx`, React) |
 | Nav, buttons, tables, forms, modals | This repo (primitive CSS files) |
 | Tool layout, page-specific components | Tool's own repo |
 | Tool copy, product decisions | Tool's own `PRODUCT.md` |
