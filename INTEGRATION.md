@@ -126,7 +126,7 @@ node scripts/drift-audit.mjs <tool-path>
 | Topbar, footer, shared chrome | This repo (`src/components/Chrome.tsx`, React) |
 | Nav, buttons, tables, forms, modals | This repo (primitive CSS files) |
 | Tool layout, page-specific components | Tool's own repo |
-| Tool copy, product decisions | Tool's own `PRODUCT.md` |
+| Tool copy, product decisions | Linear project description |
 
 **Never edit tokens or shared primitives inside a tool repo.** Always come back here.
 

@@ -43,6 +43,7 @@ function useTicker() {
 
 export interface ChromeUser {
   email?: string;
+  isAdmin?: boolean;
 }
 
 export interface ChromeHeaderProps {
@@ -168,6 +169,11 @@ export function ChromeHeader({ user, onSignOut, isOnTool }: ChromeHeaderProps) {
             {authOpen && (
               <div className={`${s.dropdown} ${s.dropdownRight}`} role="menu">
                 <div className={s.authEmail}>{user.email}</div>
+                {user.isAdmin && (
+                  <a href="/admin" className={s.dropdownLink} role="menuitem">
+                    Admin Console
+                  </a>
+                )}
                 <button
                   type="button"
                   className={s.authSignout}
