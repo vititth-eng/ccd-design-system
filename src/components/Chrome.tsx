@@ -15,6 +15,8 @@ const TOOLS = [
   { href: `${BASE}/onboarding/`, label: 'Newcomer Motivation Check-Up', status: 'Live', cls: 'live' },
   { href: `${BASE}/disc/`, label: 'DISC Assessment', status: 'Live', cls: 'live' },
   { href: `${BASE}/sounding-board/`, label: 'Sounding Board', status: 'Beta', cls: 'beta' },
+  { href: `${BASE}/learning/`, label: 'Learning & Development', status: 'Beta', cls: 'beta' },
+  { href: `${BASE}/feasibility/`, label: 'Financial Feasibility', status: 'Beta', cls: 'beta' },
   { href: `${BASE}/multi-rater/`, label: '360 Multi-Rater', status: 'Coming Soon', cls: '' },
 ];
 
@@ -83,7 +85,7 @@ export function ChromeHeader({ user, onSignOut, isOnTool }: ChromeHeaderProps) {
     };
   }, []);
 
-  const isOnToolPath = /^\/(onboarding|sounding-board|multi-rater|disc)(\/|$)/.test(pathname || '');
+  const isOnToolPath = /^\/(onboarding|sounding-board|multi-rater|disc|learning|feasibility)(\/|$)/.test(pathname || '');
   const toolActive = isOnTool ?? isOnToolPath;
 
   // When running inside a tool app (isOnTool=true), landing-bound nav must
