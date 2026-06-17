@@ -1,0 +1,77 @@
+{
+  "_meta": {
+    "purpose": "Frozen drift baselines per consumer app. The gate (drift-audit.mjs --gate) fails any app that regresses below its floor. Floors only ratchet UP — refresh with `node scripts/drift-audit.mjs <app> --json` after a merge that improves coverage, never down.",
+    "captured": "2026-06-17",
+    "issue": "CCD-104"
+  },
+  "ccd-brb-landing": {
+    "coverage": 95,
+    "unknownTokens": 10,
+    "hexLiterals": 1,
+    "reactInline": 0,
+    "bespoke": 0,
+    "hasCdn": false,
+    "hasInter": true,
+    "hasNoto": true
+  },
+  "ccd-brb-feasibility": {
+    "coverage": 95,
+    "unknownTokens": 9,
+    "hexLiterals": 11,
+    "reactInline": 2,
+    "bespoke": 0,
+    "hasCdn": false,
+    "hasInter": false,
+    "hasNoto": false
+  },
+  "ccd-brb-multi-rater": {
+    "coverage": 82,
+    "unknownTokens": 64,
+    "hexLiterals": 41,
+    "reactInline": 73,
+    "bespoke": 0,
+    "hasCdn": true,
+    "hasInter": true,
+    "hasNoto": true
+  },
+  "ccd-brb-learning": {
+    "coverage": 72,
+    "unknownTokens": 2,
+    "hexLiterals": 44,
+    "reactInline": 0,
+    "bespoke": 0,
+    "hasCdn": false,
+    "hasInter": true,
+    "hasNoto": true
+  },
+  "ccd-brb-onboarding": {
+    "coverage": 69,
+    "unknownTokens": 0,
+    "hexLiterals": 51,
+    "reactInline": 1,
+    "bespoke": 70,
+    "hasCdn": true,
+    "hasInter": true,
+    "hasNoto": true
+  },
+  "ccd-brb-sounding-board": {
+    "coverage": 55,
+    "unknownTokens": 0,
+    "hexLiterals": 82,
+    "reactInline": 7,
+    "bespoke": 0,
+    "hasCdn": false,
+    "hasInter": true,
+    "hasNoto": true
+  },
+  "ccd-brb-disc": {
+    "coverage": 53,
+    "unknownTokens": 0,
+    "hexLiterals": 82,
+    "reactInline": 9,
+    "bespoke": 0,
+    "hasCdn": false,
+    "hasInter": true,
+    "hasNoto": true
+  }
+}
