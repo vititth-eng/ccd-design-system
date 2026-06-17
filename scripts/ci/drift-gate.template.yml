@@ -1,0 +1,49 @@
+# ─────────────────────────────────────────────────────────────
+# CCD drift gate — COPY THIS into each consumer repo as
+#   .github/workflows/drift-gate.yml
+#
+# Blocks any PR that drifts a consumer below its frozen floor
+# (coverage, unknown tokens, hex literals, React inline styles,
+# bespoke primitives, or a regressed token/font link).
+#
+# Floors + gate logic are central in ccd-design-system — this
+# workflow just checks the consumer out and runs them. Nothing
+# to configure per repo except the --app key (repo name).
+#
+# IMPORTANT: the consumer and the design-system helper are checked
+# out into SEPARATE sibling dirs (app/ and ccd-ds/), and the gate
+# audits ONLY app/. The helper's own CSS/HTML must never enter the
+# audited tree, or it would mask or fake a consumer's metrics.
+#
+# Owned by CCD-104. Do not hand-edit floors here; edit
+# ccd-design-system/scripts/drift-floors.json.
+# ─────────────────────────────────────────────────────────────
+name: drift-gate
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout consumer
+        uses: actions/checkout@v4
+        with:
+          path: app
+
+      - name: Checkout design system (gate logic + floors)
+        uses: actions/checkout@v4
+        with:
+          repository: vititth-eng/ccd-design-system
+          ref: main
+          path: ccd-ds
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run drift gate (audits app/ only)
+        run: >
+          node ccd-ds/scripts/drift-audit.mjs app
+          --gate --app ${{ github.event.repository.name }}

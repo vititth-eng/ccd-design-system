@@ -132,11 +132,17 @@ node scripts/drift-audit.mjs <tool-path>
 
 ---
 
-## Drift audit
+## Drift audit & gate
 
-Check a tool's token coverage before shipping:
+**Advisory report** — inspect a tool's token coverage any time:
 ```
 node scripts/drift-audit.mjs <path-to-tool>
 ```
 
-Baseline targets: Landing 97% · Onboarding ≥90% (Step 4 target) · Sounding Board 100%.
+**Enforced gate** (CCD-104) — fails if a tool regresses below its frozen floor:
+```
+node scripts/drift-audit.mjs <path-to-tool> --gate --app <repo-name>
+```
+Floors live in `scripts/drift-floors.json` (baseline 2026-06-17). They ratchet **up only** — after a merge that improves coverage, refresh with `--json` and commit the new numbers; never lower a floor. The gate checks coverage, unknown tokens, hex literals, **React inline-style raw values** (`.tsx`/`.jsx`), bespoke primitives, and token/font-link regressions.
+
+Wire it into a consumer by copying `scripts/ci/drift-gate.template.yml` to that repo's `.github/workflows/drift-gate.yml`.

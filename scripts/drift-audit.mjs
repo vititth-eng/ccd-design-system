@@ -4,7 +4,7 @@
 //   node scripts/drift-audit.mjs <tool-path>
 //   node scripts/drift-audit.mjs ~/code/ccd-brb-onboarding
 
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { join, resolve, relative, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -15,7 +15,11 @@ if (!target) {
 }
 const root = resolve(target.replace(/^~/, process.env.HOME));
 
-const SKIP_DIRS = new Set([".git", "node_modules", "archive", ".vercel", ".next", "dist"]);
+// `.ccd-ds` / `ccd-ds` = the design-system helper checkout pulled in by the CI
+// gate. Never audit it — its own CSS/HTML would contaminate the consumer's
+// metrics (false pass or false block). The template keeps it a sibling of the
+// consumer dir; this skip is defense-in-depth against an accidental nested one.
+const SKIP_DIRS = new Set([".git", "node_modules", "archive", ".vercel", ".next", "dist", ".ccd-ds", "ccd-ds"]);
 const walk = (dir, out = []) => {
   for (const e of readdirSync(dir, { withFileTypes: true })) {
     if (SKIP_DIRS.has(e.name)) continue;
@@ -180,5 +184,80 @@ head("coverage");
 line("var() refs / total tokens-or-literals", `${allVars.length} / ${allVars.length + totalLiterals}`);
 line("estimated coverage", `${coverage}%`);
 
+// ── React inline-style raw literals (CCD-23) ──────────────
+// The CSS scan above misses px/hex hiding inside style={{…}} / style="…"
+// in .tsx/.jsx. Heuristic: pull style blocks, then count raw px, hex, and
+// var(--x, <literal>) fallbacks inside them. Flat style objects only —
+// deeply nested objects past the first }} are not parsed (documented limit).
+const STYLE_OBJ_RE = /style=\{\{([\s\S]*?)\}\}/g;
+const STYLE_STR_RE = /style=("[^"]*"|'[^']*')/g;
+const reactInline = [];
+for (const f of jsxFiles) {
+  let src;
+  try { src = stripComments(readFileSync(f, "utf8")); } catch { continue; }
+  const blocks = [...src.matchAll(STYLE_OBJ_RE)].map(m => m[1])
+    .concat([...src.matchAll(STYLE_STR_RE)].map(m => m[1]));
+  for (const b of blocks) {
+    for (const m of b.matchAll(/#[0-9a-fA-F]{3,8}\b/g)) reactInline.push("hex:" + m[0]);
+    for (const m of b.matchAll(/\b\d+(?:\.\d+)?px\b/g)) reactInline.push("px:" + m[0]);
+    for (const m of b.matchAll(/var\(\s*--[a-zA-Z0-9-]+\s*,\s*[^)]*\d[^)]*\)/g)) reactInline.push("fallback:" + m[0].slice(0, 32));
+  }
+}
+
+const bespokeTotal = bespoke.reduce((s, b) => s + b.n, 0);
+
+// ── Capture mode: emit this app's baseline as one JSON line ──
+// Used to build/refresh scripts/drift-floors.json. The captured numbers
+// ARE the frozen floor — they reflect today's reality, so the gate can
+// only catch regressions, never existing code.
+const appArgIdx = process.argv.indexOf("--app");
+const appKey = appArgIdx > -1 && process.argv[appArgIdx + 1]
+  ? process.argv[appArgIdx + 1]
+  : root.split("/").filter(Boolean).pop();
+const metrics = {
+  coverage,
+  unknownTokens: tokenStats.unknown.length,
+  hexLiterals: hexNonDataUri,
+  reactInline: reactInline.length,
+  bespoke: bespokeTotal,
+  hasCdn, hasInter, hasNoto,
+};
+
+head("react inline (tsx/jsx style)");
+line("raw px/hex/fallback", reactInline.length);
+if (reactInline.length && reactInline.length <= 14)
+  console.log(`    ${[...new Set(reactInline)].slice(0, 12).join(" ")}`);
+
+if (process.argv.includes("--json")) {
+  console.log("\n" + JSON.stringify({ [appKey]: metrics }, null, 2));
+  process.exit(0);
+}
+
+// ── Gate mode: fail on any regression vs the frozen floor ──
+if (process.argv.includes("--gate")) {
+  let floors = {};
+  try { floors = JSON.parse(readFileSync(join(scriptDir, "drift-floors.json"), "utf8")); } catch {}
+  const floor = floors[appKey];
+  head("gate");
+  line("app", appKey);
+  if (!floor) { line("FAIL", `no floor recorded for ${appKey} — run --json and add it`); process.exit(2); }
+  const fails = [];
+  if (coverage < floor.coverage) fails.push(`coverage ${coverage}% < floor ${floor.coverage}%`);
+  if (metrics.unknownTokens > floor.unknownTokens) fails.push(`unknown tokens ${metrics.unknownTokens} > ${floor.unknownTokens}`);
+  if (metrics.hexLiterals > floor.hexLiterals) fails.push(`hex literals ${metrics.hexLiterals} > ${floor.hexLiterals}`);
+  if (metrics.reactInline > floor.reactInline) fails.push(`react inline ${metrics.reactInline} > ${floor.reactInline}`);
+  if (metrics.bespoke > floor.bespoke) fails.push(`bespoke primitives ${metrics.bespoke} > ${floor.bespoke}`);
+  if (floor.hasCdn && !hasCdn) fails.push("tokens link regressed (was connected)");
+  if (floor.hasInter && !hasInter) fails.push("Inter font link regressed");
+  if (floor.hasNoto && !hasNoto) fails.push("Noto Sans Thai font link regressed");
+  line("floor coverage", `${floor.coverage}%`);
+  line("measured coverage", `${coverage}%`);
+  if (fails.length === 0) { line("result", "✓ pass"); process.exit(0); }
+  for (const fl of fails) line("FAIL", fl);
+  console.log("\n✗ drift gate FAILED — values regressed below the frozen floor.");
+  process.exit(1);
+}
+
+// ── Advisory mode (default, unchanged) ──
 const issues = !hasCdn || !hasInter || !hasNoto || hexNonDataUri > 0 || tokenStats.unknown.length > 0;
 process.exit(issues ? 1 : 0);
