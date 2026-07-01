@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>v2 — table controls (multiselect + kebab)</title>
+<base href="http://localhost:4180/v2/" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" />
+<link rel="stylesheet" href="./tokens.css" />
+<link rel="stylesheet" href="./type.css" />
+<link rel="stylesheet" href="./status.css" />
+<link rel="stylesheet" href="./tables.css" />
+<style>
+  html, body { margin: 0; }
+  body { background: var(--paper-tint); font-family: var(--sans); color: var(--ink); padding: var(--s-5); }
+  .stage { max-width: 760px; margin-inline: auto; background: var(--card); border-radius: var(--r-lg); padding: var(--s-5); }
+  .head { margin: 0 0 var(--s-4); }
+  .note { color: var(--ink-muted); }
+
+  /* ── flush base (same as the body design; pending codify into tables.css) ── */
+  .data-table-wrap { border: 0; border-radius: 0; overflow: visible; }   /* visible: kebab menu must escape */
+  .data-table { border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }   /* page-wide (width:100% from tables.css); 1px bookend rules top + bottom */
+  /* fainter dividers between rows than the bookends */
+  .data-table tbody tr { border-bottom-color: color-mix(in srgb, var(--rule) 35%, var(--card)); }
+  .data-table th:first-child:not(.data-table__select):not(.data-table__drill),
+  .data-table td:first-child:not(.data-table__select):not(.data-table__drill) { padding-left: 0; }
+
+  /* ── PROPOSED · table controls (codify into tables.css if approved) ─────────
+     Leading: multiselect checkbox. Trailing: kebab ⋮ → action menu. Both are
+     opt-in control columns; they compose with the leading expand chevron. */
+
+  /* leading control columns (checkbox / chevron): narrow, small left clearance,
+     no right pad — the next column's left padding makes the gap */
+  .data-table .data-table__select,
+  .data-table .data-table__drill { padding-left: var(--s-2); padding-right: 0; }
+  .data-table__select { width: 1%; white-space: nowrap; text-align: center; }
+  /* checkboxes — reuse the DS .f-choice look (brand fill + white SVG check), NOT native accent.
+     Codify note: tables.css should share the DS checkbox (a .f-check class) rather than duplicate. */
+  input[type="checkbox"] {
+    appearance: none; -webkit-appearance: none; margin: 0; box-sizing: border-box; flex-shrink: 0;
+    width: 16px; height: 16px; border-radius: var(--r-xs);
+    background: var(--paper); border: 1px solid var(--rule); cursor: pointer;
+    display: inline-grid; place-items: center; vertical-align: middle;
+  }
+  input[type="checkbox"]:hover { border-color: var(--ink-muted); }
+  input[type="checkbox"]:focus-visible { outline: var(--focus-ring-width) solid var(--focus-ring-color); outline-offset: var(--focus-ring-offset); }
+  input[type="checkbox"]:checked { background: var(--brand); border-color: var(--brand); }
+  input[type="checkbox"]:checked::after {
+    content: ""; width: 10px; height: 10px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none'><path d='M2 6.5L5 9.5L10 3.5' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat: no-repeat;
+  }
+  input[type="checkbox"]:indeterminate { background: var(--brand); border-color: var(--brand); }
+  input[type="checkbox"]:indeterminate::after { content: ""; width: 9px; height: 2px; background: var(--paper); border-radius: 1px; }
+  input[type="checkbox"]:disabled { opacity: 0.5; cursor: not-allowed; }   /* pinned primary = dimmed checked, reads as locked-on */
+
+  /* selected row — subtle brand tint, distinct from the gray hover */
+  .data-table tbody tr.is-selected,
+  .data-table tbody tr.is-selected:hover { background: color-mix(in srgb, var(--brand) 8%, #fff); }
+
+  /* trailing kebab column — narrow control column at the right edge (columns fill via auto-distribute) */
+  .data-table__kebab { width: 1%; white-space: nowrap; text-align: center; position: relative; }
+  /* trailing control col mirrors the leading one: 0 inner pad (prev col's 16 makes the gap = 16px, same as checkbox→first col), 8px edge clearance */
+  .data-table .data-table__kebab { padding-left: 0; padding-right: var(--s-2); }
+  .kebab-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border: 0; border-radius: var(--r-sm);
+    background: transparent; color: var(--ink-muted); cursor: pointer;
+  }
+  .kebab-btn:hover { background: var(--paper-tint); color: var(--ink); }
+  .kebab-btn::before {   /* CSS-drawn horizontal 3-dot ··· — font-independent */
+    content: ""; width: 3px; height: 3px; border-radius: 50%; background: currentColor;
+    box-shadow: -5px 0 0 currentColor, 5px 0 0 currentColor;
+  }
+
+  /* kebab menu (a basic menu/dropdown — full menu component is its own part) */
+  .kebab-menu {
+    position: absolute; right: var(--s-4); top: calc(100% - 4px); z-index: var(--z-dropdown);
+    min-width: 150px; text-align: left;
+    background: var(--card); border: 1px solid var(--rule); border-radius: var(--r-card);
+    box-shadow: var(--shadow-3); padding: var(--s-1);
+  }
+  .kebab-item {
+    display: block; width: 100%; text-align: left; font: inherit; color: var(--ink);
+    padding: var(--s-2) var(--s-3); border: 0; background: transparent;
+    border-radius: var(--r-sm); cursor: pointer;
+  }
+  .kebab-item:hover { background: var(--paper-tint); }
+  .kebab-item--danger { color: var(--dot-negative); }
+  .kebab-item--danger:hover { background: var(--wash-alert); }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="head">
+    <div class="t-title">รอบการประเมิน</div>
+    <div class="t-sub">multiselect หน้าแถว · kebab ⋯ ท้ายแถว <span class="note">· เลือกได้ทีละหลายแถว</span></div>
+  </div>
+
+  <div class="data-table-wrap">
+    <table class="data-table">
+      <thead><tr>
+        <th class="data-table__select"><input type="checkbox" id="selectAll" aria-label="เลือกทั้งหมด"></th>
+        <th data-col="name">ชื่อรอบ</th>
+        <th data-col="status">สถานะ</th>
+        <th class="n" data-col="count">ผู้ถูกประเมิน</th>
+        <th class="data-table__kebab"></th>
+      </tr></thead>
+      <tbody id="tb"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  const rows = [
+    { name: 'รอบประเมิน Q3/2026',   st: ['status--positive','กำลังดำเนิน'], n: 12 },
+    { name: 'ผู้บริหารระดับต้น 2026', st: ['status--caution','รอเริ่ม'],     n: 8  },
+    { name: 'ทีมขาย ภาคเหนือ',       st: ['','เสร็จสิ้น'],                   n: 18 },
+    { name: 'นำร่อง HR',             st: ['status--alert','หมดอายุ'],        n: 5  },
+  ];
+  document.getElementById('tb').innerHTML = rows.map(r => `<tr>
+    <td class="data-table__select"><input type="checkbox" class="row-check" aria-label="เลือกแถว"></td>
+    <td data-col="name">${r.name}</td>
+    <td data-col="status"><span class="status ${r.st[0]}">${r.st[1]}</span></td>
+    <td class="n" data-col="count">${r.n}</td>
+    <td class="data-table__kebab">
+      <button class="kebab-btn" aria-label="ตัวเลือก"></button>
+      <div class="kebab-menu" hidden>
+        <button class="kebab-item">แก้ไข</button>
+        <button class="kebab-item">ทำสำเนา</button>
+        <button class="kebab-item kebab-item--danger">ลบ</button>
+      </div>
+    </td>
+  </tr>`).join('');
+
+  // selection
+  const all = document.getElementById('selectAll');
+  const checks = [...document.querySelectorAll('.row-check')];
+  const sync = c => c.closest('tr').classList.toggle('is-selected', c.checked);
+  all.addEventListener('change', () => checks.forEach(c => { c.checked = all.checked; sync(c); }));
+  checks.forEach(c => c.addEventListener('change', () => {
+    sync(c);
+    all.checked = checks.every(x => x.checked);
+    all.indeterminate = !all.checked && checks.some(x => x.checked);
+  }));
+
+  // kebab menu — one open at a time, close on outside click
+  document.querySelectorAll('.kebab-btn').forEach(btn => btn.addEventListener('click', e => {
+    e.stopPropagation();
+    const menu = btn.nextElementSibling, open = !menu.hidden;
+    document.querySelectorAll('.kebab-menu').forEach(m => m.hidden = true);
+    menu.hidden = open;
+  }));
+
+  document.addEventListener('click', () => document.querySelectorAll('.kebab-menu').forEach(m => m.hidden = true));
+</script>
+</body>
+</html>

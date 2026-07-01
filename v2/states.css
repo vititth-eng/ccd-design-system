@@ -1,0 +1,171 @@
+/* ============================================================
+   CCD BRB Design System — States
+   ------------------------------------------------------------
+   Empty · Loading · Error · Notice patterns.
+   Every consumer renders these the same way so the system feels
+   one piece across landing, dashboards, workshop tools.
+
+   Locked rules:
+   - Empty has 3 sizes — inline / block / page. Pick by surface, not mood.
+   - Distinguish fresh empty (invitational) from filtered empty (corrective).
+   - Loading: skeleton when shape is known, spinner when not / action-bound.
+   - Skeleton pulse is slow (1.6s) and quiet (opacity 1 ↔ 0.55) — never strobe.
+   - Show skeleton only after ~200ms — sub-200ms loads show nothing.
+   - Errors carry tint-alert (rust). Notices (permission, quota) carry
+     tint-caution (amber). Same banner primitive, different modifier.
+   - Always offer recovery on errors. Notices have no retry — explain.
+
+   Depends on:
+   - tokens.css (color, type, spacing, radii, motion)
+   - icons.css (.icon spin / sizes)
+
+   Spec: ../DESIGN-SYSTEM.md §15 States
+   ============================================================ */
+
+/* ── Empty · inline ───────────────────────────────────── */
+/* Fits inside a table row / list. One line. */
+.empty-inline {
+  display: flex; align-items: center; justify-content: center; gap: var(--s-2);
+  padding: var(--s-4); color: var(--ink-muted);
+  font-size: var(--fs-small);
+}
+.empty-inline .icon { color: var(--ink-muted); }
+
+/* ── Empty · block (card-level) ───────────────────────── */
+.empty-block {
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  padding: var(--s-6) var(--s-4);
+  color: var(--ink);
+}
+.empty-block .icon-24 { color: var(--ink-muted); margin: 0 0 var(--s-3); }
+.empty-block-title {
+  font-size: var(--fs-card); font-weight: var(--fw-semi);
+  margin: 0 0 var(--s-1);
+}
+.empty-block-body {
+  font-size: var(--fs-small); color: var(--ink-muted);
+  margin: 0 0 var(--s-4); max-width: 32ch;
+}
+
+/* ── Empty · page (full-screen, invitational) ─────────── */
+.empty-page {
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  padding: var(--s-8) var(--s-5);
+}
+.empty-page-icon {
+  width: 48px; height: 48px;
+  display: grid; place-items: center;
+  border-radius: var(--r-pill);
+  background: var(--paper-tint);
+  color: var(--brand);
+  margin: 0 0 var(--s-4);
+}
+.empty-page-icon .icon-24 { vertical-align: 0; }
+.empty-page-title {
+  font-size: var(--fs-section); font-weight: var(--fw-bold);
+  margin: 0 0 var(--s-2); letter-spacing: -0.01em;
+}
+.empty-page-body {
+  font-size: var(--fs-body); color: var(--ink-muted);
+  margin: 0 0 var(--s-5); max-width: 44ch;
+  line-height: var(--lh-normal);
+}
+
+/* ── Loading · skeleton ───────────────────────────────── */
+/* Subtle, slow pulse — never flash. Color is --heat-1 (lightest misty),
+   same hue family as paper-tint so it never reads as gray. */
+@keyframes ccd-skel-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.55; }
+}
+.skel {
+  background: var(--heat-1);
+  border-radius: var(--r-xs);
+  animation: ccd-skel-pulse 1.6s ease-in-out infinite;
+}
+.skel-line { height: 0.875rem; }
+.skel-line.w-30 { width: 30%; }
+.skel-line.w-50 { width: 50%; }
+.skel-line.w-70 { width: 70%; }
+.skel-line.w-90 { width: 90%; }
+.skel-line + .skel-line { margin-top: var(--s-2); }
+
+.skel-block  { height: 64px; border-radius: var(--r-card); }
+.skel-circle { width: 32px; height: 32px; border-radius: var(--r-pill); }
+
+/* Skeleton card — mirrors a real KPI card shape */
+.skel-card {
+  border: 1px solid var(--rule); border-radius: var(--r-card);
+  padding: var(--s-4); background: var(--paper);
+  display: flex; flex-direction: column; gap: var(--s-2);
+}
+
+/* Reduced motion — kill pulse hard.
+   tokens.css globally forces animation-duration: 0.01ms !important,
+   so we must use !important to actually stop it. */
+@media (prefers-reduced-motion: reduce) {
+  .skel { animation: none !important; opacity: 0.7 !important; }
+}
+
+/* ── Loading · spinner block (unknown shape) ──────────── */
+.loading-block {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: var(--s-7) var(--s-5);
+  color: var(--ink-muted);
+  gap: var(--s-3);
+}
+.loading-block .icon { color: var(--brand); }
+.loading-label { font-size: var(--fs-small); }
+
+/* Inline spinner (button-internal) uses .btn .icon.spin — no extra rule. */
+
+/* ── Error · page (whole view failed) ─────────────────── */
+.error-page {
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  padding: var(--s-8) var(--s-5);
+}
+.error-page-icon {
+  width: 48px; height: 48px;
+  display: grid; place-items: center;
+  border-radius: var(--r-pill);
+  background: var(--tint-alert);
+  color: var(--ink);
+  margin: 0 0 var(--s-4);
+}
+.error-page-icon .icon-24 { vertical-align: 0; }
+.error-page-title {
+  font-size: var(--fs-section); font-weight: var(--fw-bold);
+  margin: 0 0 var(--s-2); letter-spacing: -0.01em;
+}
+.error-page-body {
+  font-size: var(--fs-body); color: var(--ink-muted);
+  margin: 0 0 var(--s-5); max-width: 48ch;
+  line-height: var(--lh-normal);
+}
+.error-detail {
+  margin-top: var(--s-3);
+  font-family: ui-monospace, monospace;
+  font-size: var(--fs-micro);
+  color: var(--ink-muted);
+  background: var(--paper-tint);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-xs);
+  padding: var(--s-2) var(--s-3);
+  max-width: 60ch; word-break: break-all;
+}
+
+/* ── Notice banner (errors AND notices) ───────────────── */
+/* One primitive, hue carries intent.
+   .is-alert  → tint-alert  (failures, retry-able)
+   .is-caution → tint-caution (permission, quota, scheduled — informational) */
+.notice-banner {
+  display: flex; align-items: flex-start; gap: var(--s-3);
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-card);
+  color: var(--ink);
+}
+.notice-banner.is-alert   { background: var(--tint-alert); }
+.notice-banner.is-caution { background: var(--tint-caution); }
+.notice-banner .icon { color: var(--ink); flex-shrink: 0; margin-top: 2px; }
+.notice-banner-text { flex: 1; font-size: var(--fs-small); line-height: var(--lh-normal); }
+.notice-banner-text strong { font-weight: var(--fw-semi); display: block; margin-bottom: 2px; }

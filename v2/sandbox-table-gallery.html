@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>v2 — table gallery (every variation + use)</title>
+<base href="http://localhost:4180/v2/" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" />
+<link rel="stylesheet" href="./tokens.css" />
+<link rel="stylesheet" href="./type.css" />
+<link rel="stylesheet" href="./status.css" />
+<link rel="stylesheet" href="./forms.css" />
+<link rel="stylesheet" href="./tables.css" />
+<style>
+  html, body { margin: 0; }
+  body { background: var(--paper-tint); font-family: var(--sans); color: var(--ink); padding: var(--s-5); }
+  .wrap { max-width: 960px; margin-inline: auto; display: flex; flex-direction: column; gap: var(--s-5); }
+  .lead { padding: var(--s-2) var(--s-1) 0; }
+  .lead h1 { font-size: var(--fs-card); margin: 0 0 var(--s-2); }
+  .lead p { margin: 0; color: var(--ink-muted); font-size: var(--fs-small); line-height: var(--lh-normal); }
+  .lead code { background: var(--paper); border: 1px solid var(--rule); border-radius: var(--r-xs); padding: 0 4px; font-size: 0.85em; }
+
+  /* one variation card */
+  .gv { background: var(--card); border-radius: var(--r-lg); padding: var(--s-5); }
+  .gv__head { margin: 0 0 var(--s-4); display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s-2) var(--s-3); }
+  .gv__name { font-size: var(--fs-body); font-weight: var(--fw-bold); color: var(--ink); }
+  .gv__tags { display: flex; gap: var(--s-1); margin-left: auto; }
+  .gv__tag { font-size: var(--fs-micro); color: var(--ink-muted); background: var(--paper-tint); border: 1px solid var(--rule); border-radius: var(--r-tiny); padding: 1px var(--s-2); white-space: nowrap; }
+  .gv__use { width: 100%; font-size: var(--fs-small); color: var(--ink-muted); line-height: var(--lh-normal); margin-top: calc(-1 * var(--s-1)); }
+  .gv__use b { color: var(--ink-soft); font-weight: var(--fw-semi); }
+  .empty { padding: var(--s-5); text-align: center; color: var(--ink-muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="lead">
+    <h1>ตาราง v2 — ทุกแบบในที่เดียว</h1>
+    <p>One flush base, mixed by need. Two control gutters: <b>leading</b> = select-checkbox / expand-chevron · <b>trailing</b> = kebab ⋯ (row actions). Headers can carry sort + type-aware filter. Stack only what a screen needs — most tables are <code>flat</code>.</p>
+  </div>
+
+  <!-- 1 · FLAT label/value -->
+  <section class="gv">
+    <div class="gv__head">
+      <span class="gv__name">1 · Flat — label / value</span>
+      <div class="gv__tags"><span class="gv__tag">no controls</span><span class="gv__tag">bold first col</span></div>
+      <div class="gv__use"><b>Feasibility · assumptions, Onboarding · settings.</b> Read-only reference. First column is the label (600/ink), value reads right. English gloss drops under the Thai via <code>.cell-en</code>. No header chrome — nothing to sort.</div>
+    </div>
+    <div class="data-table-wrap"><table class="data-table data-table--auto" id="t-flat">
+      <thead><tr><th>พารามิเตอร์</th><th class="n">ค่า</th><th>หน่วย</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+  </section>
+
+  <!-- 2 · STATUS board -->
+  <section class="gv">
+    <div class="gv__head">
+      <span class="gv__name">2 · Status board</span>
+      <div class="gv__tags"><span class="gv__tag">flat</span><span class="gv__tag">Type-1 dot</span></div>
+      <div class="gv__use"><b>Landing · tool status, DISC · session state.</b> At-a-glance, no actions. Status uses the bare <code>.status</code> dot (Type 1) — never the fill pill inside a cell (doctrine).</div>
+    </div>
+    <div class="data-table-wrap"><table class="data-table data-table--auto" id="t-status">
+      <thead><tr><th>เครื่องมือ</th><th>สถานะ</th><th class="n">ผู้ใช้งาน</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+  </section>
+
+  <!-- 3 · MULTISELECT + kebab -->
+  <section class="gv">
+    <div class="gv__head">
+      <span class="gv__name">3 · Multiselect + kebab</span>
+      <div class="gv__tags"><span class="gv__tag">lead: checkbox</span><span class="gv__tag">trail: ⋯</span></div>
+      <div class="gv__use"><b>Multi-Rater · manage rounds, Comms · recipient picker.</b> Tick rows → bulk action; per-row ⋯ for edit/duplicate/delete. Select-all in the header (indeterminate when partial). Selected row gets a brand tint.</div>
+    </div>
+    <div class="data-table-wrap"><table class="data-table data-table--hover" id="t-select">
+      <thead><tr>
+        <th class="data-table__select"><input type="checkbox" id="selAll" aria-label="เลือกทั้งหมด"></th>
+        <th>ชื่อรอบ</th><th>สถานะ</th><th class="n">ผู้ถูกประเมิน</th>
+        <th class="data-table__kebab"></th>
+      </tr></thead>
+      <tbody></tbody>
+    </table></div>
+  </section>
+
+  <!-- 4 · SORT + FILTER headers -->
+  <section class="gv">
+    <div class="gv__head">
+      <span class="gv__name">4 · Sortable + filterable headers</span>
+      <div class="gv__tags"><span class="gv__tag">header menu</span><span class="gv__tag">filter by type</span></div>
+      <div class="gv__use"><b>360 · respondent list, Onboarding · survey responses.</b> Big sets you scan + narrow. Click a header → sort asc/desc + a filter shaped by the column type: <b>text</b> contains · <b>enum</b> checkboxes · <b>number</b> range · <b>date</b> from/to. Dot = filtered, caret = sorted.</div>
+    </div>
+    <div class="data-table-wrap"><table class="data-table data-table--hover" id="t-people">
+      <thead><tr id="people-thr"></tr></thead>
+      <tbody></tbody>
+    </table></div>
+  </section>
+
+  <!-- 5 · EXPAND / drill (nested child rows) -->
+  <section class="gv">
+    <div class="gv__head">
+      <span class="gv__name">5 · Expand — nested child rows</span>
+      <div class="gv__tags"><span class="gv__tag">lead: chevron</span><span class="gv__tag">--matrix</span></div>
+      <div class="gv__use"><b>Feasibility · cash flow (year → quarter → month).</b> Hierarchy that must stay column-aligned. Children live in the SAME table so numbers line up; open parent casts a shadow. Click row to expand — no page-nav, no breadcrumb.</div>
+    </div>
+    <div class="data-table-wrap"><table class="data-table data-table--matrix" id="t-expand">
+      <thead><tr>
+        <th class="data-table__drill"></th><th>ปี</th><th class="n">รายได้</th><th class="n">ต้นทุน</th><th class="n">กระแสเงินสด</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table></div>
+  </section>
+
+  <!-- 6 · MATRIX compact + heat -->
+  <section class="gv">
+    <div class="gv__head">
+      <span class="gv__name">6 · Matrix — compact + heat</span>
+      <div class="gv__tags"><span class="gv__tag">--matrix</span><span class="gv__tag">--compact</span><span class="gv__tag">heat cells</span></div>
+      <div class="gv__use"><b>360 · score grid, Sounding Board · response matrix.</b> Dense numeric comparison. Equal fixed columns (<code>--matrix</code>), 12px cells (<code>--compact</code>), and heat fill maps magnitude (mono-blue <code>--heat-1..5</code>) so the eye finds highs/lows without reading every number.</div>
+    </div>
+    <div class="data-table-wrap"><table class="data-table data-table--matrix data-table--compact data-table--heat" id="t-heat">
+      <thead><tr><th>ผู้ประเมิน</th><th>สื่อสาร</th><th>ทีมเวิร์ก</th><th>ภาวะผู้นำ</th><th>ผลงาน</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+  </section>
+
+  <!-- 7 · GROUPED band rows -->
+  <section class="gv">
+    <div class="gv__head">
+      <span class="gv__name">7 · Grouped — band rows</span>
+      <div class="gv__tags"><span class="gv__tag">group band</span></div>
+      <div class="gv__use"><b>Onboarding · rooming, 360 · by cohort.</b> Section a list into buckets. The band carries label + count. Members are normal rows — same columns, no indent — so the list stays scannable across groups.</div>
+    </div>
+    <div class="data-table-wrap"><table class="data-table" id="t-group">
+      <thead><tr>
+        <th>ชื่อ-สกุล</th>
+        <th>สถานะ</th>
+        <th class="n">ทำแล้ว</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table></div>
+  </section>
+
+  <div class="lead" style="padding-bottom: var(--s-6)">
+    <p><b>Mix &amp; match:</b> 3+4 = manage a long list (select + sort/filter together). 5+6 = drill a numeric hierarchy (expand + matrix). 2+6 = status with heat. Controls compose because each owns a fixed gutter; they never fight for space.</p>
+  </div>
+
+</div>
+
+<script>
+  const $ = (s, r=document) => r.querySelector(s);
+  const fmtDate = iso => new Date(iso).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+  // 1 · flat
+  [['ราคาขายต่อหน่วย', '45', 'บาท'], ['ต้นทุนวัตถุดิบ', '18', 'บาท / หน่วย'],
+   ['กำลังผลิต', '12,000', 'หน่วย / วัน'], ['อัตราคิดลด <span class="cell-en">discount rate</span>', '8.5%', 'ต่อปี']]
+    .forEach(r => $('#t-flat tbody').insertAdjacentHTML('beforeend',
+      `<tr><td>${r[0]}</td><td class="n">${r[1]}</td><td>${r[2]}</td></tr>`));
+
+  // 2 · status board
+  [['Landing', 'status--positive', 'ออนไลน์', 1240], ['360 Multi-Rater', 'status--positive', 'ออนไลน์', 318],
+   ['Onboarding Survey', 'status--caution', 'กำลังบำรุงรักษา', 0], ['DISC Live', '', 'ปิดชั่วคราว', 0]]
+    .forEach(r => $('#t-status tbody').insertAdjacentHTML('beforeend',
+      `<tr><td>${r[0]}</td><td><span class="status ${r[1]}">${r[2]}</span></td><td class="n">${r[3]}</td></tr>`));
+
+  // 3 · multiselect + kebab
+  const selRows = [['รอบประเมิน Q3/2026','status--positive','กำลังดำเนิน',12],['ผู้บริหารระดับต้น 2026','status--caution','รอเริ่ม',8],
+   ['ทีมขาย ภาคเหนือ','','เสร็จสิ้น',18],['นำร่อง HR','status--alert','หมดอายุ',5]];
+  $('#t-select tbody').innerHTML = selRows.map(r => `<tr>
+    <td class="data-table__select"><input type="checkbox" class="rc" aria-label="เลือกแถว"></td>
+    <td>${r[0]}</td><td><span class="status ${r[1]}">${r[2]}</span></td><td class="n">${r[3]}</td>
+    <td class="data-table__kebab"><button class="kebab-btn" aria-label="ตัวเลือก"></button>
+      <div class="kebab-menu" hidden><button class="kebab-item">แก้ไข</button><button class="kebab-item">ทำสำเนา</button><button class="kebab-item kebab-item--danger">ลบ</button></div></td>
+  </tr>`).join('');
+  (() => {
+    const all = $('#selAll'), checks = [...document.querySelectorAll('#t-select .rc')];
+    const sync = c => c.closest('tr').classList.toggle('is-selected', c.checked);
+    all.addEventListener('change', () => checks.forEach(c => { c.checked = all.checked; sync(c); }));
+    checks.forEach(c => c.addEventListener('change', () => { sync(c);
+      all.checked = checks.every(x => x.checked); all.indeterminate = !all.checked && checks.some(x => x.checked); }));
+    document.querySelectorAll('#t-select .kebab-btn').forEach(b => b.addEventListener('click', e => {
+      e.stopPropagation(); const m = b.nextElementSibling, open = !m.hidden;
+      document.querySelectorAll('.kebab-menu').forEach(x => x.hidden = true); m.hidden = open; }));
+  })();
+
+  // 4 · sort + filter (engine scoped to #t-people)
+  (() => {
+    const cols = [{key:'name',label:'ผู้ประเมิน',type:'text'},{key:'unit',label:'หน่วยงาน',type:'enum'},
+      {key:'done',label:'ทำแล้ว',type:'number',num:true},{key:'sent',label:'ส่งเมื่อ',type:'date',num:true}];
+    const rows = [
+      {name:'สมชาย ก.',unit:'ฝ่ายขาย',done:8,sent:'2026-06-22'},{name:'อรุณี ส.',unit:'การตลาด',done:5,sent:'2026-06-25'},
+      {name:'ธนากร พ.',unit:'ฝ่ายขาย',done:9,sent:'2026-06-20'},{name:'มะลิ ท.',unit:'บัญชี',done:3,sent:'2026-06-28'},
+      {name:'วีระ ม.',unit:'การตลาด',done:7,sent:'2026-06-18'}];
+    const sl = {text:['ก → ฮ','ฮ → ก'],enum:['ก → ฮ','ฮ → ก'],number:['น้อย → มาก','มาก → น้อย'],date:['เก่า → ใหม่','ใหม่ → เก่า']};
+    let sortKey=null,sortDir=null; const filters={};
+    const ctrl = c => {
+      if(c.type==='text') return `<input class="f-control th-f" type="text" placeholder="ค้นหา…">`;
+      if(c.type==='enum'){ const v=[...new Set(rows.map(r=>r[c.key]))];
+        return `<div class="th-menu__checks">${v.map(x=>`<label class="f-choice"><input type="checkbox" class="th-f" value="${x}"><span>${x}</span></label>`).join('')}</div>`; }
+      if(c.type==='number') return `<div class="th-menu__range"><input class="f-control th-f" data-bound="min" type="number" placeholder="ต่ำสุด"><span class="th-menu__dash">–</span><input class="f-control th-f" data-bound="max" type="number" placeholder="สูงสุด"></div>`;
+      return `<div class="th-menu__range"><input class="f-control th-f" data-bound="from" type="date"><span class="th-menu__dash">–</span><input class="f-control th-f" data-bound="to" type="date"></div>`;
+    };
+    $('#people-thr').innerHTML = cols.map(c=>`<th class="th-sortable ${c.num?'n':''}" data-key="${c.key}" data-type="${c.type}">
+      <button class="th-trigger" type="button"><span>${c.label}</span><span class="th-caret"></span><span class="th-dot"></span></button>
+      <div class="th-menu" hidden><button class="th-menu__sort" data-dir="asc">${sl[c.type][0]}</button><button class="th-menu__sort" data-dir="desc">${sl[c.type][1]}</button>
+        <div class="th-menu__div"></div><div class="th-menu__filter">${ctrl(c)}</div><button class="th-menu__clear">ล้างตัวกรอง</button></div></th>`).join('');
+    const cmp=(c,a,b)=>c.type==='number'?a-b:c.type==='date'?new Date(a)-new Date(b):String(a).localeCompare(String(b),'th');
+    const isF=k=>{const f=filters[k];if(!f)return false;if(f.text)return true;if(f.set)return f.set.size>0;if('min'in f||'max'in f)return f.min!=null||f.max!=null;if('from'in f||'to'in f)return!!f.from||!!f.to;return false;};
+    const pass=(c,r)=>{const f=filters[c.key],v=r[c.key];if(!f)return true;
+      if(c.type==='text')return!f.text||String(v).toLowerCase().includes(f.text.toLowerCase());
+      if(c.type==='enum')return!f.set||f.set.size===0||f.set.has(v);
+      if(c.type==='number')return(f.min==null||v>=f.min)&&(f.max==null||v<=f.max);
+      return(!f.from||v>=f.from)&&(!f.to||v<=f.to);};
+    const render=()=>{
+      let view=rows.filter(r=>cols.every(c=>pass(c,r)));
+      if(sortKey){const c=cols.find(x=>x.key===sortKey),d=sortDir==='asc'?1:-1;view=[...view].sort((a,b)=>d*cmp(c,a[c.key],b[c.key]));}
+      $('#t-people tbody').innerHTML = view.length
+        ? view.map(r=>`<tr><td>${r.name}</td><td>${r.unit}</td><td class="n">${r.done}</td><td class="n">${fmtDate(r.sent)}</td></tr>`).join('')
+        : `<tr><td class="empty" colspan="${cols.length}">ไม่พบรายการ</td></tr>`;
+      document.querySelectorAll('#t-people .th-sortable').forEach(th=>{const k=th.dataset.key;
+        th.classList.toggle('is-asc',sortKey===k&&sortDir==='asc');th.classList.toggle('is-desc',sortKey===k&&sortDir==='desc');
+        th.classList.toggle('is-active',sortKey===k||isF(k));th.classList.toggle('is-filtered',isF(k));
+        th.querySelectorAll('.th-menu__sort').forEach(b=>b.classList.toggle('is-on',sortKey===k&&sortDir===b.dataset.dir));});
+    };
+    document.querySelectorAll('#t-people .th-sortable').forEach(th=>{const key=th.dataset.key,c=cols.find(x=>x.key===key);
+      th.querySelector('.th-trigger').addEventListener('click',e=>{e.stopPropagation();const m=th.querySelector('.th-menu'),o=!m.hidden;
+        document.querySelectorAll('#t-people .th-menu').forEach(x=>x.hidden=true);m.hidden=o;});
+      th.querySelectorAll('.th-menu__sort').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();sortKey=key;sortDir=b.dataset.dir;render();}));
+      th.querySelectorAll('.th-f').forEach(inp=>inp.addEventListener('input',()=>{
+        if(c.type==='text')filters[key]={text:inp.value};
+        else if(c.type==='enum')filters[key]={set:new Set([...th.querySelectorAll('.th-f:checked')].map(x=>x.value))};
+        else if(c.type==='number')(filters[key]??={min:null,max:null})[inp.dataset.bound]=inp.value===''?null:+inp.value;
+        else (filters[key]??={from:'',to:''})[inp.dataset.bound]=inp.value;
+        render();}));
+      th.querySelector('.th-menu__clear').addEventListener('click',e=>{e.stopPropagation();delete filters[key];
+        th.querySelectorAll('.th-f').forEach(x=>x.type==='checkbox'?x.checked=false:x.value='');render();});
+      th.querySelector('.th-menu').addEventListener('click',e=>e.stopPropagation());});
+    render();
+  })();
+
+  // 5 · expand / drill
+  (() => {
+    const data=[
+      {y:'2028',rev:165,cost:112,net:53,q:[['ไตรมาส 1',40,28,12],['ไตรมาส 2',41,28,13],['ไตรมาส 3',42,28,14],['ไตรมาส 4',42,28,14]]},
+      {y:'2029',rev:198,cost:124,net:74,q:[['ไตรมาส 1',47,31,16],['ไตรมาส 2',49,31,18],['ไตรมาส 3',50,31,19],['ไตรมาส 4',52,31,21]]},
+      {y:'2030',rev:214,cost:131,net:83,q:[['ไตรมาส 1',51,32,19],['ไตรมาส 2',53,33,20],['ไตรมาส 3',54,33,21],['ไตรมาส 4',56,33,23]]}];
+    $('#t-expand tbody').innerHTML = data.map(d=>`
+      <tr class="is-drill" data-year="${d.y}"><td class="data-table__drill"></td><td>${d.y}</td><td class="n">${d.rev}</td><td class="n">${d.cost}</td><td class="t-strong n">${d.net}</td></tr>
+      ${d.q.map(q=>`<tr class="data-table__child" data-parent="${d.y}" hidden><td></td><td class="child-label">${q[0]}</td><td class="n">${q[1]}</td><td class="n">${q[2]}</td><td class="n">${q[3]}</td></tr>`).join('')}`).join('');
+    document.querySelectorAll('#t-expand tr.is-drill').forEach(r=>r.addEventListener('click',()=>{
+      const o=r.classList.toggle('is-open');
+      document.querySelectorAll(`#t-expand tr.data-table__child[data-parent="${r.dataset.year}"]`).forEach(c=>c.hidden=!o);}));
+  })();
+
+  // 6 · matrix compact + heat
+  (() => {
+    const heat=v=>v>=4.5?5:v>=3.5?4:v>=2.5?3:v>=1.5?2:1;
+    const rows=[['หัวหน้า',4.6,4.2,4.8,4.4],['เพื่อนร่วมงาน',3.8,4.5,3.2,4.0],['ลูกน้อง',4.1,3.6,2.8,3.9],['ตนเอง',3.4,3.0,3.8,3.5]];
+    $('#t-heat tbody').innerHTML = rows.map(r=>`<tr><td>${r[0]}</td>${r.slice(1).map(v=>
+      `<td class="heat heat--${heat(v)}">${v.toFixed(1)}</td>`).join('')}</tr>`).join('');
+  })();
+
+  // 7 · grouped band rows (static group-by demo; no collapse)
+  (() => {
+    const groups=[
+      {id:'g1',label:'ฝ่ายขาย',members:[['สมชาย ก.','status--positive','กรอกแล้ว',8],['อรุณี ส.','status--positive','กรอกแล้ว',5],['ธนากร พ.','status--caution','กำลังกรอก',3]]},
+      {id:'g2',label:'การตลาด',members:[['มะลิ ท.','status--positive','กรอกแล้ว',6],['วีระ ม.','','ยังไม่กรอก',0]]},
+      {id:'g3',label:'บัญชี',members:[['นภัส อ.','status--positive','กรอกแล้ว',7],['เอกชัย พ.','','ยังไม่กรอก',0]]},
+    ];
+    const tb=$('#t-group tbody');
+    tb.innerHTML = groups.map(g=>{
+      const band=`<tr class="data-table__group"><td colspan="3"><div class="group-bar"><span class="group-bar__label">${g.label}</span><span class="group-bar__meta">· ${g.members.length} คน</span></div></td></tr>`;
+      const rows=g.members.map(m=>`<tr data-group="${g.id}"><td>${m[0]}</td><td><span class="status ${m[1]}">${m[2]}</span></td><td class="n">${m[3]}</td></tr>`).join('');
+      return band+rows;
+    }).join('');
+  })();
+
+  document.addEventListener('click',()=>document.querySelectorAll('.kebab-menu,.th-menu').forEach(m=>m.hidden=true));
+</script>
+</body>
+</html>

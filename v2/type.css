@@ -1,0 +1,22 @@
+/* ============================================================
+   CCD BRB Design System v2 — Type roles
+   ------------------------------------------------------------
+   The welded roles as CLASSES. v1 shipped only raw --fs-* tokens,
+   which let each tool drift its own hierarchy. These classes are the
+   enforcement layer: size + weight + color welded together.
+
+   Coupling rule: gray lives at 14 (sub) by default; every other
+   role ≥14 is ink. Don't hand-tune size/weight/color off these.
+
+   .t-caption (12) is PARKED — too small for Thai on low-res Windows.
+   It stays defined but the quiet tier defaults to .t-sub (14/gray);
+   reach for .t-caption only on explicit instruction.
+   ============================================================ */
+
+.t-kpi     { font-size: var(--fs-kpi);   font-weight: var(--fw-bold);    color: var(--ink); line-height: var(--lh-tight); font-variant-numeric: tabular-nums; }
+.t-title   { font-size: var(--fs-card);  font-weight: var(--fw-semi);    color: var(--ink); line-height: var(--lh-snug); }
+.t-section { font-size: var(--fs-body);  font-weight: var(--fw-semi);    color: var(--ink); line-height: var(--lh-snug); }
+.t-body    { font-size: var(--fs-data);  font-weight: var(--fw-regular); color: var(--ink); line-height: var(--lh-normal); }
+.t-strong  { font-size: var(--fs-data);  font-weight: var(--fw-semi);    color: var(--ink); font-variant-numeric: tabular-nums; }
+.t-sub     { font-size: var(--fs-data);  font-weight: var(--fw-regular); color: var(--ink-muted); line-height: var(--lh-normal); }
+.t-caption { font-size: var(--fs-micro); font-weight: var(--fw-regular); color: var(--ink-muted); }

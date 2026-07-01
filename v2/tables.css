@@ -1,0 +1,348 @@
+/* ============================================================
+   CCD BRB Design System v2 — Tables
+   ------------------------------------------------------------
+   The density-first data table. FLUSH hairline grid (owner pick):
+   no card box — page-wide, full-bleed to its container. The frame
+   is two 1px --rule bookends (top + bottom) on the table itself;
+   rows divide on a fainter hairline so the bookends read as the
+   outer edge. White header band (no tint), gray 400 labels, first
+   data column 600/ink, every other cell 400. Hosts the bare dot
+   status (Type 1) per the status usage doctrine — never the fill
+   pill in a cell.
+
+   Structure
+     .data-table-wrap   neutral container (positioning/overflow hook).
+     .data-table        the table — width:100%, carries the bookends.
+
+   Control columns (opt-in, position = meaning)
+     .data-table__select  LEADING multiselect checkbox.
+     .data-table__drill   LEADING expand chevron (expand-in-place).
+     .data-table__kebab   TRAILING ⋯ row-action menu trigger.
+   Leading and trailing control cols are symmetric: 8px clearance to
+   the edge, 16px gap to the first/last data column.
+
+   Expand convention: an expandable table puts a leading
+   .data-table__drill cell on each parent row and marks the row
+   .is-drill (pointer + chevron). Clicking sets .is-open (chevron
+   rotates, row casts a shadow) and reveals its .data-table__child
+   rows — which live in the SAME table so columns stay aligned.
+   FLAT tables omit the drill column entirely.
+
+   Modifiers
+     .data-table--matrix   equal fixed columns (homogeneous numeric grid)
+     .data-table--compact  drop cells to 12px + tighter rows (owner-permitted
+                           dense escape hatch; numeric/English-heavy grids)
+     .data-table--auto     size to content (sparse label/value, status board)
+     .data-table--heat     continuous magnitude field (pairs with --matrix --compact)
+
+   Sortable / filterable headers (opt-in per th)
+     th.th-sortable wraps its label in a .th-trigger button (sort caret +
+     filtered .th-dot) and opens a type-aware .th-menu filter popover. This
+     file owns the look + the class contract; the sort/filter JS is the
+     consumer's. The popover borrows .f-control / .f-choice from forms.css.
+
+   Group bands (section a list into buckets)
+     a .data-table__group row (one colspan td → .group-bar) bands the member
+     rows under it; carries label + meta + a right action, optionally
+     collapsible. Members are normal rows tagged data-group="<id>".
+
+   Rectilinear (--r-card), per v2. Consumes tokens.css + status.css; filterable
+   headers also borrow forms.css (.f-control / .f-choice).
+   ============================================================ */
+
+/* ── Container · neutral (flush model has no card edge) ───────
+   Kept as a positioning/overflow hook. A responsive horizontal-scroll
+   wrapper + portaled kebab menu land with the layout/menu parts;
+   ponytail: not a scroll container yet (overflow:auto would clip the
+   interim row-action menu — see Kebab below). */
+.data-table-wrap { border: 0; border-radius: 0; }
+
+/* ── The table ────────────────────────────────────────────── */
+.data-table {
+  width: 100%;                      /* page-wide; columns auto-distribute to fill */
+  border-collapse: collapse;
+  font-size: var(--fs-data);        /* 14 baseline */
+  font-weight: var(--fw-regular);   /* every cell 400 by default */
+  color: var(--ink);
+  border-top: 1px solid var(--rule);    /* bookends frame the grid — on the TABLE so the */
+  border-bottom: 1px solid var(--rule); /* bottom line shows even when a child row is last/hidden */
+}
+.data-table th,
+.data-table td {
+  padding: var(--s-2) var(--s-4);   /* 8 / 16 */
+  text-align: left;
+  vertical-align: middle;
+}
+.data-table th.n,
+.data-table td.n {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+/* First column keeps the standard 16px indent (like every cell) — only the
+   bookend/divider LINES run full-bleed. Text flush to the container edge read
+   as "stripped" with no leading control col to balance it. */
+
+/* ── Header · white band, gray 400, one rule under ────────── */
+.data-table thead th {
+  background: var(--card);          /* white — not a tinted band */
+  color: var(--ink);                /* full ink — header recedes by weight (400 vs 600 data) + white band, not color */
+  font-weight: var(--fw-regular);
+  border-bottom: 1px solid var(--rule);   /* header rule is full --rule — separates head from the fainter body */
+  white-space: nowrap;
+}
+.data-table thead .en {             /* bilingual gloss sits tight under the Thai header */
+  display: block;
+  line-height: 1.15;
+}
+.data-table .cell-en { display: block; }   /* in-cell English gloss drops to its own line under the Thai label */
+
+/* ── Body rows · fainter divider than the bookends ────────── */
+/* Divider is the row's TOP border, not bottom: no row ever paints the bottom
+   edge, so the table's own --rule border-bottom always wins the collapse — the
+   closing line shows whether the last row is a parent (collapsed) or a hidden
+   child (expanded). A bottom-border approach loses that fight to the last
+   VISIBLE row, so the line went faint/missing when collapsed. */
+.data-table tbody tr { border-top: 1px solid color-mix(in srgb, var(--rule) 35%, var(--card)); }
+.data-table tbody tr:first-child { border-top: 0; }   /* thead's --rule line is the separator here */
+
+/* Row hover is OPT-IN via .data-table--hover — a guide rail for scannable or
+   interactive lists. Static read-only tables (flat label/value, status board,
+   heat matrix) omit it so a hover tint doesn't imply a click that does nothing.
+   is-drill / is-selected rows carry their own hover regardless of this flag. */
+.data-table--hover tbody tr:hover { background: var(--paper-tint); }
+
+/* Lead label column: full ink, weight left at 400 — author bolds specific cells. */
+.data-table tbody td:first-child:not(.data-table__select):not(.data-table__drill),
+.data-table tbody td.data-table__select + td,
+.data-table tbody td.data-table__drill + td {
+  color: var(--ink);
+}
+
+/* ── Leading control columns · select + drill ─────────────── */
+/* Narrow, 8px left clearance, no right pad — the next column's left
+   padding makes the 16px gap. Centered within the 1%-width cell. */
+.data-table .data-table__select,
+.data-table .data-table__drill {
+  width: 1%; white-space: nowrap; text-align: center;
+  padding-left: var(--s-2); padding-right: 0;
+}
+
+/* ── Multiselect checkbox ─────────────────────────────────── */
+/* Scoped to the select column. ponytail: this duplicates the .f-choice
+   look (forms.css) on purpose — extract a shared .f-check class when a
+   third surface needs it; two copies don't justify the refactor yet.
+   Table deviations from .f-choice: 16px (forms=18), :indeterminate minus,
+   disabled = dimmed-checked (reads locked-on, not the forms dashed-empty). */
+.data-table__select input[type="checkbox"] {
+  appearance: none; -webkit-appearance: none; margin: 0; box-sizing: border-box; flex-shrink: 0;
+  width: 16px; height: 16px; border-radius: var(--r-xs);
+  background: var(--paper); border: 1px solid var(--rule); cursor: pointer;
+  display: inline-grid; place-items: center; vertical-align: middle;
+}
+.data-table__select input[type="checkbox"]:hover { border-color: var(--ink-muted); }
+.data-table__select input[type="checkbox"]:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color); outline-offset: var(--focus-ring-offset);
+}
+.data-table__select input[type="checkbox"]:checked { background: var(--brand); border-color: var(--brand); }
+.data-table__select input[type="checkbox"]:checked::after {
+  content: ""; width: 10px; height: 10px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none'><path d='M2 6.5L5 9.5L10 3.5' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat: no-repeat;
+}
+.data-table__select input[type="checkbox"]:indeterminate { background: var(--brand); border-color: var(--brand); }
+.data-table__select input[type="checkbox"]:indeterminate::after { content: ""; width: 9px; height: 2px; background: var(--paper); border-radius: 1px; }
+.data-table__select input[type="checkbox"]:disabled { opacity: 0.5; cursor: not-allowed; }   /* dimmed checked = locked-on (e.g. a pinned primary) */
+
+/* selected row — subtle brand tint, distinct from the gray hover */
+.data-table tbody tr.is-selected,
+.data-table tbody tr.is-selected:hover { background: color-mix(in srgb, var(--brand) 8%, #fff); }
+
+/* ── Drill · expand-in-place chevron ──────────────────────── */
+/* CSS-drawn chevron (not a text glyph): rotates cleanly around its true
+   center, so the flip ›→⌄ doesn't shift. font-size:0 drops any stray glyph. */
+.data-table .data-table__drill { color: var(--ink-muted); font-size: 0; }
+.data-table tbody td.data-table__drill::before {   /* body cells only — not the empty header th */
+  content: ""; display: inline-block; width: 7px; height: 7px;
+  border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg); transform-origin: center;   /* points right › */
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.data-table tbody tr.is-drill { cursor: pointer; user-select: none; }
+.data-table tbody tr.is-drill:hover { background: var(--paper-tint); }
+.data-table tbody tr.is-open .data-table__drill { color: var(--brand); }
+.data-table tbody tr.is-open .data-table__drill::before { transform: rotate(45deg); }   /* points down ⌄ */
+.data-table tbody tr.is-open > td { position: relative; z-index: 1; background: var(--paper-tint); box-shadow: 0 4px 5px -4px rgba(20, 37, 73, 0.13); }   /* open parent: faint tint reads the expanded group as a unit (the 0.13α shadow alone was near-invisible); thin line BELOW casts onto the revealed children */
+.data-table tbody tr.data-table__child .child-label { padding-left: var(--s-6); color: var(--ink-muted); }
+
+/* ── Trailing control column · kebab ⋯ ────────────────────── */
+/* Mirrors the leading col: 0 inner pad (prev col's 16 makes the gap),
+   8px edge clearance. .data-table prefix beats the base td padding. */
+.data-table__kebab { width: 1%; white-space: nowrap; text-align: center; position: relative; }
+.data-table .data-table__kebab { padding-left: 0; padding-right: var(--s-2); }
+.kebab-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border: 0; border-radius: var(--r-sm);
+  background: transparent; color: var(--ink-muted); cursor: pointer;
+}
+.kebab-btn:hover { background: var(--paper-tint); color: var(--ink); }
+.kebab-btn:focus-visible { outline: var(--focus-ring-width) solid var(--focus-ring-color); outline-offset: var(--focus-ring-offset); }
+.kebab-btn::before {   /* CSS-drawn horizontal 3-dot ··· — font-independent */
+  content: ""; width: 3px; height: 3px; border-radius: 50%; background: currentColor;
+  box-shadow: -5px 0 0 currentColor, 5px 0 0 currentColor;
+}
+
+/* Row-action menu — ponytail: interim, owned here so the table works
+   today. Graduates to the Menu/dropdown part (fixed-positioned to escape
+   the table) when that lands; delete these four rules then. */
+.kebab-menu {
+  position: absolute; right: var(--s-4); top: calc(100% - 4px); z-index: var(--z-dropdown);
+  min-width: 150px; text-align: left;
+  background: var(--card); border: 1px solid var(--rule); border-radius: var(--r-card);
+  box-shadow: var(--shadow-3); padding: var(--s-1);
+}
+.kebab-item {
+  display: block; width: 100%; text-align: left; font: inherit; color: var(--ink);
+  padding: var(--s-2) var(--s-3); border: 0; background: transparent;
+  border-radius: var(--r-sm); cursor: pointer;
+}
+.kebab-item:hover { background: var(--paper-tint); }
+.kebab-item--danger { color: var(--dot-negative); }
+.kebab-item--danger:hover { background: var(--wash-alert); }
+
+/* ── Sortable + filterable headers · opt-in per th ────────────
+   A header becomes interactive by carrying .th-sortable: the th drops
+   its own padding and a full-bleed .th-trigger button owns the hit area
+   (label + sort caret + filtered .th-dot). Clicking opens a type-aware
+   .th-menu filter popover below. The sort/filter JS is the consumer's —
+   this file owns only the look + the class contract.
+   ponytail: .th-menu duplicates the kebab popover; both graduate to the
+   shared Menu/dropdown part together (fixed-positioned to escape the
+   table) — delete both interim blocks then. */
+.data-table thead th.th-sortable { padding: 0; position: relative; }
+.th-trigger {
+  display: inline-flex; align-items: center; gap: 6px; width: 100%;
+  padding: var(--s-2) var(--s-4);
+  border: 0; background: transparent; font: inherit; color: var(--ink);   /* match the plain thead th */
+  cursor: pointer; text-align: inherit; white-space: nowrap; user-select: none;
+}
+.data-table thead th.n .th-trigger { justify-content: flex-end; }   /* numeric header right-aligns; caret trails the value */
+.th-trigger:hover { background: var(--paper-tint); }   /* hover = bg tint only; text color stays constant — the caret/dot carry sort/filter state */
+.th-trigger:focus-visible { outline: var(--focus-ring-width) solid var(--focus-ring-color); outline-offset: calc(-1 * var(--focus-ring-width)); }
+
+/* sort caret — at rest a faint up-triangle (.3 ink: the column reads as sortable);
+   the ACTIVE column goes full-opacity + brand-filled + flips asc/desc, so "which
+   column is sorted" pops out of the row of rest carets (the symbol carries state —
+   the header text stays constant, never darkens). */
+.th-caret { width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; }
+.th-sortable:not(.is-asc):not(.is-desc) .th-caret { border-bottom: 5px solid currentColor; opacity: .3; }
+.th-sortable.is-asc .th-caret { border-bottom: 5px solid var(--brand); }
+.th-sortable.is-desc .th-caret { border-top: 5px solid var(--brand); }
+
+/* filtered marker — a small funnel glyph (brand) trailing the caret in a reserved
+   slot (visibility, not display) so toggling it never shifts the label. Mask so
+   the glyph follows the token; self-contained like the caret (no icon sprite). */
+.th-dot {
+  flex: none; width: 10px; height: 10px; background: var(--brand);
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'><path d='M1 2.5L13 2.5L8.2 7.8L8.2 12L5.8 10.8L5.8 7.8Z'/></svg>") center / contain no-repeat;
+          mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'><path d='M1 2.5L13 2.5L8.2 7.8L8.2 12L5.8 10.8L5.8 7.8Z'/></svg>") center / contain no-repeat;
+}
+.th-sortable:not(.is-filtered) .th-dot { visibility: hidden; }
+
+/* filter popover — dense utility surface, smaller than the form defaults it borrows */
+.th-menu {
+  position: absolute; left: var(--s-2); top: calc(100% - 2px); z-index: var(--z-dropdown);
+  min-width: 200px; text-align: left; white-space: normal; font-size: var(--fs-small);
+  background: var(--card); border: 1px solid var(--rule); border-radius: var(--r-card);
+  box-shadow: var(--shadow-3); padding: var(--s-2);
+}
+.data-table thead th:last-child .th-menu { left: auto; right: var(--s-2); }   /* last column flips so the menu stays on-canvas */
+.th-menu__sort {
+  display: block; width: 100%; text-align: left; font: inherit; color: var(--ink); font-weight: var(--fw-regular);
+  padding: var(--s-2) var(--s-3); border: 0; background: transparent; border-radius: var(--r-sm); cursor: pointer;
+}
+.th-menu__sort:hover { background: var(--paper-tint); }
+.th-menu__sort.is-on { color: var(--brand); font-weight: var(--fw-semi); }
+.th-menu__div { height: 1px; background: var(--rule); margin: var(--s-2) 0; }
+.th-menu__filter { padding: 0 var(--s-1); }
+.th-menu__range { display: flex; align-items: center; gap: var(--s-2); }
+.th-menu__range .f-control { padding: var(--s-1) var(--s-2); text-align: center; }   /* center the min/max value */
+.th-menu__dash { flex: none; color: var(--ink-muted); }   /* range separator — align-items:center keeps it centered */
+.th-menu__checks { display: flex; flex-direction: column; gap: var(--s-2); max-height: 180px; overflow: auto; }
+.th-menu__clear {
+  display: block; width: 100%; text-align: center; font: inherit; font-size: var(--fs-small); color: var(--ink-muted);
+  padding: var(--s-2); margin-top: var(--s-2); border: 0; background: transparent; border-radius: var(--r-sm); cursor: pointer;
+}
+.th-menu__clear:hover { background: var(--paper-tint); color: var(--ink); }
+/* borrowed form controls shrink to the popover scale (13 + tight 4/8) */
+.th-menu .f-control { font-size: var(--fs-small); padding: var(--s-1) var(--s-2); }
+.th-menu .f-choice { font-size: var(--fs-small); }
+.th-menu .f-choice input { width: 16px; height: 16px; }   /* match the table checkbox, not the 18 forms default */
+
+/* ── Modifier · matrix — equal fixed columns ──────────────── */
+/* For a homogeneous numeric grid (every cell one unit) so columns
+   don't size to the longest header word. Label/value tables stay auto. */
+.data-table--matrix { table-layout: fixed; }
+
+/* ── Modifier · compact — 12px on demand ──────────────────── */
+/* Owner-permitted dense escape hatch (parked-12 loosened for tables).
+   Reach for it on numeric/English-heavy grids, not Thai-prose columns. */
+.data-table--compact { font-size: var(--fs-micro); }   /* 12 */
+.data-table--compact th,
+.data-table--compact td { padding-top: var(--s-1); padding-bottom: var(--s-1); }
+
+/* ── Modifier · auto — size to content ────────────────────────
+   Sparse tables (flat label/value, status board) size to their content
+   instead of stretching full-width — kills the label→value dead-space.
+   Full-bleed stays the default for dense/matrix tables. */
+.data-table--auto { width: auto; }
+
+/* ── Modifier · heat — continuous magnitude field ─────────────
+   Numeric matrix where each cell's bg maps its magnitude (mono-blue
+   --heat-1..5) via a .heat--N class. The fill is on the td (not a pill)
+   so cells abut into one field; faint column dividers tile it; score
+   headers center over their centered values (label col stays left).
+   Pairs with --matrix --compact. */
+.data-table--heat td.heat { font-weight: var(--fw-semi); text-align: center; font-variant-numeric: tabular-nums; }
+.data-table--heat thead th:not(:first-child) { text-align: center; }
+/* vertical dividers tile the DATA field only — header columns stay open (no vertical rules) */
+.data-table--heat td.heat { border-left: 1px solid color-mix(in srgb, var(--rule) 35%, var(--card)); }
+/* fg/bg pairing is OWNED here so contrast is guaranteed system-wide: cells inherit
+   --ink, which clears WCAG AA on heat-1..4 (6.6–13:1); only the darkest --heat-5
+   takes white (4.5:1 — ink would fail there at 3.3:1). The consumer sets the level
+   class and never re-picks the foreground, so no app can re-introduce the
+   white-text-on-light-blue contrast bug. */
+.data-table--heat td.heat--1 { background: var(--heat-1); }
+.data-table--heat td.heat--2 { background: var(--heat-2); }
+.data-table--heat td.heat--3 { background: var(--heat-3); }
+.data-table--heat td.heat--4 { background: var(--heat-4); }
+.data-table--heat td.heat--5 { background: var(--heat-5); color: #fff; }
+
+/* ── Grouped · band rows section a list into buckets ──────────
+   A .data-table__group row spans all columns (one colspan td) and bands the
+   member rows below it (group-by department, cohort, room, …). The band
+   carries a label + muted meta + a right-aligned group action; add
+   .data-table__group--clickable + a .group-bar__chevron to make it
+   collapsible — the consumer's JS toggles .is-collapsed and hides the rows
+   tagged data-group="<id>". Members are NORMAL rows, no indent (they align
+   under the band so the list stays scannable across groups). The tint band
+   is the section divider — nothing table-wide changes, it's just this row. */
+.data-table__group > td { padding: 0; }                  /* the bar owns its padding + bg */
+.data-table__group .group-bar {
+  display: flex; align-items: center; gap: var(--s-2);
+  padding: var(--s-2) var(--s-4); background: var(--paper-tint);
+}
+.data-table__group--clickable { cursor: pointer; user-select: none; }
+.group-bar__chevron {
+  flex: none; width: 7px; height: 7px;
+  border-right: 1.5px solid var(--ink-muted); border-bottom: 1.5px solid var(--ink-muted);
+  transform: rotate(45deg);                              /* down = expanded (default) */
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.data-table__group.is-collapsed .group-bar__chevron { transform: rotate(-45deg); }   /* right = collapsed */
+.group-bar__label { font-weight: var(--fw-semi); color: var(--ink); white-space: nowrap; }
+.group-bar__meta { color: var(--ink-muted); font-size: var(--fs-small); white-space: nowrap; }
+.group-bar__action {
+  margin-left: auto; font: inherit; font-size: var(--fs-small); color: var(--brand);
+  background: 0; border: 0; padding: 0; cursor: pointer; white-space: nowrap;
+}
+.group-bar__action:hover { text-decoration: underline; }

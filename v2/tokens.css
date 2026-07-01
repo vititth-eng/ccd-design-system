@@ -1,0 +1,212 @@
+/* ============================================================
+   CCD BRB Design System — Tokens
+   ------------------------------------------------------------
+   Single source of truth for color, type, spacing, motion.
+   Imported by every CCD·BRB tool. NEVER edit per-tool copies.
+
+   Spec lives in:
+   ~/Library/CloudStorage/OneDrive-.../Active Project/CCD BRB Design/DESIGN-SYSTEM.md
+   ============================================================ */
+
+:root {
+  /* ── Color: misty palette ───────────────────────────────
+     All hexes from figma.com/colors/misty-blue/, except 3 saturated
+     status dots (off-page, escape hatch — used as 7px dots only).
+     Meaning is carried by background tint hue; foreground is always ink. */
+
+  /* Brand · 3 blues from the misty shades scale */
+  --brand-deep: #142549;       /* CCD logo navy · primary text */
+  --brand:      #4874CD;       /* primary action · links · focus */
+  --brand-soft: #B5C7EB;       /* anchor misty · soft section bg · alias of state-selected */
+
+  /* Surface · scaffolding */
+  --paper:      #ffffff;       /* document surface · card · centered page block */
+  --paper-tint: #F6F9FD;       /* softest misty wash · outer canvas, card icon bg */
+  --card:       #ffffff;       /* card surface */
+  --rule:       #C7D5F0;       /* borders, dividers */
+
+  /* Ink · text scale (deep → muted) */
+  --ink:        #142549;       /* headlines, primary text = brand-deep */
+  --ink-soft:   #274B92;       /* card titles, body emphasis */
+  --ink-muted:  #5C728C;       /* captions, descriptions · v2: AA fix (was #647B9B = 4.1:1 on tint, fails; this = 4.69:1) */
+
+  /* Status — 9-color system (Phase 1.18).
+     Three families × three states. Rule: small → tint, large → wash, text → dot.
+     See DESIGN-SYSTEM.md §"Status palette · 9-color rule" for usage. */
+
+  /* Tint · mid fill, denser surfaces (~25% blend of dot + paper).
+     Derived from the dot hex so the family stays one hue per semantic. */
+  --tint-positive: color-mix(in srgb, var(--dot-positive) 25%, #ffffff);
+  --tint-caution:  color-mix(in srgb, var(--dot-caution) 25%, #ffffff);
+  --tint-alert:    color-mix(in srgb, var(--dot-negative) 25%, #ffffff);
+  --tint-neutral:  #DFE7F6;    /* draft, none, undefined · holds against page canvas */
+
+  /* Wash · palest fill (~10% blend of dot + paper). The status-chip fill +
+     large banners/callouts. Dot + edge carry the signal, wash is calm ground. */
+  --wash-positive: color-mix(in srgb, var(--dot-positive) 10%, #ffffff);
+  --wash-caution:  color-mix(in srgb, var(--dot-caution) 10%, #ffffff);
+  --wash-alert:    color-mix(in srgb, var(--dot-negative) 10%, #ffffff);
+
+  /* Text · readable same-hue ink for colored-text chips. The dot hue itself is
+     too light to read as text (amber fails contrast hard), so darken toward
+     black — stays one hue per family, clears AA on white + wash. */
+  --text-positive: color-mix(in srgb, var(--dot-positive) 78%, #000);
+  --text-caution:  color-mix(in srgb, var(--dot-caution) 55%, #000);
+  --text-alert:    color-mix(in srgb, var(--dot-negative) 82%, #000);
+
+  /* Dot · accent + status text + chip edge + 7px dots.
+     v2 saturated trio (was misty olive/amber/rust) — reads clearly as
+     green/amber/red at dot scale; tint + wash derive from these. */
+  --dot-positive: #1F9E4D;     /* green */
+  --dot-caution:  #E0A100;     /* amber */
+  --dot-negative: #D63A2E;     /* red */
+
+  /* State · selected / active */
+  --state-selected: #B5C7EB;   /* active tab, selected row, current chip · alias of brand-soft */
+
+  /* Heat · sequential mono-blue, lightest → deepest */
+  --heat-1: #DFE7F6;
+  --heat-2: #C7D5F0;
+  --heat-3: #B5C7EB;
+  --heat-4: #91ABE1;
+  --heat-5: #4874CD;
+  --heat-empty: #ffffff;
+
+  /* ── Data viz · Tier-2 ──────────────────────────────────
+     Additional colors charts need that Tier-1 misty can't supply.
+     Two families. Tools must consume these directly or via a local
+     prefixed alias (e.g. --ot-perspective-nh: var(--cat-1)).
+     RULE: tools never own a separate tokens file. One source of truth.
+     See DESIGN-SYSTEM.md §"Data viz · Tier-2" for usage rules.
+
+     Single-series chart paint = --brand (Tier-1).
+     Sequential chart paint = --heat-1..5 (Tier-1).
+     Diverging = --sd-1..5 (here).
+     Categorical = --cat-1..6 (here).
+     Outlier-alert swap = --dot-negative (Tier-1). */
+
+  /* Diverging · 5 stops · ordered with meaningful midpoint.
+     Use for ± deviation, score with neutral middle, change ±. */
+  --sd-1: #588C44;    /* calmer green · one pole */
+  --sd-2: #9BC3B7;    /* clean light sage */
+  --sd-3: #F4F4F4;    /* barely-warm neutral · midpoint */
+  --sd-4: #EFC4C4;    /* dusty pink, soft */
+  --sd-5: #C9596A;    /* rose-red · opposite pole */
+
+  /* Categorical · 6 hues · distinct identities, no order.
+     Use for series, groups, categories. Caps at 6 — more = group instead.
+     --cat-1..3 is the strongest starter set; most charts use 2–3. */
+  --cat-1: #4874CD;   /* brand blue · 220° · anchor */
+  --cat-2: #B86E5F;   /* soft rust  ·  12° */
+  --cat-3: #7DA382;   /* sage       · 135° */
+  --cat-4: #8B6CA0;   /* soft plum  · 285° */
+  --cat-5: #C49C5B;   /* clean amber ·  40° */
+  --cat-6: #3E8B89;   /* muted teal · 178° */
+
+  /* ── Type stack ─────────────────────────────────────── */
+  --sans: "Inter", "Noto Sans Thai", -apple-system, BlinkMacSystemFont,
+          "Segoe UI", system-ui, sans-serif;
+  --thai: "Noto Sans Thai", "Inter", sans-serif;
+
+  /* ── Type scale (Phase 1.9 base · Phase 2A.2 +data/+nano · Phase 2A.3 +kpi) ─
+     Nine roles. Body (17px) is paragraph default; data (14px) is the
+     density-first scan size for tabular/dashboard tools (Onboarding,
+     Sounding Board). KPI (30px) is the scan-anchor numeral on density-first
+     surfaces — shorter than display, no clamp, sized to coexist with --fs-data
+     rows without shouting like a landing hero. Nano (11px) is reserved for
+     sub-micro decoration (sort indicators, wave-pill day labels) —
+     accessibility floor; never used for primary content. */
+  --fs-display: clamp(2rem, 4vw, 3rem);  /* hero · 32→48px · narrative-first only */
+  --fs-section: 1.5rem;                  /* 24px · section heading · narrative-first */
+  --fs-card:    1.25rem;                 /* 20px · card / panel title */
+  --fs-kpi:     1.875rem;                /* 30px · density-first KPI numerals · no clamp */
+  --fs-body:    1.0625rem;               /* 17px · paragraph default · density-first section heading */
+  --fs-data:    0.875rem;                /* 14px · dense tabular / dashboard baseline */
+  --fs-small:   0.8125rem;               /* 13px · caption / meta */
+  --fs-micro:   0.75rem;                 /* 12px · eyebrow / pill / label */
+  --fs-nano:    0.6875rem;               /* 11px · sub-micro decoration only */
+
+  /* ── Weight ─────────────────────────────────────────── */
+  --fw-regular: 400;
+  --fw-medium:  500;
+  --fw-semi:    600;
+  --fw-bold:    700;
+
+  /* ── Leading ────────────────────────────────────────── */
+  --lh-tight:    1.1;   /* display */
+  --lh-snug:     1.3;   /* card / heading */
+  --lh-normal:   1.6;   /* body */
+  --lh-relaxed:  1.65;  /* Thai body */
+
+  /* ── Spacing (8pt grid) ─────────────────────────────── */
+  --s-1: 0.25rem;   /* 4  */
+  --s-2: 0.5rem;    /* 8  */
+  --s-3: 0.75rem;   /* 12 */
+  --s-4: 1rem;      /* 16 */
+  --s-5: 1.5rem;    /* 24 */
+  --s-6: 2rem;      /* 32 */
+  --s-7: 3rem;      /* 48 */
+  --s-8: 4rem;      /* 64 */
+  --s-9: 6rem;      /* 96 */
+
+  /* ── Radii ──────────────────────────────────────────── */
+  /* Rule: bigger + more isolated = bigger radius.
+     Default to --r-card (8px). Bump to --r-md when surface is alone on its
+     row. Bump to --r-lg when surface floats (modal, sheet, big popover). */
+  --r-tiny: 3px;       /* tags, query chips, tiny badges <12px tall */
+  --r-xs: 4px;
+  --r-sm: 6px;
+  --r-card: 8px;       /* default card · KPI, feature, list item */
+  --r-md: 12px;        /* large isolated surface · hero block, single full-row card */
+  --r-lg: 16px;        /* overlay / floating · modal, sheet, image-led hero */
+  --r-pill: 999px;     /* buttons, status pills, badges */
+
+  /* ── Layout ─────────────────────────────────────────── */
+  --gutter: clamp(1.5rem, 5vw, 4rem);
+  --max-content: 70rem;        /* 1120px · canonical content width — text/reading optimised */
+  --header-h: 52px;            /* utility header height (in-app); landing carries fuller lockup */
+
+  /* ── Elevation (shadow ramp) ────────────────────────── */
+  /* Shadows tinted with ink (deep navy), never neutral black. Use sparingly. */
+  --shadow-0: none;
+  --shadow-1: 0 1px 3px rgba(20, 37, 73, 0.12);                             /* v2: resting-control lift — was .04/2px = invisible on white-on-white */
+  --shadow-1-brand: 0 1px 3px rgba(72, 116, 205, 0.12);                     /* v2: brand-hued sibling of --shadow-1 — in-card brand control, same plane as ghost */
+  --shadow-2: 0 2px 6px rgba(20, 37, 73, 0.06);                             /* dropdown, popover */
+  --shadow-3: 0 8px 24px rgba(20, 37, 73, 0.08);                            /* card hover, sheet */
+  --shadow-4: 0 16px 40px rgba(20, 37, 73, 0.16);                           /* modal */
+  --shadow-glow-brand: 0 4px 12px rgba(72, 116, 205, 0.3);                  /* mid-blue brand accent */
+
+  /* ── Z-index scale ──────────────────────────────────── */
+  --z-base: 0;
+  --z-sticky: 50;
+  --z-dropdown: 100;
+  --z-modal: 200;
+  --z-toast: 300;
+
+  /* ── Focus ring ─────────────────────────────────────── */
+  --focus-ring-color: var(--brand);   /* mid-blue · on-brand, softer than ink,
+                                         still WCAG AA for non-text UI */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 0;             /* v2: ring hugs the element (was 2px) — reads as "selected", not "floating" */
+
+  /* ── Motion ─────────────────────────────────────────── */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --dur-instant: 0ms;
+  --dur-fast: 160ms;
+  --dur-base: 240ms;
+  --dur-slow: 360ms;
+
+  /* ── Breakpoints (reference, not consumed by CSS) ───── */
+  --bp-mobile: 540px;
+  --bp-tablet: 760px;
+  --bp-desktop: 960px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

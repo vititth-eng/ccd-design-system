@@ -1,0 +1,268 @@
+/* ============================================================
+   CCD BRB Design System — Nav primitives (Phase 1.19)
+   ------------------------------------------------------------
+   Three navigation primitives co-designed because they share
+   one active-state language (underline + --brand):
+
+   - Top nav (.nav)            header strip at --header-h
+   - Breadcrumbs (.crumbs)     hierarchy trail above page title
+   - Tabs (.tabs)              section switcher inside a page
+
+   Locked rules:
+   - Active = brand underline. One vocabulary, top-to-bottom.
+   - Hover = color → --ink (no background flips).
+   - Focus = ring-only (no border flips). Phase 1.10 finding.
+   - Crumb separator is the chevron-right Tier-1 icon. Inherits
+     currentColor + opacity 0.6 — decorative, not interactive.
+
+   Anti-patterns:
+   - Don't mix active-state languages within a single screen
+     (e.g. underline on tabs + soft-bg on nav). Pick one.
+   - Don't combine breadcrumbs and back-arrow at the top of the
+     same page — pick one trail.
+   - Don't use the segmented tab variant for filter sets (5+
+     items) — that's a chip group, not a tab group.
+
+   Spec: ../DESIGN-SYSTEM.md §20 Nav
+   ============================================================ */
+
+
+/* ── Top nav ─────────────────────────────────────────── */
+.nav {
+  height: var(--header-h);
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--s-5);
+  gap: var(--s-5);
+}
+
+.nav__brand {
+  font-weight: var(--fw-bold);
+  font-size: 0.9375rem;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  white-space: nowrap;
+}
+.nav__brand-mark {
+  display: inline-block;
+  width: 28px;
+  height: 26px;
+  background-color: currentColor;
+  -webkit-mask: url('assets/ccd-mark-full.svg') center/contain no-repeat;
+  mask: url('assets/ccd-mark-full.svg') center/contain no-repeat;
+  color: var(--brand-deep);
+}
+.nav__brand-mark--wireframe {
+  -webkit-mask-image: url('assets/ccd-mark-wireframe.svg');
+  mask-image: url('assets/ccd-mark-wireframe.svg');
+}
+.nav__brand-sub { color: var(--ink-muted); font-weight: var(--fw-medium); }
+
+.nav__spacer { flex: 1; }
+
+/* Primary links — underline-active (default) */
+.nav__links {
+  display: flex;
+  gap: 0;
+  align-self: stretch;
+}
+.nav__link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--s-4);
+  color: var(--ink-muted);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: var(--fw-medium);
+  border-bottom: 2px solid transparent;
+  transition:
+    color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease);
+  white-space: nowrap;
+}
+.nav__link:hover { color: var(--ink); }
+.nav__link[aria-current="page"] {
+  color: var(--ink);
+  font-weight: var(--fw-semi);
+  border-bottom-color: var(--brand);
+}
+.nav__link:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: -2px;
+  border-radius: var(--r-xs);
+}
+
+/* Actions cluster */
+.nav__actions { display: flex; align-items: center; gap: var(--s-2); }
+.nav__icon-btn {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  border-radius: var(--r-pill);
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.nav__icon-btn:hover { background: var(--paper-tint); color: var(--ink); }
+.nav__icon-btn:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: 2px;
+}
+.nav__avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--brand-soft);
+  color: var(--ink);
+  display: inline-grid;
+  place-items: center;
+  font-size: 0.75rem;
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+  border: 0;
+}
+.nav__avatar:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: 2px;
+}
+
+
+/* ── Breadcrumbs ─────────────────────────────────────── */
+.crumbs {
+  display: flex;
+  align-items: center;
+  gap: var(--s-1);
+  font-size: 0.875rem;
+  color: var(--ink-muted);
+  flex-wrap: wrap;
+}
+.crumbs a {
+  color: var(--ink-muted);
+  text-decoration: none;
+  padding: 4px 6px;
+  border-radius: var(--r-xs);
+  transition:
+    color var(--dur-fast) var(--ease),
+    background var(--dur-fast) var(--ease);
+}
+.crumbs a:hover { color: var(--ink); background: var(--paper-tint); }
+.crumbs a:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: 2px;
+}
+.crumbs__sep {
+  color: var(--ink-muted);
+  opacity: 0.6;
+  display: inline-flex;
+}
+.crumbs__sep .icon { width: 14px; height: 14px; }
+.crumbs__current {
+  color: var(--ink);
+  font-weight: var(--fw-regular);   /* v2: current is marked by ink colour, not weight too */
+  padding: 4px 6px;
+}
+
+/* Back-arrow companion (single-step back; pairs WITH .crumbs, not replaces) */
+.crumbs-back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-size: 0.875rem;
+  color: var(--ink-soft);
+  text-decoration: none;
+  padding: 6px var(--s-3) 6px var(--s-2);
+  border-radius: var(--r-pill);
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.crumbs-back:hover { background: var(--paper-tint); color: var(--ink); }
+.crumbs-back:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: 2px;
+}
+
+
+/* ── Tabs ────────────────────────────────────────────── */
+.tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--rule);
+  margin: 0 0 var(--s-5);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tabs__tab {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  padding: var(--s-3) var(--s-4);
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: var(--fw-medium);
+  color: var(--ink-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;        /* overlap container rule */
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  transition:
+    color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease);
+}
+.tabs__tab:hover { color: var(--ink); }
+.tabs__tab[aria-selected="true"] {
+  color: var(--ink);
+  font-weight: var(--fw-semi);
+  border-bottom-color: var(--brand);
+}
+.tabs__tab:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: 2px;
+  border-radius: var(--r-xs);
+}
+.tabs__count {
+  font-size: 0.75rem;
+  font-weight: var(--fw-semi);
+  color: var(--ink-muted);
+  background: var(--paper-tint);
+  padding: 2px 8px;
+  border-radius: var(--r-pill);
+  min-width: 22px;
+  text-align: center;
+}
+.tabs__tab[aria-selected="true"] .tabs__count {
+  background: var(--brand-soft);
+  color: var(--ink);
+}
+
+/* ── Segmented variant (v2) ──────────────────────────── */
+/* Page-level sub-nav ON the page surface — active = white chip lifting on
+   shadow, no underline. Matches the sidebar select-box language. Scoped by
+   nesting so the two active-state languages never compete:
+   segmented = on the page surface · underline (default .tabs) = inside a sub-card. */
+.tabs--segmented {
+  display: inline-flex; gap: 2px; padding: 3px;
+  background: var(--paper-tint); border-radius: var(--r-md);
+  border-bottom: 0; margin: 0; overflow: visible;
+}
+.tabs--segmented .tabs__tab {
+  padding: 5px 14px; margin: 0;
+  border: 1px solid transparent; border-radius: 7px;
+  font-size: var(--fs-data);
+}
+.tabs--segmented .tabs__tab[aria-selected="true"] {
+  background: var(--card); color: var(--ink);
+  border-color: transparent; box-shadow: var(--shadow-2);  /* no edge — white chip lifts on shadow (shadow-2: no border to lean on) */
+}

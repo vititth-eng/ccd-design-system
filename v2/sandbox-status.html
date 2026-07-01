@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>v2 — status component check</title>
+<base href="http://localhost:4180/v2/" />   <!-- pane-proof: resolve ./css against the server, not the pane's base -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" />
+<link rel="stylesheet" href="./tokens.css" />
+<link rel="stylesheet" href="./type.css" />
+<link rel="stylesheet" href="./status.css" />
+<link rel="stylesheet" href="./tables.css" />
+<style>
+  /* consumes the REAL tokens.css + status.css — verifies the codify, no overrides */
+  html, body { margin: 0; }
+  body { background: var(--paper-tint); font-family: var(--sans); color: var(--ink); padding: var(--s-5); }
+  .stage { max-width: 1080px; margin-inline: auto; background: var(--card); border-radius: var(--r-lg); padding: var(--s-5); }
+  .block { margin-bottom: var(--s-6); } .block:last-child { margin-bottom: 0; }
+  .block__head { margin: 0 0 var(--s-3); padding-bottom: var(--s-2); border-bottom: 1px solid var(--rule); }
+  .lead { color: var(--brand); font-weight: var(--fw-bold); }
+  .note { color: var(--ink-muted); }
+  .grid { display: grid; grid-template-columns: 220px 1fr; gap: var(--s-4); align-items: center; }
+  .grid > .k { color: var(--ink-muted); font-size: var(--fs-data); }
+  .swatches { display: flex; flex-wrap: wrap; gap: var(--s-4); align-items: center; }
+
+  /* table now consumes the REAL ./tables.css (.data-table-wrap / .data-table / .data-table__drill) */
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <section class="block">
+    <div class="block__head"><span class="t-section">status.css — 3 types × 4 tones <span class="note">(real tokens · dot #1F9E4D / #E0A100 / #D63A2E)</span></span></div>
+    <div class="grid">
+      <div class="k"><span class="lead">1</span> .status <span class="note">(dot + text)</span></div>
+      <div class="swatches"><span class="status status--positive">กำลังดำเนิน</span><span class="status status--caution">รอเริ่ม</span><span class="status status--alert">หมดอายุ</span><span class="status">เสร็จสิ้น</span></div>
+
+      <div class="k"><span class="lead">2</span> .status--fill <span class="note">(color edge + fill)</span></div>
+      <div class="swatches"><span class="status status--fill status--positive">กำลังดำเนิน</span><span class="status status--fill status--caution">รอเริ่ม</span><span class="status status--fill status--alert">หมดอายุ</span><span class="status status--fill">เสร็จสิ้น</span></div>
+
+      <div class="k"><span class="lead">3</span> .status--edge <span class="note">(grey edge)</span></div>
+      <div class="swatches"><span class="status status--edge status--positive">กำลังดำเนิน</span><span class="status status--edge status--caution">รอเริ่ม</span><span class="status status--edge status--alert">หมดอายุ</span><span class="status status--edge">เสร็จสิ้น</span></div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="block__head"><span class="t-section">In the table — Type <span class="lead">1</span> dot (.status) · wrapped-card · leading chevron</span></div>
+    <div class="data-table-wrap"><table class="data-table"><thead><tr><th class="data-table__drill"></th><th>Wave</th><th>สถานะ</th><th class="n">ผู้ถูกประเมิน</th><th class="n">คืบหน้า</th><th>ช่วงเวลา</th></tr></thead><tbody id="t2"></tbody></table></div>
+  </section>
+
+</div>
+<script>
+  const rows = [
+    { wave: 'รอบประเมิน Q3/2026',   st: ['status--positive', 'กำลังดำเนิน'], n: 12, prog: 76,  span: '1–31 ก.ค.' },
+    { wave: 'ผู้บริหารระดับต้น 2026', st: ['status--caution',  'รอเริ่ม'],     n: 8,  prog: 0,   span: 'เริ่ม 1 ส.ค.' },
+    { wave: 'ทีมขาย ภาคเหนือ',       st: ['',                 'เสร็จสิ้น'],    n: 18, prog: 100, span: 'เสร็จ 30 มิ.ย.' },
+    { wave: 'นำร่อง HR',             st: ['status--alert',    'หมดอายุ'],      n: 5,  prog: 40,  span: 'หมดอายุ 15 มิ.ย.' },
+  ];
+  document.getElementById('t2').innerHTML = rows.map(r => `<tr class="is-drill">
+    <td class="data-table__drill">›</td>
+    <td>${r.wave}</td>
+    <td><span class="status ${r.st[0]}">${r.st[1]}</span></td>
+    <td class="n">${r.n}</td>
+    <td class="n">${r.prog}%</td>
+    <td class="t-sub">${r.span}</td>
+  </tr>`).join('');
+</script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+/* ============================================================
+   CCD BRB Design System v2 — Status
+   ------------------------------------------------------------
+   One status label, three presentation types (pick per context),
+   four tones. The dot always carries the color; text stays ink so
+   amber + neutral never fail contrast. Colors come from tokens.css
+   (--dot-* / --wash-*), so a palette retune flows here for free.
+
+     Type 1 · .status                 dot + ink text (bare, quietest)
+     Type 2 · .status--fill           wash fill + same-hue text (no dot, no edge)
+     Type 3 · .status--edge           dot + grey edge + ink text (neutral chip)
+
+     Tone  · --positive --caution --alert --neutral   (neutral = default)
+
+   Compose: <span class="status status--fill status--positive">…</span>
+   Consumes tokens.css. Rectilinear (--r-card), per v2.
+   ============================================================ */
+
+.status {
+  display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
+  font-size: var(--fs-data); font-weight: var(--fw-regular); color: var(--ink);
+}
+.status::before {
+  content: ""; width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  background: var(--ink-muted);   /* neutral default */
+}
+.status--positive::before { background: var(--dot-positive); }
+.status--caution::before  { background: var(--dot-caution); }
+.status--alert::before    { background: var(--dot-negative); }
+
+/* ── Type 2 · fill — soft pill, wash fill + same-hue text ─────
+   Pill + colored dot + colored text already mark status three ways;
+   a colored border was a fourth, redundant signal — dropped. No border.
+   Text uses --text-* (darkened hue) so amber stays legible. */
+.status--fill {
+  gap: 6px; padding: 2px 10px; border-radius: var(--r-pill);
+  border: 0; background: var(--paper-tint);
+}
+.status--fill::before { display: none; }   /* colored text carries the tone; dot would double-code */
+.status--fill.status--positive { background: var(--wash-positive); color: var(--text-positive); }
+.status--fill.status--caution  { background: var(--wash-caution);  color: var(--text-caution); }
+.status--fill.status--alert    { background: var(--wash-alert);    color: var(--text-alert); }
+
+/* ── Type 3 · edge — grey edge, no fill (dot carries color) ── */
+.status--edge {
+  gap: 6px; padding: 2px 9px; border-radius: var(--r-card);
+  border: 1px solid var(--rule); background: transparent;
+}
+
+/* chips use the smaller 7px dot */
+.status--fill::before, .status--edge::before { width: 7px; height: 7px; }
