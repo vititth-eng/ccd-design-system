@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Modal · v2 component</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" />
+<link rel="stylesheet" href="./tokens.css" />
+<link rel="stylesheet" href="./type.css" />
+<link rel="stylesheet" href="./buttons.css" />
+<link rel="stylesheet" href="./forms.css" />
+<link rel="stylesheet" href="./modals.css" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--canvas); padding: var(--s-6) var(--s-7); }
+  .page-title { margin: 0 0 var(--s-1); }
+  .page-sub   { margin: 0 0 var(--s-6); }
+  .lbl { margin: 0 0 var(--s-3); }
+  .lbl span { color: var(--muted); font-weight: var(--fw-regular); }
+  .rowb { display: flex; gap: var(--s-3); flex-wrap: wrap; }
+  .x { width:16px; height:16px; }
+</style>
+</head>
+<body>
+  <h1 class="t-title page-title">Modal</h1>
+  <p class="t-sub page-sub">Native &lt;dialog&gt; · focus trap + ESC + backdrop free · closes on ×, Cancel, ESC, or backdrop click</p>
+
+  <p class="t-section lbl">Triggers <span>— click to open</span></p>
+  <div class="rowb">
+    <button class="btn btn--primary" onclick="document.getElementById('m-confirm').showModal()">ยืนยันการบันทึก</button>
+    <button class="btn btn--danger"  onclick="document.getElementById('m-danger').showModal()">ลบรอบประเมิน</button>
+    <button class="btn btn--secondary" onclick="document.getElementById('m-form').showModal()">แก้ไขข้อมูล</button>
+  </div>
+
+  <!-- Confirm -->
+  <dialog class="modal" id="m-confirm">
+    <div class="modal__head">
+      <h2 class="modal__title t-title">ยืนยันการบันทึก</h2>
+      <button class="modal__close" data-close aria-label="ปิด">
+        <svg class="x" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+      </button>
+    </div>
+    <div class="modal__body">
+      <p class="t-body">บันทึกการเปลี่ยนแปลงรอบการประเมิน Q4/2026 หรือไม่ ระบบจะแจ้งเตือนผู้เกี่ยวข้องทันที</p>
+    </div>
+    <div class="modal__foot">
+      <button class="btn btn--secondary" data-close>ยกเลิก</button>
+      <button class="btn btn--primary" data-close>บันทึก</button>
+    </div>
+  </dialog>
+
+  <!-- Danger -->
+  <dialog class="modal" id="m-danger">
+    <div class="modal__head">
+      <h2 class="modal__title t-title">ลบรอบประเมิน</h2>
+      <button class="modal__close" data-close aria-label="ปิด">
+        <svg class="x" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+      </button>
+    </div>
+    <div class="modal__body">
+      <p class="t-body">การลบรอบ Q4/2026 จะลบข้อมูลการประเมินทั้งหมด 847 รายการอย่างถาวร การกระทำนี้ไม่สามารถย้อนกลับได้</p>
+    </div>
+    <div class="modal__foot">
+      <button class="btn btn--secondary" data-close>ยกเลิก</button>
+      <button class="btn btn--danger" data-close>ลบถาวร</button>
+    </div>
+  </dialog>
+
+  <!-- Form in modal -->
+  <dialog class="modal" id="m-form">
+    <div class="modal__head">
+      <h2 class="modal__title t-title">แก้ไขข้อมูลพนักงาน</h2>
+      <button class="modal__close" data-close aria-label="ปิด">
+        <svg class="x" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+      </button>
+    </div>
+    <div class="modal__body">
+      <div style="display:flex; flex-direction:column; gap:var(--s-4);">
+        <div class="field">
+          <label class="field__label" for="mf-name">ชื่อ-นามสกุล</label>
+          <input class="control" id="mf-name" type="text" value="สมชาย กิจเจริญ" />
+        </div>
+        <div class="field">
+          <label class="field__label" for="mf-dept">ฝ่าย</label>
+          <select class="control" id="mf-dept"><option>การตลาด</option><option>ขาย</option><option>ปฏิบัติการ</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="modal__foot">
+      <button class="btn btn--secondary" data-close>ยกเลิก</button>
+      <button class="btn btn--primary" data-close>บันทึก</button>
+    </div>
+  </dialog>
+
+<script>
+  // close on ×/Cancel/Save
+  document.querySelectorAll('[data-close]').forEach(function(b){
+    b.addEventListener('click', function(){ b.closest('dialog').close(); });
+  });
+  // close on backdrop click (click lands on the dialog element itself)
+  document.querySelectorAll('dialog.modal').forEach(function(d){
+    d.addEventListener('click', function(e){ if (e.target === d) d.close(); });
+  });
+</script>
+</body>
+</html>

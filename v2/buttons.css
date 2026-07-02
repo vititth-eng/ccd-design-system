@@ -1,133 +1,60 @@
 /* ============================================================
-   CCD BRB Design System — Buttons (Phase 1.16)
-   ------------------------------------------------------------
-   Single button vocabulary for every CCD·BRB tool.
-   Imported on top of tokens.css. Opt-in.
-
-   Namespace: .btn (base) + .btn-{variant}.
-   Reserves .is-* for state (.is-loading, .is-selected).
-
-   Spec: DESIGN-SYSTEM.md §19.
+   CCD Design System v2 — BUTTONS
+   Ground-up rebuild 2026-07-01, from tokens.css + type.css.
+   Four roles: primary (accent) · secondary (neutral, the
+   default) · ghost (tertiary/toolbar) · danger (destructive).
+   Solid hovers darken via filter (no extra hover tokens).
    ============================================================ */
 
-/* ── Base ──────────────────────────────────────────────── */
 .btn {
-  --_h: 36px;                       /* default md size — matches .f-control row */
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--s-2);
-  height: var(--_h);
-  padding: 0 var(--s-4) 1px;        /* v2: 1px bottom centres the Thai consonant body (upper marks inflate the ink box) */
-  font-family: inherit;
-  font-size: var(--fs-data);        /* v2: Interactive role = 14, not 13 */
+  font: inherit;
+  font-size: var(--fs-body);
   font-weight: var(--fw-semi);
   line-height: 1;
-  white-space: nowrap;              /* a button label never wraps */
+  white-space: nowrap;
+  padding: var(--row-y) var(--s-4);
   border: 1px solid transparent;
-  border-radius: var(--r-card);     /* v2: rect 8px — the flat shell is rectilinear; pill was the v1 identity */
-  background: transparent;
-  color: var(--ink);
+  border-radius: var(--r-base);
   cursor: pointer;
   user-select: none;
-  transition: background var(--dur-fast) var(--ease),
-              border-color var(--dur-fast) var(--ease),
-              box-shadow var(--dur-fast) var(--ease),
-              transform var(--dur-fast) var(--ease),
-              color var(--dur-fast) var(--ease);
+  transition: filter .12s ease, background-color .12s ease, border-color .12s ease;
 }
 
+/* Keyboard focus — crisp accent outline, offset off the edge. */
 .btn:focus-visible {
-  outline: var(--focus-ring-width) solid var(--focus-ring-color);
-  outline-offset: var(--focus-ring-offset);
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
-.btn:active:not(:disabled):not(.is-loading):not(.btn-link) {
-  transform: scale(0.98);
-}
+.btn:disabled { opacity: .45; cursor: not-allowed; }
 
-.btn:disabled,
-.btn[aria-disabled="true"] {
-  border-style: dashed;
-  border-color: var(--rule);
-  background: transparent;
-  color: var(--ink-muted);
-  opacity: 0.6;
-  pointer-events: none;
-}
+/* Primary — the one accent action per view. */
+.btn--primary { background: var(--accent); color: #FFFFFF; }
+.btn--primary:hover:not(:disabled)  { filter: brightness(.93); }
+.btn--primary:active:not(:disabled) { filter: brightness(.86); }
 
-/* ── Sizes ─────────────────────────────────────────────── */
-.btn-sm { --_h: 28px; padding: 0 var(--s-3); font-size: var(--fs-micro); }
-.btn-lg { --_h: 44px; padding: 0 var(--s-5); font-size: var(--fs-body); }
+/* Secondary — the neutral default. White surface, rule border. */
+.btn--secondary { background: var(--card); color: var(--ink); border-color: var(--rule); }
+.btn--secondary:hover:not(:disabled)  { background: var(--divider); border-color: var(--muted); }
+.btn--secondary:active:not(:disabled) { filter: brightness(.96); }
 
-/* ── Variants ──────────────────────────────────────────── */
+/* Ghost — tertiary / toolbar. No chrome until hovered. */
+.btn--ghost { background: transparent; color: var(--ink); }
+.btn--ghost:hover:not(:disabled)  { background: var(--divider); }
+.btn--ghost:active:not(:disabled) { filter: brightness(.96); }
 
-/* Primary — single most important action. One per surface. */
-.btn-primary { background: var(--brand); color: var(--paper); }
-.btn-primary:hover:not(:disabled) { box-shadow: var(--shadow-glow-brand); }
+/* Danger — destructive. Uses the accessible fill red, not the dot red. */
+.btn--danger { background: var(--neg-strong); color: #FFFFFF; }
+.btn--danger:hover:not(:disabled)  { filter: brightness(.93); }
+.btn--danger:active:not(:disabled) { filter: brightness(.86); }
 
-/* Strong — alternative primary, ink fill. Hero CTA, dramatic-on-paper. */
-.btn-strong { background: var(--ink); color: var(--paper); }
-.btn-strong:hover:not(:disabled) { background: var(--ink-soft); }
+/* Small — toolbars, table row actions. 12px (owner-approved exception to the
+   14 Thai floor: label is short + bold 600, so legibility holds). */
+.btn--sm { padding: var(--s-1) var(--s-3); font-size: var(--fs-caption); }
 
-/* Ghost — white + rule border + resting lift. General in-card control.
-   v2: gained --shadow-1 — in-page controls lift off the stage card. */
-.btn-ghost {
-  background: var(--card);
-  color: var(--ink);
-  border-color: var(--rule);
-  box-shadow: var(--shadow-1);
-}
-.btn-ghost:hover:not(:disabled) {
-  background: var(--paper-tint);
-  border-color: var(--ink-muted);
-}
-
-/* Brand-outline (v2) — in-card HERO. Fill is reserved for the top bar
-   (.btn-primary), so the in-card emphasis tier is a brand outline:
-   muted --brand-soft edge (full --brand reads "thick"), --brand text,
-   brand-hued lift on the same plane as ghost. */
-.btn-brand {
-  background: var(--card);
-  color: var(--brand);
-  border-color: var(--brand-soft);
-  box-shadow: var(--shadow-1-brand);
-}
-.btn-brand:hover:not(:disabled) { background: var(--paper-tint); }
-
-/* Soft — tint-neutral filled, no border. Tertiary in dense contexts.
-   Sibling of the neutral pill: holds shape on tinted canvas because
-   tint-neutral is categorical, not surface. */
-.btn-soft { background: var(--tint-neutral); color: var(--ink); }
-.btn-soft:hover:not(:disabled) { background: var(--heat-2); }
-
-/* Link — text-only, brand. Inline action inside prose or compact cells. */
-.btn-link {
-  background: transparent;
-  color: var(--brand);
-  height: auto;
-  padding: 0;
-  border: 0;
-  font-weight: var(--fw-medium);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  text-decoration-thickness: 1px;
-}
-.btn-link:hover:not(:disabled) { text-decoration-thickness: 2px; }
-
-/* Danger — rust fill. Destructive confirmation only. */
-.btn-danger { background: var(--dot-negative); color: var(--paper); }
-.btn-danger:hover:not(:disabled) { background: #9A4239; }
-
-/* ── Modifiers ─────────────────────────────────────────── */
-
-/* Icon-only — square, width = height. Requires aria-label. */
-.btn-icon { padding: 0; width: var(--_h); }
-
-/* Loading — dim label, kill pointer-events; pair with .icon.spin glyph. */
-.btn.is-loading { pointer-events: none; }
-.btn.is-loading .btn-label { opacity: 0.5; transition: opacity var(--dur-fast) var(--ease); }
-
-/* ── Group (segmented row) ─────────────────────────────── */
-.btn-group { display: inline-flex; gap: var(--s-2); }
-.btn-group .btn.is-selected { background: var(--state-selected); }
+/* Full-width — forms, mobile. */
+.btn--block { width: 100%; }

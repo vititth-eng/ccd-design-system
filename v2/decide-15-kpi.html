@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Decide 15 · KPI treatment</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" />
+<link rel="stylesheet" href="./tokens.css" />
+<link rel="stylesheet" href="./type.css" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--canvas); padding: var(--s-6) var(--s-7); }
+  h1 { margin: 0 0 var(--s-1); }
+  .sub { margin: 0 0 var(--s-6); }
+  .block { margin: 0 0 var(--s-7); max-width: 860px; }
+  .cap { margin: 0 0 var(--s-3); }
+  .cap span { color: var(--muted); font-weight: var(--fw-regular); }
+
+  /* shared delta caret */
+  .delta { display:inline-flex; align-items:center; gap:5px; font-size:var(--fs-body); color:var(--ink); font-variant-numeric:tabular-nums; }
+  .delta svg { display:block; }
+  .up   svg { color: var(--pos); }
+  .down svg { color: var(--neg); }
+  .flat svg { color: var(--muted); }
+  .vs { color: var(--muted); }
+
+  /* ============ CURRENT (baseline) ============ */
+  .cur { display:grid; grid-template-columns:repeat(4,1fr); gap:var(--card-gap); }
+  .cur .box { background:var(--card); border:1px solid var(--rule); border-radius:var(--r-base); padding:var(--card-pad); display:flex; flex-direction:column; gap:var(--s-2); }
+  .cur .lab { font-size:var(--fs-body); color:var(--muted); }
+
+  /* ============ OPTION 1 · Segmented bar (one card, split cells) ============ */
+  .seg { display:flex; background:var(--card); border:1px solid var(--rule); border-radius:var(--r-base); overflow:hidden; }
+  .seg .cell { flex:1; padding:var(--card-pad) var(--s-5); border-left:1px solid var(--divider); display:flex; flex-direction:column; gap:var(--s-2); }
+  .seg .cell:first-child { border-left:0; }
+  .seg .lab { font-size:var(--fs-body); color:var(--muted); }
+
+  /* ============ OPTION 2 · Number-forward cards (delta up by label) ============ */
+  .nf { display:grid; grid-template-columns:repeat(4,1fr); gap:var(--card-gap); }
+  .nf .box { background:var(--card); border:1px solid var(--rule); border-radius:var(--r-base); padding:var(--s-5); display:flex; flex-direction:column; gap:var(--s-3); }
+  .nf .top { display:flex; align-items:center; justify-content:space-between; gap:var(--s-2); }
+  .nf .lab { font-size:var(--fs-body); color:var(--muted); }
+  .nf .delta { font-size:var(--fs-caption); }
+</style>
+</head>
+<body>
+  <h1 class="t-title">KPI — make it feel considered</h1>
+  <p class="t-sub sub">Same 4 stats, three framings. Crisp SVG caret replaces the ▲▼ unicode. Pick the frame.</p>
+
+  <!-- CURRENT -->
+  <div class="block">
+    <p class="t-section cap">Current <span>— 4 identical bordered tiles, unicode arrows</span></p>
+    <div class="cur">
+      <div class="box"><span class="lab">พนักงานทั้งหมด</span><span class="t-kpi">1,284</span><span class="delta up"><svg width="9" height="9" viewBox="0 0 10 10"><path d="M5 2 9 8 1 8Z" fill="currentColor"/></svg>3.2% <span class="vs">vs เดือนก่อน</span></span></div>
+      <div class="box"><span class="lab">ประเมินเสร็จสิ้น</span><span class="t-kpi">847</span><span class="delta up"><svg width="9" height="9" viewBox="0 0 10 10"><path d="M5 2 9 8 1 8Z" fill="currentColor"/></svg>12% <span class="vs">vs รอบก่อน</span></span></div>
+      <div class="box"><span class="lab">คะแนนเฉลี่ย</span><span class="t-kpi">4.21</span><span class="delta down"><svg width="9" height="9" viewBox="0 0 10 10"><path d="M5 8 9 2 1 2Z" fill="currentColor"/></svg>0.08 <span class="vs">vs รอบก่อน</span></span></div>
+      <div class="box"><span class="lab">ค้างดำเนินการ</span><span class="t-kpi">32</span><span class="delta flat"><svg width="9" height="9" viewBox="0 0 10 10"><rect x="1" y="4.2" width="8" height="1.6" fill="currentColor"/></svg>คงที่</span></div>
+    </div>
+  </div>
+
+  <!-- OPTION 1 -->
+  <div class="block">
+    <p class="t-section cap">Option 1 · Segmented bar <span>— ONE card, cells split by hairlines (kills the "identical boxes" look)</span></p>
+    <div class="seg">
+      <div class="cell"><span class="lab">พนักงานทั้งหมด</span><span class="t-kpi">1,284</span><span class="delta up"><svg width="9" height="9" viewBox="0 0 10 10"><path d="M5 2 9 8 1 8Z" fill="currentColor"/></svg>3.2% <span class="vs">vs เดือนก่อน</span></span></div>
+      <div class="cell"><span class="lab">ประเมินเสร็จสิ้น</span><span class="t-kpi">847</span><span class="delta up"><svg width="9" height="9" viewBox="0 0 10 10"><path d="M5 2 9 8 1 8Z" fill="currentColor"/></svg>12% <span class="vs">vs รอบก่อน</span></span></div>
+      <div class="cell"><span class="lab">คะแนนเฉลี่ย</span><span class="t-kpi">4.21</span><span class="delta down"><svg width="9" height="9" viewBox="0 0 10 10"><path d="M5 8 9 2 1 2Z" fill="currentColor"/></svg>0.08 <span class="vs">vs รอบก่อน</span></span></div>
+      <div class="cell"><span class="lab">ค้างดำเนินการ</span><span class="t-kpi">32</span><span class="delta flat"><svg width="9" height="9" viewBox="0 0 10 10"><rect x="1" y="4.2" width="8" height="1.6" fill="currentColor"/></svg>คงที่</span></div>
+    </div>
+  </div>
+
+  <!-- OPTION 2 -->
+  <div class="block">
+    <p class="t-section cap">Option 2 · Number-forward <span>— delta rides up beside the label; the number owns the card</span></p>
+    <div class="nf">
+      <div class="box"><div class="top"><span class="lab">พนักงานทั้งหมด</span><span class="delta up"><svg width="8" height="8" viewBox="0 0 10 10"><path d="M5 2 9 8 1 8Z" fill="currentColor"/></svg>3.2%</span></div><span class="t-kpi">1,284</span></div>
+      <div class="box"><div class="top"><span class="lab">ประเมินเสร็จสิ้น</span><span class="delta up"><svg width="8" height="8" viewBox="0 0 10 10"><path d="M5 2 9 8 1 8Z" fill="currentColor"/></svg>12%</span></div><span class="t-kpi">847</span></div>
+      <div class="box"><div class="top"><span class="lab">คะแนนเฉลี่ย</span><span class="delta down"><svg width="8" height="8" viewBox="0 0 10 10"><path d="M5 8 9 2 1 2Z" fill="currentColor"/></svg>0.08</span></div><span class="t-kpi">4.21</span></div>
+      <div class="box"><div class="top"><span class="lab">ค้างดำเนินการ</span><span class="delta flat"><svg width="8" height="8" viewBox="0 0 10 10"><rect x="1" y="4.2" width="8" height="1.6" fill="currentColor"/></svg></span></div><span class="t-kpi">32</span></div>
+    </div>
+  </div>
+
+  <p class="t-sub" style="max-width:600px;">1 reads as a single considered header (my lean for a dashboard top strip). 2 keeps separate cards but gives the number the whole lower half + calms the delta. Both drop the toy arrows for a crisp caret.</p>
+</body>
+</html>

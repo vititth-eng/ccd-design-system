@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Decide 16 · KPI trending (blocks.so-style, our tokens)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" />
+<link rel="stylesheet" href="./tokens.css" />
+<link rel="stylesheet" href="./type.css" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--canvas); padding: var(--s-6) var(--s-7); }
+  h1 { margin: 0 0 var(--s-1); }
+  .sub { margin: 0 0 var(--s-6); }
+  .block { margin: 0 0 var(--s-7); max-width: 960px; }
+  .cap { margin: 0 0 var(--s-3); }
+  .cap span { color: var(--muted); font-weight: var(--fw-regular); }
+
+  /* candidate accessible delta colors (our own, NOT blocks.so's) */
+  :root {
+    --pos-strong: #1A7F37;   /* accessible green text */
+    --pos-tint:   #E7F5EC;   /* green pill bg */
+    --neg-tint:   #FBE9E7;   /* red pill bg (pairs with --neg-strong #C4372C) */
+  }
+
+  /* segmented bar shell */
+  .seg { display:flex; background:var(--card); border:1px solid var(--rule); border-radius:var(--r-base); overflow:hidden; }
+  .seg .cell { flex:1; padding:var(--s-5); border-left:1px solid var(--divider); }
+  .seg .cell:first-child { border-left:0; }
+  .lab { font-size:var(--fs-body); color:var(--muted); }
+
+  /* ---- Style A · plain colored delta text, top-right (stats-01) ---- */
+  .a .head { display:flex; align-items:baseline; justify-content:space-between; gap:var(--s-2); margin:0 0 var(--s-2); }
+  .a .d { font-size:var(--fs-body); font-weight:var(--fw-semi); font-variant-numeric:tabular-nums; }
+  .a .d.up { color:var(--pos-strong); } .a .d.down { color:var(--neg-strong); }
+
+  /* ---- Style B · number + "from" + tinted pill (stats-02) ---- */
+  .b .lab { margin:0 0 var(--s-2); }
+  .b .valrow { display:flex; align-items:baseline; gap:var(--s-3); flex-wrap:wrap; }
+  .b .from { font-size:var(--fs-body); color:var(--muted); }
+  .b .pill { display:inline-flex; align-items:center; gap:4px; font-size:var(--fs-caption); font-weight:var(--fw-semi);
+             padding:2px 8px; border-radius:var(--r-pill); font-variant-numeric:tabular-nums; }
+  .b .pill.up   { color:var(--pos-strong); background:var(--pos-tint); }
+  .b .pill.down { color:var(--neg-strong); background:var(--neg-tint); }
+  .b .pill svg { display:block; }
+
+  .aa { margin-top:var(--s-5); font-size:var(--fs-body); color:var(--muted); }
+  .aa b { color:var(--ink); font-variant-numeric:tabular-nums; }
+</style>
+</head>
+<body>
+  <h1 class="t-title">KPI trending — our take on the blocks.so pattern</h1>
+  <p class="t-sub sub">Structure borrowed (segmented bar · delta placement · "from" context · pill). Colors are OURS + accessibility-checked. Two delta styles.</p>
+
+  <!-- STYLE A -->
+  <div class="block a">
+    <p class="t-section cap">Style A · plain colored delta text <span>— % up top-right, big number below</span></p>
+    <div class="seg">
+      <div class="cell"><div class="head"><span class="lab">กำไรสุทธิ</span><span class="d up">+8.3%</span></div><span class="t-kpi">฿287,654</span></div>
+      <div class="cell"><div class="head"><span class="lab">ชำระล่าช้า</span><span class="d down">−12.6%</span></div><span class="t-kpi">฿9,435</span></div>
+      <div class="cell"><div class="head"><span class="lab">รอดำเนินการ</span><span class="d up">+2.9%</span></div><span class="t-kpi">฿173,229</span></div>
+      <div class="cell"><div class="head"><span class="lab">ต้นทุนดำเนินงาน</span><span class="d down">−5.7%</span></div><span class="t-kpi">฿52,891</span></div>
+    </div>
+  </div>
+
+  <!-- STYLE B -->
+  <div class="block b">
+    <p class="t-section cap">Style B · "from" context + tinted pill <span>— number, prior value, trend pill</span></p>
+    <div class="seg">
+      <div class="cell">
+        <span class="lab">ผู้ใช้งาน</span>
+        <div class="valrow"><span class="t-kpi">128,456</span></div>
+        <div class="valrow" style="margin-top:6px;"><span class="from">จาก 115,789</span>
+          <span class="pill up"><svg width="9" height="9" viewBox="0 0 10 10"><path d="M5 2 9 8 1 8Z" fill="currentColor"/></svg>10.9%</span></div>
+      </div>
+      <div class="cell">
+        <span class="lab">อัตราการตอบกลับ</span>
+        <div class="valrow"><span class="t-kpi">5.32%</span></div>
+        <div class="valrow" style="margin-top:6px;"><span class="from">จาก 6.18%</span>
+          <span class="pill down"><svg width="9" height="9" viewBox="0 0 10 10"><path d="M5 8 9 2 1 2Z" fill="currentColor"/></svg>0.86%</span></div>
+      </div>
+      <div class="cell">
+        <span class="lab">เวลาเฉลี่ยต่อรอบ</span>
+        <div class="valrow"><span class="t-kpi">3น 42ว</span></div>
+        <div class="valrow" style="margin-top:6px;"><span class="from">จาก 3น 15ว</span>
+          <span class="pill up"><svg width="9" height="9" viewBox="0 0 10 10"><path d="M5 2 9 8 1 8Z" fill="currentColor"/></svg>13.8%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="aa" id="aa">checking contrast…</p>
+
+<script>
+  function hx(h){h=h.replace('#','');return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];}
+  function lum(rgb){var a=rgb.map(function(v){v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});return .2126*a[0]+.7152*a[1]+.0722*a[2];}
+  function ratio(fg,bg){var L1=lum(fg),L2=lum(bg),hi=Math.max(L1,L2),lo=Math.min(L1,L2);return ((hi+.05)/(lo+.05));}
+  var W=[255,255,255];
+  var posOnWhite = ratio(hx('#1A7F37'),W).toFixed(2);
+  var negOnWhite = ratio(hx('#C4372C'),W).toFixed(2);
+  var posOnTint  = ratio(hx('#1A7F37'),hx('#E7F5EC')).toFixed(2);
+  var negOnTint  = ratio(hx('#C4372C'),hx('#FBE9E7')).toFixed(2);
+  document.getElementById('aa').innerHTML =
+    'AA (small text ≥4.5): green #1A7F37 on white <b>'+posOnWhite+'</b> · red #C4372C on white <b>'+negOnWhite+'</b> · '+
+    'green on green-pill <b>'+posOnTint+'</b> · red on red-pill <b>'+negOnTint+'</b>';
+</script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Decide 13 · Button highlight</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" />
+<link rel="stylesheet" href="./tokens.css" />
+<link rel="stylesheet" href="./type.css" />
+<link rel="stylesheet" href="./buttons.css" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--canvas); padding: var(--s-6) var(--s-7); }
+  h1 { margin: 0 0 var(--s-1); }
+  .sub { margin: 0 0 var(--s-6); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--s-5); max-width: 900px; }
+  .cand { display: flex; flex-direction: column; gap: var(--s-3); padding: var(--s-4); border: 1px solid var(--rule); border-radius: var(--r-base); }
+  .cand__name { margin: 0; }
+  .cand__desc { margin: 0; }
+  .pairing { display: flex; gap: var(--s-2); }
+  /* forced HOVER looks (no :hover — we paint each state) */
+  .h-a { background:#EAEFF7; border-color:var(--muted); }               /* current — divider (navy-tinted) */
+  .h-b { background:#F0F1F3; border-color:#B9BEC7; }                     /* neutral gray, no navy tint */
+  .h-c { background:var(--card); border-color:var(--ink); }             /* border-only, no fill */
+  .h-d { background:#F1F2F4; border-color:var(--muted); }               /* soft neutral fill */
+</style>
+</head>
+<body>
+  <h1 class="t-title">Secondary button — highlight (hover) look</h1>
+  <p class="t-sub sub">Each button shown in its HOVER state. A = today (blue cast you flagged). Pick the one whose highlight reads right.</p>
+
+  <div class="grid">
+    <div class="cand">
+      <div class="pairing">
+        <button class="btn btn--secondary h-a">ดูทั้งหมด</button>
+        <button class="btn btn--secondary">rest</button>
+      </div>
+      <p class="t-strong cand__name">A · current</p>
+      <p class="t-sub cand__desc">fill = divider #EAEFF7 (navy-tinted → blue)</p>
+    </div>
+
+    <div class="cand">
+      <div class="pairing">
+        <button class="btn btn--secondary h-b">ดูทั้งหมด</button>
+        <button class="btn btn--secondary">rest</button>
+      </div>
+      <p class="t-strong cand__name">B · neutral gray</p>
+      <p class="t-sub cand__desc">fill #F0F1F3 (no navy tint)</p>
+    </div>
+
+    <div class="cand">
+      <div class="pairing">
+        <button class="btn btn--secondary h-c">ดูทั้งหมด</button>
+        <button class="btn btn--secondary">rest</button>
+      </div>
+      <p class="t-strong cand__name">C · border only</p>
+      <p class="t-sub cand__desc">no fill, border darkens to ink</p>
+    </div>
+
+    <div class="cand">
+      <div class="pairing">
+        <button class="btn btn--secondary h-d">ดูทั้งหมด</button>
+        <button class="btn btn--secondary">rest</button>
+      </div>
+      <p class="t-strong cand__name">D · soft neutral</p>
+      <p class="t-sub cand__desc">fill #F1F2F4, muted border</p>
+    </div>
+  </div>
+
+  <p class="note t-sub" style="margin-top:var(--s-6); max-width:560px;">Note: B/D add a neutral gray that is NOT navy-tinted — a small break from the "tint everything toward brand hue" rule, but only on interactive hover. C keeps the palette pure and just uses the border. My lean: C (no new color, cleanest) or D (has a fill but far less blue).</p>
+</body>
+</html>

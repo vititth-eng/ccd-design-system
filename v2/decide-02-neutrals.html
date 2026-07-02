@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Decide 02 · Neutral ramp (OKLCH)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" />
+<style>
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:"Inter","Noto Sans Thai",sans-serif; color:#142549; background:#fff; }
+  .head { padding:20px 24px 8px; }
+  .head h1 { font-size:20px; font-weight:700; margin:0 0 2px; }
+  .head p { margin:0; font-size:13px; color:#5C728C; max-width:88ch; }
+  .grid { display:grid; grid-template-columns:repeat(2,1fr); gap:0; }
+
+  .opt { min-height:100vh; padding:24px 28px; background:#fff; border-left:1px solid #EAEFF7; }
+  /* two OKLCH ramps at navy's hue (H265), lightness-stepped, contrast-gated. Only chroma (tint strength) differs. */
+  .opt--slate { --muted:#61697A; --rule:#CBD1DF; --divider:#EAEFF7; }   /* low chroma → reads slate */
+  .opt--navy  { --muted:#596989; --rule:#C3D1EF; --divider:#E7EFFE; }   /* higher chroma → reads navy */
+
+  .tag { display:flex; align-items:baseline; gap:10px; margin-bottom:4px; }
+  .tag b { font-size:14px; font-weight:600; }
+  .tag span { font-size:11px; color:var(--muted); font-family:ui-monospace,monospace; }
+  .aa { font-size:11px; color:var(--muted); margin:0 0 18px; }
+
+  .card { background:#fff; border:1px solid var(--rule); border-radius:8px; padding:16px; margin-bottom:14px; }
+  .card h2 { font-size:20px; font-weight:600; margin:0 0 2px; }
+  .card .sub { font-size:14px; color:var(--muted); margin:0 0 14px; }
+
+  table { width:100%; border-collapse:collapse; }
+  th,td { text-align:left; padding:8px 0; font-size:14px; }
+  th { font-weight:400; color:var(--muted); border-bottom:1px solid var(--rule); }
+  tbody tr { border-top:1px solid var(--divider); }
+  tbody tr:first-child { border-top:0; }
+  td.n, th.n { text-align:right; font-variant-numeric:tabular-nums; }
+  .lead { font-weight:600; }
+  .meta { color:var(--muted); }
+
+  .kpi { display:flex; gap:24px; }
+  .kpi > div { flex:1; }
+  .kpi .num { font-size:30px; font-weight:700; line-height:1.1; }
+  .kpi .lbl { font-size:14px; font-weight:600; }
+  .kpi .ctx { font-size:14px; color:var(--muted); }
+
+  .swatch-row { display:flex; gap:8px; margin-top:14px; }
+  .sw { flex:1; text-align:center; }
+  .sw i { display:block; height:34px; border-radius:6px; border:1px solid rgba(20,37,73,.06); }
+  .sw span { font-size:10px; color:var(--muted); font-family:ui-monospace,monospace; }
+
+  .note { padding:14px 28px 28px; font-size:13px; color:#5C728C; }
+</style>
+</head>
+<body>
+  <div class="head">
+    <h1>Decision 02 — Neutral ramp · OKLCH-derived</h1>
+    <p>Both ramps are one OKLCH scale at navy's hue (H265), lightness-stepped, contrast-gated (per impeccable + promax: tint neutrals toward the brand hue, never flat gray). Muted text passes WCAG AA in both. Only the tint strength differs — pick by eye.</p>
+  </div>
+
+  <div class="grid">
+    <div class="opt opt--slate">
+      <div class="tag"><b>Slate</b><span>muted #61697A · rule #CBD1DF · divider #EAEFF7</span></div>
+      <p class="aa">low chroma → reads neutral-slate · muted 5.51:1 AA ✓</p>
+      <div class="card">
+        <h2>รอบประเมิน Q3/2026</h2>
+        <p class="sub">Performance review · 318 respondents</p>
+        <table>
+          <thead><tr><th>ผู้ประเมิน</th><th>ทีม</th><th class="n">ผลงาน</th></tr></thead>
+          <tbody>
+            <tr><td class="lead">สมชาย ก.</td><td class="meta">ฝ่ายขาย</td><td class="n">4.6</td></tr>
+            <tr><td class="lead">อรุณี ส.</td><td class="meta">การตลาด</td><td class="n">4.2</td></tr>
+            <tr><td class="lead">ธนากร พ.</td><td class="meta">บัญชี</td><td class="n">3.9</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card"><div class="kpi">
+        <div><div class="lbl">ตอบแล้ว</div><div class="num">318</div><div class="ctx">จาก 400 คน</div></div>
+        <div><div class="lbl">ค่าเฉลี่ย</div><div class="num">4.1</div><div class="ctx">เต็ม 5.0</div></div>
+      </div>
+      <div class="swatch-row">
+        <div class="sw"><i style="background:#142549"></i><span>ink</span></div>
+        <div class="sw"><i style="background:#61697A"></i><span>muted</span></div>
+        <div class="sw"><i style="background:#CBD1DF"></i><span>rule</span></div>
+        <div class="sw"><i style="background:#EAEFF7"></i><span>divider</span></div>
+      </div></div>
+    </div>
+
+    <div class="opt opt--navy">
+      <div class="tag"><b>Navy-tinted</b><span>muted #596989 · rule #C3D1EF · divider #E7EFFE</span></div>
+      <p class="aa">higher chroma → reads navy-family · muted 5.52:1 AA ✓</p>
+      <div class="card">
+        <h2>รอบประเมิน Q3/2026</h2>
+        <p class="sub">Performance review · 318 respondents</p>
+        <table>
+          <thead><tr><th>ผู้ประเมิน</th><th>ทีม</th><th class="n">ผลงาน</th></tr></thead>
+          <tbody>
+            <tr><td class="lead">สมชาย ก.</td><td class="meta">ฝ่ายขาย</td><td class="n">4.6</td></tr>
+            <tr><td class="lead">อรุณี ส.</td><td class="meta">การตลาด</td><td class="n">4.2</td></tr>
+            <tr><td class="lead">ธนากร พ.</td><td class="meta">บัญชี</td><td class="n">3.9</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card"><div class="kpi">
+        <div><div class="lbl">ตอบแล้ว</div><div class="num">318</div><div class="ctx">จาก 400 คน</div></div>
+        <div><div class="lbl">ค่าเฉลี่ย</div><div class="num">4.1</div><div class="ctx">เต็ม 5.0</div></div>
+      </div>
+      <div class="swatch-row">
+        <div class="sw"><i style="background:#142549"></i><span>ink</span></div>
+        <div class="sw"><i style="background:#596989"></i><span>muted</span></div>
+        <div class="sw"><i style="background:#C3D1EF"></i><span>rule</span></div>
+        <div class="sw"><i style="background:#E7EFFE"></i><span>divider</span></div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="note">Both are method-correct and AA-safe. The only question is feel: <b>Slate</b> = borders read gray, calmer/more neutral · <b>Navy-tinted</b> = borders carry a faint blue, more tied to the ink. Pick <b>Slate / Navy</b> — or "more tint", "less tint".</div>
+</body>
+</html>

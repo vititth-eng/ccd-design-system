@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Button · v2 component</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" />
+<link rel="stylesheet" href="./tokens.css" />
+<link rel="stylesheet" href="./type.css" />
+<link rel="stylesheet" href="./buttons.css" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--canvas); padding: var(--s-6) var(--s-7); }
+  .page-title { margin: 0 0 var(--s-1); }
+  .page-sub   { margin: 0 0 var(--s-6); }
+  section { margin: 0 0 var(--s-6); }
+  .lbl { margin: 0 0 var(--s-3); }
+  .lbl span { color: var(--muted); font-weight: var(--fw-regular); }
+  .rowb { display: flex; align-items: center; gap: var(--s-3); flex-wrap: wrap; }
+  .swatch { display:inline-flex; align-items:center; gap:var(--s-2); font-size:var(--fs-body); color:var(--muted); }
+  .swatch i { width:14px; height:14px; border-radius:var(--r-tiny); display:inline-block; }
+</style>
+</head>
+<body>
+  <h1 class="t-title page-title">Buttons</h1>
+  <p class="t-sub page-sub">Built from tokens.css + type.css · one accent action per view · danger uses the fill red</p>
+
+  <!-- 1 · Roles --------------------------------------------------- -->
+  <section>
+    <p class="t-section lbl">1 · Roles <span>— primary · secondary · ghost · danger</span></p>
+    <div class="rowb">
+      <button class="btn btn--primary">บันทึกข้อมูล</button>
+      <button class="btn btn--secondary">ยกเลิก</button>
+      <button class="btn btn--ghost">ดูเพิ่มเติม</button>
+      <button class="btn btn--danger">ลบรายการ</button>
+    </div>
+  </section>
+
+  <!-- 2 · Disabled ------------------------------------------------ -->
+  <section>
+    <p class="t-section lbl">2 · Disabled</p>
+    <div class="rowb">
+      <button class="btn btn--primary" disabled>บันทึกข้อมูล</button>
+      <button class="btn btn--secondary" disabled>ยกเลิก</button>
+      <button class="btn btn--ghost" disabled>ดูเพิ่มเติม</button>
+      <button class="btn btn--danger" disabled>ลบรายการ</button>
+    </div>
+  </section>
+
+  <!-- 3 · Small --------------------------------------------------- -->
+  <section>
+    <p class="t-section lbl">3 · Small <span>— toolbars, table row actions</span></p>
+    <div class="rowb">
+      <button class="btn btn--primary btn--sm">เพิ่ม</button>
+      <button class="btn btn--secondary btn--sm">แก้ไข</button>
+      <button class="btn btn--ghost btn--sm">คัดลอก</button>
+      <button class="btn btn--danger btn--sm">ลบ</button>
+    </div>
+  </section>
+
+  <!-- 4 · With icon + block --------------------------------------- -->
+  <section>
+    <p class="t-section lbl">4 · Icon &amp; full-width</p>
+    <div class="rowb" style="align-items:stretch; flex-direction:column; max-width:320px;">
+      <button class="btn btn--primary btn--block">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v10M3 8h10"/></svg>
+        สร้างรอบประเมินใหม่
+      </button>
+      <button class="btn btn--secondary btn--block">ส่งออกเป็น Excel</button>
+    </div>
+  </section>
+
+  <!-- 5 · Contrast note ------------------------------------------- -->
+  <section>
+    <p class="t-section lbl">5 · Fill colors</p>
+    <div class="rowb">
+      <span class="swatch"><i style="background:var(--accent)"></i>accent #4068CA — primary</span>
+      <span class="swatch"><i style="background:var(--neg-strong)"></i>neg-strong #C4372C — danger</span>
+      <span class="swatch"><i style="background:var(--neg)"></i>neg #FF5F56 — dot only, never a fill</span>
+    </div>
+  </section>
+</body>
+</html>

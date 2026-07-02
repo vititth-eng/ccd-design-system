@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Form · v2 component</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" />
+<link rel="stylesheet" href="./tokens.css" />
+<link rel="stylesheet" href="./type.css" />
+<link rel="stylesheet" href="./forms.css" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--canvas); padding: var(--s-6) var(--s-7); }
+  .page-title { margin: 0 0 var(--s-1); }
+  .page-sub   { margin: 0 0 var(--s-6); }
+  section { max-width: 420px; margin: 0 0 var(--s-7); }
+  .lbl { margin: 0 0 var(--s-3); }
+  .lbl span { color: var(--muted); font-weight: var(--fw-regular); }
+  .stack { display: flex; flex-direction: column; gap: var(--s-4); }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4); }
+</style>
+</head>
+<body>
+  <h1 class="t-title page-title">Form controls</h1>
+  <p class="t-sub page-sub">Built from tokens.css + type.css · accent on focus only · error by neg dot</p>
+
+  <!-- 1 · Text inputs + states ------------------------------------ -->
+  <section>
+    <p class="t-section lbl">1 · Inputs <span>— default · focus · disabled · error</span></p>
+    <div class="stack">
+      <div class="field">
+        <label class="field__label" for="i1">ชื่อ-นามสกุล <span class="req">*</span></label>
+        <input class="control" id="i1" type="text" placeholder="กรอกชื่อของคุณ" />
+        <span class="field__hint">ตามบัตรประชาชน</span>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="i2">อีเมล <span class="req">*</span></label>
+        <input class="control" id="i2" type="email" value="somchai@company.co.th" />
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="i3">รหัสพนักงาน</label>
+        <input class="control" id="i3" type="text" value="EMP-00421" disabled />
+      </div>
+
+      <div class="field field--error">
+        <label class="field__label" for="i4">เบอร์โทรศัพท์ <span class="req">*</span></label>
+        <input class="control" id="i4" type="tel" value="08" />
+        <span class="field__error">เบอร์ไม่ครบ 10 หลัก</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 · Select + textarea --------------------------------------- -->
+  <section>
+    <p class="t-section lbl">2 · Select &amp; textarea <span>— custom chevron</span></p>
+    <div class="stack">
+      <div class="field">
+        <label class="field__label" for="s1">ฝ่าย</label>
+        <select class="control" id="s1">
+          <option>การตลาด</option>
+          <option>ขาย</option>
+          <option>ปฏิบัติการ</option>
+          <option>ทรัพยากรบุคคล</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="t1">ความคิดเห็น</label>
+        <textarea class="control" id="t1" placeholder="เขียนความคิดเห็นเพิ่มเติม…"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · Checkbox + radio ---------------------------------------- -->
+  <section>
+    <p class="t-section lbl">3 · Checkbox &amp; radio <span>— brand-tinted native</span></p>
+    <div class="stack">
+      <div class="field">
+        <span class="field__label">ช่องทางการติดต่อ</span>
+        <label class="check"><input type="checkbox" checked /><span>อีเมล</span></label>
+        <label class="check"><input type="checkbox" /><span>โทรศัพท์</span></label>
+        <label class="check"><input type="checkbox" disabled /><span>แฟกซ์ (ปิดใช้งาน)</span></label>
+      </div>
+
+      <div class="field">
+        <span class="field__label">ระดับความพึงพอใจ</span>
+        <label class="check"><input type="radio" name="sat" checked /><span>พอใจมาก</span></label>
+        <label class="check"><input type="radio" name="sat" /><span>ปานกลาง</span></label>
+        <label class="check"><input type="radio" name="sat" /><span>ต้องปรับปรุง</span></label>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · Two-up row ---------------------------------------------- -->
+  <section>
+    <p class="t-section lbl">4 · Grid pair <span>— side-by-side fields</span></p>
+    <div class="row2">
+      <div class="field">
+        <label class="field__label" for="d1">วันเริ่ม</label>
+        <input class="control" id="d1" type="date" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="d2">วันสิ้นสุด</label>
+        <input class="control" id="d2" type="date" />
+      </div>
+    </div>
+  </section>
+</body>
+</html>

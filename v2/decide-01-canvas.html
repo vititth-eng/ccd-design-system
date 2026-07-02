@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Decide 01 · Canvas + Ink</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" />
+<style>
+  :root { --ink:#142549; --muted:#5C728C; --card-border:#E3E8F0; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:"Inter","Noto Sans Thai",sans-serif; color:var(--ink); background:#fff; }
+  .head { padding:20px 24px 8px; }
+  .head h1 { font-size:20px; font-weight:700; margin:0 0 2px; }
+  .head p { margin:0; font-size:13px; color:var(--muted); }
+  .grid { display:grid; grid-template-columns:repeat(4,1fr); gap:0; }
+
+  /* each option column = a full mini-screen, its own canvas */
+  .opt { min-height:100vh; padding:20px 18px; }
+  .opt--a { background:#FFFFFF; }
+  .opt--b { background:#F6F9FD; }
+  .opt--c { background:#F4F5F7; }
+  .opt--d { background:#EDF1F8; }
+
+  .tag { display:flex; align-items:baseline; gap:8px; margin-bottom:14px; }
+  .tag b { font-size:14px; font-weight:600; }
+  .tag span { font-size:12px; color:var(--muted); font-family:ui-monospace,monospace; }
+
+  .card { background:#fff; border:1px solid var(--card-border); border-radius:8px; padding:16px; margin-bottom:12px; }
+  .card h2 { font-size:20px; font-weight:600; margin:0 0 2px; }
+  .card .sub { font-size:14px; color:var(--muted); margin:0 0 14px; }
+
+  table { width:100%; border-collapse:collapse; }
+  th,td { text-align:left; padding:7px 0; font-size:14px; }
+  th { font-weight:400; color:var(--muted); border-bottom:1px solid var(--card-border); }
+  tbody tr { border-top:1px solid #EBF0FA; }
+  tbody tr:first-child { border-top:0; }
+  td.n, th.n { text-align:right; font-variant-numeric:tabular-nums; }
+  .lead { font-weight:600; }
+
+  .kpi { display:flex; gap:20px; }
+  .kpi > div { flex:1; }
+  .kpi .num { font-size:30px; font-weight:700; line-height:1.1; }
+  .kpi .lbl { font-size:14px; font-weight:600; }
+  .kpi .ctx { font-size:14px; color:var(--muted); }
+
+  .note { padding:14px 24px 28px; font-size:13px; color:var(--muted); }
+</style>
+</head>
+<body>
+  <div class="head">
+    <h1>Decision 01 — Canvas + Ink</h1>
+    <p>Ink fixed at navy #142549. Vary only the canvas tone. Cards held constant (white + 1px hairline) so you judge the ground, not the border. No accent color yet — that's next.</p>
+  </div>
+
+  <div class="grid">
+    <!-- template repeated; only .opt-- class + tag differ -->
+    <div class="opt opt--a">
+      <div class="tag"><b>A · Pure white</b><span>#FFFFFF</span></div>
+      <div class="card">
+        <h2>รอบประเมิน Q3/2026</h2>
+        <p class="sub">Performance review · 318 respondents</p>
+        <table>
+          <thead><tr><th>ผู้ประเมิน</th><th>สถานะ</th><th class="n">ผลงาน</th></tr></thead>
+          <tbody>
+            <tr><td class="lead">สมชาย ก.</td><td>เสร็จสิ้น</td><td class="n">4.6</td></tr>
+            <tr><td class="lead">อรุณี ส.</td><td>เสร็จสิ้น</td><td class="n">4.2</td></tr>
+            <tr><td class="lead">ธนากร พ.</td><td>กำลังดำเนิน</td><td class="n">3.9</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="kpi">
+          <div><div class="lbl">ตอบแล้ว</div><div class="num">318</div><div class="ctx">จาก 400 คน</div></div>
+          <div><div class="lbl">ค่าเฉลี่ย</div><div class="num">4.1</div><div class="ctx">เต็ม 5.0</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="opt opt--b">
+      <div class="tag"><b>B · Soft cool tint</b><span>#F6F9FD</span></div>
+      <div class="card">
+        <h2>รอบประเมิน Q3/2026</h2>
+        <p class="sub">Performance review · 318 respondents</p>
+        <table>
+          <thead><tr><th>ผู้ประเมิน</th><th>สถานะ</th><th class="n">ผลงาน</th></tr></thead>
+          <tbody>
+            <tr><td class="lead">สมชาย ก.</td><td>เสร็จสิ้น</td><td class="n">4.6</td></tr>
+            <tr><td class="lead">อรุณี ส.</td><td>เสร็จสิ้น</td><td class="n">4.2</td></tr>
+            <tr><td class="lead">ธนากร พ.</td><td>กำลังดำเนิน</td><td class="n">3.9</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="kpi">
+          <div><div class="lbl">ตอบแล้ว</div><div class="num">318</div><div class="ctx">จาก 400 คน</div></div>
+          <div><div class="lbl">ค่าเฉลี่ย</div><div class="num">4.1</div><div class="ctx">เต็ม 5.0</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="opt opt--c">
+      <div class="tag"><b>C · Neutral gray</b><span>#F4F5F7</span></div>
+      <div class="card">
+        <h2>รอบประเมิน Q3/2026</h2>
+        <p class="sub">Performance review · 318 respondents</p>
+        <table>
+          <thead><tr><th>ผู้ประเมิน</th><th>สถานะ</th><th class="n">ผลงาน</th></tr></thead>
+          <tbody>
+            <tr><td class="lead">สมชาย ก.</td><td>เสร็จสิ้น</td><td class="n">4.6</td></tr>
+            <tr><td class="lead">อรุณี ส.</td><td>เสร็จสิ้น</td><td class="n">4.2</td></tr>
+            <tr><td class="lead">ธนากร พ.</td><td>กำลังดำเนิน</td><td class="n">3.9</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="kpi">
+          <div><div class="lbl">ตอบแล้ว</div><div class="num">318</div><div class="ctx">จาก 400 คน</div></div>
+          <div><div class="lbl">ค่าเฉลี่ย</div><div class="num">4.1</div><div class="ctx">เต็ม 5.0</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="opt opt--d">
+      <div class="tag"><b>D · Deeper cool tint</b><span>#EDF1F8</span></div>
+      <div class="card">
+        <h2>รอบประเมิน Q3/2026</h2>
+        <p class="sub">Performance review · 318 respondents</p>
+        <table>
+          <thead><tr><th>ผู้ประเมิน</th><th>สถานะ</th><th class="n">ผลงาน</th></tr></thead>
+          <tbody>
+            <tr><td class="lead">สมชาย ก.</td><td>เสร็จสิ้น</td><td class="n">4.6</td></tr>
+            <tr><td class="lead">อรุณี ส.</td><td>เสร็จสิ้น</td><td class="n">4.2</td></tr>
+            <tr><td class="lead">ธนากร พ.</td><td>กำลังดำเนิน</td><td class="n">3.9</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="kpi">
+          <div><div class="lbl">ตอบแล้ว</div><div class="num">318</div><div class="ctx">จาก 400 คน</div></div>
+          <div><div class="lbl">ค่าเฉลี่ย</div><div class="num">4.1</div><div class="ctx">เต็ม 5.0</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">Same content in every column. Look for: does the white card lift cleanly off the canvas? does navy text stay comfortable, not harsh? does it feel calm at a glance on your screen? Pick A / B / C / D — or say "warmer", "cooler", "flatter".</div>
+</body>
+</html>

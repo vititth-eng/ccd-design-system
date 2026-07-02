@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>KPI + card · v2 component</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" />
+<link rel="stylesheet" href="./tokens.css" />
+<link rel="stylesheet" href="./type.css" />
+<link rel="stylesheet" href="./cards.css" />
+<link rel="stylesheet" href="./buttons.css" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--canvas); padding: var(--s-6) var(--s-7); }
+  .page-title { margin: 0 0 var(--s-1); }
+  .page-sub   { margin: 0 0 var(--s-6); }
+  section { max-width: 960px; margin: 0 0 var(--s-7); }
+  .lbl { margin: 0 0 var(--s-3); }
+  .lbl span { color: var(--muted); font-weight: var(--fw-regular); }
+</style>
+</head>
+<body>
+  <h1 class="t-title page-title">KPI &amp; card</h1>
+  <p class="t-sub page-sub">Segmented bar · delta = colored % (Style A) or tinted pill · flat card, no shadow</p>
+
+  <!-- 1 · Segmented bar, plain colored delta (Style A default) ----- -->
+  <section>
+    <p class="t-section lbl">1 · Stat bar <span>— one card, cells split by hairlines · colored % delta</span></p>
+    <div class="kpi-bar">
+      <div class="kpi-bar__cell">
+        <div class="kpi">
+          <div class="kpi__head"><span class="kpi__label">กำไรสุทธิ</span><span class="kpi__delta kpi__delta--up">+8.3%</span></div>
+          <span class="t-kpi">฿287,654</span>
+        </div>
+      </div>
+      <div class="kpi-bar__cell">
+        <div class="kpi">
+          <div class="kpi__head"><span class="kpi__label">ชำระล่าช้า</span><span class="kpi__delta kpi__delta--down">−12.6%</span></div>
+          <span class="t-kpi">฿9,435</span>
+        </div>
+      </div>
+      <div class="kpi-bar__cell">
+        <div class="kpi">
+          <div class="kpi__head"><span class="kpi__label">รอดำเนินการ</span><span class="kpi__delta kpi__delta--up">+2.9%</span></div>
+          <span class="t-kpi">฿173,229</span>
+        </div>
+      </div>
+      <div class="kpi-bar__cell">
+        <div class="kpi">
+          <div class="kpi__head"><span class="kpi__label">ต้นทุนดำเนินงาน</span><span class="kpi__delta kpi__delta--flat">±0%</span></div>
+          <span class="t-kpi">฿52,891</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 · Same bar, pill delta + "from" ---------------------------- -->
+  <section>
+    <p class="t-section lbl">2 · Stat bar, pill variant <span>— tinted trend pill + "จาก X" prior value</span></p>
+    <div class="kpi-bar">
+      <div class="kpi-bar__cell">
+        <div class="kpi">
+          <span class="kpi__label">ผู้ใช้งาน</span>
+          <span class="t-kpi" style="margin-top:var(--s-2);">128,456</span>
+          <span class="kpi__from">จาก 115,789
+            <span class="kpi__delta kpi__delta--up is-pill">+10.9%</span></span>
+        </div>
+      </div>
+      <div class="kpi-bar__cell">
+        <div class="kpi">
+          <span class="kpi__label">อัตราการตอบกลับ</span>
+          <span class="t-kpi" style="margin-top:var(--s-2);">5.32%</span>
+          <span class="kpi__from">จาก 6.18%
+            <span class="kpi__delta kpi__delta--down is-pill">−0.86%</span></span>
+        </div>
+      </div>
+      <div class="kpi-bar__cell">
+        <div class="kpi">
+          <span class="kpi__label">คะแนนเฉลี่ย</span>
+          <span class="t-kpi" style="margin-top:var(--s-2);">4.21</span>
+          <span class="kpi__from">จาก 4.29
+            <span class="kpi__delta kpi__delta--down is-pill">−0.08</span></span>
+        </div>
+      </div>
+      <div class="kpi-bar__cell">
+        <div class="kpi">
+          <span class="kpi__label">ประเมินเสร็จสิ้น</span>
+          <span class="t-kpi" style="margin-top:var(--s-2);">847</span>
+          <span class="kpi__from">จาก 756
+            <span class="kpi__delta kpi__delta--up is-pill">+12%</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · Content card with header -------------------------------- -->
+  <section style="max-width:640px;">
+    <p class="t-section lbl">3 · Content card <span>— header (title + action) over hairline</span></p>
+    <div class="card">
+      <div class="card__head">
+        <span class="t-section">รอบการประเมินล่าสุด</span>
+        <button class="btn btn--secondary btn--sm">ดูทั้งหมด</button>
+      </div>
+      <p class="t-body" style="margin:0 0 var(--s-2);">รอบ Q4/2026 เปิดรับการประเมินแล้ว มีพนักงาน 847 คนที่ทำแบบประเมินเสร็จสิ้น คิดเป็น 64% ของเป้าหมายทั้งหมด</p>
+      <p class="t-sub" style="margin:0;">อัปเดตล่าสุด 1 ก.ค. 2026</p>
+    </div>
+  </section>
+</body>
+</html>
