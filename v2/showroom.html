@@ -272,7 +272,14 @@
     const fit = () => {
       try { f.style.height = '0px'; f.style.height = f.contentDocument.documentElement.scrollHeight + 'px'; } catch(e) {}
     };
-    const attach = () => { fit(); try { new ResizeObserver(fit).observe(f.contentDocument.body); } catch(e) {} };
+    const attach = () => {
+      fit();
+      try { new ResizeObserver(fit).observe(f.contentDocument.body); } catch(e) {}
+      // Webfonts (Inter/Noto Thai) load late and reflow the content TALLER after
+      // the first fit → a scrollbar flashes until the observer catches up. Refit
+      // the instant the child's fonts settle to close that window.
+      try { f.contentDocument.fonts.ready.then(fit); } catch(e) {}
+    };
     // The async setup above races the iframes' own load. If a frame already
     // finished loading, its 'load' fired before this listener → it would sit
     // stuck at the default 150px with an inner scrollbar. Fit it now instead.
