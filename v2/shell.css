@@ -92,6 +92,11 @@
 .shell__foot { border-top: 1px solid var(--divider); padding: var(--s-2); display: flex; align-items: center; gap: var(--s-1); position: relative; }
 /* user menu opens upward, above the foot */
 .shell__foot .menu { bottom: calc(100% + 2px); left: var(--s-2); right: var(--s-2); min-width: 0; }
+/* collapsed: rail is too narrow for a menu inside it, so fly OUT to the right,
+   bottom-aligned to the foot (needs the collapsed sidebar overflow:visible below) */
+.shell--collapsed .shell__foot .menu {
+  left: calc(100% + var(--s-2)); right: auto; bottom: 0; min-width: 180px;
+}
 /* trigger is a <button> — reset the UA face, keep the row look */
 .shell__user {
   display: flex; align-items: center; gap: var(--s-2); flex: 1 1 auto; min-width: 0;
@@ -130,10 +135,10 @@
 .shell--collapsed .shell__foot { flex-direction: column; gap: var(--s-1); }
 .shell--collapsed .shell__user { flex: 0 0 auto; padding: var(--s-1) 0; justify-content: center; }
 
-/* ponytail: the 56px rail clips any open menu (sidebar overflow:hidden), so
-   menus are expand-first — force-closed while collapsed. Native popover
-   (top-layer) is the upgrade path if collapsed menus are ever needed. */
-.shell--collapsed .menu { display: none; }
+/* Collapsed: let the user-menu flyout escape the 56px rail. Expanded keeps
+   overflow:hidden (rounded-corner clip); collapsed opens it up. The nav still
+   self-clips its own scroll (.shell__nav overflow-y:auto), so nothing bleeds. */
+.shell--collapsed .shell__sidebar { overflow: visible; }
 
 /* ── MAIN (content, open on the canvas) ────────────────────── */
 /* The WHOLE column scrolls (not an inner region), and reserves the scrollbar
