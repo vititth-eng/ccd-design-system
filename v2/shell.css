@@ -38,7 +38,7 @@
 /* Singha lion mark (assets/ccd-mark-full.svg) painted via mask so it takes
    --ink from tokens (currentColor inside an <img> can't inherit page color). */
 .shell__mark {
-  width: 24px; height: 24px; flex: 0 0 auto;
+  width: 28px; height: 28px; flex: 0 0 auto;
   background: var(--ink);
   mask: url("./assets/ccd-mark-full.svg") center / contain no-repeat;
   -webkit-mask: url("./assets/ccd-mark-full.svg") center / contain no-repeat;
