@@ -121,11 +121,12 @@
 .shell__who .rl { font-size: var(--fs-caption); color: var(--muted); }
 .shell--collapsed .shell__who { display: none; }
 
-/* collapse toggle — a full-width row like a nav item (chevron in the 28px
-   slot, label to its right), so it stacks cleanly under the user chip. */
+/* collapse toggle — a nav-item-like row, sitting ABOVE the foot hairline (it's
+   a sidebar action, grouped with the nav, not the user identity). Inset with
+   margin to match the nav content; icon lands on the shared 27px axis. */
 .shell__collapse {
   display: flex; align-items: center; gap: var(--s-2);
-  width: 100%; height: 34px; padding: 0 var(--s-1);
+  height: 34px; margin: 0 var(--s-2) var(--s-2); padding: 0 var(--s-1);
   border: none; border-radius: var(--r-base); background: transparent;
   color: var(--muted); cursor: pointer; font: inherit; font-size: var(--fs-body);
   transition: background-color .12s ease, color .12s ease;
