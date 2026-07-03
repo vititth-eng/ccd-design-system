@@ -36,7 +36,8 @@
 
 .control:focus,
 .control:focus-visible {
-  outline: none;                               /* kill native (orange on Windows/Chrome) */
+  outline: 2px solid transparent;              /* invisible normally (kills native orange) but Windows High Contrast Mode paints it — box-shadow is stripped there (CCD-110) */
+  outline-offset: -2px;
   border-color: var(--accent);
   box-shadow: inset 0 0 0 1px var(--accent);   /* reads as a crisp 2px brand border, no halo, no layout shift */
 }
