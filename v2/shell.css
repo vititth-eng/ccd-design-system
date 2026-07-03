@@ -57,12 +57,15 @@
 
 /* section nav */
 .shell__nav { flex: 1 1 auto; overflow-x: hidden; overflow-y: auto; padding: var(--s-2); }
-.shell__group { font-size: var(--fs-caption); color: var(--muted); padding: var(--s-3) var(--s-3) var(--s-1); white-space: nowrap; }
+.shell__group { font-size: var(--fs-caption); color: var(--muted); padding: var(--s-3) var(--s-1) var(--s-1); white-space: nowrap; }   /* left-aligns with the icon slot */
 .shell--collapsed .shell__group { height: var(--s-3); padding: 0; overflow: hidden; visibility: hidden; }
 
+/* Sidebar column grid: every row reserves a 28px icon slot starting 12px from
+   the panel edge (the lion mark is the anchor); smaller glyphs center in the
+   slot, so all icons share one axis and all text starts on a second axis. */
 .shell__item {
   display: flex; align-items: center; gap: var(--s-2);
-  padding: 7px var(--s-3); border-radius: var(--r-base);
+  padding: 7px var(--s-1); border-radius: var(--r-base);
   font-size: var(--fs-body); color: var(--muted); text-decoration: none;
   white-space: nowrap; cursor: pointer;
   transition: color .12s ease, background-color .12s ease;
@@ -70,7 +73,7 @@
 .shell__item:hover { background: var(--divider); color: var(--ink); }
 .shell__item--on { background: var(--accent-tint); color: var(--ink); font-weight: var(--fw-semi); }
 .shell__item:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
-.shell__item svg { width: 17px; height: 17px; flex: 0 0 auto; }
+.shell__item svg { width: 17px; height: 17px; flex: 0 0 auto; margin: 0 5.5px; }   /* centers the 17px glyph in the 28px slot */
 .shell--collapsed .shell__item { justify-content: center; padding: 8px 0; }
 /* collapsed labels: visually hidden, NOT display:none — screen readers still
    need the accessible name on the icon-only links (and the switch button) */
@@ -87,7 +90,7 @@
 /* trigger is a <button> — reset the UA face, keep the row look */
 .shell__user {
   display: flex; align-items: center; gap: var(--s-2); flex: 1 1 auto; min-width: 0;
-  padding: var(--s-1) var(--s-2);
+  padding: var(--s-1);
   font: inherit; text-align: left;
   background: none; border: none; border-radius: var(--r-base); cursor: pointer;
   transition: background-color .12s ease;
