@@ -12,21 +12,9 @@
   body {
     margin: 0; font-family: var(--font-sans); color: var(--ink);
     background: var(--canvas);
-    display: grid; grid-template-columns: 210px 1fr; align-items: start;
   }
-  /* ── sticky jump-nav ─────────────────────────── */
-  .nav {
-    position: sticky; top: 0; align-self: start; height: 100vh;
-    padding: var(--s-6) var(--s-5);
-    border-right: 1px solid var(--rule); background: var(--canvas);
-    display: flex; flex-direction: column; gap: 2px; overflow-y: auto;
-  }
-  .nav__brand { font-weight: var(--fw-bold); font-size: var(--fs-body); margin-bottom: var(--s-4); letter-spacing: -0.01em; }
-  .nav__sub { font-size: var(--fs-caption); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: var(--s-4) 0 var(--s-1); }
-  .nav a { color: var(--muted); text-decoration: none; font-size: var(--fs-caption); padding: 4px 8px; border-radius: var(--r-base); }
-  .nav a:hover { background: var(--divider); color: var(--ink); }
 
-  main { padding: var(--s-8) var(--s-8) var(--s-8); max-width: 1120px; min-width: 0; }   /* min-width:0 lets the 1fr grid track shrink below content min-width — kills page-level horizontal blowout at narrow widths */
+  main { padding: var(--s-8) var(--s-8) var(--s-8); max-width: 1120px; margin: 0 auto; }   /* single centered column, no sidebar */
   .hero { margin-bottom: var(--s-8); }
   .hero h1 { font-size: var(--fs-kpi); font-weight: var(--fw-semi); margin: 0 0 var(--s-3); letter-spacing: -0.02em; }
   .hero p { color: var(--muted); font-size: var(--fs-body); line-height: var(--lh-normal); max-width: 60ch; margin: 0; }
@@ -75,42 +63,17 @@
   .frame-wrap { border: 1px solid var(--rule); border-radius: var(--r-base); overflow: hidden; background: var(--card); box-shadow: var(--shadow-float); }
   iframe { display: block; width: 100%; border: 0; }
 
-  /* Narrow (preview pane / small window): the fixed 210px sidebar was crushing
-     the gallery column to ~300px, so wide tables overflowed and scrolled. Drop
-     the sidebar and go full-width — the galleries are the point, not the nav. */
-  @media (max-width: 860px) {
-    body { grid-template-columns: 1fr; }
-    .nav { display: none; }
-    main { padding: var(--s-5) var(--s-4); max-width: none; }
+  /* Narrow (preview pane / small window): tighten padding. */
+  @media (max-width: 700px) {
+    main { padding: var(--s-5) var(--s-4); }
   }
 </style>
 </head>
 <body>
-  <nav class="nav">
-    <div class="nav__brand">v2 DS</div>
-    <div class="nav__sub">Foundations</div>
-    <a href="#color">01 · Color</a>
-    <a href="#type">02 · Type</a>
-    <a href="#space">03 · Spacing</a>
-    <a href="#radius">04 · Radius</a>
-    <a href="#shadow">05 · Shadow</a>
-    <a href="#other">06 · Other</a>
-    <div class="nav__sub">Components</div>
-    <a href="#buttons">Buttons</a>
-    <a href="#forms">Forms</a>
-    <a href="#tables">Tables</a>
-    <a href="#status">Status</a>
-    <a href="#kpi">KPI</a>
-    <a href="#nav">Nav &amp; Tabs</a>
-    <a href="#modals">Modals</a>
-    <a href="#toasts">Toasts</a>
-    <a href="#shell">Shell</a>
-  </nav>
-
   <main>
     <div class="hero">
       <h1>Design System · Showroom</h1>
-      <p>Every decision in one scroll. Foundations — names, values, and the usage note beside each — are read live from <code>tokens.css</code>; edit a token or its comment and this page updates itself. Components and screens below are live iframes to their own gallery files.</p>
+      <p>Every decision in one scroll. Foundations — names, values, and the usage note beside each — are read live from <code>tokens.css</code>; edit a token or its comment and this page updates itself. Components below are live iframes to their own gallery files.</p>
     </div>
 
     <section id="color">
