@@ -271,7 +271,13 @@
     const fit = () => {
       try { f.style.height = '0px'; f.style.height = f.contentDocument.documentElement.scrollHeight + 'px'; } catch(e) {}
     };
-    f.addEventListener('load', () => { fit(); try { new ResizeObserver(fit).observe(f.contentDocument.body); } catch(e) {} });
+    const attach = () => { fit(); try { new ResizeObserver(fit).observe(f.contentDocument.body); } catch(e) {} };
+    // The async setup above races the iframes' own load. If a frame already
+    // finished loading, its 'load' fired before this listener → it would sit
+    // stuck at the default 150px with an inner scrollbar. Fit it now instead.
+    let ready = false;
+    try { ready = f.contentDocument && f.contentDocument.readyState === 'complete'; } catch(e) {}
+    if (ready) attach(); else f.addEventListener('load', attach);
   });
 })();
 </script>
