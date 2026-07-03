@@ -86,8 +86,8 @@
   --shadow-modal: 0 12px 32px rgba(20, 37, 73, 0.10);  /* modal / sheet — softened (was 16/40/.16) */
 
   /* ── FOCUS ─────────────────────────────────────────────── */
-  --focus-ring:  var(--accent);   /* brand blue ring */
-  --focus-width: 2px;
+  /* No focus tokens: the pattern is `outline: 2px solid var(--accent)`
+     everywhere (inputs add inset box-shadow — see forms.css). */
 
   /* ── Z-INDEX SCALE ─────────────────────────────────────── */
   --z-sticky:   50;

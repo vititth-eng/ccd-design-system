@@ -17,7 +17,7 @@
 
 .topnav__brand {
   display: inline-flex; align-items: center; gap: var(--s-2);
-  font-size: var(--fs-section); font-weight: var(--fw-bold); color: var(--ink);
+  font-size: var(--fs-section); font-weight: var(--fw-semi); color: var(--ink);   /* 600 — 700 is KPI-only (weight law) */
   text-decoration: none; white-space: nowrap;
 }
 .topnav__mark { width: 22px; height: 22px; border-radius: var(--r-tiny); background: var(--ink); flex: 0 0 auto; }
