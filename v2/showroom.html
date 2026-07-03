@@ -282,11 +282,15 @@
       try { f.style.height = '0px'; f.style.height = f.contentDocument.documentElement.scrollHeight + 'px'; } catch(e) {}
     };
     const attach = () => {
+      // Kill the iframe's own scrollability: with its document set to
+      // overflow:hidden it can never show a scrollbar or trap the mouse wheel —
+      // the wheel bubbles up and the parent page scrolls instead. Auto-height
+      // below keeps every gallery full-height, so nothing is lost by this.
+      try { f.contentDocument.documentElement.style.overflow = 'hidden'; } catch(e) {}
       fit();
       try { new ResizeObserver(fit).observe(f.contentDocument.body); } catch(e) {}
       // Webfonts (Inter/Noto Thai) load late and reflow the content TALLER after
-      // the first fit → a scrollbar flashes until the observer catches up. Refit
-      // the instant the child's fonts settle to close that window.
+      // the first fit → refit the instant the child's fonts settle.
       try { f.contentDocument.fonts.ready.then(fit); } catch(e) {}
     };
     // The async setup above races the iframes' own load. If a frame already
