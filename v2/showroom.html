@@ -26,7 +26,7 @@
   .nav a { color: var(--muted); text-decoration: none; font-size: var(--fs-caption); padding: 4px 8px; border-radius: var(--r-base); }
   .nav a:hover { background: var(--divider); color: var(--ink); }
 
-  main { padding: var(--s-8) var(--s-8) var(--s-8); max-width: 1120px; }
+  main { padding: var(--s-8) var(--s-8) var(--s-8); max-width: 1120px; min-width: 0; }   /* min-width:0 lets the 1fr grid track shrink below content min-width — kills page-level horizontal blowout at narrow widths */
   .hero { margin-bottom: var(--s-8); }
   .hero h1 { font-size: var(--fs-kpi); font-weight: var(--fw-semi); margin: 0 0 var(--s-3); letter-spacing: -0.02em; }
   .hero p { color: var(--muted); font-size: var(--fs-body); line-height: var(--lh-normal); max-width: 60ch; margin: 0; }
@@ -67,8 +67,9 @@
   .shbox { background: var(--card); border-radius: var(--r-base); }
 
   /* other tokens table */
-  .dl { display: grid; grid-template-columns: max-content max-content 1fr; gap: 6px var(--s-5); font-size: var(--fs-caption); align-items: baseline; }
-  .dl .v { font-family: ui-monospace, monospace; color: var(--muted); }
+  .dl { display: grid; grid-template-columns: max-content minmax(0,1fr) minmax(0,1.4fr); gap: 6px var(--s-5); font-size: var(--fs-caption); align-items: baseline; min-width: 0; }
+  .dl .v { font-family: ui-monospace, monospace; color: var(--muted); overflow-wrap: anywhere; }   /* long values (font stack, shadows) wrap instead of forcing width */
+  .dl .note { overflow-wrap: anywhere; }
 
   /* live iframes */
   .frame-wrap { border: 1px solid var(--rule); border-radius: var(--r-base); overflow: hidden; background: var(--card); box-shadow: var(--shadow-float); }
