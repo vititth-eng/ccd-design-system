@@ -35,7 +35,14 @@
 /* switcher menu drops below the brand row, inside the sidebar panel
    (sidebar clips overflow, so the menu spans the sidebar width) */
 .shell__brand .menu { top: calc(100% - var(--s-1)); left: var(--s-2); right: var(--s-2); min-width: 0; }
-.shell__mark { width: 22px; height: 22px; border-radius: var(--r-tiny); background: var(--ink); flex: 0 0 auto; }
+/* Singha lion mark (assets/ccd-mark-full.svg) painted via mask so it takes
+   --ink from tokens (currentColor inside an <img> can't inherit page color). */
+.shell__mark {
+  width: 24px; height: 24px; flex: 0 0 auto;
+  background: var(--ink);
+  mask: url("./assets/ccd-mark-full.svg") center / contain no-repeat;
+  -webkit-mask: url("./assets/ccd-mark-full.svg") center / contain no-repeat;
+}
 .shell__switch {
   display: inline-flex; align-items: center; gap: var(--s-1); min-width: 0;
   font: inherit; font-size: var(--fs-body); font-weight: var(--fw-semi); color: var(--ink);
