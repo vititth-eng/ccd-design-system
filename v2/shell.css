@@ -31,7 +31,7 @@
 .shell--collapsed .shell__sidebar { width: 56px; }
 
 /* brand + app-switcher */
-.shell__brand { display: flex; align-items: center; gap: var(--s-2); padding: var(--s-3); min-width: 0; position: relative; }
+.shell__brand { display: flex; align-items: flex-end; gap: var(--s-2); padding: var(--s-3); min-width: 0; position: relative; }
 /* switcher menu drops below the brand row, inside the sidebar panel
    (sidebar clips overflow, so the menu spans the sidebar width) */
 .shell__brand .menu { top: calc(100% - var(--s-1)); left: var(--s-2); right: var(--s-2); min-width: 0; }
@@ -46,7 +46,9 @@
 .shell__switch {
   display: inline-flex; align-items: center; gap: var(--s-1); min-width: 0;
   font: inherit; font-size: var(--fs-body); font-weight: var(--fw-semi); color: var(--ink);
-  background: none; border: none; cursor: pointer; padding: 0;
+  line-height: 1.2;                 /* hug the text so flex-end lands the name on the lion's lower edge */
+  padding: 0 0 3px;                 /* optical nudge: baseline meets the lion's feet, not the box edge */
+  background: none; border: none; cursor: pointer;
 }
 .shell__switch .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .shell__switch .chev { color: var(--muted); flex: 0 0 auto; }
