@@ -6,8 +6,7 @@
    Locked rules:
    - 36px row height across input / select / button
    - --fs-body in fields, --fs-small + --fw-semi for labels
-   - Focus on bordered controls = border flips to --brand + inset 1px
-     (reads as 2px, no gap, no layout shift). Choice/switch keep the ring.
+   - Ring-only focus (no border-color flip, no custom shadow)
    - .is-error border swap; helper line becomes error line
    - Hover lifts border to --ink-muted (skipped on disabled/error)
    - Switch wrapper is .f-switch-row — never .f-choice (avoids
@@ -47,9 +46,9 @@
 .f-control::placeholder { color: var(--ink-muted); }
 .f-control:not(:disabled):not(.is-error):hover { border-color: var(--ink-muted); }
 .f-control:focus-visible {
-  outline: none;
-  border-color: var(--brand);
-  box-shadow: inset 0 0 0 1px var(--brand);  /* border reads as 2px, no gap, no layout shift */
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  /* Ring-only — no border-color flip, no custom shadow. */
 }
 .f-control:disabled {
   background: var(--paper-tint);
@@ -59,7 +58,6 @@
   user-select: none;
 }
 .f-control.is-error { border-color: var(--dot-negative); }
-.f-control.is-error:focus-visible { border-color: var(--dot-negative); box-shadow: inset 0 0 0 1px var(--dot-negative); }
 
 /* Textarea — same surface, vertical padding restored */
 textarea.f-control {
