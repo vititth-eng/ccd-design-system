@@ -31,7 +31,10 @@
 .shell--collapsed .shell__sidebar { width: 56px; }
 
 /* brand + app-switcher */
-.shell__brand { display: flex; align-items: center; gap: var(--s-2); padding: var(--s-3); min-width: 0; }
+.shell__brand { display: flex; align-items: center; gap: var(--s-2); padding: var(--s-3); min-width: 0; position: relative; }
+/* switcher menu drops below the brand row, inside the sidebar panel
+   (sidebar clips overflow, so the menu spans the sidebar width) */
+.shell__brand .menu { top: calc(100% - var(--s-1)); left: var(--s-2); right: var(--s-2); min-width: 0; }
 .shell__mark { width: 22px; height: 22px; border-radius: var(--r-tiny); background: var(--ink); flex: 0 0 auto; }
 .shell__switch {
   display: inline-flex; align-items: center; gap: var(--s-1); min-width: 0;
@@ -69,8 +72,19 @@
 }
 
 /* user + collapse */
-.shell__foot { border-top: 1px solid var(--divider); padding: var(--s-2); display: flex; align-items: center; gap: var(--s-1); }
-.shell__user { display: flex; align-items: center; gap: var(--s-2); flex: 1 1 auto; min-width: 0; padding: var(--s-1) var(--s-2); }
+.shell__foot { border-top: 1px solid var(--divider); padding: var(--s-2); display: flex; align-items: center; gap: var(--s-1); position: relative; }
+/* user menu opens upward, above the foot */
+.shell__foot .menu { bottom: calc(100% + 2px); left: var(--s-2); right: var(--s-2); min-width: 0; }
+/* trigger is a <button> — reset the UA face, keep the row look */
+.shell__user {
+  display: flex; align-items: center; gap: var(--s-2); flex: 1 1 auto; min-width: 0;
+  padding: var(--s-1) var(--s-2);
+  font: inherit; text-align: left;
+  background: none; border: none; border-radius: var(--r-base); cursor: pointer;
+  transition: background-color .12s ease;
+}
+.shell__user:hover { background: var(--divider); }
+.shell__user:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 .shell__avatar {
   width: 28px; height: 28px; border-radius: var(--r-pill); flex: 0 0 auto;
   background: var(--accent-tint); color: var(--accent);
@@ -98,6 +112,11 @@
    and un-clickable). Stack them. */
 .shell--collapsed .shell__foot { flex-direction: column; gap: var(--s-1); }
 .shell--collapsed .shell__user { flex: 0 0 auto; padding: var(--s-1) 0; justify-content: center; }
+
+/* ponytail: the 56px rail clips any open menu (sidebar overflow:hidden), so
+   menus are expand-first — force-closed while collapsed. Native popover
+   (top-layer) is the upgrade path if collapsed menus are ever needed. */
+.shell--collapsed .menu { display: none; }
 
 /* ── MAIN (content, open on the canvas) ────────────────────── */
 .shell__main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; overflow: hidden; }
