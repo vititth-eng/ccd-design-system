@@ -71,7 +71,10 @@
   transition: color .12s ease, background-color .12s ease;
 }
 .shell__item:hover { background: var(--divider); color: var(--ink); }
-.shell__item--on { background: var(--accent-tint); color: var(--ink); font-weight: var(--fw-semi); }
+/* Active = accent-tint fill + ink text, NO weight change (bolding widens the
+   label ~2px and reflows during collapse/expand — reads as jitter). The tint
+   fill already marks selection. */
+.shell__item--on { background: var(--accent-tint); color: var(--ink); }
 .shell__item:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 .shell__item svg { width: 17px; height: 17px; flex: 0 0 auto; margin: 0 5.5px; }   /* centers the 17px glyph in the 28px slot */
 .shell--collapsed .shell__item { justify-content: center; padding: 8px 0; }

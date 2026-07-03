@@ -32,7 +32,10 @@
   transition: color .12s ease;
 }
 .topnav__link:hover { color: var(--ink); }
-.topnav__link--active { color: var(--ink); font-weight: var(--fw-semi); border-bottom-color: var(--accent); }
+/* Active = ink colour + accent underline. NO weight change: bolding on select
+   widens the text advance (~2px) and reflows the row — reads as a jump. The
+   colour+underline already mark "you are here". */
+.topnav__link--active { color: var(--ink); border-bottom-color: var(--accent); }
 .topnav__link:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: var(--r-tiny); }
 
 .topnav__spacer { flex: 1 1 auto; }
@@ -57,5 +60,7 @@
   transition: color .12s ease;
 }
 .tab:hover { color: var(--ink); }
-.tab--active { color: var(--ink); font-weight: var(--fw-semi); border-bottom-color: var(--accent); }
+/* Active = ink + accent underline, no weight change (see topnav note — avoids
+   the select-time reflow that shifts sibling tabs). */
+.tab--active { color: var(--ink); border-bottom-color: var(--accent); }
 .tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: var(--r-tiny); }
