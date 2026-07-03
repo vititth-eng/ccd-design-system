@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Decide 18 · Shell layout</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" />
+<link rel="stylesheet" href="./tokens.css" />
+<link rel="stylesheet" href="./type.css" />
+<link rel="stylesheet" href="./tables.css" />
+<link rel="stylesheet" href="./status.css" />
+<link rel="stylesheet" href="./cards.css" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #EEF0F3; padding: var(--s-6) var(--s-7); }
+  .h { margin: 0 0 var(--s-1); }
+  .hsub { margin: 0 0 var(--s-6); }
+  .opt { margin: 0 0 var(--s-7); }
+  .opt__name { margin: 0 0 2px; }
+  .opt__desc { margin: 0 0 var(--s-3); }
+  .opt__desc b.good { color: var(--pos-strong); font-weight: var(--fw-semi); }
+  .opt__desc b.bad  { color: var(--neg-strong); font-weight: var(--fw-semi); }
+
+  /* screen frame */
+  .screen { height: 340px; border: 1px solid var(--rule); border-radius: var(--r-base);
+            overflow: hidden; background: var(--canvas); display: flex; flex-direction: column; box-shadow: var(--shadow-pop); }
+
+  /* top bar */
+  .stop { display: flex; align-items: center; gap: var(--s-4); height: 46px; padding: 0 var(--s-4);
+          background: var(--card); border-bottom: 1px solid var(--rule); flex: 0 0 auto; }
+  .mark { width: 20px; height: 20px; border-radius: var(--r-tiny); background: var(--ink); flex: 0 0 auto; }
+  .brand { font-size: var(--fs-section); font-weight: var(--fw-bold); color: var(--ink); }
+  /* app switcher chip */
+  .switch { display: inline-flex; align-items: center; gap: var(--s-2); padding: 5px var(--s-3);
+            border: 1px solid var(--rule); border-radius: var(--r-base); font-size: var(--fs-body);
+            font-weight: var(--fw-semi); color: var(--ink); cursor: pointer; }
+  .switch .chev { color: var(--muted); }
+  .spacer { flex: 1 1 auto; }
+  .avatar { width: 26px; height: 26px; border-radius: var(--r-pill); background: var(--accent-tint);
+            color: var(--accent); display: inline-flex; align-items: center; justify-content: center;
+            font-size: var(--fs-caption); font-weight: var(--fw-semi); }
+  .bell { color: var(--muted); display: inline-flex; }
+
+  /* top-nav links */
+  .tlinks { display: flex; align-items: stretch; gap: var(--s-4); height: 100%; }
+  .tlink { display: inline-flex; align-items: center; height: 100%; font-size: var(--fs-body);
+           color: var(--muted); border-bottom: 2px solid transparent; white-space: nowrap; }
+  .tlink--on { color: var(--ink); font-weight: var(--fw-semi); border-bottom-color: var(--accent); }
+
+  /* second tier */
+  .stier { display: flex; align-items: stretch; gap: var(--s-4); height: 38px; padding: 0 var(--s-4);
+           background: var(--card); border-bottom: 1px solid var(--rule); flex: 0 0 auto; }
+  .stier .tlink { font-size: var(--fs-body); }
+
+  /* body split */
+  .sbody { display: flex; flex: 1 1 auto; min-height: 0; }
+  .side { width: 188px; flex: 0 0 auto; background: var(--card); border-right: 1px solid var(--rule);
+          padding: var(--s-3) var(--s-2); overflow: auto; }
+  .side--rail { width: 50px; padding: var(--s-3) 0; }
+  .snav { display: flex; align-items: center; gap: var(--s-2); padding: 7px var(--s-3); border-radius: var(--r-base);
+          font-size: var(--fs-body); color: var(--muted); white-space: nowrap; }
+  .snav--on { background: var(--accent-tint); color: var(--ink); font-weight: var(--fw-semi); }
+  .snav .ic { width: 16px; height: 16px; border-radius: var(--r-tiny); background: currentColor; opacity: .55; flex: 0 0 auto; }
+  .side--rail .snav { justify-content: center; padding: 9px 0; }
+  .side--rail .snav .lb { display: none; }
+  .sgroup { font-size: var(--fs-caption); color: var(--muted); padding: var(--s-3) var(--s-3) 4px; }
+
+  /* main */
+  .main { flex: 1 1 auto; min-width: 0; padding: var(--s-4); overflow: auto; }
+  .ptitle { margin: 0 0 var(--s-3); }
+  .tabs2 { display: flex; gap: var(--s-4); border-bottom: 1px solid var(--rule); margin-bottom: var(--s-4); }
+  .tb { padding: var(--s-2) 0; margin-bottom: -1px; font-size: var(--fs-body); color: var(--muted);
+        border-bottom: 2px solid transparent; }
+  .tb--on { color: var(--ink); font-weight: var(--fw-semi); border-bottom-color: var(--accent); }
+
+  .mini-kpi { margin-bottom: var(--s-4); }
+  .mini-kpi .kpi-bar__cell { padding: var(--s-3) var(--s-4); }
+  .mini-kpi .t-kpi { font-size: 22px; }
+  .win { font-size: var(--fs-caption); color: var(--muted); margin-top: 6px; }
+</style>
+</head>
+<body>
+  <h1 class="t-title h">Shell — how nav wraps the app</h1>
+  <p class="t-sub hsub">Same content in each (KPI bar + table). “แผนก B” app with several sections. Judge depth + table width.</p>
+
+  <!-- ============ A · TOP NAV ONLY ============ -->
+  <div class="opt">
+    <p class="t-strong opt__name">A · Top nav only <span style="color:var(--muted);font-weight:var(--fw-regular);">(today)</span></p>
+    <p class="t-sub opt__desc">Sections live as top-bar links. <b class="good">Full table width.</b> <b class="bad">Overflows past ~6 sections; no room for app-switching.</b></p>
+    <div class="screen">
+      <div class="stop">
+        <span class="mark"></span><span class="brand">CCD</span>
+        <div class="tlinks">
+          <span class="tlink tlink--on">แดชบอร์ด</span><span class="tlink">การประเมิน</span><span class="tlink">พนักงาน</span><span class="tlink">รายงาน</span>
+        </div>
+        <span class="spacer"></span>
+        <span class="avatar">วต</span>
+      </div>
+      <div class="main">
+        <div class="tabs2"><span class="tb tb--on">ภาพรวม</span><span class="tb">รายบุคคล</span><span class="tb">แผนก</span></div>
+        <div class="kpi-bar mini-kpi">
+          <div class="kpi-bar__cell"><div class="kpi"><div class="kpi__head"><span class="kpi__label">พนักงาน</span><span class="kpi__delta kpi__delta--up">+3.2%</span></div><span class="t-kpi">1,284</span></div></div>
+          <div class="kpi-bar__cell"><div class="kpi"><div class="kpi__head"><span class="kpi__label">เสร็จสิ้น</span><span class="kpi__delta kpi__delta--up">+12%</span></div><span class="t-kpi">847</span></div></div>
+          <div class="kpi-bar__cell"><div class="kpi"><div class="kpi__head"><span class="kpi__label">คะแนน</span><span class="kpi__delta kpi__delta--down">−0.08</span></div><span class="t-kpi">4.21</span></div></div>
+        </div>
+        <div class="tbl-wrap"><table class="tbl"><thead><tr><th>รายการ</th><th>สถานะ</th><th class="tbl__n">มูลค่า</th></tr></thead>
+          <tbody>
+            <tr><td class="tbl__lead">ดีลเชียงใหม่</td><td><span class="st st--pos"><i></i>ปิดการขาย</span></td><td class="tbl__n">1,240,000</td></tr>
+            <tr><td class="tbl__lead">ดีลลำปาง</td><td><span class="st st--cau"><i></i>เจรจา</span></td><td class="tbl__n">860,000</td></tr>
+          </tbody></table></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ B · TOP BAR (app switcher) + SIDEBAR ============ -->
+  <div class="opt">
+    <p class="t-strong opt__name">B · Thin top bar + collapsible sidebar <span style="color:var(--muted);font-weight:var(--fw-regular);">(recommended)</span></p>
+    <p class="t-sub opt__desc">Top = app-switcher + user; sidebar = this app’s sections. <b class="good">Scales to many sections; app-switch built in.</b> <b class="bad">Costs ~188px width (until collapsed → see D).</b></p>
+    <div class="screen">
+      <div class="stop">
+        <span class="mark"></span>
+        <span class="switch">360 Multi-Rater <span class="chev">▾</span></span>
+        <span class="spacer"></span>
+        <span class="bell"><svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3a4 4 0 0 0-4 4c0 4-2 5-2 5h12s-2-1-2-5a4 4 0 0 0-4-4zM8.5 16a1.7 1.7 0 0 0 3 0"/></svg></span>
+        <span class="avatar">วต</span>
+      </div>
+      <div class="sbody">
+        <div class="side">
+          <div class="snav snav--on"><span class="ic"></span><span class="lb">แดชบอร์ด</span></div>
+          <div class="snav"><span class="ic"></span><span class="lb">รอบการประเมิน</span></div>
+          <div class="snav"><span class="ic"></span><span class="lb">ผู้ประเมิน</span></div>
+          <div class="snav"><span class="ic"></span><span class="lb">รายงานผล</span></div>
+          <div class="sgroup">ตั้งค่า</div>
+          <div class="snav"><span class="ic"></span><span class="lb">แบบฟอร์ม</span></div>
+          <div class="snav"><span class="ic"></span><span class="lb">สิทธิ์การใช้งาน</span></div>
+        </div>
+        <div class="main">
+          <p class="t-section ptitle">แดชบอร์ด</p>
+          <div class="kpi-bar mini-kpi">
+            <div class="kpi-bar__cell"><div class="kpi"><div class="kpi__head"><span class="kpi__label">พนักงาน</span><span class="kpi__delta kpi__delta--up">+3.2%</span></div><span class="t-kpi">1,284</span></div></div>
+            <div class="kpi-bar__cell"><div class="kpi"><div class="kpi__head"><span class="kpi__label">เสร็จสิ้น</span><span class="kpi__delta kpi__delta--up">+12%</span></div><span class="t-kpi">847</span></div></div>
+          </div>
+          <div class="tbl-wrap"><table class="tbl"><thead><tr><th>รายการ</th><th>สถานะ</th><th class="tbl__n">มูลค่า</th></tr></thead>
+            <tbody>
+              <tr><td class="tbl__lead">ดีลเชียงใหม่</td><td><span class="st st--pos"><i></i>ปิดการขาย</span></td><td class="tbl__n">1,240,000</td></tr>
+              <tr><td class="tbl__lead">ดีลลำปาง</td><td><span class="st st--cau"><i></i>เจรจา</span></td><td class="tbl__n">860,000</td></tr>
+            </tbody></table></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ C · TWO-TIER TOP ============ -->
+  <div class="opt">
+    <p class="t-strong opt__name">C · Two-tier top bar</p>
+    <p class="t-sub opt__desc">Row 1 = umbrella (app-switcher + user); row 2 = this app’s sections. <b class="good">Full table width; app-switch built in.</b> <b class="bad">Two bars eat ~84px vertical on a 768 screen; sections still overflow if many.</b></p>
+    <div class="screen">
+      <div class="stop">
+        <span class="mark"></span>
+        <span class="switch">360 Multi-Rater <span class="chev">▾</span></span>
+        <span class="spacer"></span><span class="avatar">วต</span>
+      </div>
+      <div class="stier">
+        <div class="tlinks">
+          <span class="tlink tlink--on">แดชบอร์ด</span><span class="tlink">รอบการประเมิน</span><span class="tlink">ผู้ประเมิน</span><span class="tlink">รายงานผล</span><span class="tlink">ตั้งค่า</span>
+        </div>
+      </div>
+      <div class="main">
+        <div class="kpi-bar mini-kpi">
+          <div class="kpi-bar__cell"><div class="kpi"><div class="kpi__head"><span class="kpi__label">พนักงาน</span><span class="kpi__delta kpi__delta--up">+3.2%</span></div><span class="t-kpi">1,284</span></div></div>
+          <div class="kpi-bar__cell"><div class="kpi"><div class="kpi__head"><span class="kpi__label">เสร็จสิ้น</span><span class="kpi__delta kpi__delta--up">+12%</span></div><span class="t-kpi">847</span></div></div>
+          <div class="kpi-bar__cell"><div class="kpi"><div class="kpi__head"><span class="kpi__label">คะแนน</span><span class="kpi__delta kpi__delta--down">−0.08</span></div><span class="t-kpi">4.21</span></div></div>
+        </div>
+        <div class="tbl-wrap"><table class="tbl"><thead><tr><th>รายการ</th><th>สถานะ</th><th class="tbl__n">มูลค่า</th></tr></thead>
+          <tbody>
+            <tr><td class="tbl__lead">ดีลเชียงใหม่</td><td><span class="st st--pos"><i></i>ปิดการขาย</span></td><td class="tbl__n">1,240,000</td></tr>
+            <tr><td class="tbl__lead">ดีลลำปาง</td><td><span class="st st--cau"><i></i>เจรจา</span></td><td class="tbl__n">860,000</td></tr>
+          </tbody></table></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ D · SIDEBAR COLLAPSED (rail) ============ -->
+  <div class="opt">
+    <p class="t-strong opt__name">D · Same as B, sidebar collapsed to a rail</p>
+    <p class="t-sub opt__desc">One click collapses B’s sidebar to a 50px icon rail. <b class="good">Table gets its width back for dense work — the answer to B’s cost.</b></p>
+    <div class="screen">
+      <div class="stop">
+        <span class="mark"></span>
+        <span class="switch">360 Multi-Rater <span class="chev">▾</span></span>
+        <span class="spacer"></span><span class="avatar">วต</span>
+      </div>
+      <div class="sbody">
+        <div class="side side--rail">
+          <div class="snav snav--on"><span class="ic"></span></div>
+          <div class="snav"><span class="ic"></span></div>
+          <div class="snav"><span class="ic"></span></div>
+          <div class="snav"><span class="ic"></span></div>
+          <div class="snav"><span class="ic"></span></div>
+        </div>
+        <div class="main">
+          <p class="t-section ptitle">รายงานผล</p>
+          <div class="tbl-wrap"><table class="tbl"><thead><tr><th>พนักงาน</th><th>ฝ่าย</th><th>สถานะ</th><th class="tbl__n">คะแนน</th><th class="tbl__n">อันดับ</th></tr></thead>
+            <tbody>
+              <tr><td class="tbl__lead">กานต์ ธ.</td><td>การตลาด</td><td><span class="st st--pos"><i></i>เสร็จ</span></td><td class="tbl__n">4.82</td><td class="tbl__n">1</td></tr>
+              <tr><td class="tbl__lead">นิรมล ค.</td><td>ขาย</td><td><span class="st st--cau"><i></i>กำลังทำ</span></td><td class="tbl__n">4.71</td><td class="tbl__n">2</td></tr>
+              <tr><td class="tbl__lead">ศักดิ์ ล.</td><td>ปฏิบัติการ</td><td><span class="st st--pos"><i></i>เสร็จ</span></td><td class="tbl__n">4.55</td><td class="tbl__n">3</td></tr>
+            </tbody></table></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="t-sub" style="max-width:640px;">My read: <b style="color:var(--ink);font-weight:var(--fw-semi);">B (collapsible sidebar)</b> for apps with many sections — it scales and D shows the table width is one click away. C works if apps stay ≤5 sections and vertical isn’t tight. A only for a flat single-screen app.</p>
+</body>
+</html>

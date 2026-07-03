@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Decide 20 · Shell lift</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" />
+<link rel="stylesheet" href="./tokens.css" />
+<link rel="stylesheet" href="./type.css" />
+<link rel="stylesheet" href="./tables.css" />
+<link rel="stylesheet" href="./status.css" />
+<link rel="stylesheet" href="./cards.css" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #E4E7EC; padding: var(--s-6) var(--s-7); font-family: var(--font-sans); }
+  .h { margin: 0 0 var(--s-1); }
+  .hsub { margin: 0 0 var(--s-6); }
+  .opt { margin: 0 0 var(--s-7); }
+  .opt__name { margin: 0 0 2px; }
+  .opt__desc { margin: 0 0 var(--s-3); }
+
+  /* screen = a viewport frame */
+  .screen { height: 320px; border-radius: var(--r-large); overflow: hidden; }
+  .app { display: flex; gap: var(--s-3); height: 100%; padding: var(--s-3); }
+
+  .sidebar { width: 172px; flex: 0 0 auto; border-radius: var(--r-large); display: flex; flex-direction: column; overflow: hidden; background: var(--card); }
+  .panel   { flex: 1 1 auto; min-width: 0; border-radius: var(--r-large); display: flex; flex-direction: column; overflow: hidden; background: var(--card); }
+
+  /* ---- variant A: gray bg, BORDER only ---- */
+  .v-a { background: #EEF0F3; }
+  .v-a .sidebar, .v-a .panel { border: 1px solid var(--rule); }
+
+  /* ---- variant B: gray bg, FAINT SHADOW ---- */
+  .v-b { background: #EEF0F3; }
+  .v-b .sidebar, .v-b .panel { border: 1px solid var(--rule); box-shadow: var(--shadow-pop); }
+
+  /* ---- variant C: WHITE bg, floating sidebar SHADOW, open content ---- */
+  .v-c { background: var(--canvas); }
+  .v-c .sidebar { border: 1px solid var(--divider); box-shadow: 0 2px 8px rgba(20,37,73,.06); }  /* fainter edge + tight shadow */
+  .v-c .panel { background: transparent; }                  /* content sits open on the canvas */
+
+  /* sidebar bits */
+  .sb-brand { display: flex; align-items: center; gap: var(--s-2); padding: var(--s-3) var(--s-3) var(--s-2); }
+  .mark { width: 20px; height: 20px; border-radius: var(--r-tiny); background: var(--ink); flex: 0 0 auto; }
+  .switch { font-size: var(--fs-body); font-weight: var(--fw-semi); color: var(--ink); }
+  .switch .chev { color: var(--muted); font-size: var(--fs-caption); }
+  .sb-nav { flex: 1 1 auto; padding: var(--s-2); overflow: auto; }
+  .snav { display: flex; align-items: center; gap: var(--s-2); padding: 6px var(--s-3); border-radius: var(--r-base); font-size: var(--fs-body); color: var(--muted); }
+  .snav--on { background: var(--accent-tint); color: var(--ink); font-weight: var(--fw-semi); }
+  .snav .ic { width: 14px; height: 14px; border-radius: var(--r-tiny); background: currentColor; opacity: .5; flex: 0 0 auto; }
+  .sb-user { display: flex; align-items: center; gap: var(--s-2); padding: var(--s-3); border-top: 1px solid var(--divider); }
+  .avatar { width: 24px; height: 24px; border-radius: var(--r-pill); background: var(--accent-tint); color: var(--accent); display: inline-flex; align-items: center; justify-content: center; font-size: var(--fs-caption); font-weight: var(--fw-semi); }
+  .uname { font-size: var(--fs-caption); color: var(--ink); font-weight: var(--fw-semi); }
+
+  /* panel bits */
+  .p-head { display: flex; align-items: center; justify-content: space-between; padding: var(--s-3) var(--s-4); border-bottom: 1px solid var(--divider); flex: 0 0 auto; }
+  .v-c .p-head { border-bottom: 1px solid var(--rule); }   /* open content needs its own rule */
+  .p-body { flex: 1 1 auto; overflow: auto; padding: var(--s-4); }
+  .mini-kpi { margin-bottom: var(--s-4); }
+  .mini-kpi .t-kpi { font-size: 22px; }
+</style>
+</head>
+<body>
+  <h1 class="t-title h">Shell lift — how the panels sit</h1>
+  <p class="t-sub hsub">Same floating-sidebar layout, three treatments. Judge which reads as “floating” without feeling heavy.</p>
+
+  <!-- A -->
+  <div class="opt">
+    <p class="t-strong opt__name">A · Gray backdrop, border only <span style="color:var(--muted);font-weight:var(--fw-regular);">(current)</span></p>
+    <p class="t-sub opt__desc">Panels defined by a hairline on gray. Flattest, most on-system.</p>
+    <div class="screen v-a"><div class="app" data-shell></div></div>
+  </div>
+
+  <!-- B -->
+  <div class="opt">
+    <p class="t-strong opt__name">B · Gray backdrop, faint shadow</p>
+    <p class="t-sub opt__desc">Same, plus a whisper of shadow-pop. Panels lift off the gray.</p>
+    <div class="screen v-b"><div class="app" data-shell></div></div>
+  </div>
+
+  <!-- C -->
+  <div class="opt">
+    <p class="t-strong opt__name">C · White bg, floating sidebar shadow</p>
+    <p class="t-sub opt__desc">No gray tier. Sidebar floats on white via shadow; content sits open on the canvas. Lightest / airiest.</p>
+    <div class="screen v-c"><div class="app" data-shell></div></div>
+  </div>
+
+<script>
+  var shell =
+    '<aside class="sidebar">' +
+      '<div class="sb-brand"><span class="mark"></span><span class="switch">360 Multi-Rater <span class="chev">▾</span></span></div>' +
+      '<nav class="sb-nav">' +
+        '<div class="snav snav--on"><span class="ic"></span>แดชบอร์ด</div>' +
+        '<div class="snav"><span class="ic"></span>รอบการประเมิน</div>' +
+        '<div class="snav"><span class="ic"></span>ผู้ประเมิน</div>' +
+        '<div class="snav"><span class="ic"></span>รายงานผล</div>' +
+      '</nav>' +
+      '<div class="sb-user"><span class="avatar">วต</span><span class="uname">วิทิต</span></div>' +
+    '</aside>' +
+    '<main class="panel">' +
+      '<div class="p-head"><span class="t-title" style="font-size:var(--fs-section)">แดชบอร์ด</span></div>' +
+      '<div class="p-body">' +
+        '<div class="kpi-bar mini-kpi">' +
+          '<div class="kpi-bar__cell"><div class="kpi"><div class="kpi__head"><span class="kpi__label">พนักงาน</span><span class="kpi__delta kpi__delta--up">+3.2%</span></div><span class="t-kpi">1,284</span></div></div>' +
+          '<div class="kpi-bar__cell"><div class="kpi"><div class="kpi__head"><span class="kpi__label">เสร็จสิ้น</span><span class="kpi__delta kpi__delta--up">+12%</span></div><span class="t-kpi">847</span></div></div>' +
+          '<div class="kpi-bar__cell"><div class="kpi"><div class="kpi__head"><span class="kpi__label">คะแนน</span><span class="kpi__delta kpi__delta--down">−0.08</span></div><span class="t-kpi">4.21</span></div></div>' +
+        '</div>' +
+        '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>พนักงาน</th><th>สถานะ</th><th class="tbl__n">คะแนน</th></tr></thead><tbody>' +
+          '<tr><td class="tbl__lead">กานต์ ธ.</td><td><span class="st st--pos"><i></i>เสร็จสิ้น</span></td><td class="tbl__n">4.82</td></tr>' +
+          '<tr class="is-selected"><td class="tbl__lead">นิรมล ค.</td><td><span class="st st--cau"><i></i>กำลังดำเนิน</span></td><td class="tbl__n">4.71</td></tr>' +
+          '<tr><td class="tbl__lead">ศักดิ์ ล.</td><td><span class="st st--pos"><i></i>เสร็จสิ้น</span></td><td class="tbl__n">4.55</td></tr>' +
+        '</tbody></table></div>' +
+      '</div>' +
+    '</main>';
+  document.querySelectorAll('[data-shell]').forEach(function(a){ a.innerHTML = shell; });
+</script>
+</body>
+</html>

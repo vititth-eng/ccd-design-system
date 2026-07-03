@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Decide 19 · Floating sidebar shell</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" />
+<link rel="stylesheet" href="./tokens.css" />
+<link rel="stylesheet" href="./type.css" />
+<link rel="stylesheet" href="./tables.css" />
+<link rel="stylesheet" href="./status.css" />
+<link rel="stylesheet" href="./cards.css" />
+<style>
+  * { box-sizing: border-box; }
+  :root { --backdrop: #EEF0F3; }   /* NEW surface tier: gray the white panels float on */
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--backdrop); font-family: var(--font-sans); }
+
+  .app { display: flex; gap: var(--s-3); height: 100vh; padding: var(--s-3); }
+
+  /* floating panels */
+  .sidebar {
+    width: 200px; flex: 0 0 auto;
+    background: var(--card); border: 1px solid var(--rule); border-radius: var(--r-large);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .panel {
+    flex: 1 1 auto; min-width: 0;
+    background: var(--card); border: 1px solid var(--rule); border-radius: var(--r-large);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+
+  /* sidebar regions */
+  .sb-brand { display: flex; align-items: center; gap: var(--s-2); padding: var(--s-4) var(--s-3) var(--s-3); }
+  .mark { width: 22px; height: 22px; border-radius: var(--r-tiny); background: var(--ink); flex: 0 0 auto; }
+  .switch { display: inline-flex; align-items: center; gap: var(--s-2); font-size: var(--fs-body);
+            font-weight: var(--fw-semi); color: var(--ink); cursor: pointer; }
+  .switch .chev { color: var(--muted); font-size: var(--fs-caption); }
+
+  .sb-nav { flex: 1 1 auto; overflow: auto; padding: var(--s-2); }
+  .sgroup { font-size: var(--fs-caption); color: var(--muted); padding: var(--s-3) var(--s-3) var(--s-1); }
+  .snav { display: flex; align-items: center; gap: var(--s-2); padding: 7px var(--s-3); border-radius: var(--r-base);
+          font-size: var(--fs-body); color: var(--muted); cursor: pointer; }
+  .snav:hover { background: var(--divider); color: var(--ink); }
+  .snav--on { background: var(--accent-tint); color: var(--ink); font-weight: var(--fw-semi); }
+  .snav .ic { width: 15px; height: 15px; border-radius: var(--r-tiny); background: currentColor; opacity: .5; flex: 0 0 auto; }
+
+  .sb-user { display: flex; align-items: center; gap: var(--s-2); padding: var(--s-3); border-top: 1px solid var(--divider); }
+  .avatar { width: 28px; height: 28px; border-radius: var(--r-pill); background: var(--accent-tint);
+            color: var(--accent); display: inline-flex; align-items: center; justify-content: center;
+            font-size: var(--fs-caption); font-weight: var(--fw-semi); flex: 0 0 auto; }
+  .uname { font-size: var(--fs-body); color: var(--ink); font-weight: var(--fw-semi); }
+  .urole { font-size: var(--fs-caption); color: var(--muted); }
+
+  /* panel regions */
+  .p-head { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3);
+            padding: var(--s-4); border-bottom: 1px solid var(--divider); flex: 0 0 auto; }
+  .p-body { flex: 1 1 auto; overflow: auto; padding: var(--s-5); }
+  .btn-sm { font: inherit; font-size: var(--fs-caption); font-weight: var(--fw-semi); color: var(--ink);
+            background: var(--card); border: 1px solid var(--rule); border-radius: var(--r-base); padding: var(--s-1) var(--s-3); cursor: pointer; }
+  .tabs2 { display: flex; gap: var(--s-4); border-bottom: 1px solid var(--rule); margin-bottom: var(--s-4); }
+  .tb { padding: var(--s-2) 0; margin-bottom: -1px; font-size: var(--fs-body); color: var(--muted); border-bottom: 2px solid transparent; }
+  .tb--on { color: var(--ink); font-weight: var(--fw-semi); border-bottom-color: var(--accent); }
+  .mini-kpi { margin-bottom: var(--s-4); }
+</style>
+</head>
+<body>
+  <div class="app">
+    <!-- FLOATING SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sb-brand">
+        <span class="mark"></span>
+        <span class="switch">360 Multi-Rater <span class="chev">▾</span></span>
+      </div>
+      <nav class="sb-nav">
+        <div class="snav snav--on"><span class="ic"></span>แดชบอร์ด</div>
+        <div class="snav"><span class="ic"></span>รอบการประเมิน</div>
+        <div class="snav"><span class="ic"></span>ผู้ประเมิน</div>
+        <div class="snav"><span class="ic"></span>รายงานผล</div>
+        <div class="sgroup">ตั้งค่า</div>
+        <div class="snav"><span class="ic"></span>แบบฟอร์ม</div>
+        <div class="snav"><span class="ic"></span>สิทธิ์การใช้งาน</div>
+      </nav>
+      <div class="sb-user">
+        <span class="avatar">วต</span>
+        <div><div class="uname">วิทิต</div><div class="urole">ผู้ดูแลระบบ</div></div>
+      </div>
+    </aside>
+
+    <!-- FLOATING CONTENT PANEL -->
+    <main class="panel">
+      <div class="p-head">
+        <span class="t-title">แดชบอร์ด</span>
+        <button class="btn-sm">ส่งออก Excel</button>
+      </div>
+      <div class="p-body">
+        <div class="tabs2"><span class="tb tb--on">ภาพรวม</span><span class="tb">รายบุคคล</span><span class="tb">แผนก</span></div>
+
+        <div class="kpi-bar mini-kpi">
+          <div class="kpi-bar__cell"><div class="kpi"><div class="kpi__head"><span class="kpi__label">พนักงานทั้งหมด</span><span class="kpi__delta kpi__delta--up">+3.2%</span></div><span class="t-kpi">1,284</span></div></div>
+          <div class="kpi-bar__cell"><div class="kpi"><div class="kpi__head"><span class="kpi__label">ประเมินเสร็จสิ้น</span><span class="kpi__delta kpi__delta--up">+12%</span></div><span class="t-kpi">847</span></div></div>
+          <div class="kpi-bar__cell"><div class="kpi"><div class="kpi__head"><span class="kpi__label">คะแนนเฉลี่ย</span><span class="kpi__delta kpi__delta--down">−0.08</span></div><span class="t-kpi">4.21</span></div></div>
+          <div class="kpi-bar__cell"><div class="kpi"><div class="kpi__head"><span class="kpi__label">ค้างดำเนินการ</span><span class="kpi__delta kpi__delta--flat">±0</span></div><span class="t-kpi">32</span></div></div>
+        </div>
+
+        <div class="tbl-wrap"><table class="tbl">
+          <thead><tr><th>พนักงาน</th><th>ฝ่าย</th><th>สถานะ</th><th class="tbl__n">คะแนน</th><th class="tbl__n">อันดับ</th></tr></thead>
+          <tbody>
+            <tr><td class="tbl__lead">กานต์ ธ.</td><td>การตลาด</td><td><span class="st st--pos"><i></i>เสร็จสิ้น</span></td><td class="tbl__n">4.82</td><td class="tbl__n">1</td></tr>
+            <tr class="is-selected"><td class="tbl__lead">นิรมล ค.</td><td>ขาย</td><td><span class="st st--cau"><i></i>กำลังดำเนิน</span></td><td class="tbl__n">4.71</td><td class="tbl__n">2</td></tr>
+            <tr><td class="tbl__lead">ศักดิ์ ล.</td><td>ปฏิบัติการ</td><td><span class="st st--pos"><i></i>เสร็จสิ้น</span></td><td class="tbl__n">4.55</td><td class="tbl__n">3</td></tr>
+            <tr><td class="tbl__lead">ธนา พ.</td><td>บัญชี</td><td><span class="st st--neg"><i></i>เกินกำหนด</span></td><td class="tbl__n">4.10</td><td class="tbl__n">4</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

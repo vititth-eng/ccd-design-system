@@ -27,6 +27,7 @@
 .topnav__link {
   display: inline-flex; align-items: center; height: 100%;
   font-size: var(--fs-body); color: var(--muted); text-decoration: none;
+  white-space: nowrap;
   border-bottom: 2px solid transparent;
   transition: color .12s ease;
 }

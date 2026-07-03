@@ -72,3 +72,8 @@ body {
   font-weight: var(--fw-regular);
   color: var(--muted);
 }
+
+/* Reset UA margins on every role — spacing is layout's job, never the
+   element's default. (A stray <h2>/<p> margin was the modal-header
+   "floating" bug; zero it once, here, so it can't recur.) */
+.t-kpi, .t-title, .t-section, .t-body, .t-strong, .t-sub, .t-caption { margin: 0; }
