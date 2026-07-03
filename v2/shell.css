@@ -77,7 +77,9 @@
 .shell__item--on { background: var(--accent-tint); color: var(--ink); }
 .shell__item:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 .shell__item svg { width: 17px; height: 17px; flex: 0 0 auto; margin: 0 5.5px; }   /* centers the 17px glyph in the 28px slot */
-.shell--collapsed .shell__item { justify-content: center; padding: 8px 0; }
+/* Collapsed: keep the SAME left-anchored icon slot (do NOT re-center with
+   justify-content — that put the glyph on a different axis, so it jumped ~1px
+   between states). Label is hidden below; the slot stays put. */
 /* collapsed labels: visually hidden, NOT display:none — screen readers still
    need the accessible name on the icon-only nav links */
 .shell--collapsed .shell__item .label {
@@ -141,8 +143,9 @@
   flex: 1 1 auto; min-width: 0;
   display: flex; flex-direction: column;
   overflow-y: auto; overflow-x: hidden;
-  scrollbar-gutter: stable both-edges;   /* reserve the gutter on BOTH sides so content stays centred (no heavier right margin) and doesn't jump when the scrollbar appears */
+  scrollbar-width: none;   /* hide the bar (Firefox) — content uses full width, no reserved gutter, no jump */
 }
+.shell__main::-webkit-scrollbar { width: 0; height: 0; }   /* WebKit/Blink */
 .shell__head {
   display: flex; align-items: center; justify-content: space-between; gap: var(--s-3);
   padding: var(--s-2) var(--s-3) var(--s-4);
