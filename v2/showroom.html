@@ -74,6 +74,15 @@
   /* live iframes */
   .frame-wrap { border: 1px solid var(--rule); border-radius: var(--r-base); overflow: hidden; background: var(--card); box-shadow: var(--shadow-float); }
   iframe { display: block; width: 100%; border: 0; }
+
+  /* Narrow (preview pane / small window): the fixed 210px sidebar was crushing
+     the gallery column to ~300px, so wide tables overflowed and scrolled. Drop
+     the sidebar and go full-width — the galleries are the point, not the nav. */
+  @media (max-width: 860px) {
+    body { grid-template-columns: 1fr; }
+    .nav { display: none; }
+    main { padding: var(--s-5) var(--s-4); max-width: none; }
+  }
 </style>
 </head>
 <body>
