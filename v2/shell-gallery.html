@@ -21,17 +21,10 @@
     <!-- SIDEBAR -->
     <aside class="shell__sidebar">
       <div class="shell__brand">
-        <span class="shell__mark"></span>
-        <button class="shell__switch" id="appswitch" aria-expanded="false" aria-controls="appmenu"><span class="name">360 Multi-Rater</span>
-          <svg class="chev" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4.5 6 7.5 9 4.5"/></svg>
-        </button>
-        <div class="menu" id="appmenu">
-          <a class="menu__item menu__item--on" href="#" aria-current="true">
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5 6.5 12 13 4.5"/></svg>360 Multi-Rater</a>
-          <a class="menu__item" href="#"><svg></svg>Onboarding Survey</a>
-          <a class="menu__item" href="#"><svg></svg>Sounding Board</a>
-          <a class="menu__item" href="#"><svg></svg>DISC Live</a>
-        </div>
+        <a class="shell__home" href="#" aria-label="ไปหน้าหลัก">
+          <span class="shell__mark"></span>
+        </a>
+        <span class="shell__appname">360 Multi-Rater</span>
       </div>
 
       <nav class="shell__nav" aria-label="เมนูหลัก">
@@ -118,8 +111,7 @@
 
   // Disclosure menus: trigger toggles, outside click / Esc closes.
   var menus = [
-    { btn: document.getElementById('appswitch'), menu: document.getElementById('appmenu') },
-    { btn: document.getElementById('userbtn'),   menu: document.getElementById('usermenu') }
+    { btn: document.getElementById('userbtn'), menu: document.getElementById('usermenu') }
   ];
   function closeMenus(except){
     menus.forEach(function(m){

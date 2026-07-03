@@ -30,11 +30,16 @@
 }
 .shell--collapsed .shell__sidebar { width: 56px; }
 
-/* brand + app-switcher */
-.shell__brand { display: flex; align-items: flex-end; gap: var(--s-2); padding: var(--s-3); min-width: 0; position: relative; }
-/* switcher menu drops below the brand row, inside the sidebar panel
-   (sidebar clips overflow, so the menu spans the sidebar width) */
-.shell__brand .menu { top: calc(100% - var(--s-1)); left: var(--s-2); right: var(--s-2); min-width: 0; }
+/* brand: lion mark links home (→ landing gateway); app name is a static label.
+   No app-switcher dropdown — most tools don't switch often, so the lion IS the
+   way back to the umbrella. */
+.shell__brand { display: flex; align-items: flex-end; gap: var(--s-2); padding: var(--s-3); min-width: 0; }
+.shell__home {
+  display: inline-flex; flex: 0 0 auto; border-radius: var(--r-tiny);
+  transition: opacity .12s ease;
+}
+.shell__home:hover { opacity: .7; }
+.shell__home:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 /* Singha lion mark (assets/ccd-mark-full.svg) painted via mask so it takes
    --ink from tokens (currentColor inside an <img> can't inherit page color). */
 .shell__mark {
@@ -43,17 +48,12 @@
   mask: url("./assets/ccd-mark-full.svg") center / contain no-repeat;
   -webkit-mask: url("./assets/ccd-mark-full.svg") center / contain no-repeat;
 }
-.shell__switch {
-  display: inline-flex; align-items: center; gap: var(--s-1); min-width: 0;
-  font: inherit; font-size: var(--fs-body); font-weight: var(--fw-semi); color: var(--ink);
-  line-height: 1.2;                 /* hug the text so flex-end lands the name on the lion's lower edge */
-  padding: 0 0 3px;                 /* optical nudge: baseline meets the lion's feet, not the box edge */
-  background: none; border: none; cursor: pointer;
+.shell__appname {
+  min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-size: var(--fs-body); font-weight: var(--fw-semi); color: var(--ink);
+  line-height: 1.2; padding-bottom: 3px;   /* baseline meets the lion's lower edge */
 }
-.shell__switch .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.shell__switch .chev { color: var(--muted); flex: 0 0 auto; }
-.shell--collapsed .shell__switch .chev { display: none; }
-.shell__switch:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: var(--r-tiny); }
+.shell--collapsed .shell__appname { display: none; }
 
 /* section nav */
 .shell__nav { flex: 1 1 auto; overflow-x: hidden; overflow-y: auto; padding: var(--s-2); }
@@ -79,9 +79,8 @@
 .shell__item svg { width: 17px; height: 17px; flex: 0 0 auto; margin: 0 5.5px; }   /* centers the 17px glyph in the 28px slot */
 .shell--collapsed .shell__item { justify-content: center; padding: 8px 0; }
 /* collapsed labels: visually hidden, NOT display:none — screen readers still
-   need the accessible name on the icon-only links (and the switch button) */
-.shell--collapsed .shell__item .label,
-.shell--collapsed .shell__switch .name {
+   need the accessible name on the icon-only nav links */
+.shell--collapsed .shell__item .label {
   position: absolute; width: 1px; height: 1px; overflow: hidden;
   clip-path: inset(50%); white-space: nowrap;
 }
@@ -134,15 +133,26 @@
 .shell--collapsed .menu { display: none; }
 
 /* ── MAIN (content, open on the canvas) ────────────────────── */
-.shell__main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; overflow: hidden; }
+/* The WHOLE column scrolls (not an inner region), and reserves the scrollbar
+   gutter here — so the sticky head and the body share one right inset. Putting
+   the gutter on an inner .shell__body instead left the head outside it and the
+   table sat 15px further right than the header buttons. */
+.shell__main {
+  flex: 1 1 auto; min-width: 0;
+  display: flex; flex-direction: column;
+  overflow-y: auto; overflow-x: hidden;
+  scrollbar-gutter: stable both-edges;   /* reserve the gutter on BOTH sides so content stays centred (no heavier right margin) and doesn't jump when the scrollbar appears */
+}
 .shell__head {
   display: flex; align-items: center; justify-content: space-between; gap: var(--s-3);
   padding: var(--s-2) var(--s-3) var(--s-4);
   flex: 0 0 auto;
+  position: sticky; top: 0; z-index: 1;
+  background: var(--canvas);   /* covers content scrolling underneath */
 }
 .shell__title { min-width: 0; }
 .shell__actions { display: inline-flex; align-items: center; gap: var(--s-2); flex: 0 0 auto; }
-.shell__body { flex: 1 1 auto; overflow: auto; scrollbar-gutter: stable; padding: 0 var(--s-3) var(--s-3); }
+.shell__body { flex: 1 1 auto; padding: 0 var(--s-3) var(--s-3); }
 
 @media (prefers-reduced-motion: reduce) {
   .shell__sidebar, .shell__collapse svg { transition: none; }
