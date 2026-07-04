@@ -85,3 +85,22 @@ select.control {
   content: ""; width: 8px; height: 8px; border-radius: var(--r-pill);
   background: var(--neg); flex: 0 0 auto;
 }
+
+/* ── Layout — form measure + field grouping. -----------------
+   forms.css now covers page assembly, not just the control:
+   .form caps + centres the measure; .stack / .row2 group fields. */
+.form  { max-width: var(--form-measure, 480px); margin-inline: auto; }
+.form--wide { --form-measure: 720px; }          /* admin / dense multi-column forms */
+
+.stack { display: flex; flex-direction: column; gap: var(--s-4); }
+.row2  { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4); }
+
+/* ── Mobile — attendee forms (register, rate) are phone-used.
+   Two real-device landmines closed here; everything else is
+   layout reflow. Admin forms run on laptops — unaffected. ---- */
+@media (max-width: 400px) {
+  .control { font-size: 16px; min-height: 44px; }   /* 16px = no iOS focus-zoom · 44px = thumb target */
+  textarea.control { min-height: 88px; }
+  .form { max-width: 100%; }                          /* full-width on phone */
+  .row2 { grid-template-columns: 1fr; }              /* field pairs stack */
+}
