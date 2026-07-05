@@ -35,6 +35,7 @@
   --pos-strong: #1A7F37;   /* accessible green text — 5.08:1 on white, 4.52:1 on --pos-tint */
   --pos-tint:   #E7F5EC;   /* green trend-pill / status-pill background */
   --neg-tint:   #FBE9E7;   /* red trend-pill / status-pill background (pairs with --neg-strong) */
+  --cau-strong: #8A6100;   /* accessible amber TEXT/FILL — 5.56:1 on white; pairs with --cau-tint (warn rows, caution pills, low-N counts) */
   --cau-tint:   #FBF0D5;   /* amber status-pill background (pill text is ink + dot, not amber) */
 
   /* ── TYPE ──────────────────────────────────────────────── */
