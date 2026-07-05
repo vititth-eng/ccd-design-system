@@ -69,7 +69,21 @@
     </div>
   </section>
 
+  <!-- 4 · Strong text tier ---------------------------------------- -->
+  <section>
+    <p class="t-section lbl">4 · Strong text tier <span>— a status hue read as TEXT / a NUMBER (not a dot). Passes AA on white.</span></p>
+    <div class="card">
+      <div class="row">
+        <span style="color:var(--pos-strong); font-weight:var(--fw-semi); font-variant-numeric:tabular-nums;">+12% ↑</span>
+        <span style="color:var(--cau-strong); font-weight:var(--fw-semi); font-variant-numeric:tabular-nums;">5 คน · ต่ำกว่าเกณฑ์</span>
+        <span style="color:var(--neg-strong); font-weight:var(--fw-semi); font-variant-numeric:tabular-nums;">เกินกำหนด 3 วัน</span>
+      </div>
+      <p class="t-caption" style="color:var(--muted); margin:var(--s-3) 0 0;">Bright <code>--pos/--cau/--neg</code> are dot-only (fail AA as text). Use <code>--pos-strong</code> / <code>--cau-strong</code> / <code>--neg-strong</code> when a status hue must be read as text or a number: low-N counts, deltas, overdue days.</p>
+    </div>
+  </section>
+
   <p class="aa" id="aa">checking pill contrast…</p>
+  <p class="aa" id="aa2">checking strong-text contrast…</p>
 
 <script>
   function hx(h){h=h.replace('#','');return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];}
@@ -81,6 +95,10 @@
     'cau <b>'+ratio(hx('#142549'),hx('#FBF0D5'))+'</b> · '+
     'neg <b>'+ratio(hx('#142549'),hx('#FBE9E7'))+'</b> · '+
     'none <b>'+ratio(hx('#142549'),hx('#EDEFF1'))+'</b>';
+  document.getElementById('aa2').innerHTML =
+    'Strong text AA, on white (≥4.5): pos <b>'+ratio(hx('#1A7F37'),hx('#FFFFFF'))+'</b> · '+
+    'cau <b>'+ratio(hx('#8A6100'),hx('#FFFFFF'))+'</b> · '+
+    'neg <b>'+ratio(hx('#C4372C'),hx('#FFFFFF'))+'</b>';
 </script>
 </body>
 </html>
