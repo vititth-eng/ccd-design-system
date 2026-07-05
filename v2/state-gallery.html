@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>State screen · v2 component</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" />
+<link rel="stylesheet" href="./tokens.css" />
+<link rel="stylesheet" href="./type.css" />
+<link rel="stylesheet" href="./buttons.css" />
+<link rel="stylesheet" href="./state.css" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--canvas); padding: var(--s-6) var(--s-7); }
+  .page-title { margin: 0 0 var(--s-1); }
+  .page-sub   { margin: 0 0 var(--s-6); }
+  .lbl { margin: 0 0 var(--s-3); }
+  .lbl span { color: var(--muted); font-weight: var(--fw-regular); }
+  /* each variant framed so the full-page block reads in a gallery grid */
+  .frame { border: 1px solid var(--rule); border-radius: var(--r-base); background: var(--card); margin-bottom: var(--s-6); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--s-5); }
+  .frame .state { padding: var(--s-7) var(--s-4); }
+</style>
+</head>
+<body>
+  <h1 class="t-title page-title">State screens</h1>
+  <p class="t-sub page-sub">Full-page placeholder — empty · done · error. One structure, icon tint + copy vary.</p>
+
+  <div class="grid">
+
+    <!-- empty (neutral, has CTA) -->
+    <div class="frame">
+      <div class="state">
+        <span class="state__icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 9h16M8 3v4M16 3v4"/></svg>
+        </span>
+        <h2 class="t-section">ยังไม่มีรอบการประเมิน</h2>
+        <p class="state__text">เริ่มต้นด้วยการสร้างรอบแรก เลือกกรอบ ผู้ถูกประเมิน แล้วเปิดรอบ</p>
+        <div class="state__actions"><button class="btn btn--primary">+ สร้างรอบใหม่</button></div>
+      </div>
+    </div>
+
+    <!-- done (success, terminal) -->
+    <div class="frame">
+      <div class="state">
+        <span class="state__icon state__icon--pos">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        </span>
+        <h2 class="t-section">ส่งเรียบร้อยแล้ว</h2>
+        <p class="state__text">คำตอบของท่านถูกบันทึกและส่งแล้ว ปิดหน้าต่างนี้ได้เลย</p>
+      </div>
+    </div>
+
+    <!-- error / denied -->
+    <div class="frame">
+      <div class="state">
+        <span class="state__icon state__icon--neg">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16v.5"/></svg>
+        </span>
+        <h2 class="t-section">ไม่พบหน้าที่ต้องการ</h2>
+        <p class="state__text">ลิงก์อาจหมดอายุหรือไม่ถูกต้อง ลองใหม่หรือติดต่อผู้ดูแล</p>
+        <div class="state__actions"><button class="btn btn--secondary">ลองใหม่</button></div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
