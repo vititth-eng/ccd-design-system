@@ -7,14 +7,16 @@
    ============================================================ */
 
 /* Card wrapper — the border + radius come from here, not the table.
-   overflow hidden clips rows to the radius. */
+   Wide table scrolls sideways instead of clipping (was overflow:hidden →
+   silent data loss on a narrow viewport); vertical stays clipped to the radius. */
 .tbl-wrap {
   background: var(--card);
   border: 1px solid var(--rule);
   border-radius: var(--r-base);
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
-.tbl-scroll { overflow-x: auto; }   /* opt-in horizontal scroll for wide tables */
+.tbl-scroll { overflow-x: auto; }   /* redundant now (tbl-wrap scrolls by default); kept for explicit intent */
 
 .tbl {
   width: 100%;
