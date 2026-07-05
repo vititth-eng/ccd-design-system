@@ -71,15 +71,17 @@
    dashboard header; avoids the identical-tiles look). */
 .kpi-bar {
   display: flex;
-  background: var(--card);
+  flex-wrap: wrap;                 /* cells reflow 4 → 2 → 1 as the card narrows */
+  gap: 1px;                        /* 1px gap + the bg below = hairlines on BOTH axes, survives wrap */
+  background: var(--divider);
   border: 1px solid var(--rule);
   border-radius: var(--r-base);
   overflow: hidden;
 }
 .kpi-bar__cell {
-  flex: 1;
+  flex: 1 1 190px;                 /* grow to fill the row; wrap once a cell can't hold ~190px (fits ฿287,654) */
   min-width: 0;
   padding: var(--s-5);
-  border-left: 1px solid var(--divider);
+  background: var(--card);
 }
-.kpi-bar__cell:first-child { border-left: 0; }
+/* hairlines now come from the 1px grid gap, not border-left — no first-child reset needed */
