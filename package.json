@@ -5,6 +5,7 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
+    "./glossary": "./src/glossary.ts",
     "./tokens.css": "./tokens.css",
     "./tokens-dashboard.css": "./tokens-dashboard.css",
     "./buttons.css": "./buttons.css",
