@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Tabs · v2 component</title>
+<title>Tabs &amp; seg · v2 component</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" />
 <link rel="stylesheet" href="./tokens.css" />
 <link rel="stylesheet" href="./type.css" />
@@ -15,19 +15,49 @@
   .lbl { margin: 0 0 var(--s-3); }
   .lbl span { color: var(--muted); font-weight: var(--fw-regular); }
   .tabpanel { margin-top: var(--s-5); color: var(--muted); font-size: var(--fs-body); }
+  section { margin-bottom: var(--s-7); }
+  .note { max-width: 62ch; margin: var(--s-4) 0 0; color: var(--muted); font-size: var(--fs-caption); }
+  .note b { color: var(--ink); font-weight: var(--fw-semi); }
+  .rowset { display: flex; gap: var(--s-5); flex-wrap: wrap; align-items: center; }
 </style>
 </head>
 <body>
   <div class="content">
-    <!-- TABS -->
-    <p class="t-section lbl">Tabs <span>— in-page section switcher, accent underline = active</span></p>
-    <div class="tabs" id="tabs">
-      <button class="tab tab--active" data-panel="p1">ภาพรวม</button>
-      <button class="tab" data-panel="p2">รายบุคคล</button>
-      <button class="tab" data-panel="p3">แผนก</button>
-      <button class="tab" data-panel="p4">ประวัติ</button>
-    </div>
-    <div class="tabpanel" id="panel">แสดงเนื้อหาแท็บ “ภาพรวม”</div>
+    <!-- 1 · TABS -->
+    <section>
+      <p class="t-section lbl">1 · Tabs <span>— in-page section switcher, accent underline = active</span></p>
+      <div class="tabs" id="tabs">
+        <button class="tab tab--active" data-panel="p1">ภาพรวม</button>
+        <button class="tab" data-panel="p2">รายบุคคล</button>
+        <button class="tab" data-panel="p3">แผนก</button>
+        <button class="tab" data-panel="p4">ประวัติ</button>
+      </div>
+      <div class="tabpanel" id="panel">แสดงเนื้อหาแท็บ “ภาพรวม”</div>
+    </section>
+
+    <!-- 2 · SEG -->
+    <section>
+      <p class="t-section lbl">2 · Seg <span>— in-view value filter, the chosen option lifts out of the trough</span></p>
+      <div class="rowset">
+        <div class="seg" id="seg">
+          <button class="seg__opt seg__opt--active">กำลังดำเนิน</button>
+          <button class="seg__opt">เสร็จสิ้น</button>
+          <button class="seg__opt">ยกเลิก</button>
+          <button class="seg__opt">ทั้งหมด</button>
+        </div>
+        <div class="seg">
+          <button class="seg__opt seg__opt--active">กำลังดำเนิน</button>
+          <button class="seg__opt" disabled>เสร็จสิ้น</button>
+        </div>
+      </div>
+      <p class="note">
+        <b>Tabs switch a section; seg narrows the one you are in.</b> A seg sits above a table that already
+        draws its own outline, so it adds no border of its own: the trough and the lifted card carry the
+        state. Labels are body-size (at caption size the muted text reads as a broken font), they carry no
+        counts (the view below already answers "how many"), and the active option never changes weight,
+        because bolding widens the advance and reflows the row.
+      </p>
+    </section>
   </div>
 
 <script>
@@ -37,6 +67,10 @@
     document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('tab--active'); });
     b.classList.add('tab--active');
     document.getElementById('panel').textContent = 'แสดงเนื้อหาแท็บ “' + labels[b.dataset.panel] + '”';
+  });
+  document.getElementById('seg').addEventListener('click', function(e){
+    var b = e.target.closest('.seg__opt'); if (!b || b.disabled) return;
+    this.querySelectorAll('.seg__opt').forEach(function(o){ o.classList.toggle('seg__opt--active', o === b); });
   });
 </script>
 </body>

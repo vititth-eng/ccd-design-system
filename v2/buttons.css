@@ -54,9 +54,13 @@
 .btn--danger:hover:not(:disabled)  { filter: brightness(.93); }
 .btn--danger:active:not(:disabled) { filter: brightness(.86); }
 
-/* Small — toolbars, table row actions. 12px (owner-approved exception to the
-   14 Thai floor: label is short + bold 600, so legibility holds). */
-.btn--sm { padding: var(--s-1) var(--s-3); font-size: var(--fs-caption); }
+/* Small — a tighter BOX, never smaller type. The label stays --fs-body: a
+   caption-size control inside body-size copy reads as a rendering fault, not as
+   hierarchy (it cost us the seg filter and a table cell before this rule existed).
+   Where each size goes is decided by what the button stands next to:
+     page head, card/popover footer, form bar  →  .btn        (answers a title or aligns with .control)
+     card header, table row, toolbar           →  .btn--sm    (rides a line of text) */
+.btn--sm { padding: var(--s-1) var(--s-3); }
 
 /* Full-width — forms, mobile. */
 .btn--block { width: 100%; }

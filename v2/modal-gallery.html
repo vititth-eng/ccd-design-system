@@ -19,17 +19,28 @@
   .lbl span { color: var(--muted); font-weight: var(--fw-regular); }
   .rowb { display: flex; gap: var(--s-3); flex-wrap: wrap; }
   .x { width:16px; height:16px; }
+  .note { max-width: 62ch; margin: var(--s-5) 0 0; color: var(--muted); font-size: var(--fs-caption); }
+  .note b { color: var(--ink); font-weight: var(--fw-semi); }
 </style>
 </head>
 <body>
   <h1 class="t-title page-title">Modal</h1>
   <p class="t-sub page-sub">Native &lt;dialog&gt; · focus trap + ESC + backdrop free · closes on ×, Cancel, ESC, or backdrop click</p>
 
+  <p class="note" style="margin-top:0; margin-bottom:var(--s-6)">
+    <b>Modal when the task interrupts:</b> bounded (≤ ~5 fields), safe to discard, and it does not need the
+    page behind it. Creating a thing, confirming a consequence. <b>Inline when the form IS the page's
+    content</b>, or when you fill it in repeatedly (add a task, edit a row) — there the surrounding rows are
+    the context. Never hand-roll a modal as an absolutely-positioned panel: you lose the focus trap, ESC and
+    the backdrop, and you inherit whatever stacking context you were dropped into.
+  </p>
+
   <p class="t-section lbl">Triggers <span>— click to open</span></p>
   <div class="rowb">
     <button class="btn btn--primary" onclick="document.getElementById('m-confirm').showModal()">ยืนยันการบันทึก</button>
     <button class="btn btn--danger"  onclick="document.getElementById('m-danger').showModal()">ลบรอบประเมิน</button>
     <button class="btn btn--secondary" onclick="document.getElementById('m-form').showModal()">แก้ไขข้อมูล</button>
+    <button class="btn btn--secondary" onclick="document.getElementById('m-long').showModal()">ฟอร์มยาว</button>
   </div>
 
   <!-- Confirm -->
@@ -91,6 +102,40 @@
       <button class="btn btn--primary" data-close>บันทึก</button>
     </div>
   </dialog>
+
+  <!-- Long form — the body scrolls, the head and foot stay put -->
+  <dialog class="modal" id="m-long">
+    <div class="modal__head">
+      <h2 class="modal__title t-title">สร้างรอบการประเมิน</h2>
+      <button class="modal__close" data-close aria-label="ปิด">
+        <svg class="x" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+      </button>
+    </div>
+    <div class="modal__body">
+      <div style="display:flex; flex-direction:column; gap:var(--s-4);">
+        <div class="field"><label class="field__label">ชื่อรอบ</label><input class="control" type="text" value="Q4 / 2026" /></div>
+        <div class="field"><label class="field__label">วัตถุประสงค์</label><input class="control" type="text" /></div>
+        <div class="field"><label class="field__label">กลุ่มเป้าหมาย</label><input class="control" type="text" /></div>
+        <div class="field"><label class="field__label">ฝ่าย</label><select class="control"><option>ทั้งหมด</option><option>การตลาด</option></select></div>
+        <div class="field"><label class="field__label">จำนวนรุ่น</label><input class="control" type="number" value="4" /></div>
+        <div class="field"><label class="field__label">คน/รุ่น</label><input class="control" type="number" value="25" /></div>
+        <div class="field"><label class="field__label">ผู้ดูแล</label><input class="control" type="text" /></div>
+        <div class="field"><label class="field__label">วันเริ่ม</label><input class="control" type="date" /></div>
+        <div class="field"><label class="field__label">วันสิ้นสุด</label><input class="control" type="date" /></div>
+        <div class="field"><label class="field__label">หมายเหตุ</label><textarea class="control" rows="3"></textarea></div>
+      </div>
+    </div>
+    <div class="modal__foot">
+      <button class="btn btn--secondary" data-close>ยกเลิก</button>
+      <button class="btn btn--primary" data-close>สร้างรอบ</button>
+    </div>
+  </dialog>
+
+  <p class="note">
+    <b>A long form grows down, never sideways.</b> The modal caps at <code>min(84vh, 720px)</code>, the body
+    scrolls, and the head and foot stay pinned so the title and the confirm button are always on screen. If a
+    form needs more width than 460px to make sense, it is a page, not a modal.
+  </p>
 
 <script>
   // close on ×/Cancel/Save
