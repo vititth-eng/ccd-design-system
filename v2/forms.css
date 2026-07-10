@@ -1,0 +1,106 @@
+/* ============================================================
+   CCD Design System v2 — FORMS
+   Ground-up rebuild 2026-07-01, from tokens.css + type.css.
+   Internal dense tool: compact fields, accent only on focus,
+   error carries meaning by a neg dot (text stays ink — same
+   Type-1 doctrine as the table status).
+   ============================================================ */
+
+/* Field = label + control + hint, stacked. ------------------- */
+.field { display: flex; flex-direction: column; gap: var(--s-2); }
+
+.field__label {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semi);   /* labels anchor the scan */
+  color: var(--ink);
+}
+.field__label .req { color: var(--neg); margin-left: 2px; }   /* required mark — dot-tier red, glyph only */
+
+.field__hint { font-size: var(--fs-body); color: var(--muted); }
+
+/* Control base — input / textarea / select share this. ------- */
+.control {
+  width: 100%;
+  font: inherit;
+  font-size: var(--fs-body);
+  color: var(--ink);
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-base);
+  padding: var(--row-y) var(--s-3);
+  transition: border-color .12s ease, box-shadow .12s ease;
+}
+.control::placeholder { color: var(--muted); }   /* muted = 5.51:1, safe as placeholder */
+
+.control:hover { border-color: var(--muted); }
+
+.control:focus,
+.control:focus-visible {
+  outline: 2px solid transparent;              /* invisible normally (kills native orange) but Windows High Contrast Mode paints it — box-shadow is stripped there (CCD-110) */
+  outline-offset: -2px;
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);   /* reads as a crisp 2px brand border, no halo, no layout shift */
+}
+
+.control:disabled {
+  background: var(--divider);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+textarea.control { min-height: 88px; resize: vertical; line-height: var(--lh-normal); }
+
+/* Select — native chevron is inconsistent (Safari clamps height),
+   so strip it and paint our own. */
+select.control {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: var(--s-6);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%2361697A' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--s-3) center;
+}
+
+/* Checkbox / radio — native, tinted to brand. accent-color is
+   one line and respects the OS control; no custom SVG needed. */
+.check { display: inline-flex; align-items: center; gap: var(--s-2); font-size: var(--fs-body); color: var(--ink); }
+.check input[type="checkbox"],
+.check input[type="radio"] {
+  width: 16px; height: 16px; margin: 0; flex: 0 0 auto;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.check input:disabled { cursor: not-allowed; }
+.check input:disabled + span { color: var(--muted); }
+
+/* Error state — border turns neg, a neg dot leads the message;
+   message text stays ink (bright red would fail AA as text). */
+.field--error .control { border-color: var(--neg); }
+.field--error .control:focus { box-shadow: inset 0 0 0 1px var(--neg); }   /* 2px neg border, matching the no-halo focus */
+.field__error {
+  display: inline-flex; align-items: center; gap: var(--s-2);
+  font-size: var(--fs-body); color: var(--ink);
+}
+.field__error::before {
+  content: ""; width: 8px; height: 8px; border-radius: var(--r-pill);
+  background: var(--neg); flex: 0 0 auto;
+}
+
+/* ── Layout — form measure + field grouping. -----------------
+   forms.css now covers page assembly, not just the control:
+   .form caps + centres the measure; .stack / .row2 group fields. */
+.form  { max-width: var(--form-measure, 480px); margin-inline: auto; }
+.form--wide { --form-measure: 720px; }          /* admin / dense multi-column forms */
+
+.stack { display: flex; flex-direction: column; gap: var(--s-4); }
+.row2  { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4); }
+
+/* ── Mobile — attendee forms (register, rate) are phone-used.
+   Two real-device landmines closed here; everything else is
+   layout reflow. Admin forms run on laptops — unaffected. ---- */
+@media (max-width: 400px) {
+  .control { font-size: 16px; min-height: 44px; }   /* 16px = no iOS focus-zoom · 44px = thumb target */
+  textarea.control { min-height: 88px; }
+  .form { max-width: 100%; }                          /* full-width on phone */
+  .row2 { grid-template-columns: 1fr; }              /* field pairs stack */
+}

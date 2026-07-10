@@ -1,0 +1,79 @@
+/* ============================================================
+   CCD Design System v2 — TYPE ROLES
+   Ground-up rebuild 2026-07-01. The welded roles as classes:
+   size + weight + colour move TOGETHER, never as free dials.
+   Apply a role class; never set font-size/weight/color ad hoc.
+   ============================================================ */
+
+/* Base — every screen sets the family + body defaults on <body>. */
+body {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-normal);
+  color: var(--ink);
+}
+
+/* Roles ---------------------------------------------------------- */
+
+/* Hero number — the ONLY 700 on a page. Tabular for aligned digits. */
+.t-kpi {
+  font-size: var(--fs-kpi);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-tight);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Page title — once per page, sparingly. */
+.t-title {
+  font-size: var(--fs-title);
+  font-weight: var(--fw-semi);
+  line-height: var(--lh-snug);
+  color: var(--ink);
+}
+
+/* Section header — the header OF a body block; repeats per section. */
+.t-section {
+  font-size: var(--fs-section);
+  font-weight: var(--fw-semi);
+  line-height: var(--lh-snug);
+  color: var(--ink);
+}
+
+/* Body — body text AND data. The workhorse. */
+.t-body {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-normal);
+  color: var(--ink);
+}
+
+/* Body-strong — read-first number / emphasis / interactive / label column. */
+.t-strong {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semi);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Subheader / meta — secondary line under a title, breadcrumb, quiet tier.
+   14-gray is safe here because position (under a title) carries the hierarchy. */
+.t-sub {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-normal);
+  color: var(--muted);
+}
+
+/* Caption — 12 gray. Used sparingly (Thai floor is 14); default small text to .t-sub. */
+.t-caption {
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-regular);
+  color: var(--muted);
+}
+
+/* Reset UA margins on every role — spacing is layout's job, never the
+   element's default. (A stray <h2>/<p> margin was the modal-header
+   "floating" bug; zero it once, here, so it can't recur.) */
+.t-kpi, .t-title, .t-section, .t-body, .t-strong, .t-sub, .t-caption { margin: 0; }

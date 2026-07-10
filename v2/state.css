@@ -1,0 +1,43 @@
+/* ============================================================
+   CCD Design System v2 — STATE SCREEN
+   Ground-up rebuild; graduated 2026-07-05 from multi-rater mocks
+   (.empty + .done were one shape used 3×).
+   Full-page state / message block: empty · done · error · denied.
+   ONE structure — centered icon + title + text + actions; only the
+   icon TINT and the copy vary. NOT status.css (.st = inline dot/pill);
+   this is the whole-screen placeholder.
+   Title/text use the type scale: <h1 class="t-title"> + <p class="state__text">.
+   ============================================================ */
+
+.state {
+  max-width: 420px;
+  margin-inline: auto;
+  padding: var(--s-8) var(--s-4);
+  text-align: center;
+}
+.state h1, .state h2 { margin: 0 0 var(--s-2); }
+
+/* icon disc — default neutral (empty / no-data) */
+.state__icon {
+  width: 64px; height: 64px;
+  border-radius: var(--r-pill);
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-bottom: var(--s-4);
+  background: var(--divider); color: var(--muted);
+}
+.state__icon--pos { background: var(--pos-tint); color: var(--pos-strong); }   /* done / success */
+.state__icon--neg { background: var(--neg-tint); color: var(--neg-strong); }   /* error / access-denied */
+.state__icon--cau { background: var(--cau-tint); color: var(--cau-strong); }   /* warning / partial */
+
+.state__text {
+  color: var(--muted);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  margin: 0 0 var(--s-5);
+}
+
+/* action stack — centered, thumb-width on phones */
+.state__actions {
+  display: flex; flex-direction: column; gap: var(--s-2);
+  max-width: 280px; margin-inline: auto;
+}

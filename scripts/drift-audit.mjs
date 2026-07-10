@@ -4,7 +4,7 @@
 //   node scripts/drift-audit.mjs <tool-path>
 //   node scripts/drift-audit.mjs ~/code/ccd-brb-onboarding
 
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join, resolve, relative, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -113,6 +113,13 @@ const hasLockup = /ccd-(full|wireframe)\.svg/.test(htmlBlob);
 // namespaces (--color-*, --text-*, --spacing-*, etc.) which build-tool
 // consumers reference directly.
 const scriptDir = dirname(fileURLToPath(import.meta.url));
+// v1 retired 2026-07-10: root tokens.css no longer exists on main. The floors this
+// gate froze were v1 floors; each consumer's gate dies with its v2 redesign. Until
+// then, pass instead of crashing every consumer PR.
+if (!existsSync(join(scriptDir, "..", "tokens.css"))) {
+  console.log("drift-gate: v1 retired from main — gate retired, passing.");
+  process.exit(0);
+}
 const systemTokensSrc = readFileSync(join(scriptDir, "..", "tokens.css"), "utf8");
 let presetTokensSrc = "";
 try { presetTokensSrc = readFileSync(join(scriptDir, "..", "tailwind-preset.css"), "utf8"); } catch {}

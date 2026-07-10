@@ -1,0 +1,25 @@
+/* ============================================================
+   CCD Design System v2 — NAV
+   Ground-up rebuild 2026-07-01, from tokens.css + type.css.
+   Doctrine: in-page tabs ONLY (no breadcrumbs, no top nav —
+   the v2 app frame is the sidebar shell; see shell.css).
+   Retired 2026-07-05: .topnav / .avatar (zero v2 consumers, not planned).
+   An accent underline marks "you are here".
+   ============================================================ */
+
+/* ── TABS (in-page section switcher) ───────────────────────── */
+.tabs { display: flex; gap: var(--s-4); border-bottom: 1px solid var(--rule); }
+.tab {
+  display: inline-flex; align-items: center;
+  padding: var(--s-3) 0; margin-bottom: -1px;   /* overlap the track rule */
+  font: inherit; font-size: var(--fs-body); color: var(--muted);
+  background: none; border: none; border-bottom: 2px solid transparent;
+  text-decoration: none; cursor: pointer;
+  transition: color .12s ease;
+}
+.tab:hover { color: var(--ink); }
+/* Active = ink + accent underline, no weight change: bolding on select widens
+   the text advance (~2px) and reflows the row — reads as a jump. The colour +
+   underline already mark "you are here". */
+.tab--active { color: var(--ink); border-bottom-color: var(--accent); }
+.tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: var(--r-tiny); }

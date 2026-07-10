@@ -1,0 +1,62 @@
+/* ============================================================
+   CCD Design System v2 — BUTTONS
+   Ground-up rebuild 2026-07-01, from tokens.css + type.css.
+   Four roles: primary (accent) · secondary (neutral, the
+   default) · ghost (tertiary/toolbar) · danger (destructive).
+   Solid hovers darken via filter (no extra hover tokens).
+   ============================================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  font: inherit;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semi);
+  line-height: 1;
+  white-space: nowrap;
+  padding: var(--row-y) var(--s-4);
+  border: 1px solid transparent;
+  border-radius: var(--r-base);
+  cursor: pointer;
+  user-select: none;
+  /* a .btn is allowed to be an <a>; without this the browser underline leaks */
+  text-decoration: none;
+  transition: filter .12s ease, background-color .12s ease, border-color .12s ease;
+}
+
+/* Keyboard focus — crisp accent outline, offset off the edge. */
+.btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+
+/* Primary — the one accent action per view. */
+.btn--primary { background: var(--accent); color: #FFFFFF; }
+.btn--primary:hover:not(:disabled)  { filter: brightness(.93); }
+.btn--primary:active:not(:disabled) { filter: brightness(.86); }
+
+/* Secondary — the neutral default. White surface, rule border. */
+.btn--secondary { background: var(--card); color: var(--ink); border-color: var(--rule); }
+.btn--secondary:hover:not(:disabled)  { background: var(--divider); border-color: var(--muted); }
+.btn--secondary:active:not(:disabled) { filter: brightness(.96); }
+
+/* Ghost — tertiary / toolbar. No chrome until hovered. */
+.btn--ghost { background: transparent; color: var(--ink); }
+.btn--ghost:hover:not(:disabled)  { background: var(--divider); }
+.btn--ghost:active:not(:disabled) { filter: brightness(.96); }
+
+/* Danger — destructive. Uses the accessible fill red, not the dot red. */
+.btn--danger { background: var(--neg-strong); color: #FFFFFF; }
+.btn--danger:hover:not(:disabled)  { filter: brightness(.93); }
+.btn--danger:active:not(:disabled) { filter: brightness(.86); }
+
+/* Small — toolbars, table row actions. 12px (owner-approved exception to the
+   14 Thai floor: label is short + bold 600, so legibility holds). */
+.btn--sm { padding: var(--s-1) var(--s-3); font-size: var(--fs-caption); }
+
+/* Full-width — forms, mobile. */
+.btn--block { width: 100%; }

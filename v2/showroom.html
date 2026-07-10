@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>v2 DS · Showroom</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" />
+<link rel="stylesheet" href="./tokens.css" />
+<link rel="stylesheet" href="./type.css" />
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: var(--font-sans); color: var(--ink);
+    background: var(--canvas);
+  }
+
+  main { padding: var(--s-8) var(--s-8) var(--s-8); max-width: 1120px; margin: 0 auto; }   /* single centered column, no sidebar */
+  .hero { margin-bottom: var(--s-8); }
+  .hero h1 { font-size: var(--fs-kpi); font-weight: var(--fw-semi); margin: 0 0 var(--s-3); letter-spacing: -0.02em; }
+  .hero p { color: var(--muted); font-size: var(--fs-body); line-height: var(--lh-normal); max-width: 60ch; margin: 0; }
+  .hero code { font-family: ui-monospace, monospace; font-size: 0.9em; color: var(--muted); background: var(--divider); padding: 1px 5px; border-radius: var(--r-tiny); }
+
+  section { margin-bottom: var(--s-8); scroll-margin-top: var(--s-4); }
+  .sec__num { font-size: var(--fs-caption); color: var(--muted); font-variant-numeric: tabular-nums; letter-spacing: 0.04em; }
+  .sec__title { font-size: var(--fs-title); font-weight: var(--fw-semi); margin: 2px 0 var(--s-5); letter-spacing: -0.01em; }
+  .grp { margin: var(--s-6) 0; }
+  .grp__h { font-size: var(--fs-caption); font-weight: var(--fw-semi); color: var(--muted); margin: 0 0 var(--s-4); padding-bottom: 6px; border-bottom: 1px solid var(--divider); }
+  .meta { font-size: var(--fs-caption); color: var(--muted); font-variant-numeric: tabular-nums; }
+  code.tok { font-family: ui-monospace, monospace; font-size: var(--fs-caption); color: var(--muted); }
+  .note { font-size: var(--fs-caption); color: var(--muted); line-height: var(--lh-snug); }
+
+  /* type rows */
+  .trow { display: grid; grid-template-columns: 1fr auto; gap: var(--s-5); align-items: baseline; padding: var(--s-3) 0; border-bottom: 1px solid var(--divider); }
+  .trow__sample { min-width: 0; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .trow__right { text-align: right; white-space: nowrap; }
+  .trow__spec { font-size: var(--fs-caption); color: var(--muted); font-variant-numeric: tabular-nums; }
+  .trow__note { display: block; font-size: var(--fs-caption); color: var(--muted); margin-top: 2px; max-width: 34ch; white-space: normal; }
+
+  /* swatch grid */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: var(--s-4); }
+  .sw__chip { height: 56px; border-radius: var(--r-base); border: 1px solid var(--rule); }
+  .sw__name { display: block; font-size: var(--fs-caption); margin-top: 8px; font-weight: var(--fw-semi); }
+  .sw__val  { display: block; font-size: var(--fs-caption); color: var(--muted); font-family: ui-monospace, monospace; margin-top: 1px; }
+  .sw__note { display: block; font-size: var(--fs-caption); color: var(--muted); line-height: var(--lh-snug); margin-top: 4px; }
+
+  /* spacing bars */
+  .srow { display: grid; grid-template-columns: 200px 1fr; gap: var(--s-4); align-items: center; padding: 6px 0; }
+  .sbar { height: 14px; background: var(--accent); border-radius: 2px; }
+
+  /* radius + shadow tiles */
+  .tiles { display: flex; flex-wrap: wrap; gap: var(--s-5); }
+  .tile { display: flex; flex-direction: column; gap: 8px; max-width: 150px; }
+  .tile__box { width: 60px; height: 60px; }
+  .rbox { background: var(--accent-tint); border: 1px solid var(--rule); }
+  .shbox { background: var(--card); border-radius: var(--r-base); }
+
+  /* other tokens table */
+  .dl { display: grid; grid-template-columns: max-content minmax(0,1fr) minmax(0,1.4fr); gap: 6px var(--s-5); font-size: var(--fs-caption); align-items: baseline; min-width: 0; }
+  .dl .v { font-family: ui-monospace, monospace; color: var(--muted); overflow-wrap: anywhere; }   /* long values (font stack, shadows) wrap instead of forcing width */
+  .dl .note { overflow-wrap: anywhere; }
+
+  /* live iframes */
+  .frame-wrap { border: 1px solid var(--rule); border-radius: var(--r-base); overflow: hidden; background: var(--card); box-shadow: var(--shadow-float); }
+  iframe { display: block; width: 100%; border: 0; }
+
+  /* Narrow (preview pane / small window): tighten padding. */
+  @media (max-width: 700px) {
+    main { padding: var(--s-5) var(--s-4); }
+  }
+</style>
+</head>
+<body>
+  <main>
+    <div class="hero">
+      <h1>Design System · Showroom</h1>
+      <p>Every decision in one scroll. Foundations — names, values, and the usage note beside each — are read live from <code>tokens.css</code>; edit a token or its comment and this page updates itself. Components below are live iframes to their own gallery files.</p>
+    </div>
+
+    <section id="color">
+      <div class="sec__num">01</div><div class="sec__title">Color</div>
+      <div id="g-color"></div>
+    </section>
+
+    <section id="type">
+      <div class="sec__num">02</div><div class="sec__title">Type</div>
+      <div class="grp"><div class="grp__h">Size scale</div><div id="g-fs"></div></div>
+      <div class="grp"><div class="grp__h">Weight</div><div id="g-fw"></div></div>
+      <div class="grp"><div class="grp__h">Line-height</div><div id="g-lh"></div></div>
+    </section>
+
+    <section id="space">
+      <div class="sec__num">03</div><div class="sec__title">Spacing</div>
+      <div id="g-space"></div>
+    </section>
+
+    <section id="radius">
+      <div class="sec__num">04</div><div class="sec__title">Radius</div>
+      <div class="tiles" id="g-radius"></div>
+    </section>
+
+    <section id="shadow">
+      <div class="sec__num">05</div><div class="sec__title">Shadow</div>
+      <div class="tiles" id="g-shadow"></div>
+    </section>
+
+    <section id="other">
+      <div class="sec__num">06</div><div class="sec__title">Other tokens</div>
+      <div class="dl" id="g-other"></div>
+    </section>
+
+    <section id="buttons">
+      <div class="sec__num">COMPONENT</div><div class="sec__title">Buttons</div>
+      <div class="frame-wrap"><iframe src="./button-gallery.html" title="Buttons"></iframe></div>
+    </section>
+
+    <section id="forms">
+      <div class="sec__num">COMPONENT</div><div class="sec__title">Forms</div>
+      <div class="frame-wrap"><iframe src="./form-gallery.html" title="Forms"></iframe></div>
+    </section>
+
+    <section id="tables">
+      <div class="sec__num">COMPONENT</div><div class="sec__title">Tables</div>
+      <div class="frame-wrap"><iframe src="./table-gallery.html" title="Tables"></iframe></div>
+    </section>
+
+    <section id="status">
+      <div class="sec__num">COMPONENT</div><div class="sec__title">Status &amp; pills</div>
+      <div class="frame-wrap"><iframe src="./status-gallery.html" title="Status"></iframe></div>
+    </section>
+
+    <section id="kpi">
+      <div class="sec__num">COMPONENT</div><div class="sec__title">KPI &amp; cards</div>
+      <div class="frame-wrap"><iframe src="./kpi-gallery.html" title="KPI"></iframe></div>
+    </section>
+
+    <section id="nav">
+      <div class="sec__num">COMPONENT</div><div class="sec__title">Tabs</div>
+      <div class="frame-wrap"><iframe src="./nav-gallery.html" title="Tabs"></iframe></div>
+    </section>
+
+    <section id="modals">
+      <div class="sec__num">COMPONENT</div><div class="sec__title">Modals</div>
+      <div class="frame-wrap"><iframe src="./modal-gallery.html" title="Modals"></iframe></div>
+    </section>
+
+    <section id="toasts">
+      <div class="sec__num">COMPONENT</div><div class="sec__title">Toasts</div>
+      <div class="frame-wrap"><iframe src="./toast-gallery.html" title="Toasts"></iframe></div>
+    </section>
+
+    <section id="state">
+      <div class="sec__num">COMPONENT</div><div class="sec__title">State screens</div>
+      <div class="frame-wrap"><iframe src="./state-gallery.html" title="State screens"></iframe></div>
+    </section>
+
+    <section id="form-bar">
+      <div class="sec__num">COMPONENT</div><div class="sec__title">Form bar</div>
+      <div class="frame-wrap"><iframe src="./form-bar-gallery.html" title="Form bar"></iframe></div>
+    </section>
+
+    <section id="shell">
+      <div class="sec__num">COMPONENT</div><div class="sec__title">App shell</div>
+      <!-- shell is a full-viewport 100vh app frame: fixed height, skip auto-fit -->
+      <div class="frame-wrap"><iframe src="./shell-gallery.html" title="App shell" data-fixed style="height:680px"></iframe></div>
+    </section>
+  </main>
+
+<script>
+(async () => {
+  // ── parse tokens.css text so we keep the trailing /* usage note */ comments ──
+  let css = '';
+  try { css = await (await fetch('./tokens.css')).text(); } catch(e) {}
+  const tokens = [];  // {name, value, note} in source order
+  // Line-based: a declaration only matches at line start, a note only if its
+  // comment closes on the same line. Prevents a multi-line block comment from
+  // swallowing the next token.
+  css.split('\n').forEach(line => {
+    const m = line.match(/^\s*--([\w-]+)\s*:\s*([^;]+);[ \t]*(?:\/\*\s*(.*?)\s*\*\/)?/);
+    if (m) tokens.push({ name: '--' + m[1], value: m[2].trim(), note: (m[3] || '').replace(/\s+/g, ' ').trim() });
+  });
+  const byName = Object.fromEntries(tokens.map(t => [t.name, t]));
+
+  // probe to resolve any var to a computed value
+  const probe = document.createElement('div');
+  probe.style.cssText = 'position:absolute;visibility:hidden;width:auto;';
+  document.body.appendChild(probe);
+  const resolve = (name, prop) => { probe.style[prop] = `var(${name})`; const v = getComputedStyle(probe)[prop]; probe.style[prop] = ''; return v; };
+  const el = id => document.getElementById(id);
+  const list = re2 => tokens.filter(t => re2.test(t.name));
+
+  // ── COLOR · grouped by semantic role ──
+  const colorGroups = [
+    ['Canvas & ink', ['--canvas','--card','--ink','--muted']],
+    ['Neutrals',     ['--rule','--divider']],
+    ['Accent',       ['--accent','--accent-tint']],
+    ['Status dots',  ['--pos','--cau','--neg']],
+    ['Status text & tints', ['--pos-strong','--pos-tint','--neg-strong','--neg-tint','--cau-tint']],
+  ];
+  const swatch = t => {
+    const val = t.value.startsWith('#') ? t.value : resolve(t.name, 'backgroundColor');
+    return `<div><div class="sw__chip" style="background:var(${t.name})"></div>`
+      + `<span class="sw__name">${t.name.replace('--','')}</span>`
+      + `<span class="sw__val">${val}</span>`
+      + (t.note ? `<span class="sw__note">${t.note}</span>` : '') + '</div>';
+  };
+  el('g-color').innerHTML = colorGroups.map(([title, ns]) => {
+    const chips = ns.map(n => byName[n]).filter(Boolean).map(swatch).join('');
+    return chips ? `<div class="grp"><div class="grp__h">${title}</div><div class="swatches">${chips}</div></div>` : '';
+  }).join('');
+
+  // ── TYPE ──
+  el('g-fs').innerHTML = list(/^--fs-/).map(t =>
+    `<div class="trow"><div class="trow__sample" style="font-size:var(${t.name})">Superpower ${t.name.replace('--fs-','')} · ตัวอย่างไทย Ag</div>`
+    + `<div class="trow__right"><span class="trow__spec"><code class="tok">${t.name}</code> · ${resolve(t.name,'fontSize')}</span>`
+    + (t.note ? `<span class="trow__note">${t.note}</span>` : '') + '</div></div>').join('');
+  el('g-fw').innerHTML = list(/^--fw-/).map(t =>
+    `<div class="trow"><div class="trow__sample" style="font-weight:var(${t.name});font-size:var(--fs-body)">The quick brown fox · ตัวอย่างน้ำหนัก</div>`
+    + `<div class="trow__right"><span class="trow__spec"><code class="tok">${t.name}</code> · ${t.value}</span></div></div>`).join('');
+  el('g-lh').innerHTML = list(/^--lh-/).map(t =>
+    `<div class="trow"><div class="trow__sample" style="line-height:var(${t.name});white-space:normal;font-size:var(--fs-body)">Line-height · บรรทัดตัวอย่างภาษาไทย · line-height sample text</div>`
+    + `<div class="trow__right"><span class="trow__spec"><code class="tok">${t.name}</code> · ${t.value}</span>`
+    + (t.note ? `<span class="trow__note">${t.note}</span>` : '') + '</div></div>').join('');
+
+  // ── SPACING ──
+  el('g-space').innerHTML = list(/^--s-\d/).map(t =>
+    `<div class="srow"><div class="sbar" style="width:var(${t.name})"></div>`
+    + `<span class="meta"><code class="tok">${t.name}</code> · ${t.value} · ${resolve(t.name,'width')}`
+    + (t.note ? ` — <span class="note">${t.note}</span>` : '') + '</span></div>').join('');
+
+  // ── RADIUS ──
+  el('g-radius').innerHTML = list(/^--r-/).map(t =>
+    `<div class="tile"><div class="tile__box rbox" style="border-radius:var(${t.name})"></div>`
+    + `<span class="meta"><code class="tok">${t.name.replace('--r-','')}</code> · ${t.value}</span>`
+    + (t.note ? `<span class="note">${t.note}</span>` : '') + '</div>').join('');
+
+  // ── SHADOW ──
+  el('g-shadow').innerHTML = list(/^--shadow-/).map(t =>
+    `<div class="tile"><div class="tile__box shbox" style="box-shadow:var(${t.name})"></div>`
+    + `<span class="meta"><code class="tok">${t.name.replace('--shadow-','')}</code></span>`
+    + (t.note ? `<span class="note">${t.note}</span>` : '') + '</div>').join('');
+
+  // ── OTHER ── (anything not already shown above)
+  const shownRe = /^--(fs|fw|lh|s|r|shadow|z)-|^--(canvas|card|ink|muted|rule|divider|accent|accent-tint|pos|cau|neg|pos-strong|pos-tint|neg-strong|neg-tint|cau-tint)$/;
+  el('g-other').innerHTML = tokens.filter(t => !shownRe.test(t.name))
+    .map(t => `<code class="tok">${t.name}</code><span class="v">${t.value}</span><span class="note">${t.note||''}</span>`).join('');
+
+  // ── auto-height iframes ──
+  // Collapse to 0 before measuring: child screens use min-height:100vh, which
+  // otherwise reads back the iframe's own height → monotonic runaway. Resetting
+  // to 0 first makes scrollHeight report true content height. Idempotent, so the
+  // ResizeObserver (which only sees the final synchronous height) never loops.
+  // Skip [data-fixed] frames (the shell is a 100vh app — auto-fit would collapse it).
+  document.querySelectorAll('iframe:not([data-fixed])').forEach(f => {
+    const fit = () => {
+      try { f.style.height = '0px'; f.style.height = f.contentDocument.documentElement.scrollHeight + 'px'; } catch(e) {}
+    };
+    const attach = () => {
+      // Kill the iframe's own scrollability: with its document set to
+      // overflow:hidden it can never show a scrollbar or trap the mouse wheel —
+      // the wheel bubbles up and the parent page scrolls instead. Auto-height
+      // below keeps every gallery full-height, so nothing is lost by this.
+      try { f.contentDocument.documentElement.style.overflow = 'hidden'; } catch(e) {}
+      fit();
+      try { new ResizeObserver(fit).observe(f.contentDocument.body); } catch(e) {}
+      // Webfonts (Inter/Noto Thai) load late and reflow the content TALLER after
+      // the first fit → refit the instant the child's fonts settle.
+      try { f.contentDocument.fonts.ready.then(fit); } catch(e) {}
+    };
+    // The async setup above races the iframes' own load. If a frame already
+    // finished loading, its 'load' fired before this listener → it would sit
+    // stuck at the default 150px with an inner scrollbar. Fit it now instead.
+    let ready = false;
+    try { ready = f.contentDocument && f.contentDocument.readyState === 'complete'; } catch(e) {}
+    if (ready) attach(); else f.addEventListener('load', attach);
+  });
+})();
+</script>
+</body>
+</html>

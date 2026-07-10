@@ -1,0 +1,77 @@
+/* ============================================================
+   CCD Design System v2 — DATA TABLE
+   Ground-up rebuild 2026-07-01. Built from the codified
+   foundation (tokens.css + type.css). Flat system: the table
+   sits in a bordered card, rows separated by hairlines only.
+   Density = Balanced (row-y 9, 14px body). Thai breathes.
+   ============================================================ */
+
+/* Card wrapper — the border + radius come from here, not the table.
+   Wide table scrolls sideways instead of clipping (was overflow:hidden →
+   silent data loss on a narrow viewport); vertical stays clipped to the radius. */
+.tbl-wrap {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-base);
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.tbl-scroll { overflow-x: auto; }   /* redundant now (tbl-wrap scrolls by default); kept for explicit intent */
+
+.tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-body);
+  color: var(--ink);
+}
+
+/* Header — muted, regular weight (labels, not data). One rule line
+   under it is the only heavy border in the table. */
+.tbl thead th {
+  text-align: left;
+  font-weight: var(--fw-regular);
+  color: var(--muted);
+  padding: var(--row-y) var(--s-3);
+  border-bottom: 1px solid var(--rule);
+  white-space: nowrap;
+  background: var(--card);
+}
+
+/* Body cells — hairline between rows (divider, barely visible). */
+.tbl tbody td {
+  padding: var(--row-y) var(--s-3);
+  border-top: 1px solid var(--divider);
+  vertical-align: middle;
+}
+.tbl tbody tr:first-child td { border-top: 0; }
+
+/* Lead column — ink, 400 by default. Owner sets .is-strong for 600. */
+.tbl__lead { color: var(--ink); }
+.tbl__lead.is-strong { font-weight: var(--fw-semi); }
+
+/* Numeric — right-aligned, tabular figures so digits line up. */
+.tbl__n { text-align: right; font-variant-numeric: tabular-nums; }
+.tbl thead th.tbl__n { text-align: right; }
+
+/* Row states -------------------------------------------------- */
+
+/* Hover — faintest wash (divider tint), never reads as selected. */
+.tbl tbody tr:hover td { background: var(--divider); }
+
+/* Selected — accent tint. Wins over hover. */
+.tbl tbody tr.is-selected td,
+.tbl tbody tr.is-selected:hover td { background: var(--accent-tint); }
+
+/* Group band — a full-width subhead splitting the body into groups.
+   No expansion control, no action button (decided: YAGNI). */
+.tbl__group td {
+  padding: var(--row-y) var(--s-3);
+  background: var(--divider);        /* neutral band tint — structural, not accent (that's selection) */
+  border-top: 1px solid var(--rule);
+  font-weight: var(--fw-semi);
+  color: var(--ink);
+}
+.tbl tbody tr.tbl__group:first-child td { border-top: 0; }
+
+/* Status dots (.st) live in status.css — load it alongside tables.css
+   on any page that uses the dot marks. (single owner, no duplication) */

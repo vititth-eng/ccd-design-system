@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Form bar — v2 component</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" />
+<link rel="stylesheet" href="./tokens.css" />
+<link rel="stylesheet" href="./type.css" />
+<link rel="stylesheet" href="./form-bar.css" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--canvas); color: var(--ink);
+    font-family: "Inter","Noto Sans Thai",system-ui,sans-serif; -webkit-font-smoothing: antialiased; }
+  .page { padding: var(--s-6) var(--s-5) var(--s-8); }
+  .lede { color: var(--muted); max-width: 66ch; margin: var(--s-2) 0 var(--s-6); }
+  .lede code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; color: var(--ink); }
+  .demo { margin-bottom: var(--s-5); }
+  .demo__cap { font-size: var(--fs-caption); color: var(--muted); margin: 0 0 var(--s-2); }
+  .frame { border: 1px solid var(--rule); border-radius: var(--r-base); overflow: hidden; }
+  .frame__body { padding: var(--s-5) var(--s-4); color: var(--muted); font-size: var(--fs-caption); }
+  /* the sticky component isn't sticky inside these short demo frames — fine */
+  .frame .fbar { position: static; }
+</style>
+</head>
+<body>
+  <div class="page">
+    <h1 class="t-title">Form bar</h1>
+    <p class="lede">Page chrome for every CCD form. <b>Constant frame</b> — CCD mark + form name on the left (name is a prop). The <b>right slot swaps</b> per form; <code>.fbar__save</code> ships today, others graduate on first use. Slim by design (8/16 padding) — a form bar, not an app header.</p>
+
+    <div class="demo">
+      <p class="demo__cap">Brand + save status — long, auto-saved forms (<code>.fbar</code> + <code>.fbar__save</code>)</p>
+      <div class="frame">
+        <div class="fbar">
+          <div class="fbar__brand"><span class="fbar__mark"></span><span class="fbar__name">แบบประเมิน 360°</span></div>
+          <span class="fbar__save"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>บันทึกแล้ว</span>
+        </div>
+        <div class="frame__body">…แบบฟอร์ม…</div>
+      </div>
+    </div>
+
+    <div class="demo">
+      <p class="demo__cap">Brand only — short / anonymous forms (frame with no slot, name is any tool)</p>
+      <div class="frame">
+        <div class="fbar">
+          <div class="fbar__brand"><span class="fbar__mark"></span><span class="fbar__name">แบบสำรวจ Onboarding</span></div>
+        </div>
+        <div class="frame__body">…แบบฟอร์ม…</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

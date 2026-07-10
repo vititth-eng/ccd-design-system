@@ -1,0 +1,28 @@
+/* form-bar.css — respondent / form-page chrome for the CCD form suite
+   (360°, onboarding, DISC, สำรวจ …). ONE constant frame, swappable right slot.
+   Left = CCD mark + form name (name is a prop). Right = an optional slot module.
+   Graduated 2026-07-05 from the per-app rater bar (.rbar) → cross-tool .fbar.
+   Slot shipped: __save. Add __prog / __subject / __help on first real use. */
+
+.fbar {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s-3);
+  padding: var(--s-2) var(--s-4);                 /* slim: 8/16 — a form bar, not an app header */
+  background: var(--card); border-bottom: 1px solid var(--rule);
+}
+.fbar__brand { display: flex; align-items: center; gap: var(--s-2); min-width: 0; }
+.fbar__mark {
+  width: 24px; height: 24px; flex: 0 0 auto; background: var(--ink);
+  mask: url("./assets/ccd-mark-full.svg") center / contain no-repeat;
+  -webkit-mask: url("./assets/ccd-mark-full.svg") center / contain no-repeat;
+}
+.fbar__name {
+  font-size: var(--fs-body); font-weight: var(--fw-semi); color: var(--ink);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* ── right slot: save state (long, auto-saved forms) ── */
+.fbar__save {
+  display: inline-flex; align-items: center; gap: 6px; flex: 0 0 auto;
+  font-size: var(--fs-caption); color: var(--pos-strong);
+}

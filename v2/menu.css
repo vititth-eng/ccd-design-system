@@ -1,0 +1,50 @@
+/* ============================================================
+   CCD Design System v2 — MENU (dropdown)
+   Ground-up rebuild 2026-07-03, from tokens.css + type.css.
+   The floating panel behind the app-switcher, the user menu,
+   and table "…" row actions. Floats → gets --shadow-pop +
+   --z-dropdown. Disclosure pattern (trigger toggles .is-open,
+   outside-click / Esc closes) — not the full ARIA menu widget;
+   plain buttons/links inside, no roving focus needed.
+   Position: absolute inside a position:relative anchor — the
+   anchor rules live with the component that hosts the menu
+   (e.g. shell.css places the switcher + user menus).
+   ============================================================ */
+
+.menu {
+  position: absolute;
+  min-width: 180px;
+  padding: var(--s-1);
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-base);
+  box-shadow: var(--shadow-pop);
+  z-index: var(--z-dropdown);
+  display: none;
+}
+.menu.is-open { display: block; }
+
+/* Item — button or link, same face. */
+.menu__item {
+  display: flex; align-items: center; gap: var(--s-2);
+  width: 100%;
+  padding: 7px var(--s-3);
+  font: inherit; font-size: var(--fs-body); color: var(--ink);
+  text-align: left; text-decoration: none; white-space: nowrap;
+  background: none; border: none; border-radius: var(--r-base);
+  cursor: pointer;
+  transition: background-color .12s ease;
+}
+.menu__item:hover { background: var(--divider); }
+.menu__item:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.menu__item svg { width: 16px; height: 16px; flex: 0 0 auto; color: var(--muted); }
+
+/* Current choice (app switcher) — same accent tint as nav/selection. */
+.menu__item--on { background: var(--accent-tint); font-weight: var(--fw-semi); }
+.menu__item--on svg { color: var(--accent); }
+
+/* Destructive action (row menus: delete). Accessible red, not dot red. */
+.menu__item--danger { color: var(--neg-strong); }
+.menu__item--danger svg { color: currentColor; }
+
+.menu__sep { height: 1px; margin: var(--s-1) 0; background: var(--divider); }

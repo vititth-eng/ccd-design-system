@@ -1,0 +1,68 @@
+/* ============================================================
+   CCD Design System v2 — TOAST
+   Ground-up rebuild 2026-07-01, from tokens.css + type.css.
+   Transient notification that FLOATS above the page → gets
+   --shadow-pop + --z-toast. Meaning rides a status dot (Type-1
+   doctrine, no side-stripe); title ink, message muted.
+   ============================================================ */
+
+/* Region — fixed stack, bottom-right. Region ignores pointer;
+   the toasts themselves capture it. */
+.toast-region {
+  position: fixed;
+  bottom: var(--s-5);
+  right: var(--s-5);
+  z-index: var(--z-toast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  width: min(360px, calc(100vw - var(--s-6)));
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-base);
+  box-shadow: var(--shadow-pop);
+  padding: var(--s-3) var(--s-4);
+  color: var(--ink);
+  animation: toast-in .22s ease-out;
+}
+@keyframes toast-in { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
+
+/* Exit — JS adds .toast--out, removes the node after the transition. */
+.toast--out { opacity: 0; transform: translateX(12px); transition: opacity .18s ease-in, transform .18s ease-in; }
+
+@media (prefers-reduced-motion: reduce) {
+  .toast { animation: none; }
+  .toast--out { transition: none; }
+}
+
+/* Status dot — carries the meaning. */
+.toast__dot { width: 8px; height: 8px; border-radius: var(--r-pill); flex: 0 0 auto; margin-top: 6px; }
+.toast--pos  .toast__dot { background: var(--pos); }
+.toast--cau  .toast__dot { background: var(--cau); }
+.toast--neg  .toast__dot { background: var(--neg); }
+.toast--info .toast__dot { background: var(--accent); }
+
+.toast__body { flex: 1 1 auto; min-width: 0; }
+.toast__title { font-size: var(--fs-body); font-weight: var(--fw-semi); color: var(--ink); }
+.toast__msg   { font-size: var(--fs-body); color: var(--muted); margin-top: 2px; }
+
+/* Close (×) — ghost, muted → ink. */
+.toast__close {
+  flex: 0 0 auto;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; margin: -2px -4px 0 0;
+  border: none; border-radius: var(--r-tiny);
+  background: transparent; color: var(--muted);
+  cursor: pointer;
+  transition: background-color .12s ease, color .12s ease;
+}
+.toast__close:hover { background: var(--divider); color: var(--ink); }
+.toast__close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }

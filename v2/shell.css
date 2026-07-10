@@ -1,0 +1,173 @@
+/* ============================================================
+   CCD Design System v2 — APP SHELL
+   Ground-up rebuild 2026-07-02, from tokens.css + type.css.
+   The frame every app sits in: a FLOATING sidebar on the white
+   canvas (faint divider edge + tight --shadow-float), content
+   open on the canvas beside it. Sidebar houses the umbrella
+   app-switcher (top) + this app's sections + user (bottom).
+   Collapses to an icon rail so wide tables reclaim width.
+   Sidebar is OPTIONAL — a single-screen app renders __main alone.
+   ============================================================ */
+
+.shell {
+  display: flex;
+  gap: var(--s-3);
+  height: 100vh;
+  padding: var(--s-3);
+  background: var(--canvas);
+}
+
+/* ── SIDEBAR (floating panel) ──────────────────────────────── */
+.shell__sidebar {
+  width: 208px; flex: 0 0 auto;
+  display: flex; flex-direction: column;
+  background: var(--card);
+  border: 1px solid var(--rule);             /* card edge — same line the content cards use (the sidebar IS a card; --divider dissolved it on white-on-white) */
+  border-radius: var(--r-large);
+  box-shadow: var(--shadow-float);           /* tight lift */
+  overflow: hidden;
+  transition: width .16s ease;
+}
+.shell--collapsed .shell__sidebar { width: 56px; }
+
+/* brand: lion mark links home (→ landing gateway); app name is a static label.
+   No app-switcher dropdown — most tools don't switch often, so the lion IS the
+   way back to the umbrella. */
+.shell__brand { display: flex; align-items: flex-end; gap: var(--s-2); padding: var(--s-3); min-width: 0; }
+.shell__home {
+  display: inline-flex; flex: 0 0 auto; border-radius: var(--r-tiny);
+  transition: opacity .12s ease;
+}
+.shell__home:hover { opacity: .7; }
+.shell__home:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* Singha lion mark (assets/ccd-mark-full.svg) painted via mask so it takes
+   --ink from tokens (currentColor inside an <img> can't inherit page color). */
+.shell__mark {
+  width: 28px; height: 28px; flex: 0 0 auto;
+  background: var(--ink);
+  mask: url("./assets/ccd-mark-full.svg") center / contain no-repeat;
+  -webkit-mask: url("./assets/ccd-mark-full.svg") center / contain no-repeat;
+}
+.shell__appname {
+  min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-size: var(--fs-body); font-weight: var(--fw-semi); color: var(--ink);
+  line-height: 1.2; padding-bottom: 3px;   /* baseline meets the lion's lower edge */
+}
+.shell--collapsed .shell__appname { display: none; }
+
+/* section nav */
+.shell__nav { flex: 1 1 auto; overflow-x: hidden; overflow-y: auto; padding: var(--s-2); }
+.shell__group { font-size: var(--fs-caption); color: var(--muted); padding: var(--s-3) var(--s-1) var(--s-1); white-space: nowrap; }   /* left-aligns with the icon slot */
+.shell--collapsed .shell__group { height: var(--s-3); padding: 0; overflow: hidden; visibility: hidden; }
+
+/* Sidebar column grid: every row reserves a 28px icon slot starting 12px from
+   the panel edge (the lion mark is the anchor); smaller glyphs center in the
+   slot, so all icons share one axis and all text starts on a second axis. */
+.shell__item {
+  display: flex; align-items: center; gap: var(--s-2);
+  height: 34px; padding: 0 var(--s-1); border-radius: var(--r-base);   /* fixed height: the row is the same tall whether the label shows (expanded) or is hidden (collapsed) — otherwise the label's line-height inflated expanded rows ~5px, so glyphs sat farther apart than when collapsed */
+  line-height: var(--lh-snug);   /* 1.3 — tight but Thai upper-mark safe */
+  font-size: var(--fs-body); color: var(--muted); text-decoration: none;
+  white-space: nowrap; cursor: pointer;
+  transition: color .12s ease, background-color .12s ease;
+}
+.shell__item:hover { background: var(--divider); color: var(--ink); }
+/* Active = accent-tint fill + ink text, NO weight change (bolding widens the
+   label ~2px and reflows during collapse/expand — reads as jitter). The tint
+   fill already marks selection. */
+.shell__item--on { background: var(--accent-tint); color: var(--ink); }
+.shell__item:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.shell__item svg { width: 17px; height: 17px; flex: 0 0 auto; margin: 0 5.5px; }   /* centers the 17px glyph in the 28px slot */
+/* Collapsed: keep the SAME left-anchored icon slot (do NOT re-center with
+   justify-content — that put the glyph on a different axis, so it jumped ~1px
+   between states). Label is hidden below; the slot stays put. */
+/* collapsed labels: visually hidden, NOT display:none — screen readers still
+   need the accessible name on the icon-only nav links */
+.shell--collapsed .shell__item .label {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap;
+}
+
+/* user + collapse — ALWAYS a vertical stack (both full-width rows, like the
+   nav items above). Never flips row↔column on collapse, so nothing reflows;
+   only the labels hide, exactly like the nav. */
+.shell__foot { border-top: 1px solid var(--divider); padding: var(--s-2); display: flex; flex-direction: column; gap: var(--s-1); position: relative; }
+/* user menu opens upward, above the foot */
+.shell__foot .menu { bottom: calc(100% + 2px); left: var(--s-2); right: var(--s-2); min-width: 0; }
+/* collapsed: rail is too narrow for a menu inside it, so fly OUT to the right,
+   bottom-aligned to the foot (needs the collapsed sidebar overflow:visible below) */
+.shell--collapsed .shell__foot .menu {
+  left: calc(100% + var(--s-2)); right: auto; bottom: 0; min-width: 180px;
+}
+/* trigger is a <button> — full-width row, fixed height so avatar-only (collapsed)
+   and avatar+name (expanded) are the same tall */
+.shell__user {
+  display: flex; align-items: center; gap: var(--s-2); width: 100%; min-width: 0;
+  height: 40px; padding: 0 var(--s-1);
+  font: inherit; text-align: left;
+  background: none; border: none; border-radius: var(--r-base); cursor: pointer;
+  transition: background-color .12s ease;
+}
+.shell__user:hover { background: var(--divider); }
+.shell__user:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.shell__avatar {
+  width: 28px; height: 28px; border-radius: var(--r-pill); flex: 0 0 auto;
+  background: var(--accent-tint); color: var(--accent);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: var(--fs-caption); font-weight: var(--fw-semi);
+}
+.shell__who { min-width: 0; }
+.shell__who .nm { font-size: var(--fs-body); font-weight: var(--fw-semi); color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.shell__who .rl { font-size: var(--fs-caption); color: var(--muted); }
+.shell--collapsed .shell__who { display: none; }
+
+/* collapse toggle — a nav-item-like row, sitting ABOVE the foot hairline (it's
+   a sidebar action, grouped with the nav, not the user identity). Inset with
+   margin to match the nav content; icon lands on the shared 27px axis. */
+.shell__collapse {
+  display: flex; align-items: center; gap: var(--s-2);
+  height: 34px; margin: 0 var(--s-2) var(--s-2); padding: 0 var(--s-1);
+  border: none; border-radius: var(--r-base); background: transparent;
+  color: var(--muted); cursor: pointer; font: inherit; font-size: var(--fs-body);
+  transition: background-color .12s ease, color .12s ease;
+}
+.shell__collapse:hover { background: var(--divider); color: var(--ink); }
+.shell__collapse:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.shell__collapse svg { width: 18px; height: 18px; flex: 0 0 auto; margin: 0 5px; transition: transform .16s ease; }   /* 18px glyph centered in the 28 slot */
+.shell--collapsed .shell__collapse svg { transform: rotate(180deg); }
+.shell--collapsed .shell__collapse .label {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap;
+}
+
+/* Collapsed: let the user-menu flyout escape the 56px rail. Expanded keeps
+   overflow:hidden (rounded-corner clip); collapsed opens it up. The nav still
+   self-clips its own scroll (.shell__nav overflow-y:auto), so nothing bleeds. */
+.shell--collapsed .shell__sidebar { overflow: visible; }
+
+/* ── MAIN (content, open on the canvas) ────────────────────── */
+/* The WHOLE column scrolls (not an inner region), and reserves the scrollbar
+   gutter here — so the sticky head and the body share one right inset. Putting
+   the gutter on an inner .shell__body instead left the head outside it and the
+   table sat 15px further right than the header buttons. */
+.shell__main {
+  flex: 1 1 auto; min-width: 0;
+  display: flex; flex-direction: column;
+  overflow-y: auto; overflow-x: hidden;
+  scrollbar-width: none;   /* hide the bar (Firefox) — content uses full width, no reserved gutter, no jump */
+}
+.shell__main::-webkit-scrollbar { width: 0; height: 0; }   /* WebKit/Blink */
+.shell__head {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s-3);
+  padding: var(--s-2) var(--s-3) var(--s-4);
+  flex: 0 0 auto;
+  position: sticky; top: 0; z-index: 1;
+  background: var(--canvas);   /* covers content scrolling underneath */
+}
+.shell__title { min-width: 0; }
+.shell__actions { display: inline-flex; align-items: center; gap: var(--s-2); flex: 0 0 auto; }
+.shell__body { flex: 1 1 auto; padding: 0 var(--s-3) var(--s-3); }
+
+@media (prefers-reduced-motion: reduce) {
+  .shell__sidebar, .shell__collapse svg { transition: none; }
+}

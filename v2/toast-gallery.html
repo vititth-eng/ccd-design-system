@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Toast · v2 component</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" />
+<link rel="stylesheet" href="./tokens.css" />
+<link rel="stylesheet" href="./type.css" />
+<link rel="stylesheet" href="./buttons.css" />
+<link rel="stylesheet" href="./toasts.css" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--canvas); padding: var(--s-6) var(--s-7); }
+  .page-title { margin: 0 0 var(--s-1); }
+  .page-sub   { margin: 0 0 var(--s-6); }
+  .lbl { margin: 0 0 var(--s-3); }
+  .lbl span { color: var(--muted); font-weight: var(--fw-regular); }
+  .rowb { display: flex; gap: var(--s-3); flex-wrap: wrap; }
+  .x { width: 14px; height: 14px; }
+  /* static previews (no animation) so all four are visible at rest */
+  .static { display: flex; flex-direction: column; gap: var(--s-3); max-width: 360px; margin-top: var(--s-6); }
+  .static .toast { animation: none; position: static; }
+</style>
+</head>
+<body>
+  <h1 class="t-title page-title">Toast</h1>
+  <p class="t-sub page-sub">Floats bottom-right · status dot carries meaning · auto-dismiss 4s or close ×</p>
+
+  <p class="t-section lbl">Trigger <span>— spawns a live toast (stacks, auto-dismiss)</span></p>
+  <div class="rowb">
+    <button class="btn btn--secondary" onclick="toast('pos','บันทึกสำเร็จ','ข้อมูลรอบ Q4/2026 ถูกบันทึกแล้ว')">success</button>
+    <button class="btn btn--secondary" onclick="toast('cau','ใกล้ครบกำหนด','เหลือเวลาอีก 2 วันก่อนปิดรอบ')">caution</button>
+    <button class="btn btn--secondary" onclick="toast('neg','บันทึกไม่สำเร็จ','การเชื่อมต่อขัดข้อง ลองใหม่อีกครั้ง')">error</button>
+    <button class="btn btn--secondary" onclick="toast('info','กำลังประมวลผล','ส่งออกไฟล์ Excel อยู่เบื้องหลัง')">info</button>
+  </div>
+
+  <!-- static reference (all four at rest) -->
+  <p class="t-section lbl" style="margin-top:var(--s-7);">Static reference</p>
+  <div class="static">
+    <div class="toast toast--pos"><i class="toast__dot"></i><div class="toast__body"><div class="toast__title">บันทึกสำเร็จ</div><div class="toast__msg">ข้อมูลรอบ Q4/2026 ถูกบันทึกแล้ว</div></div><button class="toast__close" aria-label="ปิด"><svg class="x" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+    <div class="toast toast--cau"><i class="toast__dot"></i><div class="toast__body"><div class="toast__title">ใกล้ครบกำหนด</div><div class="toast__msg">เหลือเวลาอีก 2 วันก่อนปิดรอบ</div></div><button class="toast__close" aria-label="ปิด"><svg class="x" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+    <div class="toast toast--neg"><i class="toast__dot"></i><div class="toast__body"><div class="toast__title">บันทึกไม่สำเร็จ</div><div class="toast__msg">การเชื่อมต่อขัดข้อง ลองใหม่อีกครั้ง</div></div><button class="toast__close" aria-label="ปิด"><svg class="x" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+    <div class="toast toast--info"><i class="toast__dot"></i><div class="toast__body"><div class="toast__title">กำลังประมวลผล</div><div class="toast__msg">ส่งออกไฟล์ Excel อยู่เบื้องหลัง</div></div><button class="toast__close" aria-label="ปิด"><svg class="x" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+  </div>
+
+  <div class="toast-region" id="region"></div>
+
+<script>
+  var region = document.getElementById('region');
+  function toast(kind, title, msg) {
+    var t = document.createElement('div');
+    t.className = 'toast toast--' + kind;
+    t.innerHTML =
+      '<i class="toast__dot"></i>' +
+      '<div class="toast__body"><div class="toast__title"></div><div class="toast__msg"></div></div>' +
+      '<button class="toast__close" aria-label="ปิด"><svg class="x" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>';
+    t.querySelector('.toast__title').textContent = title;
+    t.querySelector('.toast__msg').textContent = msg;
+    function dismiss() {
+      t.classList.add('toast--out');
+      t.addEventListener('transitionend', function () { t.remove(); }, { once: true });
+      setTimeout(function () { if (t.parentNode) t.remove(); }, 300);   // fallback if no transition
+    }
+    t.querySelector('.toast__close').addEventListener('click', dismiss);
+    region.appendChild(t);
+    setTimeout(dismiss, 4000);
+  }
+</script>
+</body>
+</html>

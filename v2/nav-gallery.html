@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tabs · v2 component</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" />
+<link rel="stylesheet" href="./tokens.css" />
+<link rel="stylesheet" href="./type.css" />
+<link rel="stylesheet" href="./nav.css" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--canvas); }
+  .content { padding: var(--s-6) var(--s-7); }
+  .lbl { margin: 0 0 var(--s-3); }
+  .lbl span { color: var(--muted); font-weight: var(--fw-regular); }
+  .tabpanel { margin-top: var(--s-5); color: var(--muted); font-size: var(--fs-body); }
+</style>
+</head>
+<body>
+  <div class="content">
+    <!-- TABS -->
+    <p class="t-section lbl">Tabs <span>— in-page section switcher, accent underline = active</span></p>
+    <div class="tabs" id="tabs">
+      <button class="tab tab--active" data-panel="p1">ภาพรวม</button>
+      <button class="tab" data-panel="p2">รายบุคคล</button>
+      <button class="tab" data-panel="p3">แผนก</button>
+      <button class="tab" data-panel="p4">ประวัติ</button>
+    </div>
+    <div class="tabpanel" id="panel">แสดงเนื้อหาแท็บ “ภาพรวม”</div>
+  </div>
+
+<script>
+  var labels = { p1:'ภาพรวม', p2:'รายบุคคล', p3:'แผนก', p4:'ประวัติ' };
+  document.getElementById('tabs').addEventListener('click', function(e){
+    var b = e.target.closest('.tab'); if (!b) return;
+    document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('tab--active'); });
+    b.classList.add('tab--active');
+    document.getElementById('panel').textContent = 'แสดงเนื้อหาแท็บ “' + labels[b.dataset.panel] + '”';
+  });
+</script>
+</body>
+</html>

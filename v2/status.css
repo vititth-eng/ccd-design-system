@@ -1,0 +1,41 @@
+/* ============================================================
+   CCD Design System v2 — STATUS
+   Ground-up rebuild 2026-07-01, from tokens.css.
+   The single owner of status marks (moved out of tables.css).
+
+   Type-1 · dot + ink text — the DENSE default (tables, lists).
+     The dot carries meaning, so the bright hues are safe and the
+     label stays readable ink. No contrast requirement on the text.
+
+   Type-2 · pill — a STANDALONE badge (cards, headers, detail views).
+     Tinted background + accessible strong text (the "darken for
+     pill" tier). Use where there's no column context to lean on.
+   ============================================================ */
+
+/* Type-1 — dot + ink text -------------------------------------- */
+.st { display: inline-flex; align-items: center; gap: var(--s-2); font-size: var(--fs-body); color: var(--ink); }
+.st i { width: 8px; height: 8px; border-radius: var(--r-pill); flex: 0 0 auto; }
+.st--pos  i { background: var(--pos); }
+.st--cau  i { background: var(--cau); }
+.st--neg  i { background: var(--neg); }
+.st--none i { background: var(--muted); }
+
+/* Type-2 — pill badge. Tinted bg + DOT + ink text (same doctrine as
+   Type-1: the dot carries meaning so the text never needs a colored
+   value — sidesteps the muddy-amber problem; ink stays crisp on every tint). */
+.st-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semi);
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  white-space: nowrap;
+  color: var(--ink);
+}
+.st-pill i { width: 7px; height: 7px; border-radius: var(--r-pill); flex: 0 0 auto; }
+.st-pill--pos  { background: var(--pos-tint); } .st-pill--pos  i { background: var(--pos); }
+.st-pill--cau  { background: var(--cau-tint); } .st-pill--cau  i { background: var(--cau); }
+.st-pill--neg  { background: var(--neg-tint); } .st-pill--neg  i { background: var(--neg); }
+.st-pill--none { background: var(--divider); }  .st-pill--none i { background: var(--muted); }

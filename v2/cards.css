@@ -1,0 +1,87 @@
+/* ============================================================
+   CCD Design System v2 — CARD + KPI
+   Ground-up rebuild 2026-07-01, from tokens.css + type.css.
+   Flat system: a card is a bordered white surface, NO shadow
+   (shadow is only for things that float). The KPI stat block
+   is the dashboard atom; delta meaning rides a colored arrow
+   glyph so the number stays readable ink.
+   ============================================================ */
+
+/* Card surface — the reusable panel. --------------------------- */
+.card {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-base);
+  padding: var(--card-pad);
+}
+
+/* Optional header: title (+ action) over a hairline. */
+.card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding-bottom: var(--card-pad);
+  margin-bottom: var(--card-pad);
+  border-bottom: 1px solid var(--divider);
+}
+
+/* KPI stat block ---------------------------------------------- */
+/* The stat internals — usable inside a bar cell OR a standalone card.
+   Layout: label + delta on one line (delta top-right), big value below. */
+.kpi { display: flex; flex-direction: column; }
+.kpi__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-2);
+  margin-bottom: var(--s-2);
+}
+.kpi__label { font-size: var(--fs-body); color: var(--muted); }
+/* value uses the welded .t-kpi role (30 / 700 / tabular) in markup */
+
+/* Delta — plain colored text by default (Style A). Sign carries direction. */
+.kpi__delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semi);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.kpi__delta--up   { color: var(--pos-strong); }
+.kpi__delta--down { color: var(--neg-strong); }
+.kpi__delta--flat { color: var(--muted); }
+.kpi__delta svg   { display: block; }
+
+/* Pill variant — tinted trend chip (add .is-pill; pair with an arrow svg). */
+.kpi__delta.is-pill {
+  font-size: var(--fs-caption);
+  padding: 2px 8px;
+  border-radius: var(--r-pill);
+}
+.kpi__delta--up.is-pill   { background: var(--pos-tint); }
+.kpi__delta--down.is-pill { background: var(--neg-tint); }
+
+/* Optional "จาก X" prior-value line under the number. */
+.kpi__from { font-size: var(--fs-body); color: var(--muted); margin-top: var(--s-1); }
+
+/* Segmented bar — ONE card, cells split by hairlines (the considered
+   dashboard header; avoids the identical-tiles look). */
+.kpi-bar {
+  display: flex;
+  flex-wrap: wrap;                 /* cells reflow 4 → 2 → 1 as the card narrows */
+  gap: 1px;                        /* 1px gap + the bg below = hairlines on BOTH axes, survives wrap */
+  background: var(--divider);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-base);
+  overflow: hidden;
+}
+.kpi-bar__cell {
+  flex: 1 1 190px;                 /* grow to fill the row; wrap once a cell can't hold ~190px (fits ฿287,654) */
+  min-width: 0;
+  padding: var(--s-5);
+  background: var(--card);
+}
+/* hairlines now come from the 1px grid gap, not border-left — no first-child reset needed */
