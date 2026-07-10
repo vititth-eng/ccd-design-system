@@ -4,6 +4,16 @@
    Built on native <dialog>: focus trap, ESC-to-close, and the
    backdrop come for free (no JS lib, escapes any stacking context).
    Open with el.showModal(). Floats → gets --shadow-modal + --r-large.
+
+   WHEN: the task interrupts, is bounded (≤ ~5 fields), is safe to
+   discard, and does not need the page behind it. Creating a thing,
+   confirming a consequence.
+   NOT: a form that IS the page's content, or one you fill in
+   repeatedly (add a task, edit a row) — those stay inline, where
+   the surrounding rows are the context.
+   Never hand-roll this as an absolutely-positioned panel: you lose
+   the focus trap, ESC, and the backdrop, and you inherit whatever
+   stacking context you were dropped into.
    ============================================================ */
 
 .modal {
@@ -26,7 +36,14 @@
     overlay .18s ease-out allow-discrete,
     display .18s ease-out allow-discrete;
 }
-.modal[open] { opacity: 1; transform: none; }
+/* Grows DOWN, never sideways: a long form gets a scrolling body between a pinned
+   head and foot, so the title and the confirm button never leave the screen.
+   [open] is required -- a bare `display: flex` here would beat the UA's
+   `dialog:not([open]) { display: none }` and every modal would render on load. */
+.modal { max-height: min(84vh, 720px); }
+.modal[open] { display: flex; flex-direction: column; opacity: 1; transform: none; }
+.modal__head, .modal__foot { flex: 0 0 auto; }
+.modal__body { flex: 1 1 auto; overflow-y: auto; overscroll-behavior: contain; }
 @starting-style { .modal[open] { opacity: 0; transform: translateY(8px) scale(.98); } }
 
 .modal::backdrop {

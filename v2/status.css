@@ -10,6 +10,11 @@
    Type-2 · pill — a STANDALONE badge (cards, headers, detail views).
      Tinted background + accessible strong text (the "darken for
      pill" tier). Use where there's no column context to lean on.
+
+   Type-3 · meter — a QUANTITY, not a state. Never takes a status
+     hue: a self-reported status and a computed progress bar are two
+     signals that are allowed to disagree, and one colour would merge
+     them. Accent only, always.
    ============================================================ */
 
 /* Type-1 — dot + ink text -------------------------------------- */
@@ -39,3 +44,10 @@
 .st-pill--cau  { background: var(--cau-tint); } .st-pill--cau  i { background: var(--cau); }
 .st-pill--neg  { background: var(--neg-tint); } .st-pill--neg  i { background: var(--neg); }
 .st-pill--none { background: var(--divider); }  .st-pill--none i { background: var(--muted); }
+
+/* Type-3 — progress meter. Fully rounded at 6px: at this height a 3px corner
+   reads as neither square nor round. The fill is rounded too, so a 4% bar is
+   still a shape and not a sliver. --wide is the card-header size. */
+.meter { display: block; height: 6px; width: 80px; border-radius: var(--r-pill); background: var(--divider); overflow: hidden; }
+.meter b { display: block; height: 100%; background: var(--accent); border-radius: var(--r-pill); }
+.meter--wide { width: 120px; }

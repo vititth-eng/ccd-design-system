@@ -165,6 +165,9 @@
   background: var(--canvas);   /* covers content scrolling underneath */
 }
 .shell__title { min-width: 0; }
+/* Page-head actions take the full-size .btn, never .btn--sm: they answer a
+   --fs-title heading, and a tightened box beside it reads as a control that lost
+   its page. .btn--sm rides a line of text (card header, table row, toolbar). */
 .shell__actions { display: inline-flex; align-items: center; gap: var(--s-2); flex: 0 0 auto; }
 .shell__body { flex: 1 1 auto; padding: 0 var(--s-3) var(--s-3); }
 

@@ -17,6 +17,8 @@
   .lbl { margin: 0 0 var(--s-3); }
   .lbl span { color: var(--muted); font-weight: var(--fw-regular); }
   .rowb { display: flex; align-items: center; gap: var(--s-3); flex-wrap: wrap; }
+  .note { max-width: 62ch; margin: var(--s-4) 0 0; color: var(--muted); font-size: var(--fs-caption); }
+  .note b { color: var(--ink); font-weight: var(--fw-semi); }
   .swatch { display:inline-flex; align-items:center; gap:var(--s-2); font-size:var(--fs-body); color:var(--muted); }
   .swatch i { width:14px; height:14px; border-radius:var(--r-tiny); display:inline-block; }
 </style>
@@ -49,13 +51,20 @@
 
   <!-- 3 · Small --------------------------------------------------- -->
   <section>
-    <p class="t-section lbl">3 · Small <span>— toolbars, table row actions</span></p>
+    <p class="t-section lbl">3 · Small <span>— card headers, table rows, toolbars</span></p>
     <div class="rowb">
       <button class="btn btn--primary btn--sm">เพิ่ม</button>
       <button class="btn btn--secondary btn--sm">แก้ไข</button>
       <button class="btn btn--ghost btn--sm">คัดลอก</button>
       <button class="btn btn--danger btn--sm">ลบ</button>
     </div>
+    <p class="note">
+      <b>A tighter box, not smaller type.</b> The label stays 14px: a caption-size control sitting in
+      body-size copy reads as a rendering fault rather than as hierarchy. Size follows what the button
+      stands next to. Beside a page title, a form input, or at the foot of a card or popover, it answers
+      something full-size, so use plain <code>.btn</code>. Riding a line of text in a card header, a table
+      row, or a toolbar, use <code>.btn--sm</code>.
+    </p>
   </section>
 
   <!-- 4 · With icon + block --------------------------------------- -->

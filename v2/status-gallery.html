@@ -20,11 +20,15 @@
   .card { background: var(--card); border: 1px solid var(--rule); border-radius: var(--r-base); padding: var(--card-pad); }
   .aa { margin-top: var(--s-5); font-size: var(--fs-body); color: var(--muted); }
   .aa b { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .note { max-width: 62ch; margin: var(--s-3) 0 0; color: var(--muted); font-size: var(--fs-caption); }
+  .note b { color: var(--ink); font-weight: var(--fw-semi); }
+  .mrow { display: flex; align-items: center; gap: var(--s-3); }
+  .mrow .pct { min-width: 36px; text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
 </style>
 </head>
 <body>
   <h1 class="t-title page-title">Status</h1>
-  <p class="t-sub page-sub">Type-1 dot + ink (dense, default) · Type-2 pill (standalone badge)</p>
+  <p class="t-sub page-sub">Type-1 dot + ink (dense, default) · Type-2 pill (standalone badge) · Type-3 meter (a quantity)</p>
 
   <!-- 1 · Type-1 dots --------------------------------------------- -->
   <section>
@@ -79,6 +83,37 @@
         <span style="color:var(--neg-strong); font-weight:var(--fw-semi); font-variant-numeric:tabular-nums;">เกินกำหนด 3 วัน</span>
       </div>
       <p class="t-caption" style="color:var(--muted); margin:var(--s-3) 0 0;">Bright <code>--pos/--cau/--neg</code> are dot-only (fail AA as text). Use <code>--pos-strong</code> / <code>--cau-strong</code> / <code>--neg-strong</code> when a status hue must be read as text or a number: low-N counts, deltas, overdue days.</p>
+    </div>
+  </section>
+
+  <!-- 5 · Type-3 meter --------------------------------------------- -->
+  <section>
+    <p class="t-section lbl">5 · Progress meter <span>— a quantity, never a state</span></p>
+    <div class="card">
+      <div class="row" style="gap:var(--s-6);">
+        <span class="mrow"><span class="pct">75%</span><span class="meter"><b style="width:75%"></b></span></span>
+        <span class="mrow"><span class="pct">38%</span><span class="meter"><b style="width:38%"></b></span></span>
+        <span class="mrow"><span class="pct">4%</span><span class="meter"><b style="width:4%"></b></span></span>
+      </div>
+      <div style="height:var(--s-4);"></div>
+      <div class="mrow"><span class="pct">62%</span><span class="meter meter--wide"><b style="width:62%"></b></span></div>
+      <p class="note">
+        <b>The meter never takes a status hue.</b> A self-reported status and a computed progress bar are two
+        signals allowed to disagree (a project can be 90% done and still at risk), so one colour would merge
+        them. Accent only. Default width suits a table cell; <code>.meter--wide</code> is the card-header size.
+      </p>
+    </div>
+  </section>
+
+  <!-- 6 · Both signals together ------------------------------------ -->
+  <section>
+    <p class="t-section lbl">6 · Two signals, side by side <span>— the disagreement is the conversation</span></p>
+    <div class="card">
+      <div class="row" style="gap:var(--s-2); flex-direction:column; align-items:stretch;">
+        <span class="mrow"><span class="st st--pos" style="min-width:150px;"><i></i>ตามแผน</span><span class="meter"><b style="width:88%"></b></span><span class="pct">88%</span></span>
+        <span class="mrow"><span class="st st--neg" style="min-width:150px;"><i></i>เสี่ยง</span><span class="meter"><b style="width:90%"></b></span><span class="pct">90%</span></span>
+        <span class="mrow"><span class="st st--cau" style="min-width:150px;"><i></i>ล่าช้า</span><span class="meter"><b style="width:12%"></b></span><span class="pct">12%</span></span>
+      </div>
     </div>
   </section>
 
