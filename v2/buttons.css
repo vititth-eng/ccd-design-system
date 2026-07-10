@@ -21,6 +21,8 @@
   border-radius: var(--r-base);
   cursor: pointer;
   user-select: none;
+  /* a .btn is allowed to be an <a>; without this the browser underline leaks */
+  text-decoration: none;
   transition: filter .12s ease, background-color .12s ease, border-color .12s ease;
 }
 
