@@ -5,27 +5,11 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./glossary": "./src/glossary.ts",
-    "./tokens.css": "./tokens.css",
-    "./tokens-dashboard.css": "./tokens-dashboard.css",
-    "./buttons.css": "./buttons.css",
-    "./forms.css": "./forms.css",
-    "./tables.css": "./tables.css",
-    "./modals.css": "./modals.css",
-    "./layout.css": "./layout.css",
-    "./nav.css": "./nav.css",
-    "./states.css": "./states.css",
-    "./toasts.css": "./toasts.css",
-    "./icons.css": "./icons.css",
-    "./icons.svg": "./icons.svg",
-    "./tailwind-preset.css": "./tailwind-preset.css"
+    "./glossary": "./src/glossary.ts"
   },
   "files": [
     "src",
-    "*.css",
-    "*.svg",
-    "README.md",
-    "INTEGRATION.md"
+    "README.md"
   ],
   "peerDependencies": {
     "react": ">=18",
