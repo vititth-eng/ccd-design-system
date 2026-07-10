@@ -10,8 +10,8 @@ For v2, one store each:
 - **Doctrine** (flat/quiet/2-ink, anti-references) → `v2/PRODUCT.md`
 - **Component catalog** → `v2/showroom.html` + the per-component `v2/*-gallery.html`
 - **Adding a token/component** (graduation, atomic, catalog rule) → `CLAUDE.md` in this repo
-- **Consume pattern today**: vendor `v2/*.css` into the app (v2 lives on `wip/v3-rebuild`,
-  so no CDN tag exists yet). When v2 lands on main and is tagged, swap to
-  `cdn.jsdelivr.net/gh/vititth-eng/ccd-design-system@<tag>/v2/*.css` and delete the vendor copy.
+- **Consume pattern**: link the immutable CDN tag —
+  `cdn.jsdelivr.net/gh/vititth-eng/ccd-design-system@v2.0.0/v2/*.css` (current tag in
+  `Superpower/facts/design.yml`). Bump every consumer in lockstep on a DS release; never `@main`.
 - **Frame**: CSS-only `v2/shell.css` — the app authors its own markup and copies the ~15
   lines of glue JS from `v2/shell-gallery.html`. No shared React frame, by design.
