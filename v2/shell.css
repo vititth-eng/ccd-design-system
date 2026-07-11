@@ -49,11 +49,19 @@
   -webkit-mask: url("./assets/ccd-mark-full.svg") center / contain no-repeat;
 }
 .shell__appname {
-  min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  min-width: 0; overflow: hidden; white-space: nowrap;   /* clip-wipe like .shell__item — NO ellipsis */
   font-size: var(--fs-body); font-weight: var(--fw-semi); color: var(--ink);
   line-height: 1.2; padding-bottom: 3px;   /* baseline meets the lion's lower edge */
 }
-.shell--collapsed .shell__appname { display: none; }
+/* Collapse the SAME way as .shell__item .label: sr-only, not display:none.
+   text-overflow:ellipsis made this the one label that truncated-then-filled
+   in view during the width animation (a slow-looking blip vs the labels'
+   instant clip-wipe); dropping the ellipsis + matching the label's sr-only
+   reveal makes every sidebar label appear identically, and the accessible
+   name survives collapse. */
+.shell--collapsed .shell__appname {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
 
 /* section nav */
 .shell__nav { flex: 1 1 auto; overflow-x: hidden; overflow-y: auto; padding: var(--s-2); }
@@ -116,10 +124,12 @@
   display: inline-flex; align-items: center; justify-content: center;
   font-size: var(--fs-caption); font-weight: var(--fw-semi);
 }
-.shell__who { min-width: 0; }
-.shell__who .nm { font-size: var(--fs-body); font-weight: var(--fw-semi); color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.shell__who .rl { font-size: var(--fs-caption); color: var(--muted); }
-.shell--collapsed .shell__who { display: none; }
+.shell__who { min-width: max-content; }   /* don't shrink — like .shell__item, the sidebar's overflow clips it (clip-wipe), so text never re-lays-out mid-animation. min-width:0 let it shrink and the two lines "unravelled" on expand. */
+.shell__who .nm { font-size: var(--fs-body); font-weight: var(--fw-semi); color: var(--ink); overflow: hidden; white-space: nowrap; }   /* clip-wipe, no ellipsis — see .shell__appname */
+.shell__who .rl { font-size: var(--fs-caption); color: var(--muted); overflow: hidden; white-space: nowrap; }
+.shell--collapsed .shell__who {   /* sr-only like .shell__item .label — instant clip-wipe reveal, name survives for screen readers */
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
 
 /* collapse toggle — a nav-item-like row, sitting ABOVE the foot hairline (it's
    a sidebar action, grouped with the nav, not the user identity). Inset with
