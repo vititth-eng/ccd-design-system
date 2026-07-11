@@ -63,8 +63,11 @@
 .tbl tbody tr.is-selected:hover td { background: var(--accent-tint); }
 
 /* Group band — a full-width subhead splitting the body into groups.
-   No expansion control, no action button (decided: YAGNI). */
-.tbl__group td {
+   No expansion control, no action button (decided: YAGNI).
+   Selector is `.tbl tbody tr.tbl__group td` (not `.tbl__group td`) so its
+   heavy --rule top border outweighs `.tbl tbody td`'s --divider (0,2,3 vs
+   0,1,2). Bare `.tbl__group td` loses that cascade and renders light. */
+.tbl tbody tr.tbl__group td {
   padding: var(--row-y) var(--s-3);
   background: var(--divider);        /* neutral band tint — structural, not accent (that's selection) */
   border-top: 1px solid var(--rule);
