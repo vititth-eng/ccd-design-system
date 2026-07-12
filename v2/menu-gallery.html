@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Menu &amp; triggers · v2 component</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" />
+<link rel="stylesheet" href="./tokens.css" />
+<link rel="stylesheet" href="./type.css" />
+<link rel="stylesheet" href="./menu.css" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--canvas); }
+  .content { padding: var(--s-6) var(--s-7); max-width: 900px; }
+  .lbl { margin: 0 0 var(--s-3); }
+  .lbl span { color: var(--muted); font-weight: var(--fw-regular); }
+  section { margin-bottom: var(--s-7); }
+  .note { max-width: 68ch; margin: var(--s-4) 0 0; color: var(--muted); font-size: var(--fs-caption); line-height: var(--lh-normal); }
+  .note b { color: var(--ink); font-weight: var(--fw-semi); }
+  .note code { font-size: .92em; color: var(--ink); background: var(--divider); border-radius: 4px; padding: 1px 5px; }
+  .rowset { display: flex; gap: var(--s-7); flex-wrap: wrap; align-items: flex-start; }
+  .field { display: flex; flex-direction: column; gap: var(--s-2); }
+  .field > span { font-size: var(--fs-caption); color: var(--muted); }
+
+  /* ====== PROPOSED trigger family — mock only ==================================
+     Lives here until approved, then graduates into menu.css. One face for
+     "a button that owns a .menu": white, rule border, r-base, chevron/icon.
+       .menu-btn         value + chevron  → replaces cowork .rchip, project .statusbtn
+       .menu-btn--kebab  icon-only "…"    → row / card actions
+     ========================================================================== */
+  .menu-anchor { position: relative; display: inline-flex; }
+  .menu-anchor .menu { top: calc(100% + 6px); }
+  .menu-anchor .menu--right { right: 0; }
+
+  .menu-btn { display: inline-flex; align-items: center; gap: var(--s-2); font: inherit; font-size: var(--fs-body); font-weight: var(--fw-semi); color: var(--ink); background: var(--card); border: 1px solid var(--rule); border-radius: var(--r-base); padding: 6px 10px; cursor: pointer; }
+  .menu-btn:hover { background: var(--divider); }
+  .menu-btn__dot { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 auto; }
+  .menu-btn__chev { color: var(--muted); flex: 0 0 auto; margin-left: var(--s-1); }
+  .menu-btn--kebab { padding: 6px; color: var(--muted); border-radius: var(--r-base); }
+  .menu-btn--kebab:hover { color: var(--ink); }
+</style>
+</head>
+<body>
+  <div class="content">
+    <p class="t-title" style="margin:0 0 var(--s-2)">Menu &amp; triggers</p>
+    <p class="note" style="margin:0 0 var(--s-6)">A menu is two parts: a <b>trigger</b> you press and a <b>pane</b> that floats open. The DS ships the pane (<code>.menu</code>); the trigger has been hand-rolled in every app. This page reunites them.</p>
+
+    <!-- 1 · THE PANE (ships today) -->
+    <section>
+      <p class="t-section lbl">1 · The pane <span>— <code>.menu</code> (menu.css). Ships today. This is what every trigger opens.</span></p>
+      <div class="menu is-open" style="position:static; display:inline-block; min-width:200px;">
+        <button class="menu__item menu__item--on">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.5 3.5 6.5-8" /></svg>Current choice
+        </button>
+        <button class="menu__item">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="8" height="8" rx="1.5" /><path d="M2.5 10V3a1 1 0 011-1h7" /></svg>Duplicate
+        </button>
+        <div class="menu__sep"></div>
+        <button class="menu__item menu__item--danger">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4.5h10M6.5 4V3h3v1M5 4.5l.5 8h5l.5-8" /></svg>Delete
+        </button>
+      </div>
+      <p class="note"><b>Slots:</b> <code>.menu__item</code> (button or link) · <code>--on</code> current choice (accent tint) · <code>--danger</code> destructive · <code>.menu__sep</code> divider. Disclosure pattern: trigger toggles <code>.is-open</code>, outside-click / Esc closes.</p>
+    </section>
+
+    <!-- 2 · TRIGGERS (proposed — one family, two shapes) -->
+    <section>
+      <p class="t-section lbl">2 · Triggers <span>— proposed <code>.menu-btn</code> family. Today these are 5 hand-rolled copies across apps.</span></p>
+      <div class="rowset">
+
+        <!-- a · select-trigger: value + chevron -->
+        <div class="field">
+          <span>a · Select-trigger — pick one value</span>
+          <div class="menu-anchor" data-menu>
+            <button class="menu-btn" data-menu-toggle aria-haspopup="menu">
+              <span class="menu-btn__dot" style="background:var(--accent)"></span>In progress
+              <svg class="menu-btn__chev" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l4 4 4-4" /></svg>
+            </button>
+            <div class="menu menu--right" role="menu">
+              <button class="menu__item" role="menuitemradio"><span class="menu-btn__dot" style="background:var(--muted)"></span>Not started</button>
+              <button class="menu__item menu__item--on" role="menuitemradio" aria-checked="true"><span class="menu-btn__dot" style="background:var(--accent)"></span>In progress</button>
+              <button class="menu__item" role="menuitemradio"><span class="menu-btn__dot" style="background:var(--pos)"></span>Done</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- b · kebab: icon-only actions -->
+        <div class="field">
+          <span>b · Kebab — row / card actions</span>
+          <div class="menu-anchor" data-menu>
+            <button class="menu-btn menu-btn--kebab" data-menu-toggle aria-haspopup="menu" aria-label="Actions">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3.4" r="1.4" /><circle cx="8" cy="8" r="1.4" /><circle cx="8" cy="12.6" r="1.4" /></svg>
+            </button>
+            <div class="menu menu--right" role="menu">
+              <button class="menu__item">Rename</button>
+              <button class="menu__item">Duplicate</button>
+              <div class="menu__sep"></div>
+              <button class="menu__item menu__item--danger">Delete</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <p class="note"><b>One face, two shapes.</b> Both are a white <code>.menu-btn</code> (card fill, rule border, r-base) that opens <code>.menu</code> — <code>--kebab</code> is just icon-only. The app-switcher &amp; user menu keep their bespoke triggers in <code>shell.css</code> (shell-specific), not this family.</p>
+    </section>
+
+    <!-- 3 · why -->
+    <section>
+      <p class="t-section lbl">3 · Why this page exists</p>
+      <p class="note">The pane was a DS component with no gallery, so it was invisible and got re-implemented (<code>.rmenu</code>) instead of reused. And "button that opens a menu" was never a DS component at all — it lived as <code>.statusbtn</code>, <code>.rchip</code>, the kebab, the app-switcher, the user menu: <b>five copies, zero source of truth.</b> Approve <code>.menu-btn</code> + <code>--kebab</code> and they graduate into <code>menu.css</code>, then <code>.statusbtn</code> and cowork's <code>.rchip</code> retrofit to it — one atomic change.</p>
+    </section>
+  </div>
+
+  <script>
+    // Disclosure: each [data-menu] toggles .is-open on its .menu; outside-click / Esc closes.
+    document.querySelectorAll('[data-menu]').forEach((anchor) => {
+      const btn = anchor.querySelector('[data-menu-toggle]');
+      const pane = anchor.querySelector('.menu');
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const open = pane.classList.contains('is-open');
+        document.querySelectorAll('.menu.is-open').forEach((m) => { if (m !== pane) m.classList.remove('is-open'); });
+        pane.classList.toggle('is-open', !open);
+      });
+    });
+    document.addEventListener('click', () => document.querySelectorAll('[data-menu] .menu.is-open').forEach((m) => m.classList.remove('is-open')));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') document.querySelectorAll('.menu.is-open').forEach((m) => m.classList.remove('is-open')); });
+  </script>
+</body>
+</html>
