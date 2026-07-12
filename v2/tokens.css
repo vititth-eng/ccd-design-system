@@ -21,7 +21,7 @@
 
   /* Accent — the ONE meaning color: actions, links, selection, meter. Never decoration (≤10%) */
   --accent:      #4068CA;   /* AA 5.18:1 — as fill (white text) and as link text */
-  --accent-tint: #E4ECF9;   /* selected-row / filter-chip fill — clearer blue so SELECTION reads as accent, distinct from the neutral divider */
+  --accent-tint: #E9F1FC;   /* selection + sidebar hover fill — soft blue, distinct from the neutral divider (which draws lines/tracks) */
 
   /* Status — macOS traffic-light trio (owner pick 2026-07-01). Type-1 = dot + ink text.
      Bright hues are fine as DOTS; they'd fail AA as text, so keep dot-only (darken for any pill). */

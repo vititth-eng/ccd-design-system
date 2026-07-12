@@ -68,7 +68,7 @@
    heavy --rule top border outweighs `.tbl tbody td`'s --divider (0,2,3 vs
    0,1,2). Bare `.tbl__group td` loses that cascade and renders light. */
 .tbl tbody tr.tbl__group td {
-  padding: var(--row-y) var(--s-3);
+  padding: var(--s-1) var(--s-3);    /* thin band — a section header, not a data row */
   background: var(--divider);        /* neutral band tint — structural, not accent (that's selection) */
   border-top: 1px solid var(--rule);
   font-weight: var(--fw-semi);

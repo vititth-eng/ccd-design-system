@@ -79,13 +79,14 @@
   white-space: nowrap; cursor: pointer;
   transition: color .12s ease, background-color .12s ease;
 }
-.shell__item:hover { background: var(--divider); color: var(--ink); }
-/* Active = accent-tint fill + ink text, NO weight change (bolding widens the
-   label ~2px and reflows during collapse/expand — reads as jitter). The tint
-   fill already marks selection. */
-.shell__item--on { background: var(--accent-tint); color: var(--ink); }
+.shell__item:hover:not(.shell__item--on) { background: var(--accent-tint); color: var(--ink); }
+/* Active = brand-accent glyph + label at 600, no fill; also ignores hover (the
+   :hover pair keeps it put). The 600 is a deliberate width bump (label widens
+   ~2px) — accepted for a stronger selected read; only shows when expanded. */
+.shell__item--on,
+.shell__item--on:hover { background: transparent; color: var(--accent); font-weight: var(--fw-semi); }
 .shell__item:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
-.shell__item svg { width: 17px; height: 17px; flex: 0 0 auto; margin: 0 5.5px; }   /* centers the 17px glyph in the 28px slot */
+.shell__item svg { width: 19px; height: 19px; flex: 0 0 auto; margin: 0 4.5px; }   /* centers the 19px glyph in the 28px slot */
 /* Collapsed: keep the SAME left-anchored icon slot (do NOT re-center with
    justify-content — that put the glyph on a different axis, so it jumped ~1px
    between states). Label is hidden below; the slot stays put. */
