@@ -48,3 +48,27 @@
 .menu__item--danger svg { color: currentColor; }
 
 .menu__sep { height: 1px; margin: var(--s-1) 0; background: var(--divider); }
+
+/* ── Trigger ──────────────────────────────────────────────────────────
+   .menu-btn = the button that owns a .menu (the disclosure trigger). A
+   white control — card fill, rule border, r-base — NOT a badge; any tone
+   (status, role) rides a leading dot, never a color fill. Two shapes:
+   value + chevron (default) and icon-only .menu-btn--kebab (row/card
+   actions). The host anchors the pane: wrap the trigger + .menu in a
+   .menu-anchor and the pane floats beneath it (.menu--right right-aligns). */
+.menu-anchor { position: relative; display: inline-flex; }
+.menu-anchor > .menu { top: calc(100% + 6px); }
+.menu-anchor > .menu--right { right: 0; }
+
+.menu-btn {
+  display: inline-flex; align-items: center; gap: var(--s-2);
+  font: inherit; font-size: var(--fs-caption); font-weight: var(--fw-semi);
+  color: var(--ink); background: var(--card);
+  border: 1px solid var(--rule); border-radius: var(--r-base);
+  padding: 5px 10px; cursor: pointer;
+}
+.menu-btn:hover:not(:disabled) { background: var(--divider); }
+.menu-btn:disabled { cursor: default; opacity: .6; }
+.menu-btn svg { color: var(--muted); flex: 0 0 auto; }
+.menu-btn--kebab { padding: 6px; color: var(--muted); }
+.menu-btn--kebab:hover:not(:disabled) { color: var(--ink); }

@@ -22,22 +22,10 @@
   .field { display: flex; flex-direction: column; gap: var(--s-2); }
   .field > span { font-size: var(--fs-caption); color: var(--muted); }
 
-  /* ====== PROPOSED trigger family — mock only ==================================
-     Lives here until approved, then graduates into menu.css. One face for
-     "a button that owns a .menu": white, rule border, r-base, chevron/icon.
-       .menu-btn         value + chevron  → replaces cowork .rchip, project .statusbtn
-       .menu-btn--kebab  icon-only "…"    → row / card actions
-     ========================================================================== */
-  .menu-anchor { position: relative; display: inline-flex; }
-  .menu-anchor .menu { top: calc(100% + 6px); }
-  .menu-anchor .menu--right { right: 0; }
-
-  .menu-btn { display: inline-flex; align-items: center; gap: var(--s-2); font: inherit; font-size: var(--fs-body); font-weight: var(--fw-semi); color: var(--ink); background: var(--card); border: 1px solid var(--rule); border-radius: var(--r-base); padding: 6px 10px; cursor: pointer; }
-  .menu-btn:hover { background: var(--divider); }
+  /* .menu-btn / .menu-btn--kebab / .menu-anchor now SHIP in menu.css (graduated
+     v2.1.3). Only these gallery demo bits stay local: the tone dot a real
+     consumer supplies (role uses .rdot, status uses .st i). */
   .menu-btn__dot { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 auto; }
-  .menu-btn__chev { color: var(--muted); flex: 0 0 auto; margin-left: var(--s-1); }
-  .menu-btn--kebab { padding: 6px; color: var(--muted); border-radius: var(--r-base); }
-  .menu-btn--kebab:hover { color: var(--ink); }
 </style>
 </head>
 <body>
