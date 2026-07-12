@@ -43,6 +43,6 @@
   transition: color .12s ease;
 }
 .seg__opt:hover:not(:disabled) { color: var(--ink); }
-.seg__opt--active { background: var(--card); color: var(--ink); box-shadow: var(--shadow-float); }
+.seg__opt--active { background: var(--card); color: var(--accent); box-shadow: var(--shadow-float); }
 .seg__opt:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .seg__opt:disabled { opacity: .4; cursor: not-allowed; }

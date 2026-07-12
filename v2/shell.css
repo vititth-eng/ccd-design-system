@@ -123,7 +123,9 @@
   background: var(--accent-tint); color: var(--accent);
   display: inline-flex; align-items: center; justify-content: center;
   font-size: var(--fs-caption); font-weight: var(--fw-semi);
+  overflow: hidden;   /* clip a photo child to the pill */
 }
+.shell__avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .shell__who { min-width: max-content; }   /* don't shrink — like .shell__item, the sidebar's overflow clips it (clip-wipe), so text never re-lays-out mid-animation. min-width:0 let it shrink and the two lines "unravelled" on expand. */
 .shell__who .nm { font-size: var(--fs-body); font-weight: var(--fw-semi); color: var(--ink); overflow: hidden; white-space: nowrap; }   /* clip-wipe, no ellipsis — see .shell__appname */
 .shell__who .rl { font-size: var(--fs-caption); color: var(--muted); overflow: hidden; white-space: nowrap; }
