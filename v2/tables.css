@@ -55,10 +55,11 @@
 
 /* Row states -------------------------------------------------- */
 
-/* Hover — faintest wash (divider tint), never reads as selected. */
-.tbl tbody tr:hover td { background: var(--divider); }
+/* Hover — accent wash (the shared hover language: nav + menu + rows). */
+.tbl tbody tr:hover td { background: var(--accent-tint); }
 
-/* Selected — accent tint. Wins over hover. */
+/* Selected — same accent wash. Unused in consumers today; if it ever ships
+   alongside hover, give it an accent left edge to separate the two. */
 .tbl tbody tr.is-selected td,
 .tbl tbody tr.is-selected:hover td { background: var(--accent-tint); }
 

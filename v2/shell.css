@@ -117,7 +117,7 @@
   background: none; border: none; border-radius: var(--r-base); cursor: pointer;
   transition: background-color .12s ease;
 }
-.shell__user:hover { background: var(--divider); }
+.shell__user:hover { background: var(--accent-tint); }
 .shell__user:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 .shell__avatar {
   width: 28px; height: 28px; border-radius: var(--r-pill); flex: 0 0 auto;
@@ -144,7 +144,7 @@
   color: var(--muted); cursor: pointer; font: inherit; font-size: var(--fs-body);
   transition: background-color .12s ease, color .12s ease;
 }
-.shell__collapse:hover { background: var(--divider); color: var(--ink); }
+.shell__collapse:hover { background: var(--accent-tint); color: var(--ink); }
 .shell__collapse:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 .shell__collapse svg { width: 18px; height: 18px; flex: 0 0 auto; margin: 0 5px; transition: transform .16s ease; }   /* 18px glyph centered in the 28 slot */
 .shell--collapsed .shell__collapse svg { transform: rotate(180deg); }
