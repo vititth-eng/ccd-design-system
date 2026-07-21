@@ -9,7 +9,12 @@
 
   /* ── COLOR ─────────────────────────────────────────────── */
 
-  /* Canvas + ink — flat white, separation by line only */
+  /* Canvas + ink — flat white, separation by line only.
+     INVARIANT: a block of content is never given a background. Group it with a
+     line, a gap, or a heading. Every tinted rectangle a consumer has reached for
+     — a --canvas panel, an --accent-tint strip, a --divider band — was rejected
+     on sight. Fills belong to controls and state (hover, selection, disabled,
+     tracks, pills), never to structure. */
   --canvas:  #FFFFFF;   /* page background */
   --card:    #FFFFFF;   /* card / panel surface (same as canvas; a line separates it) */
   --ink:     #142549;   /* primary text — Boonrawd navy (the fixed brand anchor) */
@@ -17,7 +22,9 @@
 
   /* Neutral ramp (OKLCH navy hue, lightness-stepped). muted=text · rule=border · divider=row line */
   --rule:    #CBD1DF;   /* borders — card edge, header underline */
-  --divider: #EDEFF1;   /* faint row hairline / group band / hover — NEAR-NEUTRAL gray (split from accent-tint so structure ≠ selection) */
+  --divider: #EDEFF1;   /* faint row hairline / hover / control track — NEAR-NEUTRAL gray (split from accent-tint so structure ≠ selection).
+                           AS A FILL, small elements ONLY: hover, disabled control, .meter and .seg tracks, .st-pill--none,
+                           and the thin .tbl__group header row. NEVER a content panel — see the flat-white rule above. */
 
   /* Accent — the ONE meaning color: actions, links, selection, meter. Never decoration (≤10%) */
   --accent:      #4068CA;   /* AA 5.18:1 — as fill (white text) and as link text */
