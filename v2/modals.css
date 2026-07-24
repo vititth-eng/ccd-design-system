@@ -38,10 +38,15 @@
 }
 /* Grows DOWN, never sideways: a long form gets a scrolling body between a pinned
    head and foot, so the title and the confirm button never leave the screen.
-   [open] is required -- a bare `display: flex` here would beat the UA's
-   `dialog:not([open]) { display: none }` and every modal would render on load. */
-.modal { max-height: min(84vh, 720px); }
-.modal[open] { display: flex; flex-direction: column; opacity: 1; transform: none; }
+   `display: flex` must stay on [open] -- a bare one here would beat the UA's
+   `dialog:not([open]) { display: none }` and every modal would render on load.
+   flex-direction must NOT: it is inert while display:none, and on [open] it
+   snapped back to `row` the instant the dialog closed while display:flex was
+   still transitioning out for .18s -- head/body/foot re-laid out as three
+   columns mid-fade (measured 451->92px head, 66->415px foot). That was the
+   close "blip". Keep the axis on the bare rule so it survives the close. */
+.modal { max-height: min(84vh, 720px); flex-direction: column; }
+.modal[open] { display: flex; opacity: 1; transform: none; }
 .modal__head, .modal__foot { flex: 0 0 auto; }
 .modal__body { flex: 1 1 auto; overflow-y: auto; overscroll-behavior: contain; }
 @starting-style { .modal[open] { opacity: 0; transform: translateY(8px) scale(.98); } }
