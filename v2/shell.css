@@ -184,6 +184,33 @@
 .shell__actions { display: inline-flex; align-items: center; gap: var(--s-2); flex: 0 0 auto; }
 .shell__body { flex: 1 1 auto; padding: 0 var(--s-3) var(--s-3); }
 
+/* ── PHONE: the sidebar becomes a DRAWER ───────────────────── */
+/* 208px beside content on a 375px screen leaves ~143px for the page, so the
+   sidebar leaves the flex flow and floats: collapsed it is the same icon rail
+   as desktop, expanded it slides OVER the content instead of squeezing it.
+   The rail's width stays reserved on __main so the icons never cover the page.
+   Both states keep the collapse toggle — an icon rail you cannot open is six
+   unlabelled glyphs. Consumers should start collapsed at this width (see
+   .shell--collapsed); a consumer that does not simply opens with the drawer
+   out, which the toggle closes. */
+@media (max-width: 720px) {
+  .shell { height: 100dvh; padding: var(--s-2); gap: var(--s-2); position: relative; }   /* dvh: the mobile URL bar makes 100vh taller than the visible page, pushing the sidebar foot (user menu) below the fold */
+  .shell__sidebar {
+    position: absolute; z-index: 20;
+    top: var(--s-2); bottom: var(--s-2); left: var(--s-2);
+    box-shadow: var(--shadow-pop);   /* the menu/popover lift — it now covers content, so --shadow-float is too faint to read as "above" */
+  }
+  .shell__main { margin-left: calc(56px + var(--s-2)); }   /* reserve the rail; the expanded panel overlays this */
+  .shell__foot .menu { min-width: 180px; }
+
+  /* Head stacks: title and actions cannot share ~295px. Without the wrap the
+     flex row squeezes the heading to one word per line and the buttons still
+     overlap it. Actions keep their full size (never .btn--sm) — they just sit
+     on their own line. */
+  .shell__head { flex-wrap: wrap; padding: var(--s-2) var(--s-3) var(--s-3); }
+  .shell__title { flex: 1 0 100%; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .shell__sidebar, .shell__collapse svg { transition: none; }
 }
