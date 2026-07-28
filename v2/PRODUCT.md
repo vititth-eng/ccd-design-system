@@ -37,6 +37,39 @@ information density — never decoration. The interface recedes; the data leads.
 - **tokens.css is the single source of truth** — every value resolves to a token.
 - **Quiet default** — when two options both pass, pick the calmer one.
 
+## Composition rules
+How a page is assembled. Read before mocking any screen. Hard cap: this section
+stays under one page — a new rule must merge with or replace an old one.
+*Grows by graduation: a correction Vitit makes twice becomes a rule here; the
+scar + why stays in memory.*
+
+1. **Structure by line, gap, or heading — never fill.** A background belongs to
+   controls and state only (hover · selection · disabled · track · pill · marker).
+   A tinted rectangle around content is always wrong.
+2. **Frame by facing.** Respondent-facing → mobile-fit, slim top bar, passes 375px.
+   Admin-facing → sidebar shell, dense, laptop-first. Single-screen → main panel
+   alone, no sidebar. Tabs are in-page only; never top-nav, never breadcrumbs.
+3. **Caption-zero.** Start with no helper text. A caption survives only if cutting
+   it causes a misread. Ladder: rewrite the label → trust the visual → move to
+   tooltip → one legend at top → keep one line. Policy disclaimers and
+   thin-data/confidence notes always survive.
+4. **Shallow hierarchy on dense surfaces.** Section heads rise by weight + color,
+   not size jumps. KPI numerals use the KPI token, never the display scale.
+5. **Flag exceptions, don't gradient.** Score tables tint only cells beyond a
+   fixed instrument threshold (e.g. amber < 4.0, red < 3.5 on Likert 1–5);
+   healthy cells stay plain.
+6. **Charts use the Tier-2 data palette** — never the status-dot or tint hues.
+7. **Thai in dense tables:** weight ≤ 400; breathing comes from row padding,
+   never a new line-height token.
+8. **One-off surfaces borrow mechanics, not shape.** Tokens, focus ring,
+   active-state, motion flow in; proportions and header height stay bespoke.
+
+## Voice
+- **English-first chrome.** UI strings are English; Thai arrives later via
+  glossary + i18n. Framework/questionnaire content is data — stays as authored.
+- Any Thai actually written follows the register in `wiki/thai-house-style.md`.
+- Grows by the same graduation rule as Composition.
+
 ## Accessibility & Inclusion
 Mixed Thai + Latin text (Thai vertical-centering quirks: center the consonant body,
 not the ink box). Body contrast ≥ 4.5:1, including on tinted near-whites. Design and
