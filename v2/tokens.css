@@ -110,8 +110,28 @@
   --shadow-modal: 0 12px 32px rgba(20, 37, 73, 0.10);  /* modal / sheet — softened (was 16/40/.16) */
 
   /* ── FOCUS ─────────────────────────────────────────────── */
-  /* No focus tokens: the pattern is `outline: 2px solid var(--accent)`
-     everywhere (inputs add inset box-shadow — see forms.css). */
+  /* No focus token, on purpose (owner call 2026-07-29): the only part that
+     could ever change is the colour, and that is already --accent. What is
+     left — "2px solid" — has not drifted once across 13 sites in 7 files.
+     And there is no single look to store, because there are TWO:
+
+       PRESSABLE — .btn .menu-btn .tab .seg__opt .menu__item .shell__*
+         outline: 2px solid var(--accent).
+       FIELD — .control only
+         no visible outline; its own border goes accent + inset 1px shadow,
+         reading as a crisp 2px with no halo and no layout shift (forms.css).
+         A ring around a field draws a second box around the box it already
+         has — two frames with a gap, which reads as a rendering fault.
+
+     OFFSET is the part that gets picked wrong, so:
+       +2px  free-standing on a surface — the default, and the only choice
+             you should need to think about.
+       -2px  a row in a STACKED list: .menu__item, .shell__item,
+             .shell__user, .shell__collapse. List rows touch each other, so a
+             ring drawn outside lands on the rows above and below instead of
+             framing its own. (It is NOT about clipping — .shell__nav has
+             8px of padding and a 2px ring would fit fine.)
+       +1px  .seg__opt only — it sits in a 3px trough; +2 touches the wall. */
 
   /* ── Z-INDEX SCALE ─────────────────────────────────────── */
   --z-sticky:   50;
