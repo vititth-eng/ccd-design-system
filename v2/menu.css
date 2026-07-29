@@ -16,7 +16,7 @@
   position: absolute;
   min-width: 180px;
   padding: var(--s-1);
-  background: var(--card);
+  background: var(--float);
   border: 1px solid var(--rule);
   border-radius: var(--r-base);
   box-shadow: var(--shadow-pop);
@@ -84,7 +84,7 @@
   line-height: normal; white-space: nowrap;   /* same as .btn — centres the ink exactly */
   height: var(--h);
   vertical-align: middle;   /* same baseline-gap fix as .btn — see buttons.css */
-  color: var(--ink); background: var(--card);
+  color: var(--ink); background: var(--ctl-raise);
   border: 1px solid var(--rule); border-radius: var(--r-base);
   padding: 0 10px; cursor: pointer;
 }

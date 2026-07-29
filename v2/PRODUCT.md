@@ -51,6 +51,15 @@ scar + why stays in memory.*
    2026-07-29, after seeing full-bleed tried). A table inset inside a padded card
    is the shape to look for: its row lines stop short of the border with nothing
    to explain where they end.
+   **Dark does not relax this.** The law is a *lightness step with a no-hue
+   clause*, not "no fills" — light mode's step is zero only because white is the
+   ceiling. A dark card is the same neutral one step up: no hue, no meaning, no
+   decoration. Read the other way ("dark mode may use surfaces") and the
+   `--canvas` panel rejected three times walks straight back in.
+   **And on dark a tint is backing, never signal** — the status dot carries the
+   meaning. Low-alpha hues over a dark ground compress into one lightness band
+   and stop being distinguishable, so a pill without its `<i>` is unreadable in a
+   way it never was on white (CCD-174, found by rendering).
 2. **Frame by facing.** Respondent-facing → mobile-fit, slim top bar, passes 375px.
    Admin-facing → sidebar shell, dense, laptop-first. Single-screen → main panel
    alone, no sidebar. Tabs are in-page only; never top-nav, never breadcrumbs.

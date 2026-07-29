@@ -41,12 +41,12 @@
 .btn:disabled { opacity: .45; cursor: not-allowed; }
 
 /* Primary — the one accent action per view. */
-.btn--primary { background: var(--accent); color: #FFFFFF; }
+.btn--primary { background: var(--accent-fill); color: var(--on-fill); }
 .btn--primary:hover:not(:disabled)  { filter: brightness(.93); }
 .btn--primary:active:not(:disabled) { filter: brightness(.86); }
 
 /* Secondary — the neutral default. White surface, rule border. */
-.btn--secondary { background: var(--card); color: var(--ink); border-color: var(--rule); }
+.btn--secondary { background: var(--ctl-raise); color: var(--ink); border-color: var(--rule); }
 .btn--secondary:hover:not(:disabled)  { background: var(--divider); border-color: var(--muted); }
 .btn--secondary:active:not(:disabled) { filter: brightness(.96); }
 
@@ -56,7 +56,7 @@
 .btn--ghost:active:not(:disabled) { filter: brightness(.96); }
 
 /* Danger — destructive. Uses the accessible fill red, not the dot red. */
-.btn--danger { background: var(--neg-strong); color: #FFFFFF; }
+.btn--danger { background: var(--neg-fill); color: var(--on-fill); }
 .btn--danger:hover:not(:disabled)  { filter: brightness(.93); }
 .btn--danger:active:not(:disabled) { filter: brightness(.86); }
 
