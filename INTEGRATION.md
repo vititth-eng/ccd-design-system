@@ -11,7 +11,9 @@ For v2, one store each:
 - **Component catalog** → `v2/showroom.html` + the per-component `v2/*-gallery.html`
 - **Adding a token/component** (graduation, atomic, catalog rule) → `CLAUDE.md` in this repo
 - **Consume pattern**: link the immutable CDN tag —
-  `cdn.jsdelivr.net/gh/vititth-eng/ccd-design-system@v2.0.0/v2/*.css` (current tag in
-  `Superpower/facts/design.yml`). Bump every consumer in lockstep on a DS release; never `@main`.
+  `cdn.jsdelivr.net/gh/vititth-eng/ccd-design-system@<tag>/v2/*.css`. The current tag is
+  deliberately mirrored nowhere (it would lag); read it off a live consumer:
+  `grep -ho 'ccd-design-system@[^/]*' ~/dev/code/ccd-brb-*/app/layout.tsx`.
+  Bump every consumer in lockstep on a DS release; never `@main`.
 - **Frame**: CSS-only `v2/shell.css` — the app authors its own markup and copies the ~15
   lines of glue JS from `v2/shell-gallery.html`. No shared React frame, by design.

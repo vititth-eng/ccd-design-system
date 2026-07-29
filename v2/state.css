@@ -32,7 +32,7 @@
 .state__text {
   color: var(--muted);
   font-size: var(--fs-body);
-  line-height: var(--lh-body);
+  line-height: var(--lh-normal);
   margin: 0 0 var(--s-5);
 }
 

@@ -3,8 +3,9 @@
    Ground-up rebuild 2026-07-02, from tokens.css + type.css.
    The frame every app sits in: a FLOATING sidebar on the white
    canvas (faint divider edge + tight --shadow-float), content
-   open on the canvas beside it. Sidebar houses the umbrella
-   app-switcher (top) + this app's sections + user (bottom).
+   open on the canvas beside it. Sidebar holds the lion mark home
+   link (top) + this app's sections + user (bottom) — there is no
+   app-switcher dropdown; see .shell__brand below.
    Collapses to an icon rail so wide tables reclaim width.
    Sidebar is OPTIONAL — a single-screen app renders __main alone.
    ============================================================ */

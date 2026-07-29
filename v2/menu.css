@@ -1,14 +1,15 @@
 /* ============================================================
    CCD Design System v2 — MENU (dropdown)
    Ground-up rebuild 2026-07-03, from tokens.css + type.css.
-   The floating panel behind the app-switcher, the user menu,
-   and table "…" row actions. Floats → gets --shadow-pop +
+   The floating panel behind the user menu and table "…" row
+   actions. (It also served the app-switcher until that was
+   dropped — the lion mark links home instead.) Floats → --shadow-pop +
    --z-dropdown. Disclosure pattern (trigger toggles .is-open,
    outside-click / Esc closes) — not the full ARIA menu widget;
    plain buttons/links inside, no roving focus needed.
    Position: absolute inside a position:relative anchor — the
    anchor rules live with the component that hosts the menu
-   (e.g. shell.css places the switcher + user menus).
+   (e.g. shell.css places the sidebar user menu).
    ============================================================ */
 
 .menu {
@@ -39,7 +40,7 @@
 .menu__item:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 .menu__item svg { width: 16px; height: 16px; flex: 0 0 auto; color: var(--muted); }
 
-/* Current choice (app switcher) — same accent tint as nav/selection. */
+/* Current choice (value menus) — same accent tint as nav/selection. */
 .menu__item--on { background: var(--accent-tint); font-weight: var(--fw-semi); }
 .menu__item--on svg { color: var(--accent); }
 
