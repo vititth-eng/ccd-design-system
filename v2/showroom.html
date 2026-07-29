@@ -184,6 +184,9 @@
     if (m) tokens.push({ name: '--' + m[1], value: m[2].trim(), note: (m[3] || '').replace(/\s+/g, ' ').trim() });
   });
   const byName = Object.fromEntries(tokens.map(t => [t.name, t]));
+  // file:// fallback: fetch is blocked, so the token tables can't render.
+  if (!tokens.length) el('g-color').innerHTML =
+    '<span class="note">Token tables read tokens.css live and need the preview server — component galleries below still work.</span>';
 
   // probe to resolve any var to a computed value
   const probe = document.createElement('div');
@@ -257,9 +260,18 @@
   // Skip [data-fixed] frames (the shell is a 100vh app — auto-fit would collapse it).
   document.querySelectorAll('iframe:not([data-fixed])').forEach(f => {
     const fit = () => {
-      try { f.style.height = '0px'; f.style.height = f.contentDocument.documentElement.scrollHeight + 'px'; } catch(e) {}
+      // Touch contentDocument BEFORE collapsing the height: on file:// the
+      // browser blocks the access, and collapsing first left every frame at 0px.
+      try {
+        const doc = f.contentDocument.documentElement;
+        f.style.height = '0px'; f.style.height = doc.scrollHeight + 'px';
+      } catch(e) {}
     };
     const attach = () => {
+      // file:// fallback: content is unreachable → fixed height + inner scroll.
+      let doc = null;
+      try { doc = f.contentDocument; } catch(e) {}
+      if (!doc || !doc.documentElement) { f.style.height = '520px'; return; }
       // Kill the iframe's own scrollability: with its document set to
       // overflow:hidden it can never show a scrollbar or trap the mouse wheel —
       // the wheel bubbles up and the parent page scrolls instead. Auto-height
