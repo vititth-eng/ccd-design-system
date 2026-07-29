@@ -1,0 +1,17 @@
+{
+  "_why": "Duplicate of the repo-root .impeccable/config.json. The hook resolves config from the NEAREST .impeccable dir walking up from the scanned file — and v2/.impeccable already existed (it holds critique/ + hook.cache.json), so it shadowed the root config and every waiver written there was silently ignored for files under v2/. That is why the Inter flag kept re-firing after being 'fixed' three times.",
+  "detector": {
+    "ignoreRules": [
+      "overused-font"
+    ],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "inter",
+        "createdAt": "2026-07-29T03:51:11.007Z",
+        "reason": "Inter is the DS brand face (tokens.css), fixed Thai+Latin pairing with Noto Sans Thai across all 10 apps"
+      }
+    ]
+  }
+}

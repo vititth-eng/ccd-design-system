@@ -92,13 +92,25 @@
      Out of scope on purpose: .tabs and the sidebar own their own line (nav.css
      forbids tabs and seg sharing a shape), .menu__item lives inside the pane,
      and .st / .check are already 22.4px — exactly the text line. */
-  --ctl-h:    30px;         /* bar family — button, field, trigger, seg */
+  --ctl-h:    34px;         /* bar family — button, field, trigger, seg.
+                               34, not 30 (owner call 2026-07-29, picked by eye from a
+                               30/32/34/36 render): at 30 a field reads as a slot, not
+                               something you type a sentence into. 34 is also the height
+                               .btn already had before v2.1.9, so buttons across every
+                               consumer stay pixel-identical — this release moves fields
+                               (42.4 → 34) and nothing else. */
   --ctl-h-sm: 24px;         /* compact table rows only */
 
   /* ── RADIUS ────────────────────────────────────────────── */
+  /* Base and large move TOGETHER (owner call 2026-07-29, picked by eye at 2.5×
+     against the new 34px control height). 6 → 8 softens the signature without
+     crossing into consumer-SaaS round (10 was tried and rejected: the primary
+     button starts reading friendly, which is on PRODUCT.md's anti-references).
+     --r-large follows to 12 to keep the gap — at base 8 / large 10 a card and a
+     modal read as the same shape, and "this floats above you" stops landing. */
   --r-tiny:  3px;      /* micro tags <12px (rare) */
-  --r-base:  6px;      /* card, button, input, swatch — the signature */
-  --r-large: 10px;     /* modal, large overlay */
+  --r-base:  8px;      /* card, button, input, swatch — the signature */
+  --r-large: 12px;     /* modal, large overlay — must stay clear of --r-base */
   --r-pill:  999px;    /* status chips, round badges */
 
   /* ── SHADOW ────────────────────────────────────────────── */
