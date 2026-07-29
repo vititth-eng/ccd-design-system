@@ -43,6 +43,31 @@
   --cau-strong: #F2C14E;
   --neg-strong: #FF8A80;
 
+  /* ══ RULE 4 · TINTS ARE A VEIL, NOT A DARK PAINT ═══════════════════
+     Owner call 2026-07-29, from the render: the status pills came out muddy —
+     the caution pill an olive smear, the overdue pill brown. status.css:30
+     already names this ("the muddy-amber problem") and dodges it on light by
+     keeping pill TEXT ink instead of amber. It could not dodge the fill.
+
+     Why darkening fails: on white, a tint is 94% white plus a drop of hue, so
+     it stays clean and pale. Yellow at low lightness is not "dark yellow" —
+     it is physically the colour of mud. There is no solid dark amber that
+     reads as amber.
+
+     So a dark tint is not a colour, it is a VEIL: the bright dot hue at low
+     alpha, laid over whatever surface is underneath. The neutral surface shows
+     through, so it reads as tinted glass rather than paint — and it composites
+     correctly on card AND on --float, which a solid value cannot do.
+
+     This is Rule 2 generalised: SURFACES take a solid step, EVERYTHING ELSE
+     takes a film. Hue-independent on purpose — it works over grey and navy
+     alike, which is why these moved up out of the palette blocks.
+     (--accent-tint stays solid for now; it renders fine and selection is a
+     different job from status. Flagged, not changed.) */
+  --pos-tint: rgba(39,201,63,.14);
+  --cau-tint: rgba(255,189,46,.13);
+  --neg-tint: rgba(255,95,86,.14);
+
   /* Navy-alpha shadows vanish on dark — black, and heavier */
   --shadow-float: 0 2px 10px rgba(0,0,0,.45);
   --shadow-pop:   0 6px 18px rgba(0,0,0,.55);
@@ -56,7 +81,6 @@
   --muted:   #A2A6AD;   /* 7.12:1 */
   --divider: #26282C;
   --accent-tint: #222D3A;   /* selection / sidebar hover — blue held back */
-  --pos-tint: #19251D;  --cau-tint: #28220F;  --neg-tint: #2E1F1C;
 }
 [data-theme="dark-grey-lines"]   { --card: #191A1D; --rule: #494D55; }
 [data-theme="dark-grey-surface"] { --card: #212327; --rule: #383B41; --float: #32353C; }
@@ -127,15 +151,45 @@
   --muted:   #A7B2C7;
   --divider: #1B2A46;
   --accent-tint: #1D3054;
-  --pos-tint: #14301F;  --cau-tint: #33280D;  --neg-tint: #3A211E;
 }
 [data-theme="dark-navy-lines"]   { --card: #101C33; --rule: #40557F; }
 [data-theme="dark-navy-surface"] { --card: #182741; --rule: #2C3D5E; }
 
-/* THE ONLY NON-TOKEN OVERRIDES — v2's two hardcoded #FFFFFF text fills.
-   A light-blue button needs dark text; white on #6E9BF0 is 2.76:1 (fails). */
-[data-theme^="dark"] .btn--primary { color: var(--canvas); }
-[data-theme^="dark"] .btn--danger  { color: var(--canvas); }
+/* ══ RULE 3 · FILLS DON'T INVERT ═══════════════════════════════════
+   Owner call 2026-07-29, from the render: the danger button came out a pale
+   salmon slab with dark text — the only inverted element on the screen, and
+   LOUDER than the primary (6.73:1 vs card, against the primary's 5.57:1).
+   Destroy was out-shouting save.
+
+   Root cause: --accent and --neg-strong each do TWO jobs — coloured TEXT on
+   the page, and a coloured FILL with text on top. Dark mode moves those in
+   opposite directions: text must get lighter, a fill must stay dark enough to
+   carry white text. Lifting the token for the text job silently wrecked the
+   fill job. (Same shape as the four hardcoded #FFFFFF — one value, two jobs.)
+
+   Fix: a fill keeps its own contrast, so it keeps its LIGHT value. Nothing new
+   is invented here — --accent-fill IS the light --accent, --neg-fill IS the
+   light --neg-strong. Only text and surfaces invert.
+
+   Known margin: #4068CA on --card is 2.97:1 (WCAG non-text asks 3.0). Accepted
+   over inventing a value — a button also has a shape, a radius and a label.
+   Decorative accent fills (.meter b, .toast--info dot) keep the LIFTED --accent:
+   nothing sits on them, so more visible is strictly better. */
+[data-theme^="dark"] {
+  --accent-fill: #4068CA;   /* = light --accent */
+  --neg-fill:    #C4372C;   /* = light --neg-strong */
+  --on-fill:     #FFFFFF;   /* the one token that kills all four hardcoded #fff */
+}
+[data-theme^="dark"] .btn--primary {
+  background: var(--accent-fill); color: var(--on-fill);
+}
+[data-theme^="dark"] .btn--danger {
+  background: var(--neg-fill); color: var(--on-fill);
+}
+[data-theme^="dark"] .sbtn.on .sbtnN,
+[data-theme^="dark"] .sradio:checked + .sbtn .sbtnN {
+  background: var(--accent-fill); border-color: var(--accent-fill); color: var(--on-fill);
+}
 
 /* ── sandbox scaffolding (not part of the design) ─────────────────── */
 * { box-sizing: border-box; }
@@ -295,11 +349,11 @@ body { margin: 0; overflow: hidden; }
         <div class="tbl-wrap"><table class="tbl">
           <thead><tr><th>พนักงาน</th><th>ฝ่าย</th><th>สถานะ</th><th>ความคืบหน้า</th><th class="tbl__n">คะแนน</th><th class="tbl__n">อันดับ</th></tr></thead>
           <tbody>
-            <tr><td class="tbl__lead">กานต์ ธนกฤต</td><td>การตลาด</td><td><span class="st st--pos"><i></i>เสร็จสิ้น</span></td><td><span class="meter" style="--v:100%"></span></td><td class="tbl__n">4.82</td><td class="tbl__n">1</td></tr>
-            <tr class="is-selected"><td class="tbl__lead">นิรมล ชัยวัฒน์</td><td>ขาย</td><td><span class="st st--cau"><i></i>กำลังดำเนินการ</span></td><td><span class="meter" style="--v:68%"></span></td><td class="tbl__n">4.71</td><td class="tbl__n">2</td></tr>
-            <tr><td class="tbl__lead">ศักดิ์ชัย ลิ้มสกุล</td><td>ปฏิบัติการ</td><td><span class="st st--pos"><i></i>เสร็จสิ้น</span></td><td><span class="meter" style="--v:100%"></span></td><td class="tbl__n">4.55</td><td class="tbl__n">3</td></tr>
-            <tr><td class="tbl__lead">ธนา พงษ์เจริญ</td><td>บัญชี</td><td><span class="st st--neg"><i></i>เกินกำหนด</span></td><td><span class="meter" style="--v:22%"></span></td><td class="tbl__n">4.10</td><td class="tbl__n">4</td></tr>
-            <tr><td class="tbl__lead">อรุณี สุขสมบูรณ์</td><td>บุคคล</td><td><span class="st st--none"><i></i>ยังไม่เริ่ม</span></td><td><span class="meter" style="--v:0%"></span></td><td class="tbl__n">—</td><td class="tbl__n">—</td></tr>
+            <tr><td class="tbl__lead">กานต์ ธนกฤต</td><td>การตลาด</td><td><span class="st st--pos"><i></i>เสร็จสิ้น</span></td><td><span class="meter"><b style="width:100%"></b></span></td><td class="tbl__n">4.82</td><td class="tbl__n">1</td></tr>
+            <tr class="is-selected"><td class="tbl__lead">นิรมล ชัยวัฒน์</td><td>ขาย</td><td><span class="st st--cau"><i></i>กำลังดำเนินการ</span></td><td><span class="meter"><b style="width:68%"></b></span></td><td class="tbl__n">4.71</td><td class="tbl__n">2</td></tr>
+            <tr><td class="tbl__lead">ศักดิ์ชัย ลิ้มสกุล</td><td>ปฏิบัติการ</td><td><span class="st st--pos"><i></i>เสร็จสิ้น</span></td><td><span class="meter"><b style="width:100%"></b></span></td><td class="tbl__n">4.55</td><td class="tbl__n">3</td></tr>
+            <tr><td class="tbl__lead">ธนา พงษ์เจริญ</td><td>บัญชี</td><td><span class="st st--neg"><i></i>เกินกำหนด</span></td><td><span class="meter"><b style="width:22%"></b></span></td><td class="tbl__n">4.10</td><td class="tbl__n">4</td></tr>
+            <tr><td class="tbl__lead">อรุณี สุขสมบูรณ์</td><td>บุคคล</td><td><span class="st st--none"><i></i>ยังไม่เริ่ม</span></td><td><span class="meter"><b style="width:0%"></b></span></td><td class="tbl__n">—</td><td class="tbl__n">—</td></tr>
           </tbody>
         </table></div>
       </div>
@@ -342,10 +396,14 @@ body { margin: 0; overflow: hidden; }
       <div class="sec">
         <p class="t-section">สถานะ (pill tier)</p>
         <div class="demorow">
-          <span class="st-pill st-pill--pos">เสร็จสิ้น</span>
-          <span class="st-pill st-pill--cau">รอตรวจสอบ</span>
-          <span class="st-pill st-pill--neg">เกินกำหนด</span>
-          <span class="st-pill st-pill--none">ยังไม่เริ่ม</span>
+          <!-- MOCK BUG (fixed 2026-07-29): these four shipped without their <i> dot.
+               status.css:42-46 makes the DOT the hue carrier and the fill only a soft
+               backing — so the mock had the fill doing 100% of a job it was never
+               designed to do alone. Not a dark-mode defect. -->
+          <span class="st-pill st-pill--pos"><i></i>เสร็จสิ้น</span>
+          <span class="st-pill st-pill--cau"><i></i>รอตรวจสอบ</span>
+          <span class="st-pill st-pill--neg"><i></i>เกินกำหนด</span>
+          <span class="st-pill st-pill--none"><i></i>ยังไม่เริ่ม</span>
           <span class="kpi__delta kpi__delta--up is-pill">+10.9%</span>
           <span class="kpi__delta kpi__delta--down is-pill">−0.86%</span>
         </div>
