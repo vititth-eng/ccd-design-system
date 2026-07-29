@@ -106,5 +106,35 @@
       </div>
     </div>
   </section>
+
+  <!-- 5 · Page measure — .form caps + centres the column ------------ -->
+  <!-- max-width:none: this section demos the measure itself, so it must not
+       sit inside the gallery's own 480px cap. Dashed guides are gallery
+       chrome, not DS. -->
+  <section style="max-width:none">
+    <p class="t-section lbl">5 · Page measure <span>— .form 480px · .form--wide 720px, centred</span></p>
+    <div style="border:1px dashed var(--rule); border-radius: var(--r-base); padding: var(--s-4); margin-bottom: var(--s-4)">
+      <div class="form">
+        <div class="field">
+          <label class="field__label" for="m1">Team name</label>
+          <input class="control" id="m1" type="text" placeholder=".form — the respondent default" />
+        </div>
+      </div>
+    </div>
+    <div style="border:1px dashed var(--rule); border-radius: var(--r-base); padding: var(--s-4)">
+      <div class="form form--wide">
+        <div class="row2">
+          <div class="field">
+            <label class="field__label" for="m2">Owner</label>
+            <input class="control" id="m2" type="text" placeholder=".form--wide — admin two-column" />
+          </div>
+          <div class="field">
+            <label class="field__label" for="m3">Department</label>
+            <input class="control" id="m3" type="text" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </body>
 </html>

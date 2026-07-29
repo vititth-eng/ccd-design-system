@@ -83,6 +83,18 @@
 
     <section id="type">
       <div class="sec__num">02</div><div class="sec__title">Type</div>
+      <!-- Roles are the shipped API (type.css welds size+weight+color per role);
+           the token groups below are their raw ingredients. Static on purpose —
+           roles are classes, not tokens, so the tokens.css parser can't list them. -->
+      <div class="grp"><div class="grp__h">Roles — apply the class, never set size/weight ad hoc</div>
+        <div class="trow"><div class="trow__sample"><span class="t-kpi">1,284</span></div><div class="trow__right"><code class="tok">.t-kpi</code><span class="trow__spec"> hero number — the ONLY 700</span></div></div>
+        <div class="trow"><div class="trow__sample"><span class="t-title">Page title · หัวเรื่อง</span></div><div class="trow__right"><code class="tok">.t-title</code><span class="trow__spec"> once per page</span></div></div>
+        <div class="trow"><div class="trow__sample"><span class="t-section">Section header · หัวข้อย่อย</span></div><div class="trow__right"><code class="tok">.t-section</code></div></div>
+        <div class="trow"><div class="trow__sample"><span class="t-body">Body and data · เนื้อความ</span></div><div class="trow__right"><code class="tok">.t-body</code><span class="trow__spec"> the workhorse</span></div></div>
+        <div class="trow"><div class="trow__sample"><span class="t-strong">Read-first number 42 · label column</span></div><div class="trow__right"><code class="tok">.t-strong</code><span class="trow__spec"> emphasis, tabular</span></div></div>
+        <div class="trow"><div class="trow__sample"><span class="t-sub">Subheader under a title · คำโปรย</span></div><div class="trow__right"><code class="tok">.t-sub</code><span class="trow__spec"> 14-gray</span></div></div>
+        <div class="trow"><div class="trow__sample"><span class="t-caption">Caption meta · rare, Thai floor is 14</span></div><div class="trow__right"><code class="tok">.t-caption</code></div></div>
+      </div>
       <div class="grp"><div class="grp__h">Size scale</div><div id="g-fs"></div></div>
       <div class="grp"><div class="grp__h">Weight</div><div id="g-fw"></div></div>
       <div class="grp"><div class="grp__h">Line-height</div><div id="g-lh"></div></div>

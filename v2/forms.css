@@ -14,7 +14,7 @@
   font-weight: var(--fw-semi);   /* labels anchor the scan */
   color: var(--ink);
 }
-.field__label .req { color: var(--neg); margin-left: 2px; }   /* required mark — dot-tier red, glyph only */
+.field__label .req { color: var(--neg-strong); margin-left: 2px; }   /* required mark — TEXT, so the accessible red (dot-tier --neg is 2.99:1, fails AA; tokens.css: bright hues are dot-only) */
 
 .field__hint { font-size: var(--fs-body); color: var(--muted); }
 
