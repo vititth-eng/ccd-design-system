@@ -59,7 +59,11 @@ scar + why stays in memory.*
    tooltip → one legend at top → keep one line. Policy disclaimers and
    thin-data/confidence notes always survive.
 4. **Shallow hierarchy on dense surfaces.** Section heads rise by weight + color,
-   not size jumps. KPI numerals use the KPI token, never the display scale.
+   not size jumps. KPI numerals use the KPI token, never the display scale. The
+   section owns the gap below its head, not the type role — `.t-section` ships
+   with no margin on purpose, so a bare heading and a heading-plus-action must be
+   given the same gap or half the page sits glued to its content (onboarding mock,
+   2026-07-29: 17 bare headings at 0, 8 wrapped ones at --s-2).
 5. **Flag exceptions, don't gradient.** Score tables tint only cells beyond a
    fixed instrument threshold (e.g. amber < 4.0, red < 3.5 on Likert 1–5);
    healthy cells stay plain.
