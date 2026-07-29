@@ -79,6 +79,22 @@
   --card-gap: var(--s-3);   /* 12 */
   --row-y:    9px;          /* table row vertical padding */
 
+  /* CONTROL HEIGHT — the one number every control on a shared line reads.
+     .btn · .control · select.control · .menu-btn · .menu-btn--kebab · .seg
+     all set `height: var(--ctl-h)` and zero their vertical padding. Height is
+     set OUTRIGHT, never derived from padding: an <input> refuses to shrink
+     below its font's natural line box (~17px at 14px Inter), so a padding-based
+     rule silently leaves fields taller than the buttons beside them — which is
+     exactly how v2 drifted to five different control heights.
+     --ctl-h-sm is the ONE exception and has ONE job: a compact table row, where
+     a control must stay near the 22.4px line of text it rides. .btn--sm and
+     .menu-btn--sm live here. Nothing else may use it.
+     Out of scope on purpose: .tabs and the sidebar own their own line (nav.css
+     forbids tabs and seg sharing a shape), .menu__item lives inside the pane,
+     and .st / .check are already 22.4px — exactly the text line. */
+  --ctl-h:    30px;         /* bar family — button, field, trigger, seg */
+  --ctl-h-sm: 24px;         /* compact table rows only */
+
   /* ── RADIUS ────────────────────────────────────────────── */
   --r-tiny:  3px;      /* micro tags <12px (rare) */
   --r-base:  6px;      /* card, button, input, swatch — the signature */

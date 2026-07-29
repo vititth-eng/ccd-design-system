@@ -34,10 +34,13 @@
 /* A trough; the chosen option lifts out of it as a white card. Sits above a
    table that draws its own box, so the control must not add a second outline —
    the fill IS the border. Same no-weight-change rule as .tab. */
-.seg { display: inline-flex; gap: 2px; padding: 3px; background: var(--divider); border-radius: var(--r-base); }
+/* Height is the token (tokens.css --ctl-h) — the seg stands in a bar beside
+   .btn / .control / .menu-btn. The trough sets the height, the options stretch
+   into it (flex default), so their vertical padding is zero. */
+.seg { display: inline-flex; gap: 2px; padding: 3px; height: var(--ctl-h); background: var(--divider); border-radius: var(--r-base); }
 .seg__opt {
   display: inline-flex; align-items: center;
-  padding: 4px var(--s-3); border: none; border-radius: var(--r-tiny);
+  padding: 0 var(--s-3); border: none; border-radius: var(--r-tiny);
   font: inherit; font-size: var(--fs-body); color: var(--muted);
   background: none; text-decoration: none; cursor: pointer;
   transition: color .12s ease;

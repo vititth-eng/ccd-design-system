@@ -9,6 +9,9 @@
 <link rel="stylesheet" href="./type.css" />
 <link rel="stylesheet" href="./tables.css" />
 <link rel="stylesheet" href="./status.css" />
+<!-- section 4 puts real controls in a compact row -->
+<link rel="stylesheet" href="./buttons.css" />
+<link rel="stylesheet" href="./menu.css" />
 <style>
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--canvas); padding: var(--s-6) var(--s-7); }
@@ -137,6 +140,55 @@
             <td class="tbl__lead">ดีลสระบุรี</td>
             <td><span class="st st--neg"><i></i>ยกเลิก</span></td>
             <td class="tbl__n">0</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 4 · Compact density -------------------------------------------- -->
+  <section>
+    <p class="t-section lbl">4 · Compact <span>— <code>.tbl--compact</code> · the only place the small control size is allowed</span></p>
+    <div class="tbl-wrap">
+      <table class="tbl tbl--compact">
+        <thead>
+          <tr>
+            <th>ผู้ถูกประเมิน</th>
+            <th class="tbl__n">คะแนนรวม</th>
+            <th>บทบาท</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="tbl__lead">ธนพล วงศ์ไทย</td>
+            <td class="tbl__n">4.38</td>
+            <td><button class="menu-btn menu-btn--sm">หัวหน้า
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 4l4 4 4-4"/></svg></button></td>
+            <td class="tbl__n" style="white-space:nowrap">
+              <button class="btn btn--secondary btn--sm">ดูผล</button>
+              <button class="menu-btn menu-btn--sm menu-btn--kebab" aria-label="เพิ่มเติม"><svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.4"/><circle cx="8" cy="8" r="1.4"/><circle cx="8" cy="13" r="1.4"/></svg></button>
+            </td>
+          </tr>
+          <tr>
+            <td class="tbl__lead">วราภรณ์ สุขใจ</td>
+            <td class="tbl__n">4.21</td>
+            <td><button class="menu-btn menu-btn--sm">เพื่อนร่วมงาน
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 4l4 4 4-4"/></svg></button></td>
+            <td class="tbl__n" style="white-space:nowrap">
+              <button class="btn btn--secondary btn--sm">ดูผล</button>
+              <button class="menu-btn menu-btn--sm menu-btn--kebab" aria-label="เพิ่มเติม"><svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.4"/><circle cx="8" cy="8" r="1.4"/><circle cx="8" cy="13" r="1.4"/></svg></button>
+            </td>
+          </tr>
+          <tr>
+            <td class="tbl__lead">ณัฐพงษ์ ทองดี</td>
+            <td class="tbl__n">4.12</td>
+            <td><button class="menu-btn menu-btn--sm">ลูกทีม
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 4l4 4 4-4"/></svg></button></td>
+            <td class="tbl__n" style="white-space:nowrap">
+              <button class="btn btn--secondary btn--sm">ดูผล</button>
+              <button class="menu-btn menu-btn--sm menu-btn--kebab" aria-label="เพิ่มเติม"><svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.4"/><circle cx="8" cy="8" r="1.4"/><circle cx="8" cy="13" r="1.4"/></svg></button>
+            </td>
           </tr>
         </tbody>
       </table>

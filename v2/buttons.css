@@ -14,9 +14,15 @@
   font: inherit;
   font-size: var(--fs-body);
   font-weight: var(--fw-semi);
-  line-height: 1;
+  line-height: normal;   /* height is the token now, so leading only centres the ink — normal lands dead centre, 1 sits 0.5px high */
   white-space: nowrap;
-  padding: var(--row-y) var(--s-4);
+  /* Height is the token, not a padding sum — see tokens.css --ctl-h. */
+  height: var(--ctl-h);
+  padding: 0 var(--s-4);
+  /* An inline-flex button sits on the text baseline, and the descender space
+     under it silently adds ~8px to any table row it lands in — which is most of
+     what .tbl--compact is supposed to save. middle kills the gap. */
+  vertical-align: middle;
   border: 1px solid transparent;
   border-radius: var(--r-base);
   cursor: pointer;
@@ -57,10 +63,15 @@
 /* Small — a tighter BOX, never smaller type. The label stays --fs-body: a
    caption-size control inside body-size copy reads as a rendering fault, not as
    hierarchy (it cost us the seg filter and a table cell before this rule existed).
-   Where each size goes is decided by what the button stands next to:
-     page head, card/popover footer, form bar  →  .btn        (answers a title or aligns with .control)
-     card header, table row, toolbar           →  .btn--sm    (rides a line of text) */
-.btn--sm { padding: var(--s-1) var(--s-3); }
+   Where each size goes (owner call 2026-07-29 — .btn--sm was doing too many
+   jobs, which is how four control heights ended up on one row):
+     EVERYTHING on a shared line  →  .btn      var(--ctl-h), 30px. Page head,
+       card head, form bar, toolbar, filter bar — beside .control, .menu-btn,
+       .seg, all of which are the same height.
+     COMPACT TABLE ROW ONLY       →  .btn--sm  var(--ctl-h-sm), 24px. Its only
+       job: staying near the 22.4px line of text it rides, so a dense table
+       does not loosen. Pair it with .menu-btn--sm for the kebab. Nowhere else. */
+.btn--sm { height: var(--ctl-h-sm); padding: 0 var(--s-3); }
 
 /* Full-width — forms, mobile. */
 .btn--block { width: 100%; }

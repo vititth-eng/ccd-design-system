@@ -45,6 +45,23 @@
 }
 .tbl tbody tr:first-child td { border-top: 0; }
 
+/* ── COMPACT — the second density, and the ONLY home for the small control
+   size (owner call 2026-07-29). Vertical padding drops --row-y → --s-1, so a
+   row is ~30px of text instead of ~40px. Controls inside it must be the small
+   pair (.btn--sm + .menu-btn--sm, both var(--ctl-h-sm) = 24px); a 30px bar
+   control here would set the row height itself and undo the density.
+   Use it when the table is the screen's payload and the reader is scanning
+   many rows. A short table stays comfortable — compact buys nothing there.
+   CHROME: controls keep their border here (owner call 2026-07-29). Ghost
+   actions were considered and rejected — CCD tables carry a control only
+   rarely, so the "wall of boxes" that would justify ghost never actually
+   occurs, and a visible border is the clearer affordance when it does.
+   Label stays --fs-body: 12px was tried and rejected, both because a
+   caption-size control beside body copy reads as broken (buttons.css) and
+   because Thai has a 14px floor (tokens.css). */
+.tbl--compact thead th,
+.tbl--compact tbody td { padding-block: var(--s-1); }
+
 /* Lead column — ink, 400 by default. Owner sets .is-strong for 600. */
 .tbl__lead { color: var(--ink); }
 .tbl__lead.is-strong { font-weight: var(--fw-semi); }

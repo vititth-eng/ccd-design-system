@@ -27,7 +27,12 @@
   background: var(--card);
   border: 1px solid var(--rule);
   border-radius: var(--r-base);
-  padding: var(--row-y) var(--s-3);
+  /* Height is the token, not a padding sum — see tokens.css --ctl-h. An <input>
+     will not shrink below its font's natural line box whatever line-height says,
+     so padding-derived sizing left every field ~8px taller than the button next
+     to it. Setting height outright is the only thing that actually holds. */
+  height: var(--ctl-h);
+  padding: 0 var(--s-3);
   transition: border-color .12s ease, box-shadow .12s ease;
 }
 .control::placeholder { color: var(--muted); }   /* muted = 5.51:1, safe as placeholder */
@@ -48,7 +53,26 @@
   cursor: not-allowed;
 }
 
-textarea.control { min-height: 88px; resize: vertical; line-height: var(--lh-normal); }
+/* A textarea is prose, not a control on a line — it opts out of --ctl-h and
+   keeps real vertical padding and reading leading.
+   NO RESIZE GRABBER (owner call 2026-07-29). The handle let every user invent
+   their own box size, so no two screenshots of the same form matched, and a
+   dragged-tall textarea shoved the rest of the form down the page. Instead the
+   box GROWS ITSELF as you type: field-sizing does it natively where supported,
+   capped so a long answer scrolls inside instead of swallowing the screen.
+   Browsers without field-sizing simply keep the fixed 88px box and scroll —
+   same as before, minus the handle. Need a taller default? Set a height on the
+   instance; do not hand the decision to the user. */
+textarea.control {
+  height: auto;
+  min-height: 88px;
+  max-height: 220px;
+  field-sizing: content;
+  overflow-y: auto;
+  resize: none;
+  padding-block: var(--row-y);
+  line-height: var(--lh-normal);
+}
 
 /* Select — native chevron is inconsistent (Safari clamps height),
    so strip it and paint our own. */

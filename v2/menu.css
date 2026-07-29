@@ -60,15 +60,53 @@
 .menu-anchor > .menu { top: calc(100% + 6px); }
 .menu-anchor > .menu--right { right: 0; }
 
+/* Type + geometry follow .btn, not the caption scale. Graduated in at
+   --fs-caption (12px) with no line-height, which broke two control rules at
+   once: buttons.css:57-59 ("a caption-size control inside body-size copy
+   reads as a rendering fault — it cost us the seg filter"), and `font:
+   inherit` with no override inherits body's 1.6 leading, so the SMALLER-text
+   trigger rendered TALLER (31px) than the .btn--sm beside it (24px). Both
+   fixed here: 14px like every other control, and leading handed to .btn's rule.
+   HEIGHT is var(--ctl-h) — the trigger stands in a bar beside .btn, .control
+   and .seg, so it reads the same token they do. --h carries it so a size
+   modifier only has to redefine one value and the kebab's width follows.
+   WEIGHT IS 400, not 600 (owner call): a trigger DISPLAYS a value, it does not
+   perform an action. That puts it with .control and .seg__opt (both 400), not
+   with .btn (600). 600 read as thick against the row it labels.
+   white-space: nowrap because every other control has it — without it a
+   trigger in a tight slot splits its label across two lines and drags the
+   whole row taller. */
 .menu-btn {
+  --h: var(--ctl-h);
   display: inline-flex; align-items: center; gap: var(--s-2);
-  font: inherit; font-size: var(--fs-caption); font-weight: var(--fw-semi);
+  font: inherit; font-size: var(--fs-body); font-weight: var(--fw-regular);
+  line-height: normal; white-space: nowrap;   /* same as .btn — centres the ink exactly */
+  height: var(--h);
+  vertical-align: middle;   /* same baseline-gap fix as .btn — see buttons.css */
   color: var(--ink); background: var(--card);
   border: 1px solid var(--rule); border-radius: var(--r-base);
-  padding: 5px 10px; cursor: pointer;
+  padding: 0 10px; cursor: pointer;
 }
 .menu-btn:hover:not(:disabled) { background: var(--divider); }
+/* Every other interactive primitive in v2 rings on keyboard focus — .btn
+   (buttons.css), .tab / .seg__opt (nav.css), .menu__item above, the shell
+   controls. .menu-btn did not, so tabbing to it painted the native orange
+   ring that forms.css:39 calls out and kills. Same ring as .btn: this is a
+   control, not a special case. */
+.menu-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .menu-btn:disabled { cursor: default; opacity: .6; }
 .menu-btn svg { color: var(--muted); flex: 0 0 auto; }
-.menu-btn--kebab { padding: 6px; color: var(--muted); }
+/* Compact table rows only — the .btn--sm partner, so a dense row keeps a kebab
+   that matches its buttons. Redefining --h is enough: height and the kebab's
+   width both follow it. Nowhere but a compact table (see buttons.css). */
+.menu-btn--sm { --h: var(--ctl-h-sm); }
+
+/* Icon-only, so it is a SQUARE: width tracks whatever --h is. */
+.menu-btn--kebab { width: var(--h); padding: 0; justify-content: center; color: var(--muted); }
 .menu-btn--kebab:hover:not(:disabled) { color: var(--ink); }
+/* The glyph is HALF the button — the DS never sized it, so a kebab was
+   whatever px the consumer's markup happened to carry, and at 16px in a 24px
+   box it filled two thirds of the button and read as oversized. Half of --h
+   lands on whole pixels at both sizes (15px / 12px), which matters on the
+   1366 Windows screens these tools run on. */
+.menu-btn--kebab svg { width: calc(var(--h) / 2); height: calc(var(--h) / 2); }

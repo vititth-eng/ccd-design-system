@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Control heights &middot; v2 component</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" />
+<link rel="stylesheet" href="./tokens.css" />
+<link rel="stylesheet" href="./type.css" />
+<link rel="stylesheet" href="./buttons.css" />
+<link rel="stylesheet" href="./forms.css" />
+<link rel="stylesheet" href="./menu.css" />
+<link rel="stylesheet" href="./nav.css" />
+<link rel="stylesheet" href="./status.css" />
+<link rel="stylesheet" href="./tables.css" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--canvas); }
+  .content { padding: var(--s-6) var(--s-7); }
+  .lbl { margin: 0 0 var(--s-2); }
+  .lbl span { color: var(--muted); font-weight: var(--fw-regular); }
+  section { margin-bottom: var(--s-7); }
+  .note { max-width: 68ch; margin: 0 0 var(--s-4); color: var(--muted); font-size: var(--fs-caption); }
+  .note b { color: var(--ink); font-weight: var(--fw-semi); }
+
+  /* the line-up: one row, every control that shares a line */
+  .lineup { display: flex; align-items: center; gap: var(--s-3); flex-wrap: wrap; }
+  .lineup .control { width: 132px; }
+
+  /* measured readout — the whole point of this page */
+  .read { margin-top: var(--s-3); font-size: var(--fs-caption); color: var(--muted);
+          font-variant-numeric: tabular-nums; }
+  .read b { color: var(--ink); font-weight: var(--fw-semi); }
+  .read .ok { color: var(--pos-strong); font-weight: var(--fw-semi); }
+  .read .no { color: var(--neg-strong); font-weight: var(--fw-semi); }
+
+  .outside { margin-top: var(--s-3); display: flex; gap: var(--s-5); flex-wrap: wrap; align-items: center; }
+</style>
+</head>
+<body>
+  <div class="content">
+
+    <!-- 1 · THE BAR FAMILY -->
+    <section>
+      <p class="t-section lbl">1 &middot; Bar family <span>&mdash; <code>var(--ctl-h)</code> &middot; every control that shares a line</span></p>
+      <p class="note">This page exists because the pieces below live in four different component files, and nothing ever showed them together &mdash; which is how v2 drifted to <b>five</b> different control heights. Any control standing in a bar reads <code>--ctl-h</code> and sets its height outright; it never derives height from padding, because an <code>&lt;input&gt;</code> refuses to shrink below its font&rsquo;s natural line box.</p>
+      <div class="lineup" id="bar">
+        <button class="menu-btn" data-n="menu-btn">Function: All
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 4l4 4 4-4"/></svg></button>
+        <span class="seg" data-n="seg"><button class="seg__opt seg__opt--active">ทั้งหมด</button><button class="seg__opt">เปิด</button></span>
+        <input class="control" data-n="control" placeholder="ค้นหา" />
+        <select class="control" data-n="select"><option>ก3&ndash;4</option><option>ก1&ndash;2</option></select>
+        <button class="menu-btn menu-btn--kebab" data-n="kebab" aria-label="เพิ่มเติม"><svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.4"/><circle cx="8" cy="8" r="1.4"/><circle cx="8" cy="13" r="1.4"/></svg></button>
+        <button class="btn btn--secondary" data-n="btn">ส่งออก</button>
+        <button class="btn btn--primary" data-n="primary">สร้างรอบใหม่</button>
+      </div>
+      <p class="read" id="r-bar"></p>
+    </section>
+
+    <!-- 2 · THE ROW FAMILY -->
+    <section>
+      <p class="t-section lbl">2 &middot; Row family <span>&mdash; <code>var(--ctl-h-sm)</code> &middot; compact tables only</span></p>
+      <p class="note">The one exception, with one job: staying near the <b>22.4px</b> line of text it rides, so a dense table does not loosen. Allowed only inside <code>.tbl--compact</code>. Its label stays <code>--fs-body</code> &mdash; 12px was tried and rejected (a caption-size control beside body copy reads as broken, and Thai has a 14px floor).</p>
+      <div class="lineup" id="row">
+        <button class="menu-btn menu-btn--sm" data-n="menu-btn--sm">หัวหน้า
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 4l4 4 4-4"/></svg></button>
+        <button class="menu-btn menu-btn--sm menu-btn--kebab" data-n="kebab--sm" aria-label="เพิ่มเติม"><svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="3" r="1.4"/><circle cx="8" cy="8" r="1.4"/><circle cx="8" cy="13" r="1.4"/></svg></button>
+        <button class="btn btn--secondary btn--sm" data-n="btn--sm">ดูผล</button>
+      </div>
+      <p class="read" id="r-row"></p>
+    </section>
+
+    <!-- 3 · OUTSIDE THE SYSTEM -->
+    <section>
+      <p class="t-section lbl">3 &middot; Deliberately outside <span>&mdash; these do not read the token</span></p>
+      <p class="note"><code>.st</code> and <code>.check</code> already sit at <b>22.4px</b>, exactly the text line &mdash; that is why they never disturb a row, and why forcing them to a control height would break something that works. <code>.tabs</code> and <code>.menu__item</code> own their own container: <code>nav.css</code> forbids tabs and seg sharing a shape, and a menu item lives inside the floating pane. A <code>textarea</code> is prose, not a control on a line.</p>
+      <div class="outside" id="out">
+        <span class="st st--pos" data-n="st"><i></i>เปิดอยู่</span>
+        <label class="check" data-n="check"><input type="checkbox" checked /><span>นับรวม</span></label>
+        <span class="meter" data-n="meter" style="width:90px"><b style="width:62%"></b></span>
+      </div>
+      <div class="tabs" style="margin-top:var(--s-4)"><a class="tab tab--active">ตั้งค่า</a><a class="tab">เก็บข้อมูล</a></div>
+      <p class="read" id="r-out"></p>
+    </section>
+
+  </div>
+
+<script>
+  var H = function (el) { return Math.round(el.getBoundingClientRect().height * 10) / 10; };
+  function report(rootId, outId, expectVar) {
+    var root = document.getElementById(rootId);
+    var items = root.querySelectorAll('[data-n]');
+    var target = expectVar
+      ? parseFloat(getComputedStyle(document.documentElement).getPropertyValue(expectVar))
+      : null;
+    var parts = [], all = true;
+    items.forEach(function (el) {
+      var h = H(el);
+      if (target !== null && h !== target) all = false;
+      parts.push(el.dataset.n + ' <b>' + h + '</b>');
+    });
+    document.getElementById(outId).innerHTML = parts.join(' · ') +
+      (target === null ? ''
+        : ' &mdash; <span class="' + (all ? 'ok">all ' + target + 'px ✓' : 'no">MISMATCH ✗') + '</span>');
+  }
+  report('bar', 'r-bar', '--ctl-h');
+  report('row', 'r-row', '--ctl-h-sm');
+  report('out', 'r-out', null);
+</script>
+</body>
+</html>
