@@ -63,7 +63,12 @@ scar + why stays in memory.*
    section owns the gap below its head, not the type role — `.t-section` ships
    with no margin on purpose, so a bare heading and a heading-plus-action must be
    given the same gap or half the page sits glued to its content (onboarding mock,
-   2026-07-29: 17 bare headings at 0, 8 wrapped ones at --s-2).
+   2026-07-29: 17 bare headings at 0, 8 wrapped ones at --s-2). The pair is
+   **--s-2 below the head, --s-5 above it** — same in every app, or the rule only
+   stops drift inside one page. NOT the page-title gap (--s-4): a title over a
+   card and a section head over its own table are different relationships, and
+   --s-4 pushes the head away from the thing it labels (owner call 2026-07-29,
+   picked by eye from an 8 / 12 / 16 render on the cowork project page).
 5. **Flag exceptions, don't gradient.** Score tables tint only cells beyond a
    fixed instrument threshold (e.g. amber < 4.0, red < 3.5 on Likert 1–5);
    healthy cells stay plain.
