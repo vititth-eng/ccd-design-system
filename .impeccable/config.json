@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "inter",
+        "createdAt": "2026-07-29T03:51:11.007Z",
+        "reason": "Inter is the DS brand face (tokens.css), fixed Thai+Latin pairing with Noto Sans Thai across all 10 apps"
+      }
+    ]
+  }
+}
