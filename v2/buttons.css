@@ -70,7 +70,11 @@
        .seg, all of which are the same height.
      COMPACT TABLE ROW ONLY       →  .btn--sm  var(--ctl-h-sm), 24px. Its only
        job: staying near the 22.4px line of text it rides, so a dense table
-       does not loosen. Pair it with .menu-btn--sm for the kebab. Nowhere else. */
+       does not loosen. Pair it with .menu-btn--sm for the kebab. Nowhere else.
+       And .tbl--compact is itself owner-opt-in only (tables.css), so in practice
+       .btn--sm appears only in a table Vitit has asked to be compact. Reaching
+       for --sm is never a reason to make a table compact — that inversion is
+       how it spread across five pages in one sitting. */
 .btn--sm { height: var(--ctl-h-sm); padding: 0 var(--s-3); }
 
 /* Full-width — forms, mobile. */
