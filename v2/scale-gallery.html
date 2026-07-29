@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Rating scale — v2 component</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" />
+<link rel="stylesheet" href="./tokens.css" />
+<link rel="stylesheet" href="./type.css" />
+<link rel="stylesheet" href="./cards.css" />
+<link rel="stylesheet" href="./scale.css" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--canvas); color: var(--ink);
+    font-family: "Inter","Noto Sans Thai",system-ui,sans-serif; -webkit-font-smoothing: antialiased; }
+  .page { padding: var(--s-6) var(--s-5) var(--s-8); }
+  .lede { color: var(--muted); max-width: 66ch; margin: var(--s-2) 0 var(--s-6); }
+  .lede code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; color: var(--ink); }
+  .demo { margin-bottom: var(--s-6); max-width: 640px; }
+  .demo__cap { font-size: var(--fs-caption); color: var(--muted); margin: 0 0 var(--s-2); }
+</style>
+</head>
+<body>
+  <div class="page">
+    <h1 class="t-title">Rating scale</h1>
+    <p class="lede">A 1–5 agreement scale for respondent forms. The five level names are stated <b>once</b> in a <code>.shead</code> above the list — repeating them under every row prints the same five words n times. The <code>.scale--solo</code> variant puts them back under the circles, and is legal <b>only at one question</b>.</p>
+
+    <div class="demo">
+      <p class="demo__cap">List — header once, then items (<code>.shead</code> + <code>.li</code> + <code>.scale</code>)</p>
+      <div class="card">
+        <div class="shead">
+          <span>Strongly disagree</span><span>Disagree</span><span>Neutral</span><span>Agree</span><span>Strongly agree</span>
+        </div>
+        <div class="li">
+          <span class="liNo">1</span>
+          <div>
+            <p class="t-body liQ">ฉันรู้สึกว่าตัวเองปรับตัวเข้ากับองค์กรได้ดี</p>
+            <div class="scale">
+              <input class="sradio" type="radio" name="q1" id="q1-1" /><label class="sbtn" for="q1-1"><span class="sbtnN">1</span></label>
+              <input class="sradio" type="radio" name="q1" id="q1-2" /><label class="sbtn" for="q1-2"><span class="sbtnN">2</span></label>
+              <input class="sradio" type="radio" name="q1" id="q1-3" checked /><label class="sbtn" for="q1-3"><span class="sbtnN">3</span></label>
+              <input class="sradio" type="radio" name="q1" id="q1-4" /><label class="sbtn" for="q1-4"><span class="sbtnN">4</span></label>
+              <input class="sradio" type="radio" name="q1" id="q1-5" /><label class="sbtn" for="q1-5"><span class="sbtnN">5</span></label>
+            </div>
+          </div>
+        </div>
+        <div class="li">
+          <span class="liNo">2</span>
+          <div>
+            <p class="t-body liQ">ฉันเข้าใจบทบาทและความรับผิดชอบของตัวเองอย่างชัดเจน</p>
+            <div class="scale">
+              <input class="sradio" type="radio" name="q2" id="q2-1" /><label class="sbtn" for="q2-1"><span class="sbtnN">1</span></label>
+              <input class="sradio" type="radio" name="q2" id="q2-2" /><label class="sbtn" for="q2-2"><span class="sbtnN">2</span></label>
+              <input class="sradio" type="radio" name="q2" id="q2-3" /><label class="sbtn" for="q2-3"><span class="sbtnN">3</span></label>
+              <input class="sradio" type="radio" name="q2" id="q2-4" /><label class="sbtn" for="q2-4"><span class="sbtnN">4</span></label>
+              <input class="sradio" type="radio" name="q2" id="q2-5" /><label class="sbtn" for="q2-5"><span class="sbtnN">5</span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo">
+      <p class="demo__cap">Solo — one question, anchors under the circles (<code>.scale--solo</code>)</p>
+      <div class="card">
+        <h2 class="t-section" style="margin:0 0 var(--s-5)">พนักงานใหม่สามารถรับผิดชอบงานได้ตามมาตรฐานที่คาดหวัง</h2>
+        <div class="scale scale--solo">
+          <input class="sradio" type="radio" name="solo" id="s-1" /><label class="sbtn" for="s-1"><span class="sbtnN">1</span><span class="sbtnL">ไม่เห็นด้วยอย่างยิ่ง</span></label>
+          <input class="sradio" type="radio" name="solo" id="s-2" /><label class="sbtn" for="s-2"><span class="sbtnN">2</span><span class="sbtnL">ไม่เห็นด้วย</span></label>
+          <input class="sradio" type="radio" name="solo" id="s-3" /><label class="sbtn" for="s-3"><span class="sbtnN">3</span><span class="sbtnL">เฉย ๆ</span></label>
+          <input class="sradio" type="radio" name="solo" id="s-4" checked /><label class="sbtn" for="s-4"><span class="sbtnN">4</span><span class="sbtnL">เห็นด้วย</span></label>
+          <input class="sradio" type="radio" name="solo" id="s-5" /><label class="sbtn" for="s-5"><span class="sbtnN">5</span><span class="sbtnL">เห็นด้วยอย่างยิ่ง</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo">
+      <p class="demo__cap">Level key — when the numbers need a sentence each (<code>.skey</code>)</p>
+      <div class="card">
+        <dl class="skey" style="border-top:0; padding-top:0; margin-top:0">
+          <div><dt>1 · Strongly disagree</dt><dd>Not true of my experience at all</dd></div>
+          <div><dt>3 · Neutral</dt><dd>Sometimes true, sometimes not</dd></div>
+          <div><dt>5 · Strongly agree</dt><dd>Fully true of my experience</dd></div>
+        </dl>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

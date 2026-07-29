@@ -1,0 +1,132 @@
+/* ============================================================
+   CCD Design System v2 — RATING SCALE
+   Graduated 2026-07-29 from multi-rater's rate.module.css on its
+   SECOND consumer (onboarding check-up forms). Mechanics ported
+   verbatim; nothing re-tuned on the way in.
+
+   One question = one .li row (number + text + .scale).
+   The five level names are stated ONCE in a .shead above the list —
+   printing them under every row is 5 labels × n items of the same
+   five words. Only at n = 1 may they sit under the circles, via
+   .scale--solo, because there is nothing to repeat.
+
+   Pair with .skey (a <dl>) when the levels need a sentence each.
+   ============================================================ */
+
+/* ── column header: the five level names, once ── */
+.shead {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--s-2);
+  /* left pad clears the .liNo gutter so the labels sit over the circles */
+  padding: var(--s-2) 0 var(--s-2) calc(22px + var(--s-3));
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: var(--s-2);
+}
+.shead span {
+  font-size: var(--fs-caption);
+  color: var(--muted);
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* ── one item ── */
+.li {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: var(--s-3);
+  padding: var(--s-4) 0;
+  border-top: 1px solid var(--divider);
+}
+.shead + .li { border-top: 0; }
+.liNo {
+  font-size: var(--fs-caption);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  padding-top: 2px;
+}
+/* doubled class: consumers set the question with a type role (.t-body),
+   whose own margin would otherwise win on order. */
+.liQ.liQ { margin: 0 0 var(--s-3); line-height: var(--lh-normal); }
+
+/* ── the five circles ── */
+.scale {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--s-2);
+}
+.sbtn {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+.sbtnN {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-pill);
+  background: var(--card);
+  font-variant-numeric: tabular-nums;
+  transition: border-color 0.12s ease, background-color 0.12s ease, color 0.12s ease;
+}
+.sbtn:hover .sbtnN { border-color: var(--muted); }
+.sbtn:focus-visible { outline: none; }
+.sbtn:focus-visible .sbtnN { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sbtn.on .sbtnN { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* Native radios keep the semantics; .sbtn is the label. Consumers that need a
+   no-JS form use <input class="sradio"> + <label class="sbtn">. */
+.sradio {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+.sradio:checked + .sbtn .sbtnN { background: var(--accent); border-color: var(--accent); color: #fff; }
+.sradio:focus-visible + .sbtn .sbtnN { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ── solo variant — ONE question, so the anchors can sit under the circles.
+   Illegal at n > 1: that is the repetition .shead exists to kill. ── */
+.scale--solo { gap: var(--s-2); align-items: start; }
+.scale--solo .sbtn { gap: var(--s-2); }
+.scale--solo .sbtnN { width: 52px; height: 52px; font-size: var(--fs-section); }
+.sbtnL {
+  font-size: var(--fs-caption);
+  color: var(--muted);
+  text-align: center;
+  line-height: var(--lh-normal);
+}
+.scale--solo .sbtn.on .sbtnL { color: var(--ink); }
+.scale--solo .sradio:checked + .sbtn .sbtnL { color: var(--ink); }
+
+/* ── level key: one sentence per level, when the numbers need defining ── */
+.skey {
+  border-top: 1px solid var(--rule);
+  padding-top: var(--s-3);
+  margin-top: var(--s-3);
+  font-size: var(--fs-caption);
+  color: var(--muted);
+}
+.skey div { display: grid; grid-template-columns: 132px 1fr; gap: var(--s-3); }
+.skey dt { font-weight: var(--fw-semi); color: var(--ink); }
+.skey dd { margin: 0; line-height: var(--lh-normal); }
+
+/* ── phone: the header cannot hold five labels, so the row stacks and the
+   scale carries the numbers alone. ── */
+@media (max-width: 560px) {
+  .shead { display: none; }
+  .skey div { grid-template-columns: 1fr; gap: 0; }
+  .li { grid-template-columns: 1fr; gap: 0; }
+  .liNo { padding: 0 0 2px; }
+  .scale { gap: var(--s-1); }
+}
