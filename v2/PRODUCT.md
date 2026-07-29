@@ -43,9 +43,14 @@ stays under one page — a new rule must merge with or replace an old one.
 *Grows by graduation: a correction Vitit makes twice becomes a rule here; the
 scar + why stays in memory.*
 
-1. **Structure by line, gap, or heading — never fill.** A background belongs to
-   controls and state only (hover · selection · disabled · track · pill · marker).
-   A tinted rectangle around content is always wrong.
+1. **Structure by line, gap, or heading — never fill, never a second box.** A
+   background belongs to controls and state only (hover · selection · disabled ·
+   track · pill · marker); a tinted rectangle around content is always wrong.
+   Frames obey the same rule: `.tbl-wrap` IS a card, so a table never nests in
+   one — title above, table below, no exception for page rhythm (owner call
+   2026-07-29, after seeing full-bleed tried). A table inset inside a padded card
+   is the shape to look for: its row lines stop short of the border with nothing
+   to explain where they end.
 2. **Frame by facing.** Respondent-facing → mobile-fit, slim top bar, passes 375px.
    Admin-facing → sidebar shell, dense, laptop-first. Single-screen → main panel
    alone, no sidebar. Tabs are in-page only; never top-nav, never breadcrumbs.
