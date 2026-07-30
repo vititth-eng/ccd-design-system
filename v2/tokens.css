@@ -86,8 +86,23 @@
   --pos-strong: #1A7F37;   /* accessible green text — 5.08:1 on white, 4.52:1 on --pos-tint */
   --pos-tint:   #E7F5EC;   /* green trend-pill / status-pill background */
   --neg-tint:   #FBE9E7;   /* red trend-pill / status-pill background (pairs with --neg-strong) */
-  --cau-strong: #8A6100;   /* accessible amber TEXT/FILL — 5.56:1 on white; pairs with --cau-tint (warn rows, caution pills, low-N counts) */
-  --cau-tint:   #FBF0D5;   /* amber status-pill background (pill text is ink + dot, not amber) */
+  /* CAUTION — the one tier that does NOT hold a single hue, and deliberately.
+     The dot stays yellow at 41°; strong and tint moved to orange at ~28°.
+     Why the split: at 41° every value dark enough to read is gold or olive —
+     dark yellow is physically mud, the same wall the dark-mode tints hit. And
+     the dot cannot follow the strong into orange: measured against the --neg
+     dot it drops from ΔE 22 to 15 (colour-blind 15.2 to 10.1), and confusing
+     "caution" with "overdue" is the one mistake this palette exists to prevent.
+     It costs nothing because the two never meet — the dot lives in pills, whose
+     text is ink; the strong lives in glyphs and marks. (Owner call 2026-07-30,
+     picked by eye from a 42° / 43° / 29° render; pos already runs a 12° spread.)
+     GLYPHS AND MARKS ONLY — 3.40:1 clears the 3:1 icon bar, NOT the 4.5:1 text
+     bar. Never set a paragraph in it. Holding it to 4.5:1 is exactly what
+     dragged the old #8A6100 to olive. */
+  --cau-strong: #CF741E;   /* warning glyph, caution mark — 3.40:1 white, 3.00:1 on its tint */
+  --cau-tint:   #FDEEE2;   /* amber status-pill background (pill text is ink + dot, not amber).
+                              Same lightness step as the cream it replaced (1.13:1 off white),
+                              so the tint family keeps its even spacing — only the hue moved. */
 
   /* ── TYPE ──────────────────────────────────────────────── */
   --font-sans: "Inter", "Noto Sans Thai", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -259,7 +274,7 @@
 
   /* The "-strong" TEXT tier inverts: darkened on white, lightened here. */
   --dk-pos-strong: #5FD787;
-  --dk-cau-strong: #F2C14E;
+  --dk-cau-strong: #FFB978;   /* orange, matching the light tier's 28-29 deg */
   --dk-neg-strong: #FF8A80;
 
   /* TINTS ARE A VEIL, NOT A PAINT — the bright dot hue at low alpha over
@@ -271,7 +286,7 @@
      Consequence, and it is a real one: on dark a tint CANNOT carry meaning
      alone. The status dot is mandatory, not decorative — PRODUCT.md rule 1. */
   --dk-pos-tint: rgba(39,201,63,.14);
-  --dk-cau-tint: rgba(255,189,46,.13);
+  --dk-cau-tint: rgba(255,170,90,.14);
   --dk-neg-tint: rgba(255,95,86,.14);
 
   /* Controls — the film. Recess what you type in, raise what you press. */
@@ -348,8 +363,8 @@
     --dk-ink: #142549; --dk-muted: #61697A;
     --dk-rule: #CBD1DF; --dk-divider: #EDEFF1;
     --dk-accent: #4068CA; --dk-accent-tint: #E9F1FC;
-    --dk-pos-strong: #1A7F37; --dk-cau-strong: #8A6100; --dk-neg-strong: #C4372C;
-    --dk-pos-tint: #E7F5EC; --dk-cau-tint: #FBF0D5; --dk-neg-tint: #FBE9E7;
+    --dk-pos-strong: #1A7F37; --dk-cau-strong: #CF741E; --dk-neg-strong: #C4372C;
+    --dk-pos-tint: #E7F5EC; --dk-cau-tint: #FDEEE2; --dk-neg-tint: #FBE9E7;
     --dk-ctl-face: #FFFFFF; --dk-ctl-track: #EDEFF1; --dk-ctl-raise: #FFFFFF;
     --dk-scrim: rgba(20,37,73,.32);
     --dk-shadow-float: 0 2px 8px rgba(20,37,73,.06);
