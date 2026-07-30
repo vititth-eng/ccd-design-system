@@ -79,9 +79,9 @@
       <div class="hero__bar">
         <h1>Design System · Showroom</h1>
         <div class="seg" id="themeseg" role="group" aria-label="Theme">
-          <button class="seg__opt seg__opt--active" data-theme="light">Light</button>
-          <button class="seg__opt" data-theme="dark">Dark</button>
-          <button class="seg__opt" data-theme="system">System</button>
+          <button class="seg__opt seg__opt--active" data-mode="light">Light</button>
+          <button class="seg__opt" data-mode="dark">Dark</button>
+          <button class="seg__opt" data-mode="system">System</button>
         </div>
       </div>
       <p>Every decision in one scroll. Foundations — names, values, and the usage note beside each — are read live from <code>tokens.css</code>; edit a token or its comment and this page updates itself. Components below are live iframes to their own gallery files.</p>
@@ -243,6 +243,7 @@
     ['Controls',     ['--ctl-face','--ctl-track','--ctl-raise']],
     ['Status dots',  ['--pos','--cau','--neg']],
     ['Status text & tints', ['--pos-strong','--pos-tint','--cau-strong','--cau-tint','--neg-strong','--neg-tint']],
+    ['Chart series · identity, never state', ['--chart-1','--chart-2','--chart-3','--chart-4','--chart-5','--chart-6','--chart-7']],
     ['Overlay',      ['--scrim']],
   ];
   const swatch = t => {
@@ -360,7 +361,7 @@
   if (themeSeg) {
     themeSeg.addEventListener('click', e => {
       const b = e.target.closest('.seg__opt'); if (!b) return;
-      paintTheme(b.dataset.theme);
+      paintTheme(b.dataset.mode);
       themeSeg.querySelectorAll('.seg__opt').forEach(x => x.classList.toggle('seg__opt--active', x === b));
     });
     paintTheme('light');

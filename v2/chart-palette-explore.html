@@ -82,9 +82,9 @@ svg   { display:block; width:100%; height:auto; overflow:visible; }
       </p>
     </div>
     <div class="seg" role="group" aria-label="Theme">
-      <button class="seg__opt seg__opt--active" data-theme="light">Light</button>
-      <button class="seg__opt" data-theme="dark">Dark</button>
-      <button class="seg__opt" data-theme="system">System</button>
+      <button class="seg__opt seg__opt--active" data-mode="light">Light</button>
+      <button class="seg__opt" data-mode="dark">Dark</button>
+      <button class="seg__opt" data-mode="system">System</button>
     </div>
   </div>
 
@@ -360,7 +360,7 @@ svg   { display:block; width:100%; height:auto; overflow:visible; }
 <script>
   document.querySelector('.seg').addEventListener('click', e => {
     const b = e.target.closest('.seg__opt'); if (!b) return;
-    document.documentElement.dataset.theme = b.dataset.theme;
+    document.documentElement.dataset.theme = b.dataset.mode;
     b.parentElement.querySelectorAll('.seg__opt').forEach(x => x.classList.toggle('seg__opt--active', x === b));
   });
 </script>

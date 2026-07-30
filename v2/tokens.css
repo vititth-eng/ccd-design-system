@@ -104,6 +104,37 @@
                               Same lightness step as the cream it replaced (1.13:1 off white),
                               so the tint family keeps its even spacing — only the hue moved. */
 
+  /* ── CHART — a SEPARATE TIER, and the separation is the point ──
+     These are for SERIES IDENTITY ONLY: "this line is Sales, that one is Ops".
+     Never for state. The status hues above answer "is this good or bad"; a chart
+     series answers "which one is this" — reusing the misty status greens and
+     reds for series 1 and 2 makes a neutral comparison look like a verdict.
+     Two rules that come with them:
+       1. INDEX ORDER IS THE API. Series 1 takes --chart-1, series 2 --chart-2.
+          Do not pick by taste per chart, or the same team changes colour between
+          two cards on one page. --chart-7 is the grey — it is reserved for
+          Other / Unassigned, so a real series never lands on it.
+       2. LABEL THE MARKS. Against white, teal (2.24:1), orange (2.29:1) and
+          yellow (1.51:1) sit under the 3:1 fill bar, and the grey is nearly
+          invisible. That is accepted — a saturated palette that reads well is
+          worth more here than one held to a ratio, because a chart is not read
+          by colour alone. Pay for it with a direct value label or a legend on
+          every chart; never make the hue the only way to tell series apart.
+     One set for BOTH modes: picked by eye at mid-tone, so they hold on the dark
+     canvas as well as white. No --dk- partners on purpose (owner call 2026-07-30,
+     his palette, chosen over Tableau 20 — that one was two-tone by construction
+     and needed a mode swap this does not).
+     NOT YET USED BY ANY CHART. No consumer draws a multi-series chart today; the
+     tokens are here so the first one does not invent seven hex values. Sandbox
+     with the real thing side by side: v2/chart-palette-explore.html. */
+  --chart-1: #5B8DEF;   /* blue    — series 1 */
+  --chart-2: #E8637F;   /* rose    — series 2 */
+  --chart-3: #5CBDB4;   /* teal    — series 3 */
+  --chart-4: #E89B3C;   /* orange  — series 4 */
+  --chart-5: #9B51F0;   /* violet  — series 5 */
+  --chart-6: #F4CF4A;   /* yellow  — series 6 */
+  --chart-7: #C6C8CC;   /* grey    — Other / Unassigned, never a real series */
+
   /* ── TYPE ──────────────────────────────────────────────── */
   --font-sans: "Inter", "Noto Sans Thai", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
@@ -314,8 +345,20 @@
    preference is a fact only the browser knows, so it can only be tested by a
    media query — and a media query cannot be added to an existing selector.
    Because both blocks are pure `--token: var(--dk-token)` lines with no values
-   of their own, a drift between them is a visible diff, not a wrong colour. */
-[data-theme="dark"] {
+   of their own, a drift between them is a visible diff, not a wrong colour.
+
+   BOTH ARE SCOPED TO :root, AND THAT IS LOAD-BEARING. Written bare as
+   `[data-theme="dark"]` these matched ANY element carrying the attribute, so a
+   control whose own markup used data-theme as its click target re-themed ITSELF
+   — the showroom's theme switch had a "Dark" button painting its label in
+   --dk-ink, near-white, on a light track, which read as disabled. Nothing about
+   the component was wrong. The attribute is a MODE DECLARATION for the document,
+   never a data slot: if a widget needs to remember which mode a button selects,
+   it uses its own name (the switch now uses data-mode). :root makes that a rule
+   the CSS enforces instead of a convention every consumer has to know. There is
+   no subtree theming to lose — a dark island on a light page was never a use
+   case, since the mode is one account preference for the whole app. */
+:root[data-theme="dark"] {
   color-scheme: dark;        /* native scrollbars, form controls, spellcheck underlines */
   --canvas: var(--dk-canvas);   --card: var(--dk-card);     --float: var(--dk-float);
   --ink: var(--dk-ink);         --muted: var(--dk-muted);
@@ -337,7 +380,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  [data-theme="system"] {
+  :root[data-theme="system"] {
     color-scheme: dark;
     --canvas: var(--dk-canvas);   --card: var(--dk-card);     --float: var(--dk-float);
     --ink: var(--dk-ink);         --muted: var(--dk-muted);
