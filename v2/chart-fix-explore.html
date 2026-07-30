@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chart palette · fixing 1 / 6 / 7</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" />
+<link rel="stylesheet" href="./tokens.css" />
+<link rel="stylesheet" href="./type.css" />
+<style>
+  /* Preflight — v2 ships no reset (memory: reference_ds_v2_needs_preflight_reset). */
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: var(--font-sans); background: var(--canvas); color: var(--ink); }
+  main { max-width: 1180px; margin: 0 auto; padding: var(--s-8) var(--s-6); }
+
+  h1 { font-size: var(--fs-kpi); font-weight: var(--fw-semi); margin: 0 0 var(--s-3); letter-spacing: -.02em; }
+  .lede { color: var(--muted); font-size: var(--fs-body); line-height: var(--lh-normal); max-width: 68ch; margin: 0 0 var(--s-8); }
+  h2 { font-size: var(--fs-title); font-weight: var(--fw-semi); margin: var(--s-8) 0 var(--s-2); letter-spacing: -.01em; }
+  .sub { color: var(--muted); font-size: var(--fs-body); line-height: var(--lh-normal); max-width: 74ch; margin: 0 0 var(--s-5); }
+  .sub b { color: var(--ink); font-weight: var(--fw-semi); }
+
+  /* GROUNDS ARE HARDCODED ON PURPOSE. This page compares chart hues against the
+     two page grounds side by side, which one document cannot do through
+     data-theme any more — the mapping blocks are :root-scoped (and correctly so).
+     What is under test here is colour adjacency, not the theming system, so the
+     two grounds and the two accent values are written out literally. */
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4); }
+  @media (max-width: 900px) { .pair { grid-template-columns: 1fr; } }
+  .ground { border-radius: var(--r-base); padding: var(--s-5); border: 1px solid transparent; }
+  .ground--lt { background: #FFFFFF; color: #142549; border-color: #CBD1DF; --uiAccent: #4068CA; --uiMuted: #61697A; --uiTrack: #EDEFF1; }
+  .ground--dk { background: #191A1D; color: #E9EAEC; border-color: #383B41; --uiAccent: #6E9BF0; --uiMuted: #A2A6AD; --uiTrack: rgba(0,0,0,.35); }
+  .ground--dk .surface { background: #212327; }
+  .ground--lt .surface { background: #FFFFFF; }
+  .gname { font-size: var(--fs-caption); font-weight: var(--fw-semi); letter-spacing: .04em; text-transform: uppercase; opacity: .55; margin-bottom: var(--s-4); }
+
+  .rowlbl { font-size: var(--fs-caption); font-weight: var(--fw-semi); margin: var(--s-4) 0 6px; }
+  .rowlbl span { font-weight: var(--fw-regular); opacity: .6; }
+
+  /* bars */
+  .bars { display: flex; align-items: flex-end; gap: 7px; height: 84px; }
+  .bars i { flex: 1; border-radius: 2px 2px 0 0; display: block; }
+  /* thin lines — the hardest test: 2px of colour */
+  svg.lines { display: block; width: 100%; height: 96px; overflow: visible; }
+  svg.lines path { fill: none; stroke-width: 2; stroke-linecap: round; }
+  /* legend chips */
+  .chips { display: flex; flex-wrap: wrap; gap: var(--s-4) var(--s-5); font-size: var(--fs-caption); }
+  .chip { display: inline-flex; align-items: center; gap: 6px; }
+  .chip i { width: 10px; height: 10px; border-radius: 2px; flex: 0 0 auto; }
+  .chip b { font-weight: var(--fw-regular); font-family: ui-monospace, monospace; opacity: .55; }
+
+  /* the collision panel */
+  .coll { display: grid; gap: var(--s-4); }
+  .coll__row { display: grid; grid-template-columns: 120px 1fr; gap: var(--s-4); align-items: center; font-size: var(--fs-caption); }
+  .coll__row > span:first-child { opacity: .6; }
+  .swatchbar { height: 14px; border-radius: 3px; }
+  .metertrack { height: 6px; border-radius: 99px; background: var(--uiTrack); overflow: hidden; }
+  .metertrack b { display: block; height: 100%; width: 62%; border-radius: 99px; background: var(--uiAccent); }
+  .dotrow { display: inline-flex; align-items: center; gap: 6px; }
+  .dotrow i { width: 8px; height: 8px; border-radius: 99px; }
+
+  .surface { border-radius: var(--r-base); padding: var(--s-4); }
+  .verdict { font-size: var(--fs-body); line-height: var(--lh-normal); border-left: 2px solid var(--accent); padding-left: var(--s-4); margin: var(--s-4) 0 0; color: var(--muted); max-width: 74ch; }
+  .verdict b { color: var(--ink); font-weight: var(--fw-semi); }
+  .num { font-family: ui-monospace, monospace; font-size: var(--fs-caption); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Chart palette — fixing 1 / 6 / 7</h1>
+  <p class="lede">Four of the seven stay exactly as picked: <b>rose, teal, orange, violet</b>. Three move. Colour-blind
+    separation was measured and deliberately dropped as a constraint — everything below is normal vision. Grounds are
+    hardcoded here on purpose; what is under test is which colours sit too close to each other, not the theming system.</p>
+
+  <!-- ============ 1 · THE COLLISION, SHOWN ============ -->
+  <h2>1 · The two collisions, shown rather than asserted</h2>
+  <p class="sub">This is the whole case. A chart mark and a UI mark that mean different things, in the same view. If you
+    can't tell them apart, the series is lying about what it is.</p>
+  <div class="pair">
+    <div class="ground ground--lt">
+      <div class="gname">Light page</div>
+      <div class="surface">
+        <div class="coll">
+          <div class="coll__row"><span>series 1 bar</span><div class="swatchbar" style="background:#5B8DEF"></div></div>
+          <div class="coll__row"><span>progress meter</span><div class="metertrack"><b></b></div></div>
+          <div class="coll__row"><span>series 6 bar</span><div class="swatchbar" style="background:#F4CF4A"></div></div>
+          <div class="coll__row"><span>caution status</span><span class="dotrow"><i style="background:#FFBD2E"></i> In progress</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="ground ground--dk">
+      <div class="gname">Dark page — where it actually breaks</div>
+      <div class="surface">
+        <div class="coll">
+          <div class="coll__row"><span>series 1 bar</span><div class="swatchbar" style="background:#5B8DEF"></div></div>
+          <div class="coll__row"><span>progress meter</span><div class="metertrack"><b></b></div></div>
+          <div class="coll__row"><span>series 6 bar</span><div class="swatchbar" style="background:#F4CF4A"></div></div>
+          <div class="coll__row"><span>caution status</span><span class="dotrow"><i style="background:#FFBD2E"></i> In progress</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="verdict">On the dark side, the series-1 bar and the progress meter are <b>the same blue</b> — ΔE 4.3. The
+    meter is itself a data mark, so two different meanings are wearing one colour on the same card. Series 6 against the
+    caution dot is ΔE 8.1: not identical, but close enough that a yellow series reads as "in progress".</p>
+
+  <!-- ============ 2 · CHART-1 ============ -->
+  <h2>2 · chart-1 — stays blue, moves off the accent</h2>
+  <p class="sub"><b>#2383C7</b>, a cyan-leaning true blue. Clear of the dark accent, ΔE 12.2 from the light accent, and
+    <span class="num">4.08:1</span> on white against the old <span class="num">3.23:1</span>. My first search relaxed the
+    hue and came back with teals — no longer a blue at all, and sitting on top of series 3. This one keeps the family.</p>
+  <div class="pair">
+    <div class="ground ground--lt">
+      <div class="gname">Light page</div>
+      <div class="surface">
+        <div class="coll">
+          <div class="coll__row"><span>now #5B8DEF</span><div class="swatchbar" style="background:#5B8DEF"></div></div>
+          <div class="coll__row"><span>meter (accent)</span><div class="metertrack"><b></b></div></div>
+          <div class="coll__row"><span>new #2383C7</span><div class="swatchbar" style="background:#2383C7"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="ground ground--dk">
+      <div class="gname">Dark page</div>
+      <div class="surface">
+        <div class="coll">
+          <div class="coll__row"><span>now #5B8DEF</span><div class="swatchbar" style="background:#5B8DEF"></div></div>
+          <div class="coll__row"><span>meter (accent)</span><div class="metertrack"><b></b></div></div>
+          <div class="coll__row"><span>new #2383C7</span><div class="swatchbar" style="background:#2383C7"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 3 · CHART-6 ============ -->
+  <h2>3 · chart-6 — yellow has no good answer, and that is the finding</h2>
+  <p class="sub">A yellow bright enough to look yellow is invisible on white (<span class="num">1.51:1</span>); a yellow
+    dark enough to see is olive — the same wall <code>--cau-strong</code> hit this morning. And <b>status already owns
+    amber</b>. So the real question is whether the chart tier should claim yellow at all. Four candidates, pick by eye:</p>
+  <div class="pair">
+    <div class="ground ground--lt">
+      <div class="gname">Light page — can you find the bar?</div>
+      <div class="surface">
+        <div class="coll">
+          <div class="coll__row"><span>A keep yellow</span><div class="swatchbar" style="background:#F4CF4A"></div></div>
+          <div class="coll__row"><span>B lime</span><div class="swatchbar" style="background:#B0C431"></div></div>
+          <div class="coll__row"><span>C brown</span><div class="swatchbar" style="background:#A2673A"></div></div>
+          <div class="coll__row"><span>D magenta</span><div class="swatchbar" style="background:#D0399E"></div></div>
+          <div class="coll__row"><span>caution dot</span><span class="dotrow"><i style="background:#FFBD2E"></i> In progress</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="ground ground--dk">
+      <div class="gname">Dark page</div>
+      <div class="surface">
+        <div class="coll">
+          <div class="coll__row"><span>A keep yellow</span><div class="swatchbar" style="background:#F4CF4A"></div></div>
+          <div class="coll__row"><span>B lime</span><div class="swatchbar" style="background:#B0C431"></div></div>
+          <div class="coll__row"><span>C brown</span><div class="swatchbar" style="background:#A2673A"></div></div>
+          <div class="coll__row"><span>D magenta</span><div class="swatchbar" style="background:#D0399E"></div></div>
+          <div class="coll__row"><span>caution dot</span><span class="dotrow"><i style="background:#FFBD2E"></i> In progress</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="verdict">
+    <b>A keep #F4CF4A</b> — brightest, most yours; invisible on white, 8.1 from caution.<br>
+    <b>B lime #B0C431</b> — clears caution (17.2); still only <span class="num">1.95:1</span> on white and drifts toward
+    the status green.<br>
+    <b>C brown #A2673A</b> — the pick, and the only option that fixes both problems at once:
+    <span class="num">4.63:1</span> on white, <span class="num">3.40:1</span> on the dark card, 11.5 from cau-strong,
+    20.6 from series 4. Cost: it is the one earthy colour in a bright palette. A darker
+    <span class="num">#995E33</span> scored better on paper but sat at exactly <span class="num">3.00:1</span> on the dark
+    card — on the bar with no margin, so it was dropped.<br>
+    <b>D magenta #D0399E</b> — <span class="num">4.40:1</span>, miles from every status hue; but 16.5 from series 2 rose,
+    so the set gains a second pink.
+  </p>
+
+  <!-- ============ 4 · CHART-7 ============ -->
+  <h2>4 · chart-7 — the "Other" grey, dark enough to find</h2>
+  <p class="sub"><b>#929296</b>. The old <span class="num">#C6C8CC</span> was <span class="num">1.68:1</span> on white —
+    a bar you cannot locate. This is <span class="num">3.11:1</span>, still clearly the quiet one, and stays clear of
+    <code>--muted</code> body text.</p>
+  <div class="pair">
+    <div class="ground ground--lt">
+      <div class="gname">Light page</div>
+      <div class="surface">
+        <div class="coll">
+          <div class="coll__row"><span>now #C6C8CC</span><div class="swatchbar" style="background:#C6C8CC"></div></div>
+          <div class="coll__row"><span>new #929296</span><div class="swatchbar" style="background:#929296"></div></div>
+          <div class="coll__row"><span>muted text</span><span style="color:var(--uiMuted)">Secondary label · ตัวอย่าง</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="ground ground--dk">
+      <div class="gname">Dark page</div>
+      <div class="surface">
+        <div class="coll">
+          <div class="coll__row"><span>now #C6C8CC</span><div class="swatchbar" style="background:#C6C8CC"></div></div>
+          <div class="coll__row"><span>new #929296</span><div class="swatchbar" style="background:#929296"></div></div>
+          <div class="coll__row"><span>muted text</span><span style="color:var(--uiMuted)">Secondary label · ตัวอย่าง</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 5 · THE WHOLE SET ============ -->
+  <h2>5 · The whole set — bars, then 2px lines</h2>
+  <p class="sub">Thin lines are the real test: 2px of colour with nothing around it. Slot 6 shown as <b>brown (C)</b>
+    here, since it scored best — say the word and I'll swap in lime or magenta.</p>
+  <div class="pair" id="sets"></div>
+
+  <h2>6 · Most charts want one hue, not seven</h2>
+  <p class="sub">The pattern the doctrine now names. Subject in chart-1, context in chart-7 grey. Compare it against the
+    same data wearing all seven — this is what "choose by the data" buys you.</p>
+  <div class="pair" id="focus"></div>
+</main>
+
+<script>
+(() => {
+  const NOW  = ['#5B8DEF','#E8637F','#5CBDB4','#E89B3C','#9B51F0','#F4CF4A','#C6C8CC'];
+  const NEW  = ['#2383C7','#E8637F','#5CBDB4','#E89B3C','#9B51F0','#A2673A','#929296'];
+  const DATA = [
+    [38,52,44,61,58,72,66,79],[62,49,71,58,77,64,83,70],[24,36,31,45,40,52,48,60],
+    [71,64,78,70,84,76,89,81],[45,58,50,66,61,74,69,82],[55,42,63,51,69,57,75,63],
+    [30,33,29,36,34,40,37,43]
+  ];
+  const path = (row, i) => {
+    const W = 100, H = 96, pad = 6;
+    const pts = row.map((v, x) => [pad + x * ((W - pad * 2) / (row.length - 1)), H - pad - (v / 100) * (H - pad * 2)]);
+    return 'M' + pts.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' L');
+  };
+  const barsHTML = pal => `<div class="bars">${pal.map((c,i)=>`<i style="background:${c};height:${[58,80,42,92,66,74,34][i]}%"></i>`).join('')}</div>`;
+  const linesHTML = pal => `<svg class="lines" viewBox="0 0 100 96" preserveAspectRatio="none">`
+    + pal.map((c,i)=>`<path d="${path(DATA[i],i)}" stroke="${c}" vector-effect="non-scaling-stroke"/>`).join('') + `</svg>`;
+  const chipsHTML = pal => `<div class="chips">${pal.map((c,i)=>`<span class="chip"><i style="background:${c}"></i>Series ${i+1} <b>${c}</b></span>`).join('')}</div>`;
+
+  const panel = (gname, cls, pal, title) => `
+    <div class="ground ${cls}">
+      <div class="gname">${gname}</div>
+      <div class="surface">
+        <div class="rowlbl">${title} <span>— bars</span></div>
+        ${barsHTML(pal)}
+        <div class="rowlbl">2px lines <span>— the hardest test</span></div>
+        ${linesHTML(pal)}
+        <div class="rowlbl">Legend</div>
+        ${chipsHTML(pal)}
+      </div>
+    </div>`;
+
+  document.getElementById('sets').innerHTML =
+      panel('Light · CURRENT', 'ground--lt', NOW, 'Current seven')
+    + panel('Light · PROPOSED', 'ground--lt', NEW, 'Proposed (1·6·7 moved)')
+    + panel('Dark · CURRENT', 'ground--dk', NOW, 'Current seven')
+    + panel('Dark · PROPOSED', 'ground--dk', NEW, 'Proposed (1·6·7 moved)');
+
+  const focusPal = ['#2383C7','#929296','#929296','#929296','#929296','#929296','#929296'];
+  document.getElementById('focus').innerHTML =
+      panel('Light · one hue + context', 'ground--lt', focusPal, 'Subject vs context')
+    + panel('Light · all seven equal', 'ground--lt', NEW, 'Seven competitors')
+    + panel('Dark · one hue + context', 'ground--dk', focusPal, 'Subject vs context')
+    + panel('Dark · all seven equal', 'ground--dk', NEW, 'Seven competitors');
+})();
+</script>
+</body>
+</html>
