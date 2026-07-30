@@ -99,7 +99,11 @@
     <div class="card">
       <div class="card__head">
         <span class="t-section">รอบการประเมินล่าสุด</span>
-        <button class="btn btn--secondary btn--sm">ดูทั้งหมด</button>
+        <!-- .btn, not .btn--sm: a card head is a shared line, so it takes the 34px
+             bar family (buttons.css). This was --sm and contradicted that rule —
+             the DS's own gallery demonstrating the misuse the rule exists to stop
+             (corrected 2026-07-30, Codex audit). -->
+        <button class="btn btn--secondary">ดูทั้งหมด</button>
       </div>
       <p class="t-body" style="margin:0 0 var(--s-2);">รอบ Q4/2026 เปิดรับการประเมินแล้ว มีพนักงาน 847 คนที่ทำแบบประเมินเสร็จสิ้น คิดเป็น 64% ของเป้าหมายทั้งหมด</p>
       <p class="t-sub" style="margin:0;">อัปเดตล่าสุด 1 ก.ค. 2026</p>

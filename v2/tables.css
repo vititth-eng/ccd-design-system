@@ -55,7 +55,7 @@
    ── the second density, and the ONLY home for the small control size. Vertical
    padding drops --row-y → --s-1, so a row is ~30px of text instead of ~40px.
    Controls inside it must be the small pair (.btn--sm + .menu-btn--sm, both
-   var(--ctl-h-sm) = 24px); a 30px bar control here would set the row height
+   var(--ctl-h-sm) = 24px); a 34px bar control here would set the row height
    itself and undo the density.
    CHROME: controls keep their border here (owner call 2026-07-29). Ghost
    actions were considered and rejected — CCD tables carry a control only

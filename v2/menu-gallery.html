@@ -31,7 +31,7 @@
 <body>
   <div class="content">
     <p class="t-title" style="margin:0 0 var(--s-2)">Menu &amp; triggers</p>
-    <p class="note" style="margin:0 0 var(--s-6)">A menu is two parts: a <b>trigger</b> you press and a <b>pane</b> that floats open. The DS ships the pane (<code>.menu</code>); the trigger has been hand-rolled in every app. This page reunites them.</p>
+    <p class="note" style="margin:0 0 var(--s-6)">A menu is two parts: a <b>trigger</b> you press and a <b>pane</b> that floats open. The DS ships both: the pane (<code>.menu</code>) and the trigger family (<code>.menu-btn</code>, graduated v2.1.3). Neither is hand-rolled any more &mdash; this page was still describing the pre-v2.1.3 state, corrected 2026-07-30.</p>
 
     <!-- 1 · THE PANE (ships today) -->
     <section>
@@ -51,9 +51,9 @@
       <p class="note"><b>Slots:</b> <code>.menu__item</code> (button or link) · <code>--on</code> current choice (accent tint) · <code>--danger</code> destructive · <code>.menu__sep</code> divider. Disclosure pattern: trigger toggles <code>.is-open</code>, outside-click / Esc closes.</p>
     </section>
 
-    <!-- 2 · TRIGGERS (proposed — one family, two shapes) -->
+    <!-- 2 · TRIGGERS (shipped v2.1.3 — one family, two shapes) -->
     <section>
-      <p class="t-section lbl">2 · Triggers <span>— <code>.menu-btn</code> family (menu.css). Ships today, graduated v2.1.3. Body-size type, <code>line-height:1</code> — a trigger is a control, not a caption.</span></p>
+      <p class="t-section lbl">2 · Triggers <span>— <code>.menu-btn</code> family (menu.css). Ships today, graduated v2.1.3. Body-size type, <code>line-height:normal</code> &mdash; a trigger is a control, not a caption. (Said <code>1</code> until 2026-07-30; menu.css uses <code>normal</code>, which lands the ink dead centre where <code>1</code> sits 0.5px high.)</span></p>
       <div class="rowset">
 
         <!-- a · select-trigger: value + chevron -->

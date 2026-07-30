@@ -74,7 +74,7 @@
    hierarchy (it cost us the seg filter and a table cell before this rule existed).
    Where each size goes (owner call 2026-07-29 — .btn--sm was doing too many
    jobs, which is how four control heights ended up on one row):
-     EVERYTHING on a shared line  →  .btn      var(--ctl-h), 30px. Page head,
+     EVERYTHING on a shared line  →  .btn      var(--ctl-h), 34px. Page head,
        card head, form bar, toolbar, filter bar — beside .control, .menu-btn,
        .seg, all of which are the same height.
      COMPACT TABLE ROW ONLY       →  .btn--sm  var(--ctl-h-sm), 24px. Its only

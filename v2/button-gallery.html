@@ -51,7 +51,7 @@
 
   <!-- 3 · Small --------------------------------------------------- -->
   <section>
-    <p class="t-section lbl">3 · Small <span>— card headers, table rows, toolbars</span></p>
+    <p class="t-section lbl">3 · Small <span>— compact table rows, and nowhere else</span></p>
     <div class="rowb">
       <button class="btn btn--primary btn--sm">เพิ่ม</button>
       <button class="btn btn--secondary btn--sm">แก้ไข</button>
@@ -60,10 +60,15 @@
     </div>
     <p class="note">
       <b>A tighter box, not smaller type.</b> The label stays 14px: a caption-size control sitting in
-      body-size copy reads as a rendering fault rather than as hierarchy. Size follows what the button
-      stands next to. Beside a page title, a form input, or at the foot of a card or popover, it answers
-      something full-size, so use plain <code>.btn</code>. Riding a line of text in a card header, a table
-      row, or a toolbar, use <code>.btn--sm</code>.
+      body-size copy reads as a rendering fault rather than as hierarchy.
+      <b>One job only — a compact table row.</b> Anything on a shared line takes plain <code>.btn</code>:
+      page head, card head, form bar, toolbar, filter bar, all beside <code>.control</code> /
+      <code>.menu-btn</code> / <code>.seg</code> at the same 34px. <code>.btn--sm</code> exists to stay
+      near the 22.4px line of text it rides inside <code>.tbl--compact</code>, which is itself opt-in.
+      Reaching for <code>--sm</code> is never a reason to make a table compact — that inversion spread it
+      across five pages in one sitting, which is why the rule is this narrow (owner call 2026-07-29).
+      <em>This page previously read "card headers, table rows, toolbars" and contradicted
+      <code>buttons.css</code>; corrected 2026-07-30 after the Codex audit.</em>
     </p>
   </section>
 
@@ -81,12 +86,24 @@
 
   <!-- 5 · Contrast note ------------------------------------------- -->
   <section>
-    <p class="t-section lbl">5 · Fill colors</p>
+    <p class="t-section lbl">5 · Fill colors <span>— these are the tokens the buttons actually use</span></p>
     <div class="rowb">
-      <span class="swatch"><i style="background:var(--accent)"></i>accent #4068CA — primary</span>
-      <span class="swatch"><i style="background:var(--neg-strong)"></i>neg-strong #C4372C — danger</span>
+      <!-- WAS --accent and --neg-strong, which are NOT what .btn--primary and
+           .btn--danger paint with. On light the two pairs happen to share a value,
+           so the error was invisible; on dark --accent lifts to #6E9BF0 while
+           --accent-fill stays #4068CA, so these chips showed a colour no button on
+           the page was wearing (Codex audit 2026-07-30). -->
+      <span class="swatch"><i style="background:var(--accent-fill)"></i>accent-fill #4068CA — primary</span>
+      <span class="swatch"><i style="background:var(--neg-fill)"></i>neg-fill #C4372C — danger</span>
       <span class="swatch"><i style="background:var(--neg)"></i>neg #FF5F56 — dot only, never a fill</span>
     </div>
+    <p class="note">
+      <b>The two fills do not invert.</b> A fill carries its own contrast, so it never moves between modes —
+      white text has to keep sitting on it. The <em>text</em> tokens do move: <code>--accent</code> lifts to
+      <code>#6E9BF0</code> on dark so links stay readable. Reaching for the text token to paint a fill is
+      what turned the destructive button into a pale salmon slab louder than the primary
+      (tokens.css, 2026-07-29). Hexes are written out here precisely because these two are mode-invariant.
+    </p>
   </section>
 </body>
 </html>

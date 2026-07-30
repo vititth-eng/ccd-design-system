@@ -45,7 +45,8 @@
      text must lighten, a fill must stay dark enough to hold white text. Lifting
      one token for the text job silently wrecks the fill job: it turned the
      destructive button into a pale salmon slab with dark text, the only inverted
-     element on the screen and LOUDER than the primary (6.73:1 vs 5.57:1).
+     element on the screen and LOUDER than the primary (6.73:1 vs 5.18:1 — white
+     on --accent-fill #4068CA measures 5.18, not the 5.57 first written here).
      Destroy was out-shouting save. Found by rendering, 2026-07-29 (CCD-174).
      These three are identical in both modes ON PURPOSE — that is the rule, stated
      as a value. Decorative fills with nothing on top (.meter b, .toast--info dot)
@@ -99,8 +100,14 @@
      The dot stays yellow at 41°; strong and tint moved to orange at ~28°.
      Why the split: at 41° every value dark enough to read is gold or olive —
      dark yellow is physically mud, the same wall the dark-mode tints hit. And
-     the dot cannot follow the strong into orange: measured against the --neg
-     dot it drops from ΔE 22 to 15 (colour-blind 15.2 to 10.1), and confusing
+     the dot cannot follow the strong into orange. Measured in CIEDE2000 against
+     the --neg dot #FF5F56: the yellow dot as shipped is ΔE00 38.6 normal / 14.6
+     deuteranope, and an orange dot at the strong's hue (#CF741E) collapses to
+     21.7 / 6.6. (This line previously read "ΔE 22 to 15, colour-blind 15.2 to
+     10.1" while naming neither the metric nor the rejected orange, so nobody
+     could re-derive it — Codex flagged exactly that. Recomputed and restated
+     2026-07-30; the conclusion held, the numbers were from an unrecorded
+     metric.) Confusing
      "caution" with "overdue" is the one mistake this palette exists to prevent.
      It costs nothing because the two never meet — the dot lives in pills, whose
      text is ink; the strong lives in glyphs and marks. (Owner call 2026-07-30,
@@ -383,7 +390,8 @@
 
   /* Accent lifts — it is text as often as it is a fill. The FILL stays put; see
      --accent-fill above, which is the same value in both modes on purpose. */
-  --dk-accent:      #6E9BF0;  /* 5.57:1 on card */
+  --dk-accent:      #6E9BF0;  /* 5.70:1 on card, 6.31:1 on canvas (recomputed 2026-07-30 —
+                                 the comment said 5.57, which was the light primary's number) */
   --dk-accent-tint: #222D3A;  /* selection / sidebar hover — blue held back */
 
   /* Dots (--pos/--cau/--neg) keep their EXACT light hue and so are absent here:
