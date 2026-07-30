@@ -6,12 +6,21 @@
    ============================================================ */
 
 /* Base — every screen sets the family + body defaults on <body>. */
+/* The page background belongs here, with the ink it has to be legible against.
+   It was missing, and on light nobody noticed because the UA canvas is white
+   anyway — but on dark a page got the BROWSER's idea of dark (Chrome paints
+   ~#121212), not --canvas #191A1D, so the one surface the DS never controlled
+   was the biggest one. Every gallery and shell.css had been quietly patching it
+   with their own `background: var(--canvas)`; those are now redundant, not
+   wrong, and are left alone. A consumer that sets its own body background still
+   wins — a class or a later sheet both beat this element selector. */
 body {
   font-family: var(--font-sans);
   font-size: var(--fs-body);
   font-weight: var(--fw-regular);
   line-height: var(--lh-normal);
   color: var(--ink);
+  background: var(--canvas);
 }
 
 /* Roles ---------------------------------------------------------- */
