@@ -89,7 +89,23 @@ scar + why stays in memory.*
 5. **Flag exceptions, don't gradient.** Score tables tint only cells beyond a
    fixed instrument threshold (e.g. amber < 4.0, red < 3.5 on Likert 1–5);
    healthy cells stay plain.
-6. **Charts use the Tier-2 data palette** — never the status-dot or tint hues.
+6. **Chart colour is a data decision, not a palette lookup.** Pick the JOB from the
+   data, then take hues in order inside it — a hue chosen per chart by taste makes
+   the same plant blue on one card and green on the next, and the reader re-learns
+   every chart.
+   **Categorical** (people, plants, departments — identity only) → `--chart-1..7`
+   by index; `--chart-7` grey is Other/Unassigned, never a real series.
+   **Sequential** (headcount, spend, % done) → one hue, light→dark; the magnitude
+   lives in the lightness, and a categorical set here throws the order away.
+   **Diverging** (agree↔disagree, vs target, YoY) → two hues off a neutral middle.
+   **Likert is always diverging** — nine competencies painted `--chart-1..7`
+   discards the one thing rating data has. **Status** (done/late/at risk) → the
+   status hues, never a chart hue. Sequential and diverging ramps are **not
+   built**: the first real chart sizes them, and a mock must not invent values.
+   **Most charts want one hue, not seven** — subject in `--chart-1`, context in
+   `--chart-7`. And a legend is the fallback, not the licence: it makes the reader
+   look away to decode and back, so label the marks directly where they fit (owner
+   call 2026-07-30).
 7. **Thai in dense tables:** weight ≤ 400; breathing comes from row padding,
    never a new line-height token.
 8. **One-off surfaces borrow mechanics, not shape.** Tokens, focus ring,

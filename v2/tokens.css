@@ -104,29 +104,49 @@
                               Same lightness step as the cream it replaced (1.13:1 off white),
                               so the tint family keeps its even spacing — only the hue moved. */
 
-  /* ── CHART — a SEPARATE TIER, and the separation is the point ──
-     These are for SERIES IDENTITY ONLY: "this line is Sales, that one is Ops".
-     Never for state. The status hues above answer "is this good or bad"; a chart
-     series answers "which one is this" — reusing the misty status greens and
-     reds for series 1 and 2 makes a neutral comparison look like a verdict.
-     Two rules that come with them:
-       1. INDEX ORDER IS THE API. Series 1 takes --chart-1, series 2 --chart-2.
-          Do not pick by taste per chart, or the same team changes colour between
-          two cards on one page. --chart-7 is the grey — it is reserved for
-          Other / Unassigned, so a real series never lands on it.
-       2. LABEL THE MARKS. Against white, teal (2.24:1), orange (2.29:1) and
-          yellow (1.51:1) sit under the 3:1 fill bar, and the grey is nearly
-          invisible. That is accepted — a saturated palette that reads well is
-          worth more here than one held to a ratio, because a chart is not read
-          by colour alone. Pay for it with a direct value label or a legend on
-          every chart; never make the hue the only way to tell series apart.
-     One set for BOTH modes: picked by eye at mid-tone, so they hold on the dark
-     canvas as well as white. No --dk- partners on purpose (owner call 2026-07-30,
-     his palette, chosen over Tableau 20 — that one was two-tone by construction
-     and needed a mode swap this does not).
-     NOT YET USED BY ANY CHART. No consumer draws a multi-series chart today; the
-     tokens are here so the first one does not invent seven hex values. Sandbox
-     with the real thing side by side: v2/chart-palette-explore.html. */
+  /* ── CHART · CATEGORICAL — ONE OF FOUR JOBS, not "the chart colours" ──
+     This set answers exactly one question: "WHICH ONE is this" — Ubon vs Pathum,
+     HR vs Ops. Identity, where the colour means nothing beyond "a different one".
+     It is the wrong tool for the other three colour jobs, and reaching for it by
+     default is the mistake this comment exists to stop:
+       sequential (a magnitude — headcount, spend, % done) wants ONE hue running
+         light to dark, because the size of the number lives in the lightness;
+       diverging (a polarity — agree/disagree, over/under target, YoY) wants two
+         hues off a neutral middle. LIKERT IS ALWAYS DIVERGING. Painting nine
+         competencies --chart-1..7 throws away the only thing rating data has,
+         which is its order, and no legend gives that back;
+       status (done / late / at risk) is already owned above — never a chart hue.
+     Neither ramp is built. The first real chart sizes them; do not invent values
+     in a mock. Full rule with the worked cases: PRODUCT.md composition rule 6.
+
+     WITHIN this categorical job, INDEX ORDER IS THE API — series 1 takes
+     --chart-1, series 2 --chart-2. That part is not a taste decision: pick a hue
+     per chart and the same plant is blue on one card and green on the next, so the
+     reader re-learns every chart on the page. --chart-7 grey is Other/Unassigned
+     and never a real series.
+
+     MOST CHARTS WANT ONE HUE, NOT SEVEN. Subject in --chart-1, everything else in
+     --chart-7 grey. A dashboard chart usually has a subject and context, not seven
+     equal competitors; reach for the full set only when every series is genuinely
+     being compared. (Owner call 2026-07-30, correcting an earlier version of this
+     comment that stated index-order as a universal law for all charts.)
+
+     LABEL THE MARKS — and a legend is the FALLBACK, not the licence. It makes the
+     reader look away to decode and back again, so put the value on the mark where
+     it fits. Against white, teal (2.24:1), orange (2.29:1) and yellow (1.51:1) sit
+     under the 3:1 fill bar: accepted, because a chart is not read by colour alone,
+     but it is why the label is mandatory rather than nice.
+
+     One set for BOTH modes, no --dk- partners: verified 2026-07-30, all seven clear
+     3:1 on dark canvas AND dark card. Chosen over Tableau 20, which was two-tone by
+     construction and would have needed a mode swap this does not.
+
+     KNOWN DEFECTS, not yet fixed (Codex audit, CCD-174): --chart-1 sits ΔE00 4.3
+     from the DARK accent, so on a dark page series 1 is the selection blue;
+     --chart-6 sits 8.1 from the caution dot; under ~10 those are the same colour to
+     anyone. Yellow and grey are also near-invisible as a bar on white. Colour-blind
+     separation was measured and deliberately NOT treated as a constraint (owner
+     call: known internal audience). Sandbox: v2/chart-palette-explore.html. */
   --chart-1: #5B8DEF;   /* blue    — series 1 */
   --chart-2: #E8637F;   /* rose    — series 2 */
   --chart-3: #5CBDB4;   /* teal    — series 3 */
