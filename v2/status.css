@@ -8,8 +8,10 @@
      label stays readable ink. No contrast requirement on the text.
 
    Type-2 · pill — a STANDALONE badge (cards, headers, detail views).
-     Tinted background + accessible strong text (the "darken for
-     pill" tier). Use where there's no column context to lean on.
+     Tinted background + a DOT + ink text. Use where there's no column
+     context to lean on. (This header claimed "accessible strong text"
+     long after the rule at line 28 moved the label to ink — the pill
+     never darkens its text. Corrected 2026-07-30, Codex audit.)
 
    Type-3 · meter — a QUANTITY, not a state. Never takes a status
      hue: a self-reported status and a computed progress bar are two

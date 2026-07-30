@@ -491,4 +491,18 @@
     --dk-shadow-pop:   0 4px 12px rgba(20,37,73,.08);
     --dk-shadow-modal: 0 12px 32px rgba(20,37,73,.10);
   }
+  /* color-scheme is a PROPERTY, not a --dk-* value, so resetting the values above
+     does not reach it — the two mapping blocks set `color-scheme: dark` directly
+     and it survived into print. Result: the authored colours printed light while
+     the browser still painted native controls, scrollbars and spellcheck dark, so
+     a printed select was a dark slab in a white page (Codex audit 2026-07-30).
+     THE SELECTOR LIST IS DELIBERATE. `:root` alone loses — it is specificity
+     (0,1,0) against the (0,2,0) of `:root[data-theme="dark"]`. Matching those
+     selectors exactly ties the specificity, and this block is later in the file,
+     so it wins. Keep this list in step if a fourth mode is ever added. */
+  :root,
+  :root[data-theme="dark"],
+  :root[data-theme="system"] {
+    color-scheme: light;
+  }
 }

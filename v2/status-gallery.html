@@ -75,14 +75,26 @@
 
   <!-- 4 · Strong text tier ---------------------------------------- -->
   <section>
-    <p class="t-section lbl">4 · Strong text tier <span>— a status hue read as TEXT / a NUMBER (not a dot). Passes AA on white.</span></p>
+    <p class="t-section lbl">4 · Strong tier <span>— a status hue heavy enough to carry meaning without a dot. TWO of the three are text-safe; caution is not.</span></p>
     <div class="card">
       <div class="row">
         <span style="color:var(--pos-strong); font-weight:var(--fw-semi); font-variant-numeric:tabular-nums;">+12% ↑</span>
-        <span style="color:var(--cau-strong); font-weight:var(--fw-semi); font-variant-numeric:tabular-nums;">5 คน · ต่ำกว่าเกณฑ์</span>
         <span style="color:var(--neg-strong); font-weight:var(--fw-semi); font-variant-numeric:tabular-nums;">เกินกำหนด 3 วัน</span>
+        <!-- --cau-strong is a GLYPH here, not text. It is 3.40:1 — clears the 3:1
+             icon/mark bar, fails the 4.5:1 text bar. This gallery used to set it on
+             14px Thai body text directly under a heading that claimed the whole tier
+             passes AA, which taught the one use tokens.css forbids (Codex audit
+             2026-07-30). Shown as what it actually is instead. -->
+        <span style="display:inline-flex; align-items:center; gap:var(--s-2); color:var(--ink); font-weight:var(--fw-semi);">
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" style="flex:0 0 auto;">
+            <path d="M8 1.6 15 14H1z" fill="none" stroke="var(--cau-strong)" stroke-width="1.6" stroke-linejoin="round"/>
+            <path d="M8 6v3.6" stroke="var(--cau-strong)" stroke-width="1.6" stroke-linecap="round"/>
+            <circle cx="8" cy="11.7" r=".9" fill="var(--cau-strong)"/>
+          </svg>
+          5 คน · ต่ำกว่าเกณฑ์
+        </span>
       </div>
-      <p class="t-caption" style="color:var(--muted); margin:var(--s-3) 0 0;">Bright <code>--pos/--cau/--neg</code> are dot-only (fail AA as text). Use <code>--pos-strong</code> / <code>--cau-strong</code> / <code>--neg-strong</code> when a status hue must be read as text or a number: low-N counts, deltas, overdue days.</p>
+      <p class="t-caption" style="color:var(--muted); margin:var(--s-3) 0 0;">Bright <code>--pos/--cau/--neg</code> are dot-only (fail AA as text). <code>--pos-strong</code> (5.08:1) and <code>--neg-strong</code> (5.34:1) clear the 4.5:1 text bar, so they may be read as text or a number: deltas, overdue days. <b><code>--cau-strong</code> is 3.40:1 — glyphs and marks only.</b> When a caution needs words, the words are <code>--ink</code> and the hue lives in the glyph beside them; darkening the amber to reach 4.5:1 is what produced the olive it replaced.</p>
     </div>
   </section>
 
@@ -124,16 +136,31 @@
   function hx(h){h=h.replace('#','');return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];}
   function lum(rgb){var a=rgb.map(function(v){v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});return .2126*a[0]+.7152*a[1]+.0722*a[2];}
   function ratio(fg,bg){var L1=lum(fg),L2=lum(bg),hi=Math.max(L1,L2),lo=Math.min(L1,L2);return ((hi+.05)/(lo+.05)).toFixed(2);}
-  // pills are now INK text on tint — check ink #142549 on each tint
+  /* READ THE TOKENS, NEVER RETYPE THEM. This checker used to hardcode its hexes and
+     two of them had been retired: it measured #8A6100 for caution-strong (5.54:1)
+     while the sample above it rendered #CF741E (3.40:1), and #FBF0D5 for the tint
+     after it became #FDEEE2. A checker that copies values will always drift into
+     certifying a colour nobody ships (Codex audit 2026-07-30). Resolving from
+     getComputedStyle means it re-measures whatever tokens.css actually holds —
+     including after a theme flip. */
+  var css = getComputedStyle(document.documentElement);
+  function tok(name){
+    var v = css.getPropertyValue(name).trim();
+    if (v.charAt(0) === '#') return hx(v);
+    var m = v.match(/-?\d+\.?\d*/g);            // rgb() / rgba() form
+    return [+m[0], +m[1], +m[2]];
+  }
+  function pair(fg, bg){ return ratio(tok(fg), tok(bg)); }
   document.getElementById('aa').innerHTML =
-    'Pill text AA — ink on tint (≥4.5): pos <b>'+ratio(hx('#142549'),hx('#E7F5EC'))+'</b> · '+
-    'cau <b>'+ratio(hx('#142549'),hx('#FBF0D5'))+'</b> · '+
-    'neg <b>'+ratio(hx('#142549'),hx('#FBE9E7'))+'</b> · '+
-    'none <b>'+ratio(hx('#142549'),hx('#EDEFF1'))+'</b>';
+    'Pill text AA — ink on tint (≥4.5): pos <b>'+pair('--ink','--pos-tint')+'</b> · '+
+    'cau <b>'+pair('--ink','--cau-tint')+'</b> · '+
+    'neg <b>'+pair('--ink','--neg-tint')+'</b> · '+
+    'none <b>'+pair('--ink','--divider')+'</b>';
+  /* Caution is held to the 3:1 MARK bar, not the 4.5:1 text bar — it is a glyph. */
   document.getElementById('aa2').innerHTML =
-    'Strong text AA, on white (≥4.5): pos <b>'+ratio(hx('#1A7F37'),hx('#FFFFFF'))+'</b> · '+
-    'cau <b>'+ratio(hx('#8A6100'),hx('#FFFFFF'))+'</b> · '+
-    'neg <b>'+ratio(hx('#C4372C'),hx('#FFFFFF'))+'</b>';
+    'Strong tier, on canvas — pos <b>'+pair('--pos-strong','--canvas')+'</b> and '+
+    'neg <b>'+pair('--neg-strong','--canvas')+'</b> are TEXT (bar ≥4.5) · '+
+    'cau <b>'+pair('--cau-strong','--canvas')+'</b> is a GLYPH (bar ≥3, never text)';
 </script>
 </body>
 </html>

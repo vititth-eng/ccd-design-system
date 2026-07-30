@@ -40,7 +40,13 @@
 }
 .control::placeholder { color: var(--muted); }   /* muted = 5.51:1, safe as placeholder */
 
-.control:hover { border-color: var(--muted); }
+/* :not(:disabled) is load-bearing. Both pseudo-classes can match at once and they
+   set different properties, so without the guard a disabled field BRIGHTENED its
+   border under the cursor — an inert control advertising that you can use it. The
+   :disabled rule below cannot undo it either, because it never restates
+   border-color. .btn and .menu-btn already excluded disabled; .control did not
+   (Codex audit 2026-07-30). */
+.control:hover:not(:disabled) { border-color: var(--muted); }
 
 .control:focus,
 .control:focus-visible {
