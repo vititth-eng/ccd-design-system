@@ -207,6 +207,15 @@
 
 <script>
 (async () => {
+  // el() is declared UP HERE, above the fetch, on purpose. It used to be defined
+  // after the file:// fallback that calls it, and `const` is not hoisted the way a
+  // function declaration is — it sits in the temporal dead zone until its line
+  // runs. So on the one path that fallback exists to serve (fetch fails, e.g.
+  // opening this file over file://) the call threw a ReferenceError and killed the
+  // rest of init: no iframe sizing, no theme switch. The error path was the only
+  // path that could not work (Codex audit 2026-07-30).
+  const el = id => document.getElementById(id);
+
   // ── parse tokens.css text so we keep the trailing /* usage note */ comments ──
   let css = '';
   try { css = await (await fetch('./tokens.css')).text(); } catch(e) {}
@@ -222,16 +231,18 @@
     if (m && !m[1].startsWith('dk-')) tokens.push({ name: '--' + m[1], value: m[2].trim(), note: (m[3] || '').replace(/\s+/g, ' ').trim() });
   });
   const byName = Object.fromEntries(tokens.map(t => [t.name, t]));
-  // file:// fallback: fetch is blocked, so the token tables can't render.
-  if (!tokens.length) el('g-color').innerHTML =
-    '<span class="note">Token tables read tokens.css live and need the preview server — component galleries below still work.</span>';
+  // The file:// fallback lives INSIDE renderColors (below), not here. Writing it at
+  // this point looked right and did nothing: paintTheme('light') runs at the end of
+  // init and calls renderColors(), which rewrites #g-color from an empty token list
+  // and so replaced the message with "". Found by actually breaking fetch and
+  // re-running init, 2026-07-30 — the audit caught the ReferenceError on this path
+  // but not that the message it guarded was being wiped a moment later.
 
   // probe to resolve any var to a computed value
   const probe = document.createElement('div');
   probe.style.cssText = 'position:absolute;visibility:hidden;width:auto;';
   document.body.appendChild(probe);
   const resolve = (name, prop) => { probe.style[prop] = `var(${name})`; const v = getComputedStyle(probe)[prop]; probe.style[prop] = ''; return v; };
-  const el = id => document.getElementById(id);
   const list = re2 => tokens.filter(t => re2.test(t.name));
 
   // ── COLOR · grouped by semantic role ──
@@ -257,6 +268,16 @@
       + (t.note ? `<span class="sw__note">${t.note}</span>` : '') + '</div>';
   };
   const renderColors = () => {
+    // No tokens means fetch was blocked — opening this file over file:// rather than
+    // through the preview server. Say so and stop, otherwise this function paints an
+    // empty string over the explanation and the page just looks broken.
+    if (!tokens.length) {
+      el('g-color').innerHTML =
+        '<span class="note">Token tables read <code>tokens.css</code> live and need the preview server '
+        + '(<code>ds-preview</code>) — opened over <code>file://</code> the browser blocks the read. '
+        + 'The component galleries below still work.</span>';
+      return;
+    }
     el('g-color').innerHTML = colorGroups.map(([title, ns]) => {
       const chips = ns.map(n => byName[n]).filter(Boolean).map(swatch).join('');
       return chips ? `<div class="grp"><div class="grp__h">${title}</div><div class="swatches">${chips}</div></div>` : '';
@@ -369,6 +390,18 @@
       f.addEventListener('load', () => {
         try { f.contentDocument.documentElement.dataset.theme = currentTheme(); } catch(e) {}
       }));
+
+    // SYSTEM MODE NEEDS A LISTENER, and only for the LABELS. The colours themselves
+    // need no JS at all — that is the whole point of the dark generation: CSS reads
+    // prefers-color-scheme directly, so every chip repaints itself when the OS flips
+    // at dusk. But the text UNDER each chip is a computed value this script read once
+    // and wrote into the DOM, so it froze at whatever the OS was doing then: a page
+    // left open in System mode showed dark chips over light hex strings, quietly
+    // contradicting the "edit a token and this page updates itself" promise
+    // (Codex audit 2026-07-30). Re-resolve the labels on an OS change, and only in
+    // System mode — in forced light or dark the OS is irrelevant.
+    window.matchMedia('(prefers-color-scheme: dark)')
+      .addEventListener('change', () => { if (currentTheme() === 'system') renderColors(); });
   }
 })();
 </script>

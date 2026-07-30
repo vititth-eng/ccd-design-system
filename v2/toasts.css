@@ -7,7 +7,24 @@
    ============================================================ */
 
 /* Region — fixed stack, bottom-right. Region ignores pointer;
-   the toasts themselves capture it. */
+   the toasts themselves capture it.
+
+   REQUIRED MARKUP, not optional polish — CSS cannot supply it, so it is written
+   here where a consumer copying this component will read it:
+
+     <div class="toast-region" role="status" aria-live="polite" aria-atomic="true">
+
+   A toast appears without moving focus and deletes itself after ~4s, so with no
+   live region a screen-reader user is told NOTHING — the save either happened or
+   it did not and they never find out (added 2026-07-30, Codex audit; the DS's own
+   gallery had shipped without it).
+     polite, not assertive — announced at the next natural pause. assertive cuts
+       the user off mid-sentence, which is wrong for a save confirmation.
+     aria-atomic — read the title AND the message. Without it only the changed
+       node is announced, so an error message arrives with no subject.
+   The container must be IN THE PAGE before the first toast is appended. Creating
+   the region and the toast in the same tick is the classic failure: assistive tech
+   never observes the mutation and announces nothing. */
 .toast-region {
   position: fixed;
   bottom: var(--s-5);

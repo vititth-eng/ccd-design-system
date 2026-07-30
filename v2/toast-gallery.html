@@ -44,7 +44,20 @@
     <div class="toast toast--info"><i class="toast__dot"></i><div class="toast__body"><div class="toast__title">กำลังประมวลผล</div><div class="toast__msg">ส่งออกไฟล์ Excel อยู่เบื้องหลัง</div></div><button class="toast__close" aria-label="ปิด"><svg class="x" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
   </div>
 
-  <div class="toast-region" id="region"></div>
+  <!-- THE LIVE-REGION ATTRIBUTES ARE PART OF THE COMPONENT, not decoration.
+       A toast appears with no focus change and removes itself after 4s, so a
+       screen-reader user is told nothing at all unless the container is a live
+       region BEFORE the toast is appended (added 2026-07-30, Codex audit).
+         role="status" + aria-live="polite" — announced at the next pause, never
+           interrupting. "assertive" would cut the user off mid-sentence for a
+           save confirmation, which is rude for everything except an error.
+         aria-atomic="true" — read the whole toast, title AND message. Without it
+           only the changed node is announced, so "การเชื่อมต่อขัดข้อง" arrives
+           with no idea what failed.
+       The region must exist in the markup from the start and stay in place;
+       creating it at the same moment as the first toast is the classic mistake —
+       assistive tech never sees the mutation. -->
+  <div class="toast-region" id="region" role="status" aria-live="polite" aria-atomic="true"></div>
 
 <script>
   var region = document.getElementById('region');
