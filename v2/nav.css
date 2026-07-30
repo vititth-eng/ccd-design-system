@@ -37,7 +37,7 @@
 /* Height is the token (tokens.css --ctl-h) — the seg stands in a bar beside
    .btn / .control / .menu-btn. The trough sets the height, the options stretch
    into it (flex default), so their vertical padding is zero. */
-.seg { display: inline-flex; gap: 2px; padding: 3px; height: var(--ctl-h); background: var(--divider); border-radius: var(--r-base); }
+.seg { display: inline-flex; gap: 2px; padding: 3px; height: var(--ctl-h); background: var(--ctl-track); border-radius: var(--r-base); }
 .seg__opt {
   display: inline-flex; align-items: center;
   padding: 0 var(--s-3); border: none; border-radius: var(--r-tiny);
@@ -46,6 +46,6 @@
   transition: color .12s ease;
 }
 .seg__opt:hover:not(:disabled) { color: var(--ink); }
-.seg__opt--active { background: var(--card); color: var(--accent); box-shadow: var(--shadow-float); }
+.seg__opt--active { background: var(--ctl-raise); color: var(--accent); box-shadow: var(--shadow-float); }
 .seg__opt:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .seg__opt:disabled { opacity: .4; cursor: not-allowed; }

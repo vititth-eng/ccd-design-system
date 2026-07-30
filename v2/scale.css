@@ -71,14 +71,14 @@
   height: 40px;
   border: 1px solid var(--rule);
   border-radius: var(--r-pill);
-  background: var(--card);
+  background: var(--ctl-face);
   font-variant-numeric: tabular-nums;
   transition: border-color 0.12s ease, background-color 0.12s ease, color 0.12s ease;
 }
 .sbtn:hover .sbtnN { border-color: var(--muted); }
 .sbtn:focus-visible { outline: none; }
 .sbtn:focus-visible .sbtnN { outline: 2px solid var(--accent); outline-offset: 2px; }
-.sbtn.on .sbtnN { background: var(--accent); border-color: var(--accent); color: #fff; }
+.sbtn.on .sbtnN { background: var(--accent-fill); border-color: var(--accent-fill); color: var(--on-fill); }
 
 /* Native radios keep the semantics; .sbtn is the label. Consumers that need a
    no-JS form use <input class="sradio"> + <label class="sbtn">. */
@@ -92,7 +92,7 @@
   white-space: nowrap;
   border: 0;
 }
-.sradio:checked + .sbtn .sbtnN { background: var(--accent); border-color: var(--accent); color: #fff; }
+.sradio:checked + .sbtn .sbtnN { background: var(--accent-fill); border-color: var(--accent-fill); color: var(--on-fill); }
 .sradio:focus-visible + .sbtn .sbtnN { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 /* ── solo variant — ONE question, so the anchors can sit under the circles.

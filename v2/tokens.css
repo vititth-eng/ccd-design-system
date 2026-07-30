@@ -14,9 +14,18 @@
      line, a gap, or a heading. Every tinted rectangle a consumer has reached for
      — a --canvas panel, an --accent-tint strip, a --divider band — was rejected
      on sight. Fills belong to controls and state (hover, selection, disabled,
-     tracks, pills), never to structure. */
+     tracks, pills), never to structure.
+     The law is a LIGHTNESS STEP WITH A NO-HUE CLAUSE, not "no fills" — light
+     mode's step is zero only because white is the ceiling. See PRODUCT.md
+     composition rule 1. Dark takes real steps and breaks nothing. */
   --canvas:  #FFFFFF;   /* page background */
   --card:    #FFFFFF;   /* card / panel surface (same as canvas; a line separates it) */
+  --float:   #FFFFFF;   /* TRANSIENT overlay — menu, modal, toast. Same as card on light
+                           (white is the ceiling), a third step up on dark.
+                           Test: does it appear and then go away? Then it floats. Page
+                           furniture does NOT — the form bar was tried here and moved back
+                           to --card. Cross-check: everything on this tier casts a shadow;
+                           everything on --card casts none. */
   --ink:     #142549;   /* primary text — Boonrawd navy (the fixed brand anchor) */
   --muted:   #61697A;   /* secondary text — slate; AA 5.51:1 on white */
 
@@ -27,8 +36,43 @@
                            and the thin .tbl__group header row. NEVER a content panel — see the flat-white rule above. */
 
   /* Accent — the ONE meaning color: actions, links, selection, meter. Never decoration (≤10%) */
-  --accent:      #4068CA;   /* AA 5.18:1 — as fill (white text) and as link text */
+  --accent:      #4068CA;   /* TEXT + decorative fill: links, selection, meter bar, info dot. LIFTS on dark. */
   --accent-tint: #E9F1FC;   /* selection + sidebar hover fill — soft blue, distinct from the neutral divider (which draws lines/tracks) */
+
+  /* FILLS DON'T INVERT — a fill carries its own contrast, so it never moves.
+     --accent and --neg-strong each do two jobs: coloured TEXT on the page, and a
+     coloured FILL with text on top. Dark moves those in OPPOSITE directions —
+     text must lighten, a fill must stay dark enough to hold white text. Lifting
+     one token for the text job silently wrecks the fill job: it turned the
+     destructive button into a pale salmon slab with dark text, the only inverted
+     element on the screen and LOUDER than the primary (6.73:1 vs 5.57:1).
+     Destroy was out-shouting save. Found by rendering, 2026-07-29 (CCD-174).
+     These three are identical in both modes ON PURPOSE — that is the rule, stated
+     as a value. Decorative fills with nothing on top (.meter b, .toast--info dot)
+     keep the LIFTED --accent instead: more visible is strictly better there. */
+  --accent-fill: #4068CA;   /* .btn--primary, selected .sbtnN — white text sits on this */
+  --neg-fill:    #C4372C;   /* .btn--danger — the accessible red, never the --neg dot red */
+  --on-fill:     #FFFFFF;   /* text on any of the above. Replaced 4 hardcoded #FFFFFF. */
+
+  /* CONTROL SURFACES — surfaces take a solid step, everything else takes a FILM.
+     A surface (--card, --float) must be opaque: a modal has to hide what is behind
+     it. A control cannot use a fixed step, because it appears at many depths — a
+     button sits on a card, in a modal, on a toolbar, and one absolute value is
+     correct at exactly one of them. Found the hard way: a --float secondary button
+     inside a --float modal was LITERALLY the same colour.
+     So on dark these are translucent and land one step off whatever they sit on
+     (verified: secondary lifts 1.23:1 on a card, 1.24:1 in a modal). Direction
+     follows light falling from above — a field you type into recesses, a button
+     you press rises. On light all three are today's values, unchanged. */
+  --ctl-face:  #FFFFFF;   /* face of a control you type in or press — .control, .sbtnN */
+  --ctl-track: #EDEFF1;   /* the trough a control rides in — .seg. (= --divider on light;
+                             they must split on dark, where a hairline has to be LIGHTER
+                             than the card and a trough has to be DARKER.) */
+  --ctl-raise: #FFFFFF;   /* pressable sitting above its surface — .btn--secondary */
+
+  --scrim: rgba(20, 37, 73, .32);   /* modal backdrop. Must differ by mode: this navy wash
+                                       is tuned to dim WHITE and barely touches a dark page,
+                                       so the modal stops reading as blocking. */
 
   /* Status — macOS traffic-light trio (owner pick 2026-07-01). Type-1 = dot + ink text.
      Bright hues are fine as DOTS; they'd fail AA as text, so keep dot-only (darken for any pill). */
@@ -42,8 +86,23 @@
   --pos-strong: #1A7F37;   /* accessible green text — 5.08:1 on white, 4.52:1 on --pos-tint */
   --pos-tint:   #E7F5EC;   /* green trend-pill / status-pill background */
   --neg-tint:   #FBE9E7;   /* red trend-pill / status-pill background (pairs with --neg-strong) */
-  --cau-strong: #8A6100;   /* accessible amber TEXT/FILL — 5.56:1 on white; pairs with --cau-tint (warn rows, caution pills, low-N counts) */
-  --cau-tint:   #FBF0D5;   /* amber status-pill background (pill text is ink + dot, not amber) */
+  /* CAUTION — the one tier that does NOT hold a single hue, and deliberately.
+     The dot stays yellow at 41°; strong and tint moved to orange at ~28°.
+     Why the split: at 41° every value dark enough to read is gold or olive —
+     dark yellow is physically mud, the same wall the dark-mode tints hit. And
+     the dot cannot follow the strong into orange: measured against the --neg
+     dot it drops from ΔE 22 to 15 (colour-blind 15.2 to 10.1), and confusing
+     "caution" with "overdue" is the one mistake this palette exists to prevent.
+     It costs nothing because the two never meet — the dot lives in pills, whose
+     text is ink; the strong lives in glyphs and marks. (Owner call 2026-07-30,
+     picked by eye from a 42° / 43° / 29° render; pos already runs a 12° spread.)
+     GLYPHS AND MARKS ONLY — 3.40:1 clears the 3:1 icon bar, NOT the 4.5:1 text
+     bar. Never set a paragraph in it. Holding it to 4.5:1 is exactly what
+     dragged the old #8A6100 to olive. */
+  --cau-strong: #CF741E;   /* warning glyph, caution mark — 3.40:1 white, 3.00:1 on its tint */
+  --cau-tint:   #FDEEE2;   /* amber status-pill background (pill text is ink + dot, not amber).
+                              Same lightness step as the cream it replaced (1.13:1 off white),
+                              so the tint family keeps its even spacing — only the hue moved. */
 
   /* ── TYPE ──────────────────────────────────────────────── */
   --font-sans: "Inter", "Noto Sans Thai", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -150,4 +209,166 @@
   --z-dropdown: 100;
   --z-modal:    200;
   --z-toast:    300;
+}
+
+/* ============================================================
+   DARK — the second generation of the SAME system (CCD-174, 2026-07-29)
+   ============================================================
+   THREE MODES, all opt-in by attribute on <html>:
+       data-theme="light"    forced light (or just omit the attribute)
+       data-theme="dark"     forced dark
+       data-theme="system"   follows the OS setting, live
+
+   Nothing anywhere changes until an app sets the attribute — the same safety
+   property as the v1/v2 folder split. An app that never opts in cannot break.
+   Note "system" is opt-in too: a bare prefers-color-scheme rule would have
+   flipped every existing v2 app the moment a user's laptop was in dark mode.
+
+   "System" NEEDS NO JAVASCRIPT. That was not obvious — the plan carried three
+   options for a theme script, all of which assumed JS had to read the OS
+   setting. CSS reads it directly, so the DS stays CSS-only as intended, there
+   is no first-paint flash to defend against, and the OS switching at dusk
+   updates a page that is already open. All an app has to do is remember the
+   user's CHOICE (a cookie, rendered server-side) — never resolve it.
+
+   Grey, not navy: the brand navy was tried as the canvas and rejected — it
+   tinted the status hues and muddied the accent. Grey lets them read true.
+   Not black either: #191A1D sits 1.21:1 off true black, so the surfaces above
+   it have somewhere to go.
+
+   Every value below was picked by RENDERING, not derived on paper. Two of the
+   three rules that shape it (fills don't invert; surfaces solid / controls film)
+   exist because the arithmetic said a screen was fine and the eye said it wasn't.
+
+   What is NOT here, on purpose: --accent-fill, --neg-fill, --on-fill,
+   --card-pad, type, spacing, radius. A token absent from this block is a token
+   that does not change, and that is a claim worth being able to read at a glance.
+   ============================================================ */
+/* ── The dark VALUES, defined once ────────────────────────────────────
+   Inert on their own — they do nothing until one of the two mapping blocks
+   below points a real token at them. They live here, and only here, so that
+   changing a dark colour is a one-line edit that cannot half-apply. */
+:root {
+  /* Surfaces — three real lightness steps. canvas -> card -> float. */
+  --dk-canvas:  #191A1D;
+  --dk-card:    #212327;
+  --dk-float:   #32353C;      /* 1.28:1 off card. 1.14 was tried and read as flush. */
+
+  /* Text — never pure #FFF: it halates on dark and thins Thai strokes. */
+  --dk-ink:     #E9EAEC;      /* 14.5:1 on canvas */
+  --dk-muted:   #A2A6AD;      /* 7.12:1 */
+
+  /* Lines. NOTE the inversion vs light: --rule is now LIGHTER than --divider,
+     because on dark a border has to climb off the surface, not sink into it. */
+  --dk-rule:    #383B41;
+  --dk-divider: #26282C;
+
+  /* Accent lifts — it is text as often as it is a fill. The FILL stays put; see
+     --accent-fill above, which is the same value in both modes on purpose. */
+  --dk-accent:      #6E9BF0;  /* 5.57:1 on card */
+  --dk-accent-tint: #222D3A;  /* selection / sidebar hover — blue held back */
+
+  /* Dots (--pos/--cau/--neg) keep their EXACT light hue and so are absent here:
+     designed for white, they already read on dark, and moving them would break
+     the one thing that ties the two modes together. */
+
+  /* The "-strong" TEXT tier inverts: darkened on white, lightened here. */
+  --dk-pos-strong: #5FD787;
+  --dk-cau-strong: #FFB978;   /* orange, matching the light tier's 28-29 deg */
+  --dk-neg-strong: #FF8A80;
+
+  /* TINTS ARE A VEIL, NOT A PAINT — the bright dot hue at low alpha over
+     whatever is beneath. Darkening the light tints produced mud: yellow at low
+     lightness IS the colour of mud, and there is no solid dark amber that reads
+     as amber. status.css:30 already names this problem and dodges it on light by
+     keeping pill TEXT ink; it could not dodge the fill. A veil also composites
+     correctly on --card AND --float, which no single solid value can.
+     Consequence, and it is a real one: on dark a tint CANNOT carry meaning
+     alone. The status dot is mandatory, not decorative — PRODUCT.md rule 1. */
+  --dk-pos-tint: rgba(39,201,63,.14);
+  --dk-cau-tint: rgba(255,170,90,.14);
+  --dk-neg-tint: rgba(255,95,86,.14);
+
+  /* Controls — the film. Recess what you type in, raise what you press. */
+  --dk-ctl-face:  rgba(0,0,0,.22);
+  --dk-ctl-track: rgba(0,0,0,.22);
+  --dk-ctl-raise: rgba(255,255,255,.07);
+
+  --dk-scrim: rgba(0,0,0,.66);
+
+  /* Navy-alpha shadows are invisible on dark. Black, and heavier. */
+  --dk-shadow-float: 0 2px 10px rgba(0,0,0,.45);
+  --dk-shadow-pop:   0 6px 18px rgba(0,0,0,.55);
+  --dk-shadow-modal: 0 16px 40px rgba(0,0,0,.60);
+}
+
+/* ── The two mapping blocks ───────────────────────────────────────────
+   These MUST stay identical. They exist twice for one reason: an OS colour
+   preference is a fact only the browser knows, so it can only be tested by a
+   media query — and a media query cannot be added to an existing selector.
+   Because both blocks are pure `--token: var(--dk-token)` lines with no values
+   of their own, a drift between them is a visible diff, not a wrong colour. */
+[data-theme="dark"] {
+  color-scheme: dark;        /* native scrollbars, form controls, spellcheck underlines */
+  --canvas: var(--dk-canvas);   --card: var(--dk-card);     --float: var(--dk-float);
+  --ink: var(--dk-ink);         --muted: var(--dk-muted);
+  --rule: var(--dk-rule);       --divider: var(--dk-divider);
+  --accent: var(--dk-accent);   --accent-tint: var(--dk-accent-tint);
+  --pos-strong: var(--dk-pos-strong);
+  --cau-strong: var(--dk-cau-strong);
+  --neg-strong: var(--dk-neg-strong);
+  --pos-tint: var(--dk-pos-tint);
+  --cau-tint: var(--dk-cau-tint);
+  --neg-tint: var(--dk-neg-tint);
+  --ctl-face: var(--dk-ctl-face);
+  --ctl-track: var(--dk-ctl-track);
+  --ctl-raise: var(--dk-ctl-raise);
+  --scrim: var(--dk-scrim);
+  --shadow-float: var(--dk-shadow-float);
+  --shadow-pop:   var(--dk-shadow-pop);
+  --shadow-modal: var(--dk-shadow-modal);
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-theme="system"] {
+    color-scheme: dark;
+    --canvas: var(--dk-canvas);   --card: var(--dk-card);     --float: var(--dk-float);
+    --ink: var(--dk-ink);         --muted: var(--dk-muted);
+    --rule: var(--dk-rule);       --divider: var(--dk-divider);
+    --accent: var(--dk-accent);   --accent-tint: var(--dk-accent-tint);
+    --pos-strong: var(--dk-pos-strong);
+    --cau-strong: var(--dk-cau-strong);
+    --neg-strong: var(--dk-neg-strong);
+    --pos-tint: var(--dk-pos-tint);
+    --cau-tint: var(--dk-cau-tint);
+    --neg-tint: var(--dk-neg-tint);
+    --ctl-face: var(--dk-ctl-face);
+    --ctl-track: var(--dk-ctl-track);
+    --ctl-raise: var(--dk-ctl-raise);
+    --scrim: var(--dk-scrim);
+    --shadow-float: var(--dk-shadow-float);
+    --shadow-pop:   var(--dk-shadow-pop);
+    --shadow-modal: var(--dk-shadow-modal);
+  }
+}
+
+/* PRINT — --ink is near-white and would print invisible. A page printed from a
+   dark app must come out as the light app.
+   This works by resetting the dark VALUES rather than the mapped tokens, so one
+   block covers forced-dark and system-dark alike, and it cannot go stale when a
+   new token is added to the mapping. */
+@media print {
+  :root {
+    --dk-canvas: #FFFFFF; --dk-card: #FFFFFF; --dk-float: #FFFFFF;
+    --dk-ink: #142549; --dk-muted: #61697A;
+    --dk-rule: #CBD1DF; --dk-divider: #EDEFF1;
+    --dk-accent: #4068CA; --dk-accent-tint: #E9F1FC;
+    --dk-pos-strong: #1A7F37; --dk-cau-strong: #CF741E; --dk-neg-strong: #C4372C;
+    --dk-pos-tint: #E7F5EC; --dk-cau-tint: #FDEEE2; --dk-neg-tint: #FBE9E7;
+    --dk-ctl-face: #FFFFFF; --dk-ctl-track: #EDEFF1; --dk-ctl-raise: #FFFFFF;
+    --dk-scrim: rgba(20,37,73,.32);
+    --dk-shadow-float: 0 2px 8px rgba(20,37,73,.06);
+    --dk-shadow-pop:   0 4px 12px rgba(20,37,73,.08);
+    --dk-shadow-modal: 0 12px 32px rgba(20,37,73,.10);
+  }
 }

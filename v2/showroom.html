@@ -203,9 +203,12 @@
   // Line-based: a declaration only matches at line start, a note only if its
   // comment closes on the same line. Prevents a multi-line block comment from
   // swallowing the next token.
+  // --dk-* are the dark generation's raw VALUES — internal plumbing that the two
+  // mapping blocks point real tokens at. They are not API, so they never appear
+  // in the gallery; showing 22 of them would bury the tokens that are.
   css.split('\n').forEach(line => {
     const m = line.match(/^\s*--([\w-]+)\s*:\s*([^;]+);[ \t]*(?:\/\*\s*(.*?)\s*\*\/)?/);
-    if (m) tokens.push({ name: '--' + m[1], value: m[2].trim(), note: (m[3] || '').replace(/\s+/g, ' ').trim() });
+    if (m && !m[1].startsWith('dk-')) tokens.push({ name: '--' + m[1], value: m[2].trim(), note: (m[3] || '').replace(/\s+/g, ' ').trim() });
   });
   const byName = Object.fromEntries(tokens.map(t => [t.name, t]));
   // file:// fallback: fetch is blocked, so the token tables can't render.
@@ -222,11 +225,14 @@
 
   // ── COLOR · grouped by semantic role ──
   const colorGroups = [
-    ['Canvas & ink', ['--canvas','--card','--ink','--muted']],
+    ['Canvas & ink', ['--canvas','--card','--float','--ink','--muted']],
     ['Neutrals',     ['--rule','--divider']],
     ['Accent',       ['--accent','--accent-tint']],
+    ['Fills · text sits on these', ['--accent-fill','--neg-fill','--on-fill']],
+    ['Controls',     ['--ctl-face','--ctl-track','--ctl-raise']],
     ['Status dots',  ['--pos','--cau','--neg']],
-    ['Status text & tints', ['--pos-strong','--pos-tint','--neg-strong','--neg-tint','--cau-tint']],
+    ['Status text & tints', ['--pos-strong','--pos-tint','--cau-strong','--cau-tint','--neg-strong','--neg-tint']],
+    ['Overlay',      ['--scrim']],
   ];
   const swatch = t => {
     const val = t.value.startsWith('#') ? t.value : resolve(t.name, 'backgroundColor');
@@ -272,8 +278,13 @@
     + (t.note ? `<span class="note">${t.note}</span>` : '') + '</div>').join('');
 
   // ── OTHER ── (anything not already shown above)
-  const shownRe = /^--(fs|fw|lh|s|r|shadow|z)-|^--(canvas|card|ink|muted|rule|divider|accent|accent-tint|pos|cau|neg|pos-strong|pos-tint|neg-strong|neg-tint|cau-tint)$/;
-  el('g-other').innerHTML = tokens.filter(t => !shownRe.test(t.name))
+  // The colour half is DERIVED from colorGroups, never retyped. The old version
+  // hand-listed both, so --cau-strong sat in tokens.css and in state.css while
+  // showing up in neither the swatch grid nor here — the gallery reported it as
+  // retired (found 2026-07-30). Two lists that must agree will eventually not.
+  const grouped = new Set(colorGroups.flatMap(([, ns]) => ns));
+  const shownRe = /^--(fs|fw|lh|s|r|shadow|z)-/;
+  el('g-other').innerHTML = tokens.filter(t => !shownRe.test(t.name) && !grouped.has(t.name))
     .map(t => `<code class="tok">${t.name}</code><span class="v">${t.value}</span><span class="note">${t.note||''}</span>`).join('');
 
   // ── auto-height iframes ──

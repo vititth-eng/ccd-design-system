@@ -24,7 +24,7 @@
   font: inherit;
   font-size: var(--fs-body);
   color: var(--ink);
-  background: var(--card);
+  background: var(--ctl-face);
   border: 1px solid var(--rule);
   border-radius: var(--r-base);
   /* Height is the token, not a padding sum — see tokens.css --ctl-h. An <input>

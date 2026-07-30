@@ -20,7 +20,7 @@
   padding: 0;
   border: none;
   border-radius: var(--r-large);
-  background: var(--card);
+  background: var(--float);
   color: var(--ink);
   box-shadow: var(--shadow-modal);
   width: calc(100% - var(--s-7));
@@ -52,7 +52,7 @@
 @starting-style { .modal[open] { opacity: 0; transform: translateY(8px) scale(.98); } }
 
 .modal::backdrop {
-  background: rgba(20, 37, 73, .32);   /* navy-tinted dim */
+  background: var(--scrim);
   opacity: 0;
   transition: opacity .18s ease-out, overlay .18s ease-out allow-discrete, display .18s ease-out allow-discrete;
 }

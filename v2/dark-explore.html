@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dark mode exploration · v2 sandbox</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" />
+<link rel="stylesheet" href="./tokens.css" />
+<link rel="stylesheet" href="./type.css" />
+<link rel="stylesheet" href="./tables.css" />
+<link rel="stylesheet" href="./status.css" />
+<link rel="stylesheet" href="./cards.css" />
+<link rel="stylesheet" href="./buttons.css" />
+<link rel="stylesheet" href="./forms.css" />
+<link rel="stylesheet" href="./nav.css" />
+<link rel="stylesheet" href="./menu.css" />
+<link rel="stylesheet" href="./modals.css" />
+<link rel="stylesheet" href="./toasts.css" />
+<link rel="stylesheet" href="./state.css" />
+<link rel="stylesheet" href="./form-bar.css" />
+<link rel="stylesheet" href="./scale.css" />
+<link rel="stylesheet" href="./shell.css" />
+
+<style>
+/* ══════════════════════════════════════════════════════════════════
+   SANDBOX ONLY — nothing here is graduated. tokens.css is untouched.
+   Everything below is a TOKEN OVERRIDE except the two marked rules,
+   which are the only places v2 hardcodes a colour (buttons.css #FFFFFF).
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── Hue-independent dark layer — true for BOTH greys and navy ────── */
+[data-theme^="dark"] {
+  color-scheme: dark;
+
+  /* Accent stays the one meaning colour, just lifted for a dark ground */
+  --accent: #6E9BF0;   /* #4068CA lifted — 5.9:1 on grey, 6.2:1 on navy */
+
+  /* Dots keep their exact light-mode hue — they already read on dark */
+  --pos: #27C93F;  --cau: #FFBD2E;  --neg: #FF5F56;
+
+  /* The "-strong" tier INVERTS: on white they were darkened, here lightened */
+  --pos-strong: #5FD787;
+  --cau-strong: #F2C14E;
+  --neg-strong: #FF8A80;
+
+  /* ══ RULE 4 · TINTS ARE A VEIL, NOT A DARK PAINT ═══════════════════
+     Owner call 2026-07-29, from the render: the status pills came out muddy —
+     the caution pill an olive smear, the overdue pill brown. status.css:30
+     already names this ("the muddy-amber problem") and dodges it on light by
+     keeping pill TEXT ink instead of amber. It could not dodge the fill.
+
+     Why darkening fails: on white, a tint is 94% white plus a drop of hue, so
+     it stays clean and pale. Yellow at low lightness is not "dark yellow" —
+     it is physically the colour of mud. There is no solid dark amber that
+     reads as amber.
+
+     So a dark tint is not a colour, it is a VEIL: the bright dot hue at low
+     alpha, laid over whatever surface is underneath. The neutral surface shows
+     through, so it reads as tinted glass rather than paint — and it composites
+     correctly on card AND on --float, which a solid value cannot do.
+
+     This is Rule 2 generalised: SURFACES take a solid step, EVERYTHING ELSE
+     takes a film. Hue-independent on purpose — it works over grey and navy
+     alike, which is why these moved up out of the palette blocks.
+     (--accent-tint stays solid for now; it renders fine and selection is a
+     different job from status. Flagged, not changed.) */
+  --pos-tint: rgba(39,201,63,.14);
+  --cau-tint: rgba(255,189,46,.13);
+  --neg-tint: rgba(255,95,86,.14);
+
+  /* Navy-alpha shadows vanish on dark — black, and heavier */
+  --shadow-float: 0 2px 10px rgba(0,0,0,.45);
+  --shadow-pop:   0 6px 18px rgba(0,0,0,.55);
+  --shadow-modal: 0 16px 40px rgba(0,0,0,.60);
+}
+
+/* ══ HUE A · DARK GREY — near-neutral, faint cool cast ═════════════ */
+[data-theme^="dark-grey"] {
+  --canvas:  #191A1D;   /* dark grey, NOT black — 1.21:1 off #000 */
+  --ink:     #E9EAEC;   /* 14.5:1 — never pure #FFF (halates, thins Thai) */
+  --muted:   #A2A6AD;   /* 7.12:1 */
+  --divider: #26282C;
+  --accent-tint: #222D3A;   /* selection / sidebar hover — blue held back */
+}
+[data-theme="dark-grey-lines"]   { --card: #191A1D; --rule: #494D55; }
+[data-theme="dark-grey-surface"] { --card: #212327; --rule: #383B41; --float: #32353C; }
+
+/* TODO (mock-invented, NOT graduated) — --float, a THIRD lightness step.
+   Surface mode needs it: on white, a menu floats because its shadow darkens
+   the page beneath it. On dark, shadow darkens into dark and stops reading,
+   so the floating thing must instead be LIGHTER than what it covers.
+   Light mode needs no such token (white is already the ceiling). */
+[data-theme="dark-grey-surface"] .menu { background: var(--float); }
+
+/* TODO (mock-invented, NOT graduated) — RECESS vs RAISE.
+   Both .control and .btn--secondary use `background: var(--card)`. On white that
+   makes them flush with the card and the border does all the work — correct,
+   because white is the ceiling and neither could lift anyway.
+   On dark, lightness is free information, and the two have OPPOSITE jobs:
+     a field is a hole you put something into  → step DOWN
+     a button is a thing that sticks out       → step UP
+   Light falls from above: what is carved in sits in shadow, what protrudes
+   catches light.
+
+   SURFACES take a SOLID step (--card, --float): a modal must hide what is
+   behind it, so it cannot be see-through.
+   CONTROLS take a TRANSLUCENT FILM instead: a button appears on a card, in a
+   modal, on a toolbar — an absolute step is wrong at every depth but one.
+   (Found by rendering: a --float button inside a --float modal vanished.)
+   A film is always exactly one step off WHATEVER it lands on. Still neutral
+   white/black at low alpha, so the no-hue clause holds. */
+[data-theme^="dark"] .control,
+[data-theme^="dark"] .seg,
+[data-theme^="dark"] .sbtnN          { background: rgba(0,0,0,.22); }     /* recess */
+[data-theme^="dark"] .btn--secondary { background: rgba(255,255,255,.07); } /* raise */
+
+/* ── COVERAGE PASS · the 5 components never rendered in dark ───────
+   Each line below is a REAL break found by rendering, not a precaution. */
+
+/* 1 · MODAL SCRIM — `rgba(20,37,73,.32)` is a navy wash designed to dim
+   WHITE. Over a dark page it dims almost nothing, so the modal stops
+   reading as "the page behind is out of reach". Needs to go much heavier. */
+[data-theme^="dark"] .modal::backdrop { background: rgba(0,0,0,.66); }
+
+/* 2 · MODAL + TOAST SURFACE — both are `--card`, so in surface mode they
+   sit at the SAME lightness as the cards they cover. Same failure as the
+   menu: shadow can't lift on dark, only lightness can. */
+[data-theme="dark-grey-surface"] .modal,
+[data-theme="dark-grey-surface"] .toast { background: var(--float); }
+
+/* 3 · FORM BAR — the break was real (at `--card` it merged with the cards
+   scrolling under it), but --float is the MODAL tier and a form bar is page
+   chrome, not an overlay. Owner call 2026-07-29: stay at --card, let the
+   bottom RULE do the separating — which is what a non-floating element is
+   supposed to use. TODO (mock-invented): the stronger rule value below. */
+[data-theme^="dark"] .fbar { border-bottom-color: #4A4E56; }
+
+/* 4 · SCALE — the LAST two hardcoded #fff in v2 (scale.css:81,95).
+   Selected pip is white-on-accent = 2.76:1. FAILS AA. Same defect as the
+   two in buttons.css, same fix: the text steps to --canvas. */
+[data-theme^="dark"] .sbtn.on .sbtnN,
+[data-theme^="dark"] .sradio:checked + .sbtn .sbtnN { color: var(--canvas); }
+
+/* 5 · STATE ICONS — no override needed. They ride --*-tint / --*-strong,
+   which were already re-derived. Recorded as PASS, not skipped. */
+
+/* ══ HUE B · NAVY — kept for side-by-side comparison ═══════════════ */
+[data-theme^="dark-navy"] {
+  --canvas:  #101C33;   /* the brand navy #142549 pushed down, hue kept */
+  --ink:     #E7ECF7;
+  --muted:   #A7B2C7;
+  --divider: #1B2A46;
+  --accent-tint: #1D3054;
+}
+[data-theme="dark-navy-lines"]   { --card: #101C33; --rule: #40557F; }
+[data-theme="dark-navy-surface"] { --card: #182741; --rule: #2C3D5E; }
+
+/* ══ RULE 3 · FILLS DON'T INVERT ═══════════════════════════════════
+   Owner call 2026-07-29, from the render: the danger button came out a pale
+   salmon slab with dark text — the only inverted element on the screen, and
+   LOUDER than the primary (6.73:1 vs card, against the primary's 5.57:1).
+   Destroy was out-shouting save.
+
+   Root cause: --accent and --neg-strong each do TWO jobs — coloured TEXT on
+   the page, and a coloured FILL with text on top. Dark mode moves those in
+   opposite directions: text must get lighter, a fill must stay dark enough to
+   carry white text. Lifting the token for the text job silently wrecked the
+   fill job. (Same shape as the four hardcoded #FFFFFF — one value, two jobs.)
+
+   Fix: a fill keeps its own contrast, so it keeps its LIGHT value. Nothing new
+   is invented here — --accent-fill IS the light --accent, --neg-fill IS the
+   light --neg-strong. Only text and surfaces invert.
+
+   Known margin: #4068CA on --card is 2.97:1 (WCAG non-text asks 3.0). Accepted
+   over inventing a value — a button also has a shape, a radius and a label.
+   Decorative accent fills (.meter b, .toast--info dot) keep the LIFTED --accent:
+   nothing sits on them, so more visible is strictly better. */
+[data-theme^="dark"] {
+  --accent-fill: #4068CA;   /* = light --accent */
+  --neg-fill:    #C4372C;   /* = light --neg-strong */
+  --on-fill:     #FFFFFF;   /* the one token that kills all four hardcoded #fff */
+}
+[data-theme^="dark"] .btn--primary {
+  background: var(--accent-fill); color: var(--on-fill);
+}
+[data-theme^="dark"] .btn--danger {
+  background: var(--neg-fill); color: var(--on-fill);
+}
+[data-theme^="dark"] .sbtn.on .sbtnN,
+[data-theme^="dark"] .sradio:checked + .sbtn .sbtnN {
+  background: var(--accent-fill); border-color: var(--accent-fill); color: var(--on-fill);
+}
+
+/* ── sandbox scaffolding (not part of the design) ─────────────────── */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; overflow: hidden; }
+
+.modebar {
+  position: fixed; z-index: 500; left: 50%; bottom: 20px; transform: translateX(-50%);
+  display: flex; align-items: center; gap: var(--s-3);
+  padding: var(--s-2) var(--s-3);
+  background: var(--card); border: 1px solid var(--rule);
+  border-radius: var(--r-pill); box-shadow: var(--shadow-modal);
+}
+.modebar__lbl { font-size: var(--fs-caption); color: var(--muted); white-space: nowrap; }
+
+/* THEME CONTROL proposal (mock-only) — a .seg inside .menu.
+   .seg is inline-flex with 12px option padding, sized for a toolbar. In a
+   190px menu that leaves ~33px of text per option and Thai needs ~38px, so
+   the stock seg overflows. --fill stretches it and trims the padding. If this
+   graduates, `.seg--fill` is the honest ask of the DS — not a new component,
+   a width modifier the seg arguably needs anyway. */
+/* No "ธีม" label — caption-zero default. The seg states itself; a caption
+   above it would name what three glyphs already say. */
+.menu__theme { padding: var(--s-1); }
+.seg--fill { display: flex; width: 100%; }
+.seg--fill .seg__opt { flex: 1 1 0; min-width: 0; justify-content: center; padding: 0 var(--s-1); }
+
+/* GLYPH variant (mock-only) — sun / moon / monitor. NOTE: none of these three
+   exist in icons.svg (34 icons, no sun, no moon, no monitor), so this variant
+   is a DS ask of three new marks, not a free swap. Drawn here at the house
+   stroke (1.6, round caps) so the comparison is honest. */
+.seg--icon .seg__opt svg { width: 16px; height: 16px; }
+.sec { margin-bottom: var(--s-5); }
+.sec > .t-section { display: block; margin: 0 0 var(--s-3); }
+.demorow { display: flex; flex-wrap: wrap; gap: var(--s-2); align-items: center; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4); align-items: start; }
+
+/* ── Tier-2 DATA palette (multi-rater scorecard, first consumer use) ──
+   Exception-flag scale, NOT a categorical series: blue = normal,
+   amber < 4.0, red < 3.5. Light values are verbatim from
+   ccd-brb-multi-rater scorecard.module.css — copied, not re-invented. */
+:root {
+  --d-blue:  #33569E;   /* 7.08:1 on white */
+  --d-amber: #C9820C;   /* 3.14:1 */
+  --d-red:   #C4372C;   /* 5.34:1 */
+}
+/* Dark: hue kept, lightness inverted, and deliberately NOT a straight lift —
+   see the note in the mock. d-blue stays deeper than --accent, exactly as the
+   light d-blue (#33569E) sits deeper than the light accent (#4068CA). */
+[data-theme^="dark"] {
+  --d-blue:  #5B8AE0;   /* 4.61:1 on card */
+  --d-amber: #D99A2E;   /* 6.45:1 — the QUIETEST usable amber, on purpose */
+  --d-red:   #E8695C;   /* 4.95:1 */
+}
+
+/* sandbox-only score track (report-specific in the real app, not a DS primitive) */
+.trk { display: grid; grid-template-columns: 150px 1fr 40px; gap: var(--s-3); align-items: center; margin-bottom: var(--s-2); }
+.trk__bar { position: relative; height: 10px; border-radius: var(--r-pill); background: var(--divider); overflow: visible; }
+.trk__fill { position: absolute; inset: 0 auto 0 0; border-radius: var(--r-pill); }
+.trk__self { position: absolute; top: -3px; width: 2px; height: 16px; background: var(--ink); border-radius: 1px; }
+.trk__n { text-align: right; font-variant-numeric: tabular-nums; font-size: var(--fs-body); }
+.is-ok   .trk__fill { background: var(--d-blue); }
+.is-warn .trk__fill { background: var(--d-amber); }
+.is-bad  .trk__fill { background: var(--d-red); }
+</style>
+</head>
+
+<body>
+<div class="shell" id="shell">
+
+  <!-- ── SIDEBAR ─────────────────────────────────────────────────── -->
+  <aside class="shell__sidebar">
+    <div class="shell__brand">
+      <a class="shell__home" href="#" aria-label="ไปหน้าหลัก"><span class="shell__mark"></span></a>
+      <span class="shell__appname">360 Multi-Rater</span>
+    </div>
+
+    <nav class="shell__nav" aria-label="เมนูหลัก">
+      <a class="shell__item shell__item--on" href="#" aria-current="page">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10 10 3l7 7M5 8.5V16h10V8.5"/></svg><span class="label">แดชบอร์ด</span></a>
+      <a class="shell__item" href="#">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="13" height="12" rx="1.5"/><path d="M3.5 8h13M7 3v3M13 3v3"/></svg><span class="label">รอบการประเมิน</span></a>
+      <a class="shell__item" href="#">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="7" r="2.5"/><path d="M3 16c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><path d="M13.5 6.5a2 2 0 0 1 0 4M14 16c0-2 .5-3-1-4"/></svg><span class="label">ผู้ประเมิน</span></a>
+      <a class="shell__item" href="#">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3.5" width="12" height="13" rx="1.5"/><path d="M7 7.5h6M7 10.5h6M7 13.5h3.5"/></svg><span class="label">รายงานผล</span></a>
+      <a class="shell__item" href="#">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="2.5"/><path d="M10 3.5v2M10 14.5v2M3.5 10h2M14.5 10h2M5.4 5.4l1.4 1.4M13.2 13.2l1.4 1.4M14.6 5.4l-1.4 1.4M6.8 13.2l-1.4 1.4"/></svg><span class="label">สิทธิ์การใช้งาน</span></a>
+    </nav>
+
+    <button class="shell__collapse" id="collapse" aria-label="ย่อ/ขยายเมนู">
+      <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5 7 10l5 5"/></svg><span class="label">ย่อเมนู</span>
+    </button>
+
+    <div class="shell__foot">
+      <button class="shell__user" id="userbtn" aria-expanded="false" aria-controls="usermenu">
+        <span class="shell__avatar">วต</span>
+        <div class="shell__who"><div class="nm">วิทิต</div><div class="rl">ผู้ดูแลระบบ</div></div>
+      </button>
+      <div class="menu" id="usermenu">
+        <!-- THEME CONTROL — proposal: a labelled .seg inside the user menu.
+             Composes two existing primitives; invents no component. The open
+             question is whether Thai fits at the menu's 190px. -->
+        <div class="menu__theme">
+          <div class="seg seg--fill seg--icon" id="themeseg">
+            <button class="seg__opt" data-mode="light" title="สว่าง" aria-label="สว่าง">
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="3.2"/><path d="M10 2.6v1.8M10 15.6v1.8M2.6 10h1.8M15.6 10h1.8M4.75 4.75l1.27 1.27M13.98 13.98l1.27 1.27M15.25 4.75l-1.27 1.27M6.02 13.98l-1.27 1.27"/></svg>
+            </button>
+            <button class="seg__opt" data-mode="dark-grey-surface" title="มืด" aria-label="มืด">
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 11.9A6.4 6.4 0 0 1 8.1 4a6.9 6.9 0 1 0 7.9 7.9z"/></svg>
+            </button>
+            <button class="seg__opt seg__opt--active" data-mode="system" title="ตามระบบ" aria-label="ตามระบบ">
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.8" y="4.2" width="14.4" height="9.4" rx="1.6"/><path d="M7.6 17h4.8M10 13.6V17"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="menu__sep"></div>
+        <a class="menu__item" href="#">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="5.5" r="2.5"/><path d="M3 13.5c0-2.5 2.2-4 5-4s5 1.5 5 4"/></svg>โปรไฟล์</a>
+        <div class="menu__sep"></div>
+        <a class="menu__item" href="#">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2.5H3.5v11H6M10.5 5l3 3-3 3M13.5 8H6.5"/></svg>ออกจากระบบ</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ────────────────────────────────────────────────────── -->
+  <main class="shell__main">
+    <div class="shell__head">
+      <div class="shell__title">
+        <h1 class="t-title">แดชบอร์ด</h1>
+        <p class="t-sub">รอบการประเมิน Q4 / 2026</p>
+      </div>
+      <div class="shell__actions">
+        <button class="btn btn--secondary">ส่งออก Excel</button>
+        <button class="btn btn--primary">สร้างรอบใหม่</button>
+      </div>
+    </div>
+
+    <div class="shell__body">
+      <div class="tabs" style="margin-bottom:var(--s-4);">
+        <button class="tab tab--active">ภาพรวม</button>
+        <button class="tab">รายบุคคล</button>
+        <button class="tab">แผนก</button>
+      </div>
+
+      <!-- KPI bar — the hairline-split card, the invariant's showcase -->
+      <div class="kpi-bar" style="margin-bottom:var(--s-5);">
+        <div class="kpi-bar__cell"><div class="kpi"><div class="kpi__head"><span class="kpi__label">พนักงานทั้งหมด</span><span class="kpi__delta kpi__delta--up">+3.2%</span></div><span class="t-kpi">1,284</span></div></div>
+        <div class="kpi-bar__cell"><div class="kpi"><div class="kpi__head"><span class="kpi__label">ประเมินเสร็จสิ้น</span><span class="kpi__delta kpi__delta--up">+12%</span></div><span class="t-kpi">847</span></div></div>
+        <div class="kpi-bar__cell"><div class="kpi"><div class="kpi__head"><span class="kpi__label">คะแนนเฉลี่ย</span><span class="kpi__delta kpi__delta--down">−0.08</span></div><span class="t-kpi">4.21</span></div></div>
+        <div class="kpi-bar__cell"><div class="kpi"><div class="kpi__head"><span class="kpi__label">ค้างดำเนินการ</span><span class="kpi__delta kpi__delta--flat">±0</span></div><span class="t-kpi">32</span></div></div>
+      </div>
+
+      <!-- Table — Thai at weight 400 on dark, the legibility test -->
+      <div class="sec">
+        <div class="tbl-wrap"><table class="tbl">
+          <thead><tr><th>พนักงาน</th><th>ฝ่าย</th><th>สถานะ</th><th>ความคืบหน้า</th><th class="tbl__n">คะแนน</th><th class="tbl__n">อันดับ</th></tr></thead>
+          <tbody>
+            <tr><td class="tbl__lead">กานต์ ธนกฤต</td><td>การตลาด</td><td><span class="st st--pos"><i></i>เสร็จสิ้น</span></td><td><span class="meter"><b style="width:100%"></b></span></td><td class="tbl__n">4.82</td><td class="tbl__n">1</td></tr>
+            <tr class="is-selected"><td class="tbl__lead">นิรมล ชัยวัฒน์</td><td>ขาย</td><td><span class="st st--cau"><i></i>กำลังดำเนินการ</span></td><td><span class="meter"><b style="width:68%"></b></span></td><td class="tbl__n">4.71</td><td class="tbl__n">2</td></tr>
+            <tr><td class="tbl__lead">ศักดิ์ชัย ลิ้มสกุล</td><td>ปฏิบัติการ</td><td><span class="st st--pos"><i></i>เสร็จสิ้น</span></td><td><span class="meter"><b style="width:100%"></b></span></td><td class="tbl__n">4.55</td><td class="tbl__n">3</td></tr>
+            <tr><td class="tbl__lead">ธนา พงษ์เจริญ</td><td>บัญชี</td><td><span class="st st--neg"><i></i>เกินกำหนด</span></td><td><span class="meter"><b style="width:22%"></b></span></td><td class="tbl__n">4.10</td><td class="tbl__n">4</td></tr>
+            <tr><td class="tbl__lead">อรุณี สุขสมบูรณ์</td><td>บุคคล</td><td><span class="st st--none"><i></i>ยังไม่เริ่ม</span></td><td><span class="meter"><b style="width:0%"></b></span></td><td class="tbl__n">—</td><td class="tbl__n">—</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <!-- Cards + controls — where variant A vs B is decided -->
+      <div class="two sec">
+        <div class="card">
+          <div class="card__head">
+            <span class="t-section">รอบการประเมินล่าสุด</span>
+            <button class="btn btn--secondary btn--sm">ดูทั้งหมด</button>
+          </div>
+          <p class="t-body" style="margin:0 0 var(--s-2);">รอบ Q4/2026 เปิดรับการประเมินแล้ว มีพนักงาน 847 คนที่ทำแบบประเมินเสร็จสิ้น คิดเป็น 64% ของเป้าหมายทั้งหมด</p>
+          <p class="t-sub" style="margin:0;">อัปเดตล่าสุด 1 ก.ค. 2026</p>
+        </div>
+
+        <div class="card">
+          <div class="card__head"><span class="t-section">ตัวควบคุม</span></div>
+          <div class="field" style="margin-bottom:var(--s-3);">
+            <label class="field__label" for="q">ค้นหาพนักงาน</label>
+            <input class="control" id="q" type="text" placeholder="ชื่อ หรือ รหัสพนักงาน" />
+            <span class="field__hint">ค้นหาได้ทั้งภาษาไทยและอังกฤษ</span>
+          </div>
+          <div class="demorow" style="margin-bottom:var(--s-3);">
+            <div class="seg">
+              <button class="seg__opt seg__opt--active">ทั้งหมด</button>
+              <button class="seg__opt">ค้าง</button>
+              <button class="seg__opt">เสร็จ</button>
+            </div>
+          </div>
+          <div class="demorow">
+            <button class="btn btn--primary">บันทึก</button>
+            <button class="btn btn--secondary">ยกเลิก</button>
+            <button class="btn btn--ghost">ล้างค่า</button>
+            <button class="btn btn--danger">ลบรอบ</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status pill tier — the 8 tokens that need re-derivation -->
+      <div class="sec">
+        <p class="t-section">สถานะ (pill tier)</p>
+        <div class="demorow">
+          <!-- MOCK BUG (fixed 2026-07-29): these four shipped without their <i> dot.
+               status.css:42-46 makes the DOT the hue carrier and the fill only a soft
+               backing — so the mock had the fill doing 100% of a job it was never
+               designed to do alone. Not a dark-mode defect. -->
+          <span class="st-pill st-pill--pos"><i></i>เสร็จสิ้น</span>
+          <span class="st-pill st-pill--cau"><i></i>รอตรวจสอบ</span>
+          <span class="st-pill st-pill--neg"><i></i>เกินกำหนด</span>
+          <span class="st-pill st-pill--none"><i></i>ยังไม่เริ่ม</span>
+          <span class="kpi__delta kpi__delta--up is-pill">+10.9%</span>
+          <span class="kpi__delta kpi__delta--down is-pill">−0.86%</span>
+        </div>
+      </div>
+
+      <!-- ══ COVERAGE PASS — the 5 components with no dark render yet ══ -->
+
+      <div class="sec">
+        <p class="t-section">Form bar <span style="color:var(--muted);font-weight:var(--fw-regular);">— sticky form chrome</span></p>
+        <div style="border:1px solid var(--rule); border-radius:var(--r-base); overflow:hidden;">
+          <div class="fbar" style="position:static;">
+            <div class="fbar__brand"><span class="fbar__mark"></span><span class="fbar__name">แบบประเมิน 360°</span></div>
+            <span class="fbar__save"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>บันทึกแล้ว</span>
+          </div>
+          <div style="padding:var(--s-5) var(--s-4); color:var(--muted); font-size:var(--fs-caption);">…แบบฟอร์ม…</div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <p class="t-section">Rating scale <span style="color:var(--muted);font-weight:var(--fw-regular);">— selected pip was the last hardcoded #fff in v2</span></p>
+        <div class="card">
+          <div class="shead">
+            <span>Strongly disagree</span><span>Disagree</span><span>Neutral</span><span>Agree</span><span>Strongly agree</span>
+          </div>
+          <div class="li">
+            <span class="liNo">1</span>
+            <div>
+              <p class="t-body liQ">ฉันรู้สึกว่าตัวเองปรับตัวเข้ากับองค์กรได้ดี</p>
+              <div class="scale">
+                <input class="sradio" type="radio" name="q1" id="q1-1" /><label class="sbtn" for="q1-1"><span class="sbtnN">1</span></label>
+                <input class="sradio" type="radio" name="q1" id="q1-2" /><label class="sbtn" for="q1-2"><span class="sbtnN">2</span></label>
+                <input class="sradio" type="radio" name="q1" id="q1-3" checked /><label class="sbtn" for="q1-3"><span class="sbtnN">3</span></label>
+                <input class="sradio" type="radio" name="q1" id="q1-4" /><label class="sbtn" for="q1-4"><span class="sbtnN">4</span></label>
+                <input class="sradio" type="radio" name="q1" id="q1-5" /><label class="sbtn" for="q1-5"><span class="sbtnN">5</span></label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <p class="t-section">State screens <span style="color:var(--muted);font-weight:var(--fw-regular);">— icon tints, the only PASS with no fix needed</span></p>
+        <div class="two">
+          <div class="card">
+            <div class="state">
+              <span class="state__icon state__icon--pos">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              </span>
+              <h2 class="t-section">ส่งเรียบร้อยแล้ว</h2>
+              <p class="state__text">คำตอบของท่านถูกบันทึกและส่งแล้ว ปิดหน้าต่างนี้ได้เลย</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="state">
+              <span class="state__icon state__icon--neg">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16v.5"/></svg>
+              </span>
+              <h2 class="t-section">ไม่พบหน้าที่ต้องการ</h2>
+              <p class="state__text">ลิงก์อาจหมดอายุหรือไม่ถูกต้อง ลองใหม่หรือติดต่อผู้ดูแล</p>
+              <div class="state__actions"><button class="btn btn--secondary">ลองใหม่</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <p class="t-section">Toast <span style="color:var(--muted);font-weight:var(--fw-regular);">— floats; shadow alone can't lift it on dark</span></p>
+        <div class="stack" style="max-width:380px; display:flex; flex-direction:column; gap:var(--s-3);">
+          <div class="toast toast--pos" style="animation:none; position:static;"><i class="toast__dot"></i><div class="toast__body"><div class="toast__title">บันทึกสำเร็จ</div><div class="toast__msg">ข้อมูลรอบ Q4/2026 ถูกบันทึกแล้ว</div></div></div>
+          <div class="toast toast--neg" style="animation:none; position:static;"><i class="toast__dot"></i><div class="toast__body"><div class="toast__title">บันทึกไม่สำเร็จ</div><div class="toast__msg">การเชื่อมต่อขัดข้อง ลองใหม่อีกครั้ง</div></div></div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <p class="t-section">Tier-2 data palette <span style="color:var(--muted);font-weight:var(--fw-regular);">— exception-flag scale: blue normal · amber &lt;4.0 · red &lt;3.5 · tick = self-rating</span></p>
+        <div class="card">
+          <div class="trk is-ok">
+            <span class="t-body">การสื่อสาร</span>
+            <span class="trk__bar"><span class="trk__fill" style="width:92%"></span><span class="trk__self" style="left:78%"></span></span>
+            <span class="trk__n">4.62</span>
+          </div>
+          <div class="trk is-ok">
+            <span class="t-body">การทำงานเป็นทีม</span>
+            <span class="trk__bar"><span class="trk__fill" style="width:86%"></span><span class="trk__self" style="left:91%"></span></span>
+            <span class="trk__n">4.31</span>
+          </div>
+          <div class="trk is-warn">
+            <span class="t-body">การตัดสินใจ</span>
+            <span class="trk__bar"><span class="trk__fill" style="width:76%"></span><span class="trk__self" style="left:88%"></span></span>
+            <span class="trk__n">3.82</span>
+          </div>
+          <div class="trk is-bad">
+            <span class="t-body">การมอบหมายงาน</span>
+            <span class="trk__bar"><span class="trk__fill" style="width:62%"></span><span class="trk__self" style="left:84%"></span></span>
+            <span class="trk__n">3.11</span>
+          </div>
+          <div class="trk is-ok">
+            <span class="t-body">ความน่าเชื่อถือ</span>
+            <span class="trk__bar"><span class="trk__fill" style="width:89%"></span><span class="trk__self" style="left:80%"></span></span>
+            <span class="trk__n">4.45</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <p class="t-section">Modal <span style="color:var(--muted);font-weight:var(--fw-regular);">— open it: the scrim is the worst break of the five</span></p>
+        <div class="demorow">
+          <button class="btn btn--primary" onclick="document.getElementById('m-confirm').showModal()">เปิด Modal</button>
+          <button class="btn btn--danger" onclick="document.getElementById('m-danger').showModal()">เปิด Modal (danger)</button>
+        </div>
+      </div>
+
+      <div style="height:80px;"></div>
+    </div>
+  </main>
+</div>
+
+<dialog class="modal" id="m-confirm">
+  <div class="modal__head">
+    <h2 class="modal__title t-title">ยืนยันการบันทึก</h2>
+    <button class="modal__close" data-close aria-label="ปิด"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+  </div>
+  <div class="modal__body">
+    <p class="t-body">บันทึกการเปลี่ยนแปลงรอบการประเมิน Q4/2026 หรือไม่ ระบบจะแจ้งเตือนผู้เกี่ยวข้องทันที</p>
+  </div>
+  <div class="modal__foot">
+    <button class="btn btn--secondary" data-close>ยกเลิก</button>
+    <button class="btn btn--primary" data-close>บันทึก</button>
+  </div>
+</dialog>
+
+<dialog class="modal" id="m-danger">
+  <div class="modal__head">
+    <h2 class="modal__title t-title">ลบรอบประเมิน</h2>
+    <button class="modal__close" data-close aria-label="ปิด"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+  </div>
+  <div class="modal__body">
+    <p class="t-body">การลบรอบ Q4/2026 จะลบข้อมูลการประเมินทั้งหมด 847 รายการอย่างถาวร การกระทำนี้ไม่สามารถย้อนกลับได้</p>
+  </div>
+  <div class="modal__foot">
+    <button class="btn btn--secondary" data-close>ยกเลิก</button>
+    <button class="btn btn--danger" data-close>ลบถาวร</button>
+  </div>
+</dialog>
+
+<!-- sandbox control — not part of the design -->
+<div class="modebar">
+  <span class="modebar__lbl">โหมด</span>
+  <div class="seg" id="modeseg">
+    <button class="seg__opt seg__opt--active" data-mode="light">Light</button>
+    <button class="seg__opt" data-mode="dark-grey-lines">Grey · lines</button>
+    <button class="seg__opt" data-mode="dark-grey-surface">Grey · surface</button>
+    <button class="seg__opt" data-mode="dark-navy-lines">Navy · lines</button>
+  </div>
+</div>
+
+<script>
+  document.getElementById('collapse').addEventListener('click', function () {
+    document.getElementById('shell').classList.toggle('shell--collapsed');
+    closeMenus();
+  });
+
+  var menus = [{ btn: document.getElementById('userbtn'), menu: document.getElementById('usermenu') }];
+  function closeMenus(except) {
+    menus.forEach(function (m) {
+      if (m.menu === except) return;
+      m.menu.classList.remove('is-open');
+      m.btn.setAttribute('aria-expanded', 'false');
+    });
+  }
+  menus.forEach(function (m) {
+    m.btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var open = m.menu.classList.toggle('is-open');
+      m.btn.setAttribute('aria-expanded', open);
+      closeMenus(m.menu);
+    });
+  });
+  document.addEventListener('click', function (e) {
+    if (!menus.some(function (m) { return m.menu.contains(e.target); })) closeMenus();
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenus(); });
+
+  document.querySelectorAll('.modal [data-close]').forEach(function (b) {
+    b.addEventListener('click', function () { b.closest('dialog').close(); });
+  });
+
+  // theme seg inside the user menu — 'system' reads the OS preference,
+  // which is exactly the JS the DS's CSS-only end-state does not ship.
+  document.getElementById('themeseg').addEventListener('click', function (e) {
+    var b = e.target.closest('.seg__opt'); if (!b) return;
+    this.querySelectorAll('.seg__opt').forEach(function (o) { o.classList.remove('seg__opt--active'); });
+    b.classList.add('seg__opt--active');
+    var m = b.dataset.mode;
+    if (m === 'system') {
+      m = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark-grey-surface' : 'light';
+    }
+    document.documentElement.setAttribute('data-theme', m);
+  });
+
+  document.getElementById('modeseg').addEventListener('click', function (e) {
+    var b = e.target.closest('.seg__opt'); if (!b) return;
+    this.querySelectorAll('.seg__opt').forEach(function (o) { o.classList.remove('seg__opt--active'); });
+    b.classList.add('seg__opt--active');
+    document.documentElement.setAttribute('data-theme', b.dataset.mode);
+  });
+</script>
+</body>
+</html>
