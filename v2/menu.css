@@ -25,6 +25,19 @@
 }
 .menu.is-open { display: block; }
 
+/* Theme row — the ONE non-item thing allowed in a menu, graduated 2026-07-30 from
+   dark-explore.html. Holds a .seg.seg--fill.seg--icon (nav.css); markup lives in
+   the menu gallery, which is the copy source.
+   WHY IT LIVES HERE AND NOT ON A SETTINGS PAGE: dark is an account preference, and
+   putting the control in the user menu is what makes the light-only rule for
+   outward-facing pages self-enforcing — a respondent opening a token link has no
+   user, therefore no menu, therefore no way to turn dark on. PRODUCT.md
+   composition rule 2 states the rule; this is the reason it needs no policing.
+   Pad to --s-1 so the seg's trough lines up with the items' text, and follow it
+   with a .menu__sep — it is a control, not a destination, and the separator is
+   what says so. */
+.menu__theme { padding: var(--s-1); }
+
 /* Item — button or link, same face. */
 .menu__item {
   display: flex; align-items: center; gap: var(--s-2);

@@ -53,3 +53,21 @@
 .seg__opt--active { background: var(--ctl-raise); color: var(--accent); box-shadow: var(--shadow-float); }
 .seg__opt:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .seg__opt:disabled { opacity: .4; cursor: not-allowed; }
+
+/* ── SEG modifiers, graduated 2026-07-30 from dark-explore.html ──
+   Both exist for one shipped case: the theme switch in the sidebar user menu
+   (see menu.css .menu__theme and the menu gallery for the markup).
+
+   --fill: the stock seg is inline-flex sized for a toolbar, with 12px of padding
+   per option. Dropped into a 180px menu that leaves ~33px of text per option and
+   Thai needs ~38, so it overflowed its container. This stretches the seg to its
+   parent and trims the padding — a width modifier the seg arguably always needed,
+   which is why the theme switch could be built by COMPOSING two primitives
+   instead of inventing a component.
+   --icon: glyph options instead of words. Sidesteps the Thai width problem
+   entirely, and three 16px marks say light/dark/system without a caption (so no
+   "ธีม" label — caption-zero). Give every option an aria-label, because a glyph
+   with no text has no accessible name. */
+.seg--fill { display: flex; width: 100%; }
+.seg--fill .seg__opt { flex: 1 1 0; min-width: 0; justify-content: center; padding: 0 var(--s-1); }
+.seg--icon .seg__opt svg { width: 16px; height: 16px; }

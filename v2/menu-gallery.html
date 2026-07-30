@@ -8,6 +8,8 @@
 <link rel="stylesheet" href="./tokens.css" />
 <link rel="stylesheet" href="./type.css" />
 <link rel="stylesheet" href="./menu.css" />
+<link rel="stylesheet" href="./nav.css" />   <!-- .seg — the theme row uses the real component, not a copy -->
+<link rel="stylesheet" href="./buttons.css" />
 <style>
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--canvas); }
@@ -49,6 +51,51 @@
         </button>
       </div>
       <p class="note"><b>Slots:</b> <code>.menu__item</code> (button or link) · <code>--on</code> current choice (accent tint) · <code>--danger</code> destructive · <code>.menu__sep</code> divider. Disclosure pattern: trigger toggles <code>.is-open</code>, outside-click / Esc closes.</p>
+    </section>
+
+    <!-- 1b · THEME ROW (graduated 2026-07-30) -->
+    <section>
+      <p class="t-section lbl">1b · Theme row <span>— <code>.menu__theme</code> + <code>.seg--fill.seg--icon</code>. Graduated 2026-07-30 from the dark mock. <b>This block is the copy source</b> — the DS ships no icon file, so the three glyphs live in markup like every other icon in v2.</span></p>
+      <div class="menu is-open" style="position:static; display:inline-block; min-width:200px;">
+        <div class="menu__theme">
+          <div class="seg seg--fill seg--icon" id="themeseg" role="group" aria-label="ธีม">
+            <button class="seg__opt seg__opt--active" data-mode="light" title="สว่าง" aria-label="สว่าง">
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="3.2"/><path d="M10 2.6v1.8M10 15.6v1.8M2.6 10h1.8M15.6 10h1.8M4.75 4.75l1.27 1.27M13.98 13.98l1.27 1.27M15.25 4.75l-1.27 1.27M6.02 13.98l-1.27 1.27"/></svg>
+            </button>
+            <button class="seg__opt" data-mode="dark" title="มืด" aria-label="มืด">
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 11.9A6.4 6.4 0 0 1 8.1 4a6.9 6.9 0 1 0 7.9 7.9z"/></svg>
+            </button>
+            <button class="seg__opt" data-mode="system" title="ตามระบบ" aria-label="ตามระบบ">
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.8" y="4.2" width="14.4" height="9.4" rx="1.6"/><path d="M7.6 17h4.8M10 13.6V17"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="menu__sep"></div>
+        <a class="menu__item" href="#">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="5.5" r="2.5"/><path d="M3 13.5c0-2.5 2.2-4 5-4s5 1.5 5 4"/></svg>โปรไฟล์
+        </a>
+        <div class="menu__sep"></div>
+        <a class="menu__item" href="#">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 14H3.5A1.5 1.5 0 012 12.5v-9A1.5 1.5 0 013.5 2H6M10.5 11l3-3-3-3M13.5 8H6"/></svg>ออกจากระบบ
+        </a>
+      </div>
+      <p class="note">
+        <b>Why the user menu and not a settings page.</b> Dark is an account preference, and putting the
+        control here is what makes the light-only rule for outward-facing pages enforce itself: a respondent
+        opening a token link has no user, so no menu, so no way to turn dark on (PRODUCT.md rule 2).
+        <b>No “ธีม” caption</b> — caption-zero; three glyphs already say it. Every option carries an
+        <code>aria-label</code>, because a glyph button has no accessible name otherwise.
+        <b>Icons stay in markup.</b> v2 ships no icon sprite and this is not the moment to invent one —
+        <code>.menu__item</code>, <code>.shell__item</code> and <code>.toast__close</code> all draw inline
+        too. Copy the three above; they are the house stroke (1.6, round caps).
+      </p>
+      <p class="note">
+        <b>The DS supplies no JavaScript</b> — theming is one attribute, and persistence is the app's.
+        The whole contract is: <code>document.documentElement.dataset.theme = mode</code>, remember
+        <code>mode</code> against the signed-in user, and stamp it before first paint so the page does not
+        flash. Note “system” needs no listener: CSS reads <code>prefers-color-scheme</code> itself, so an OS
+        flip at dusk repaints a page that is already open.
+      </p>
     </section>
 
     <!-- 2 · TRIGGERS (shipped v2.1.3 — one family, two shapes) -->
@@ -113,6 +160,20 @@
     });
     document.addEventListener('click', () => document.querySelectorAll('[data-menu] .menu.is-open').forEach((m) => m.classList.remove('is-open')));
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') document.querySelectorAll('.menu.is-open').forEach((m) => m.classList.remove('is-open')); });
+
+    // Theme row — the ENTIRE contract an app has to implement, deliberately shown at
+    // full length so nobody assumes there is more to it. Note data-mode, never
+    // data-theme: the token blocks are scoped to :root[data-theme], and a button
+    // holding that attribute would re-theme ITSELF (see tokens.css).
+    // Missing here on purpose, because it is the app's job and not the DS's:
+    // persisting `mode` against the signed-in user, and stamping it on <html>
+    // before first paint so a dark user never sees a white flash.
+    const themeSeg = document.getElementById('themeseg');
+    if (themeSeg) themeSeg.addEventListener('click', (e) => {
+      const b = e.target.closest('.seg__opt'); if (!b) return;
+      document.documentElement.dataset.theme = b.dataset.mode;
+      themeSeg.querySelectorAll('.seg__opt').forEach((x) => x.classList.toggle('seg__opt--active', x === b));
+    });
   </script>
 </body>
 </html>
