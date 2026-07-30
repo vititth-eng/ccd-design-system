@@ -63,6 +63,14 @@ scar + why stays in memory.*
 2. **Frame by facing.** Respondent-facing → mobile-fit, slim top bar, passes 375px.
    Admin-facing → sidebar shell, dense, laptop-first. Single-screen → main panel
    alone, no sidebar. Tabs are in-page only; never top-nav, never breadcrumbs.
+   **Theme follows facing too: outward forms are light-only.** A page reached by
+   a token link — survey, questionnaire, rate form, anything an unregistered
+   respondent opens — never sets `data-theme` and never shows a theme switch.
+   Dark is for signed-in, registered users. The rule needs no enforcement because
+   it falls out of where the control lives: the switch is an account preference in
+   the sidebar user menu, so no user means no menu means no dark (owner call
+   2026-07-30). Stated anyway, because the tokens make dark one attribute away and
+   a future respondent screen could pick it up by copy-paste.
 3. **Caption-zero.** Start with no helper text. A caption survives only if cutting
    it causes a misread. Ladder: rewrite the label → trust the visual → move to
    tooltip → one legend at top → keep one line. Policy disclaimers and

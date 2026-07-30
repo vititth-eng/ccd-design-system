@@ -224,6 +224,13 @@
    Note "system" is opt-in too: a bare prefers-color-scheme rule would have
    flipped every existing v2 app the moment a user's laptop was in dark mode.
 
+   WHO GETS DARK: signed-in, registered users only. An outward-facing page —
+   anything an unregistered respondent opens from a token link — stays light and
+   must not set this attribute. That is not a restriction bolted on afterwards;
+   it falls out of where the switch lives. The control is an account preference
+   in the sidebar user menu, so a page with no user has no menu and therefore no
+   way to turn dark on. PRODUCT.md composition rule 2 (owner call 2026-07-30).
+
    "System" NEEDS NO JAVASCRIPT. That was not obvious — the plan carried three
    options for a theme script, all of which assumed JS had to read the OS
    setting. CSS reads it directly, so the DS stays CSS-only as intended, there
