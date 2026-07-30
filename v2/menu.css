@@ -79,6 +79,7 @@
    whole row taller. */
 .menu-btn {
   --h: var(--ctl-h);
+  box-sizing: border-box;   /* per component, not a global reset — see buttons.css */
   display: inline-flex; align-items: center; gap: var(--s-2);
   font: inherit; font-size: var(--fs-body); font-weight: var(--fw-regular);
   line-height: normal; white-space: nowrap;   /* same as .btn — centres the ink exactly */

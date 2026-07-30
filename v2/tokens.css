@@ -69,6 +69,15 @@
                              they must split on dark, where a hairline has to be LIGHTER
                              than the card and a trough has to be DARKER.) */
   --ctl-raise: #FFFFFF;   /* pressable sitting above its surface — .btn--secondary */
+  /* The select chevron, as a TOKEN and not a literal in forms.css. A colour baked
+     into a data-URI cannot follow a var(), so the old hardcoded #61697A stroke
+     stayed light-grey on a dark field — 2.64:1 over a dark modal, against 5.95:1
+     for the mapped --muted it was copied from (Codex audit 2026-07-30). Holding
+     the whole URL as a token means dark needs no component-level override: it maps
+     through the same two blocks and the same print reset as every other value, so
+     the "dark lives only in tokens.css" property survives. The stroke here must
+     stay in step with --muted / --dk-muted by hand — %23 is a URL-escaped '#'. */
+  --ctl-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%2361697A' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 
   --scrim: rgba(20, 37, 73, .32);   /* modal backdrop. Must differ by mode: this navy wash
                                        is tuned to dim WHITE and barely touches a dark page,
@@ -388,6 +397,7 @@
   --dk-ctl-face:  rgba(0,0,0,.22);
   --dk-ctl-track: rgba(0,0,0,.22);
   --dk-ctl-raise: rgba(255,255,255,.07);
+  --dk-ctl-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%23A2A6AD' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 
   --dk-scrim: rgba(0,0,0,.66);
 
@@ -430,6 +440,7 @@
   --ctl-face: var(--dk-ctl-face);
   --ctl-track: var(--dk-ctl-track);
   --ctl-raise: var(--dk-ctl-raise);
+  --ctl-chevron: var(--dk-ctl-chevron);
   --scrim: var(--dk-scrim);
   --shadow-float: var(--dk-shadow-float);
   --shadow-pop:   var(--dk-shadow-pop);
@@ -452,6 +463,7 @@
     --ctl-face: var(--dk-ctl-face);
     --ctl-track: var(--dk-ctl-track);
     --ctl-raise: var(--dk-ctl-raise);
+    --ctl-chevron: var(--dk-ctl-chevron);
     --scrim: var(--dk-scrim);
     --shadow-float: var(--dk-shadow-float);
     --shadow-pop:   var(--dk-shadow-pop);
@@ -473,6 +485,7 @@
     --dk-pos-strong: #1A7F37; --dk-cau-strong: #CF741E; --dk-neg-strong: #C4372C;
     --dk-pos-tint: #E7F5EC; --dk-cau-tint: #FDEEE2; --dk-neg-tint: #FBE9E7;
     --dk-ctl-face: #FFFFFF; --dk-ctl-track: #EDEFF1; --dk-ctl-raise: #FFFFFF;
+    --dk-ctl-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%2361697A' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
     --dk-scrim: rgba(20,37,73,.32);
     --dk-shadow-float: 0 2px 8px rgba(20,37,73,.06);
     --dk-shadow-pop:   0 4px 12px rgba(20,37,73,.08);

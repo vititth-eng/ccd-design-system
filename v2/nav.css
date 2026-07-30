@@ -37,7 +37,11 @@
 /* Height is the token (tokens.css --ctl-h) — the seg stands in a bar beside
    .btn / .control / .menu-btn. The trough sets the height, the options stretch
    into it (flex default), so their vertical padding is zero. */
-.seg { display: inline-flex; gap: 2px; padding: 3px; height: var(--ctl-h); background: var(--ctl-track); border-radius: var(--r-base); }
+/* box-sizing per component, not globally — see the note in buttons.css. The .seg
+   is the worst case in the DS: 3px of padding on all four sides means content-box
+   makes it 40px against the 34px it promises, so it towers over the button beside
+   it in a toolbar. */
+.seg { box-sizing: border-box; display: inline-flex; gap: 2px; padding: 3px; height: var(--ctl-h); background: var(--ctl-track); border-radius: var(--r-base); }
 .seg__opt {
   display: inline-flex; align-items: center;
   padding: 0 var(--s-3); border: none; border-radius: var(--r-tiny);

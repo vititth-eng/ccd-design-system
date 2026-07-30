@@ -16,7 +16,16 @@
   font-weight: var(--fw-semi);
   line-height: normal;   /* height is the token now, so leading only centres the ink — normal lands dead centre, 1 sits 0.5px high */
   white-space: nowrap;
-  /* Height is the token, not a padding sum — see tokens.css --ctl-h. */
+  /* Height is the token, not a padding sum — see tokens.css --ctl-h.
+     box-sizing is declared HERE, on the component, not by a global reset. The
+     height contract is only true under border-box: with content-box the 1px
+     border below makes an <a class="btn"> 36px, so it stops matching the .control
+     beside it. Every gallery happened to supply `* { box-sizing: border-box }`
+     locally, which meant the docs proved a premise the DS never shipped (Codex
+     audit 2026-07-30). Stated per component rather than globally on purpose — the
+     DS arrives by CDN into apps whose own layout we do not own, and a wildcard
+     reset from a stylesheet a consumer merely links is an ambush. */
+  box-sizing: border-box;
   height: var(--ctl-h);
   padding: 0 var(--s-4);
   /* An inline-flex button sits on the text baseline, and the descender space

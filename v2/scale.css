@@ -65,6 +65,9 @@
   cursor: pointer;
 }
 .sbtnN {
+  box-sizing: border-box;   /* per component, not a global reset — see buttons.css.
+                               A 1px border on a fixed 40px circle makes it 42 under
+                               content-box, and a row of them drifts out of its grid. */
   display: grid;
   place-items: center;
   width: 40px;
