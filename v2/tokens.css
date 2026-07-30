@@ -133,55 +133,64 @@
 
      LABEL THE MARKS — and a legend is the FALLBACK, not the licence. It makes the
      reader look away to decode and back again, so put the value on the mark where
-     it fits. Teal (2.24:1) and orange (2.29:1) sit under the 3:1 fill bar against
-     white: accepted, because a chart is not read by colour alone, but it is why the
-     label is mandatory rather than nice.
+     it fits. Against WHITE, four of the seven sit under the 3:1 fill bar: yellow
+     1.51:1, grey 1.68:1, teal 2.24:1, orange 2.29:1. Accepted, because a chart is
+     not read by colour alone — but it is why the label is mandatory rather than
+     nice, and why rule 2 below exists.
 
      One set for BOTH modes, no --dk- partners: verified 2026-07-30, all seven clear
-     3:1 on dark canvas AND dark card. Chosen over Tableau 20, which was two-tone by
-     construction and would have needed a mode swap this does not.
+     3:1 on dark canvas AND dark card — it is only white they struggle against.
+     Chosen over Tableau 20, which was two-tone by construction and would have
+     needed a mode swap this does not.
 
-     THREE OF THE SEVEN MOVED 2026-07-30 after the Codex audit measured them against
-     the UI colours they sit beside. Under ΔE00 ~10 two colours are the same colour,
-     and a chart mark that matches a UI mark is lying about what it is:
-       --chart-1 was #5B8DEF, ΔE00 4.3 from the DARK accent — on a dark page series
-         one WAS the selection blue, and worse, --accent also paints .meter, which is
-         itself a data mark. Now 12.2 from the light accent and clear of the dark one,
-         still a blue: a first search that only maximised separation came back with
-         teals, which is not a blue and lands on series 3.
-       --chart-6 was #F4CF4A, 8.1 from the caution dot and 1.51:1 on white — a bar
-         you could not find. Yellow had NO good answer and that is the finding: bright
-         enough to read as yellow is invisible on white, dark enough to see is olive
-         (the same wall --cau-strong hit the same morning), and STATUS ALREADY OWNS
-         AMBER. So the chart tier stopped claiming yellow. Brown is the one earthy
-         colour in a bright set — a deliberate cost, picked from a four-way render of
-         keep-yellow / lime / brown / magenta; magenta was the runner-up and was
-         rejected only for landing 16.5 from the rose at series 2. The FIRST brown
-         tried, #995E33, scored better on paper (24.1 from orange) but sat at exactly
-         3.00:1 on the dark card — on the bar with no margin, which is not a value to
-         ship. This one trades a little separation for headroom in both modes.
-       --chart-7 was #C6C8CC at 1.68:1 on white. The Other/Unassigned grey still has
-         to be findable as a bar; 3.11:1 keeps it quiet without making it absent.
-     ONE COLLISION SURVIVES ON PURPOSE: --chart-4 orange sits ΔE00 9.1 from the DARK
-     --cau-strong (#FFB978), just under the ~10 bar. Orange is one of the four the
-     owner kept unchanged, so it stands — but a caution glyph and an orange series on
-     the same dark card will read as related. Move chart-4 if that ever shows up in a
-     real chart. The tightest chart-to-chart pair is now 4↔6 at 20.6 (orange against
-     the new brown: same warm family, distinct by lightness), and the worst
-     chart-vs-UI distance improved from 4.3 to 9.1.
+     ── ALL SEVEN VALUES ARE FROZEN. THE COLLISIONS ARE FIXED BY RULE, NOT BY HEX ──
+     Owner call 2026-07-30, made after seeing three replacements rendered side by side
+     (v2/chart-fix-explore.html) and rejecting them: the palette stays as picked. So
+     the three collisions the Codex audit measured are real, known, and STILL HERE:
+       --chart-1  ΔE00 4.3 from the DARK --accent. On a dark page series one is the
+                  selection blue — and --accent also paints .meter, itself a data mark.
+       --chart-6  ΔE00 8.1 from the --cau dot, and 1.51:1 on white.
+       --chart-7  1.68:1 on white.
+       (--chart-4 is also 9.1 from the dark --cau-strong.) Under ΔE00 ~10, two colours
+       are the same colour to anyone; under 3:1 a fill is a shape you cannot locate.
+     Three rules carry that weight instead. They are not softeners — a chart obeying
+     them is genuinely unambiguous, and a chart breaking them is broken whatever its
+     hexes are:
+
+       1. COLOUR IS NEVER THE ONLY CHANNEL. Position identifies a bar, its own path
+          identifies a line, and the direct label says which is which; colour is the
+          lookup aid layered on top. Test: would the chart still be readable printed
+          greyscale? If no, it is already wrong, collisions or not. This is why the
+          hexes CAN be frozen — a palette only has to carry identity alone when
+          nothing else does, and here something else always does.
+       2. A FILL UNDER 3:1 ON ITS GROUND TAKES A HAIRLINE, NOT A DARKER FILL. On
+          white, series 6 (1.51:1) and series 7 (1.68:1) are bars you cannot find.
+          Give the shape a 1px stroke of its own hue, darkened; the fill keeps the
+          colour that was chosen. Never darken the fill itself — for yellow that is
+          the olive trap --cau-strong already fell into.
+       3. A STATUS MARK AND A CHART MARK DO NOT SHARE A CARD. This is the rule that
+          actually neutralises collisions 1 and 6: a card boundary means the two are
+          never seen side by side, so a 4.3 or an 8.1 never gets compared. In one card
+          on a dark page, both mislead — and no legend fixes it, because the reader
+          is not confusing two series, they are confusing a series with the UI.
+       And the one-hue default below does most of the work on its own: with a subject
+       in --chart-1 and context in --chart-7, five of the seven never appear at all.
+     Re-open the values only if a chart ever needs all seven AND has to sit beside
+     status marks. That combination is what the frozen palette cannot survive.
+
      Colour-blind separation was measured across protanopia/deuteranopia/tritanopia
      and deliberately NOT treated as a constraint (owner call: known internal
      audience, worst-case dichromacy). If a chart ever ships to a wide outside
      audience, re-open it — 1↔5 and 3↔7 were the failing pairs.
      Renders: v2/chart-fix-explore.html (this decision), v2/chart-palette-explore.html
      (the original palette-vs-Tableau pick). */
-  --chart-1: #2383C7;   /* blue    — series 1. 4.08:1 white. NOT the accent, checked. */
+  --chart-1: #5B8DEF;   /* blue    — series 1 */
   --chart-2: #E8637F;   /* rose    — series 2 */
   --chart-3: #5CBDB4;   /* teal    — series 3 */
   --chart-4: #E89B3C;   /* orange  — series 4 */
   --chart-5: #9B51F0;   /* violet  — series 5 */
-  --chart-6: #A2673A;   /* brown   — series 6. 4.63:1 white, 3.40:1 dark card. NOT yellow: status owns amber. */
-  --chart-7: #929296;   /* grey    — Other / Unassigned, never a real series. 3.11:1 white. */
+  --chart-6: #F4CF4A;   /* yellow  — series 6 */
+  --chart-7: #C6C8CC;   /* grey    — Other / Unassigned, never a real series */
 
   /* ── TYPE ──────────────────────────────────────────────── */
   --font-sans: "Inter", "Noto Sans Thai", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;

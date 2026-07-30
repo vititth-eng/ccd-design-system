@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Chart palette · fixing 1 / 6 / 7</title>
+<title>Chart palette · why all seven were kept</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" />
 <link rel="stylesheet" href="./tokens.css" />
 <link rel="stylesheet" href="./type.css" />
@@ -66,10 +66,13 @@
 </head>
 <body>
 <main>
-  <h1>Chart palette — fixing 1 / 6 / 7</h1>
-  <p class="lede">Four of the seven stay exactly as picked: <b>rose, teal, orange, violet</b>. Three move. Colour-blind
-    separation was measured and deliberately dropped as a constraint — everything below is normal vision. Grounds are
-    hardcoded here on purpose; what is under test is which colours sit too close to each other, not the theming system.</p>
+  <h1>Chart palette — why all seven were kept</h1>
+  <p class="lede"><b>Decision record, not a live proposal.</b> All seven values were kept exactly as picked (owner call
+    2026-07-30) after seeing the replacements below rendered. The collisions in sections 1–4 are real and still present —
+    they are answered by <b>rule</b> instead of by hex: colour is never the only channel · a fill under 3:1 takes a
+    hairline, never a darker fill · a status mark and a chart mark never share a card. See <code>tokens.css</code> and
+    PRODUCT.md rule 6. Colour-blind separation was measured and deliberately dropped as a constraint — everything below
+    is normal vision. Grounds are hardcoded on purpose; what is under test is colour adjacency, not the theming system.</p>
 
   <!-- ============ 1 · THE COLLISION, SHOWN ============ -->
   <h2>1 · The two collisions, shown rather than asserted</h2>
@@ -141,10 +144,10 @@
       <div class="gname">Light page — can you find the bar?</div>
       <div class="surface">
         <div class="coll">
-          <div class="coll__row"><span>A keep yellow</span><div class="swatchbar" style="background:#F4CF4A"></div></div>
-          <div class="coll__row"><span>B lime</span><div class="swatchbar" style="background:#B0C431"></div></div>
-          <div class="coll__row"><span>C brown</span><div class="swatchbar" style="background:#A2673A"></div></div>
-          <div class="coll__row"><span>D magenta</span><div class="swatchbar" style="background:#D0399E"></div></div>
+          <div class="coll__row"><span>A KEPT — yellow</span><div class="swatchbar" style="background:#F4CF4A"></div></div>
+          <div class="coll__row"><span>B lime (rejected)</span><div class="swatchbar" style="background:#B0C431"></div></div>
+          <div class="coll__row"><span>C brown (rejected)</span><div class="swatchbar" style="background:#F4CF4A"></div></div>
+          <div class="coll__row"><span>D magenta (rejected)</span><div class="swatchbar" style="background:#D0399E"></div></div>
           <div class="coll__row"><span>caution dot</span><span class="dotrow"><i style="background:#FFBD2E"></i> In progress</span></div>
         </div>
       </div>
@@ -153,10 +156,10 @@
       <div class="gname">Dark page</div>
       <div class="surface">
         <div class="coll">
-          <div class="coll__row"><span>A keep yellow</span><div class="swatchbar" style="background:#F4CF4A"></div></div>
-          <div class="coll__row"><span>B lime</span><div class="swatchbar" style="background:#B0C431"></div></div>
-          <div class="coll__row"><span>C brown</span><div class="swatchbar" style="background:#A2673A"></div></div>
-          <div class="coll__row"><span>D magenta</span><div class="swatchbar" style="background:#D0399E"></div></div>
+          <div class="coll__row"><span>A KEPT — yellow</span><div class="swatchbar" style="background:#F4CF4A"></div></div>
+          <div class="coll__row"><span>B lime (rejected)</span><div class="swatchbar" style="background:#B0C431"></div></div>
+          <div class="coll__row"><span>C brown (rejected)</span><div class="swatchbar" style="background:#F4CF4A"></div></div>
+          <div class="coll__row"><span>D magenta (rejected)</span><div class="swatchbar" style="background:#D0399E"></div></div>
           <div class="coll__row"><span>caution dot</span><span class="dotrow"><i style="background:#FFBD2E"></i> In progress</span></div>
         </div>
       </div>
@@ -164,14 +167,14 @@
   </div>
   <p class="verdict">
     <b>A keep #F4CF4A</b> — brightest, most yours; invisible on white, 8.1 from caution.<br>
-    <b>B lime #B0C431</b> — clears caution (17.2); still only <span class="num">1.95:1</span> on white and drifts toward
+    <b>B lime (rejected) #B0C431</b> — clears caution (17.2); still only <span class="num">1.95:1</span> on white and drifts toward
     the status green.<br>
-    <b>C brown #A2673A</b> — the pick, and the only option that fixes both problems at once:
+    <b>C brown (rejected) #F4CF4A</b> — the pick, and the only option that fixes both problems at once:
     <span class="num">4.63:1</span> on white, <span class="num">3.40:1</span> on the dark card, 11.5 from cau-strong,
     20.6 from series 4. Cost: it is the one earthy colour in a bright palette. A darker
     <span class="num">#995E33</span> scored better on paper but sat at exactly <span class="num">3.00:1</span> on the dark
     card — on the bar with no margin, so it was dropped.<br>
-    <b>D magenta #D0399E</b> — <span class="num">4.40:1</span>, miles from every status hue; but 16.5 from series 2 rose,
+    <b>D magenta (rejected) #D0399E</b> — <span class="num">4.40:1</span>, miles from every status hue; but 16.5 from series 2 rose,
     so the set gains a second pink.
   </p>
 
@@ -218,7 +221,7 @@
 <script>
 (() => {
   const NOW  = ['#5B8DEF','#E8637F','#5CBDB4','#E89B3C','#9B51F0','#F4CF4A','#C6C8CC'];
-  const NEW  = ['#2383C7','#E8637F','#5CBDB4','#E89B3C','#9B51F0','#A2673A','#929296'];
+  const NEW  = ['#2383C7','#E8637F','#5CBDB4','#E89B3C','#9B51F0','#A2673A','#929296'];   // the REJECTED proposal, kept as the record
   const DATA = [
     [38,52,44,61,58,72,66,79],[62,49,71,58,77,64,83,70],[24,36,31,45,40,52,48,60],
     [71,64,78,70,84,76,89,81],[45,58,50,66,61,74,69,82],[55,42,63,51,69,57,75,63],
@@ -248,10 +251,10 @@
     </div>`;
 
   document.getElementById('sets').innerHTML =
-      panel('Light · CURRENT', 'ground--lt', NOW, 'Current seven')
-    + panel('Light · PROPOSED', 'ground--lt', NEW, 'Proposed (1·6·7 moved)')
-    + panel('Dark · CURRENT', 'ground--dk', NOW, 'Current seven')
-    + panel('Dark · PROPOSED', 'ground--dk', NEW, 'Proposed (1·6·7 moved)');
+      panel('Light · KEPT — SHIPPING', 'ground--lt', NOW, 'Current seven')
+    + panel('Light · REJECTED PROPOSAL', 'ground--lt', NEW, 'Proposed (1·6·7 moved)')
+    + panel('Dark · KEPT — SHIPPING', 'ground--dk', NOW, 'Current seven')
+    + panel('Dark · REJECTED PROPOSAL', 'ground--dk', NEW, 'Proposed (1·6·7 moved)');
 
   const focusPal = ['#2383C7','#929296','#929296','#929296','#929296','#929296','#929296'];
   document.getElementById('focus').innerHTML =

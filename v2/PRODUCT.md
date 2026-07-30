@@ -103,9 +103,18 @@ scar + why stays in memory.*
    status hues, never a chart hue. Sequential and diverging ramps are **not
    built**: the first real chart sizes them, and a mock must not invent values.
    **Most charts want one hue, not seven** — subject in `--chart-1`, context in
-   `--chart-7`. And a legend is the fallback, not the licence: it makes the reader
-   look away to decode and back, so label the marks directly where they fit (owner
-   call 2026-07-30).
+   `--chart-7`; five of the seven then never appear.
+   **The seven hexes are frozen, so three rules carry the collisions instead** (the
+   audit found series 1 sitting ΔE 4.3 from the dark accent — which also paints
+   `.meter` — and series 6 at 8.1 from the caution dot):
+   **(a) Colour is never the only channel.** Position identifies a bar, its path
+   identifies a line, the direct label says which is which; colour is the lookup aid
+   on top. A chart that fails printed greyscale is already wrong. A legend is the
+   fallback, not the licence — it makes the reader look away to decode and back.
+   **(b) A fill under 3:1 on its ground takes a 1px hairline of its own hue,** never
+   a darker fill — on white that is four of the seven, and darkening yellow is the
+   olive trap. **(c) A status mark and a chart mark never share a card** — a card
+   boundary is what stops a series being compared to the UI (owner call 2026-07-30).
 7. **Thai in dense tables:** weight ≤ 400; breathing comes from row padding,
    never a new line-height token.
 8. **One-off surfaces borrow mechanics, not shape.** Tokens, focus ring,
