@@ -30,7 +30,18 @@
   white-space: nowrap;
 }
 
-/* ── one item ── */
+/* ── one item ──
+   `.li` IS THE WORST NAME IN THE DS and it is staying for now. It means "one
+   rating-question row", but bare `.li` at specificity (0,1,0) claims the abbreviation
+   every developer alive reaches for when they mean a list item — and because the DS
+   arrives by CDN after an app's own stylesheet, a tie goes to the DS: someone else's
+   list item silently becomes a two-column grid with a top border.
+   Not renamed because it is not currently a collision — it is CORRECTLY used:
+   ccd-brb-onboarding's survey page wraps .liNo + .liQ + .scale in it, exactly as
+   intended. Renaming to .qrow means editing the DS and that consumer in one batch
+   (memory feedback_atomic_token_rollout: no aliases), and onboarding is pinned at
+   v2.2.0 so nothing is urgent. Logged on CCD-174; do it with the next onboarding
+   change, not before (Codex audit 2026-07-30). */
 .li {
   display: grid;
   grid-template-columns: 22px 1fr;

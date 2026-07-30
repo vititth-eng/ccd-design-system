@@ -175,7 +175,7 @@
   display: flex; align-items: center; justify-content: space-between; gap: var(--s-3);
   padding: var(--s-2) var(--s-3) var(--s-4);
   flex: 0 0 auto;
-  position: sticky; top: 0; z-index: 1;
+  position: sticky; top: 0; z-index: var(--z-sticky);
   background: var(--canvas);   /* covers content scrolling underneath */
 }
 .shell__title { min-width: 0; }
@@ -197,7 +197,7 @@
 @media (max-width: 720px) {
   .shell { height: 100dvh; padding: var(--s-2); gap: var(--s-2); position: relative; }   /* dvh: the mobile URL bar makes 100vh taller than the visible page, pushing the sidebar foot (user menu) below the fold */
   .shell__sidebar {
-    position: absolute; z-index: 20;
+    position: absolute; z-index: var(--z-drawer);
     top: var(--s-2); bottom: var(--s-2); left: var(--s-2);
     box-shadow: var(--shadow-pop);   /* the menu/popover lift — it now covers content, so --shadow-float is too faint to read as "above" */
   }

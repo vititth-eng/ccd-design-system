@@ -21,11 +21,15 @@
 
 /* Type-1 — dot + ink text -------------------------------------- */
 .st { display: inline-flex; align-items: center; gap: var(--s-2); font-size: var(--fs-body); color: var(--ink); }
-.st i { width: 8px; height: 8px; border-radius: var(--r-pill); flex: 0 0 auto; }
-.st--pos  i { background: var(--pos); }
-.st--cau  i { background: var(--cau); }
-.st--neg  i { background: var(--neg); }
-.st--none i { background: var(--muted); }
+/* DIRECT child, not any descendant. As `.st i` this claimed every <i> inside a
+   status label, so an emphasis or an icon-font <i> nested in the text was silently
+   resized to 8px and painted a status colour (Codex audit 2026-07-30). The dot is
+   always a direct child, so `>` costs nothing and stops the overreach. */
+.st > i { width: 8px; height: 8px; border-radius: var(--r-pill); flex: 0 0 auto; }
+.st--pos  > i { background: var(--pos); }
+.st--cau  > i { background: var(--cau); }
+.st--neg  > i { background: var(--neg); }
+.st--none > i { background: var(--muted); }
 
 /* Type-2 — pill badge. Tinted bg + DOT + ink text (same doctrine as
    Type-1: the dot carries meaning so the text never needs a colored
@@ -41,11 +45,11 @@
   white-space: nowrap;
   color: var(--ink);
 }
-.st-pill i { width: 7px; height: 7px; border-radius: var(--r-pill); flex: 0 0 auto; }
-.st-pill--pos  { background: var(--pos-tint); } .st-pill--pos  i { background: var(--pos); }
-.st-pill--cau  { background: var(--cau-tint); } .st-pill--cau  i { background: var(--cau); }
-.st-pill--neg  { background: var(--neg-tint); } .st-pill--neg  i { background: var(--neg); }
-.st-pill--none { background: var(--divider); }  .st-pill--none i { background: var(--muted); }
+.st-pill > i { width: 7px; height: 7px; border-radius: var(--r-pill); flex: 0 0 auto; }
+.st-pill--pos  { background: var(--pos-tint); } .st-pill--pos  > i { background: var(--pos); }
+.st-pill--cau  { background: var(--cau-tint); } .st-pill--cau  > i { background: var(--cau); }
+.st-pill--neg  { background: var(--neg-tint); } .st-pill--neg  > i { background: var(--neg); }
+.st-pill--none { background: var(--divider); }  .st-pill--none > i { background: var(--muted); }
 
 /* Type-3 — progress meter. Fully rounded at 6px: at this height a 3px corner
    reads as neither square nor round. The fill is rounded too, so a 4% bar is

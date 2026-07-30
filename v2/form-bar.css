@@ -5,7 +5,7 @@
    Slots shipped: __save, __subject. Add __prog / __help on first real use. */
 
 .fbar {
-  position: sticky; top: 0; z-index: 10;
+  position: sticky; top: 0; z-index: var(--z-sticky);
   display: flex; align-items: center; justify-content: space-between; gap: var(--s-3);
   padding: var(--s-2) var(--s-4);                 /* slim: 8/16 — a form bar, not an app header */
   background: var(--card); border-bottom: 1px solid var(--rule);

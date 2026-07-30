@@ -128,7 +128,18 @@ select.control {
 
 /* ── Layout — form measure + field grouping. -----------------
    forms.css now covers page assembly, not just the control:
-   .form caps + centres the measure; .stack / .row2 group fields. */
+   .form caps + centres the measure; .stack / .row2 group fields.
+
+   NAME RISK, KNOWN AND ACCEPTED. `.stack` and `.row2` are bare single-class
+   selectors at specificity (0,1,0), and they are generic enough that an app could
+   plausibly define its own. On a tie the CDN <link> loads after a Next CSS module,
+   so THE DS WINS and quietly reshapes the consumer's element — the same family as
+   the scar in memory `reference_ds_cdn_beats_module_css`.
+   Left as-is on purpose: these are the DS's published layout helpers and the v2
+   consumers using them are using them deliberately, so a rename is a breaking
+   change that buys nothing today. If a real collision ever appears, rename here
+   AND in the consumer in one batch — never ship an alias. Same call for .li in
+   scale.css, which is the riskier name of the three (CCD-174). */
 .form  { max-width: var(--form-measure, 480px); margin-inline: auto; }
 .form--wide { --form-measure: 720px; }          /* admin / dense multi-column forms */
 

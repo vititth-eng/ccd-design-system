@@ -301,8 +301,22 @@
              8px of padding and a 2px ring would fit fine.)
        +1px  .seg__opt only — it sits in a 3px trough; +2 touches the wall. */
 
-  /* ── Z-INDEX SCALE ─────────────────────────────────────── */
-  --z-sticky:   50;
+  /* ── Z-INDEX SCALE ─────────────────────────────────────────
+     Four tiers, and every component must take one. Three components used to
+     hardcode 10, 1 and 20 while PRODUCT.md claimed this scale was the single
+     source — which meant the scale was decoration and the real order lived in
+     three unrelated magic numbers (Codex audit 2026-07-30). Two of those were
+     both "sticky page furniture" wearing different values for no reason.
+     --z-modal exists but the DS's own .modal does NOT use it, and that is
+     correct, not dead: a native <dialog> is promoted to the browser's TOP LAYER,
+     which sits above every z-index on the page and ignores the property entirely.
+     The token stays for a consumer's own non-dialog overlay. Don't "adopt" it in
+     modals.css to tidy the books — it would do nothing there. */
+  --z-sticky:   50;    /* sticky page furniture — .fbar, .shell__head */
+  --z-drawer:   75;    /* an overlay PANEL of page furniture — the mobile sidebar.
+                          Cannot share --z-sticky: it has to cover the sticky head
+                          it slides over. Below dropdown so a menu opened INSIDE
+                          the drawer still lands on top. */
   --z-dropdown: 100;
   --z-modal:    200;
   --z-toast:    300;
