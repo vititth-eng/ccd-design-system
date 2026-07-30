@@ -48,6 +48,9 @@
 /* Type-3 — progress meter. Fully rounded at 6px: at this height a 3px corner
    reads as neither square nor round. The fill is rounded too, so a 4% bar is
    still a shape and not a sliver. --wide is the card-header size. */
-.meter { display: block; height: 6px; width: 80px; border-radius: var(--r-pill); background: var(--divider); overflow: hidden; }
+/* The track is a trough, same category as .seg — so it takes --ctl-track, not
+   --divider. Identical on light; on dark --divider is lighter than the card and
+   the groove would have read as a raised bar. */
+.meter { display: block; height: 6px; width: 80px; border-radius: var(--r-pill); background: var(--ctl-track); overflow: hidden; }
 .meter b { display: block; height: 100%; background: var(--accent); border-radius: var(--r-pill); }
 .meter--wide { width: 120px; }

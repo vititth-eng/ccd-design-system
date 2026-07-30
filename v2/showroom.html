@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" />
 <link rel="stylesheet" href="./tokens.css" />
 <link rel="stylesheet" href="./type.css" />
+<link rel="stylesheet" href="./nav.css" />   <!-- .seg — the theme switch uses the real component, not a hand-rolled one -->
 <style>
   * { box-sizing: border-box; }
   body {
@@ -16,6 +17,9 @@
 
   main { padding: var(--s-8) var(--s-8) var(--s-8); max-width: 1120px; margin: 0 auto; }   /* single centered column, no sidebar */
   .hero { margin-bottom: var(--s-8); }
+  .hero__bar { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s-4); flex-wrap: wrap; }
+  .hero__bar h1 { margin-bottom: 0; }
+  .hero__bar + p { margin-top: var(--s-3); }
   .hero h1 { font-size: var(--fs-kpi); font-weight: var(--fw-semi); margin: 0 0 var(--s-3); letter-spacing: -0.02em; }
   .hero p { color: var(--muted); font-size: var(--fs-body); line-height: var(--lh-normal); max-width: 60ch; margin: 0; }
   .hero code { font-family: ui-monospace, monospace; font-size: 0.9em; color: var(--muted); background: var(--divider); padding: 1px 5px; border-radius: var(--r-tiny); }
@@ -72,7 +76,14 @@
 <body>
   <main>
     <div class="hero">
-      <h1>Design System · Showroom</h1>
+      <div class="hero__bar">
+        <h1>Design System · Showroom</h1>
+        <div class="seg" id="themeseg" role="group" aria-label="Theme">
+          <button class="seg__opt seg__opt--active" data-theme="light">Light</button>
+          <button class="seg__opt" data-theme="dark">Dark</button>
+          <button class="seg__opt" data-theme="system">System</button>
+        </div>
+      </div>
       <p>Every decision in one scroll. Foundations — names, values, and the usage note beside each — are read live from <code>tokens.css</code>; edit a token or its comment and this page updates itself. Components below are live iframes to their own gallery files.</p>
     </div>
 
@@ -235,16 +246,22 @@
     ['Overlay',      ['--scrim']],
   ];
   const swatch = t => {
-    const val = t.value.startsWith('#') ? t.value : resolve(t.name, 'backgroundColor');
+    // ALWAYS resolve, never print the source line. tokens.css holds the LIGHT
+    // value, so a source-read label showed "#FFFFFF" next to a dark chip once
+    // dark landed. The computed value is the only one true in both modes.
+    const val = resolve(t.name, 'backgroundColor');
     return `<div><div class="sw__chip" style="background:var(${t.name})"></div>`
       + `<span class="sw__name">${t.name.replace('--','')}</span>`
       + `<span class="sw__val">${val}</span>`
       + (t.note ? `<span class="sw__note">${t.note}</span>` : '') + '</div>';
   };
-  el('g-color').innerHTML = colorGroups.map(([title, ns]) => {
-    const chips = ns.map(n => byName[n]).filter(Boolean).map(swatch).join('');
-    return chips ? `<div class="grp"><div class="grp__h">${title}</div><div class="swatches">${chips}</div></div>` : '';
-  }).join('');
+  const renderColors = () => {
+    el('g-color').innerHTML = colorGroups.map(([title, ns]) => {
+      const chips = ns.map(n => byName[n]).filter(Boolean).map(swatch).join('');
+      return chips ? `<div class="grp"><div class="grp__h">${title}</div><div class="swatches">${chips}</div></div>` : '';
+    }).join('');
+  };
+  renderColors();
 
   // ── TYPE ──
   el('g-fs').innerHTML = list(/^--fs-/).map(t =>
@@ -325,6 +342,33 @@
     try { ready = f.contentDocument && f.contentDocument.readyState === 'complete'; } catch(e) {}
     if (ready) attach(); else f.addEventListener('load', attach);
   });
+
+  // ── THEME SWITCH ──
+  // Every gallery is its own document inside an iframe, so setting the attribute
+  // on this page reaches none of them. It has to be stamped on each child <html>
+  // too — and re-stamped whenever a frame loads, since a frame that arrives after
+  // a click would otherwise come back light while the shell is dark.
+  const themeSeg = el('themeseg');
+  const paintTheme = mode => {
+    document.documentElement.dataset.theme = mode;
+    document.querySelectorAll('iframe').forEach(f => {
+      try { f.contentDocument.documentElement.dataset.theme = mode; } catch(e) {}   // file:// blocks this
+    });
+    renderColors();   // re-resolve every swatch label against the mode now in force
+  };
+  const currentTheme = () => document.documentElement.dataset.theme || 'light';
+  if (themeSeg) {
+    themeSeg.addEventListener('click', e => {
+      const b = e.target.closest('.seg__opt'); if (!b) return;
+      paintTheme(b.dataset.theme);
+      themeSeg.querySelectorAll('.seg__opt').forEach(x => x.classList.toggle('seg__opt--active', x === b));
+    });
+    paintTheme('light');
+    document.querySelectorAll('iframe').forEach(f =>
+      f.addEventListener('load', () => {
+        try { f.contentDocument.documentElement.dataset.theme = currentTheme(); } catch(e) {}
+      }));
+  }
 })();
 </script>
 </body>

@@ -48,7 +48,11 @@
 }
 
 .control:disabled {
-  background: var(--divider);
+  /* --ctl-track, not --divider. They are the same value on light, but on dark
+     --divider is LIGHTER than --card (a hairline has to climb off the surface),
+     so a disabled field painted with it read as RAISED — the opposite of inert.
+     --ctl-track is the recessing token and sinks correctly in both modes. */
+  background: var(--ctl-track);
   color: var(--muted);
   cursor: not-allowed;
 }
