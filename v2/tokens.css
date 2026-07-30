@@ -31,9 +31,12 @@
 
   /* Neutral ramp (OKLCH navy hue, lightness-stepped). muted=text · rule=border · divider=row line */
   --rule:    #CBD1DF;   /* borders — card edge, header underline */
-  --divider: #EDEFF1;   /* faint row hairline / hover / control track — NEAR-NEUTRAL gray (split from accent-tint so structure ≠ selection).
-                           AS A FILL, small elements ONLY: hover, disabled control, .meter and .seg tracks, .st-pill--none,
-                           and the thin .tbl__group header row. NEVER a content panel — see the flat-white rule above. */
+  --divider: #EDEFF1;   /* faint row hairline / control track — NEAR-NEUTRAL gray (split from accent-tint so structure ≠ selection).
+                           AS A FILL, small elements ONLY: disabled control, .meter and .seg tracks, .st-pill--none,
+                           and the thin .tbl__group header row. NEVER a content panel — see the flat-white rule above.
+                           NOT A HOVER — that is --ctl-raise-hover below, and the split is load-bearing on dark: a LINE
+                           has to sink into its surface, a PRESSABLE has to rise off it. Opposite directions, so one
+                           value cannot do both. (Five components used this as their hover fill until 2026-07-30.) */
 
   /* Accent — the ONE meaning color: actions, links, selection, meter. Never decoration (≤10%) */
   --accent:      #4068CA;   /* TEXT + decorative fill: links, selection, meter bar, info dot. LIFTS on dark. */
@@ -70,6 +73,18 @@
                              they must split on dark, where a hairline has to be LIGHTER
                              than the card and a trough has to be DARKER.) */
   --ctl-raise: #FFFFFF;   /* pressable sitting above its surface — .btn--secondary */
+  /* Hover face for anything on --ctl-raise (and for the transparent pressables:
+     .btn--ghost, .modal__close, .toast__close). On light this is the same value
+     --divider already was, so light renders byte-identical. On dark it MUST be a
+     stronger film than --ctl-raise, not a solid, because hover means "closer to
+     you" and a film is the only thing that composites correctly on --card AND
+     --float. Measured with a real cursor 2026-07-30: dark .btn--secondary on a
+     card rested at 1.23:1 above the card and hovered to 1.066:1 — flatter than
+     the 1.14:1 that --dk-float already rejected as "read as flush", so the hover
+     state was very nearly invisible, and .modal__close hovered DARKER than the
+     modal (a hole, not a hover). With this token the lift is ~1.49-1.52:1 on all
+     three surfaces, because a film steps off whatever is under it. */
+  --ctl-raise-hover: #EDEFF1;
   /* The select chevron, as a TOKEN and not a literal in forms.css. A colour baked
      into a data-URI cannot follow a var(), so the old hardcoded #61697A stroke
      stayed light-grey on a dark field — 2.64:1 over a dark modal, against 5.95:1
@@ -419,6 +434,7 @@
   --dk-ctl-face:  rgba(0,0,0,.22);
   --dk-ctl-track: rgba(0,0,0,.22);
   --dk-ctl-raise: rgba(255,255,255,.07);
+  --dk-ctl-raise-hover: rgba(255,255,255,.13);   /* ~1.49-1.52:1 off canvas / card / float */
   --dk-ctl-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%23A2A6AD' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 
   --dk-scrim: rgba(0,0,0,.66);
@@ -462,6 +478,7 @@
   --ctl-face: var(--dk-ctl-face);
   --ctl-track: var(--dk-ctl-track);
   --ctl-raise: var(--dk-ctl-raise);
+  --ctl-raise-hover: var(--dk-ctl-raise-hover);
   --ctl-chevron: var(--dk-ctl-chevron);
   --scrim: var(--dk-scrim);
   --shadow-float: var(--dk-shadow-float);
@@ -485,6 +502,7 @@
     --ctl-face: var(--dk-ctl-face);
     --ctl-track: var(--dk-ctl-track);
     --ctl-raise: var(--dk-ctl-raise);
+    --ctl-raise-hover: var(--dk-ctl-raise-hover);
     --ctl-chevron: var(--dk-ctl-chevron);
     --scrim: var(--dk-scrim);
     --shadow-float: var(--dk-shadow-float);
@@ -507,6 +525,7 @@
     --dk-pos-strong: #1A7F37; --dk-cau-strong: #CF741E; --dk-neg-strong: #C4372C;
     --dk-pos-tint: #E7F5EC; --dk-cau-tint: #FDEEE2; --dk-neg-tint: #FBE9E7;
     --dk-ctl-face: #FFFFFF; --dk-ctl-track: #EDEFF1; --dk-ctl-raise: #FFFFFF;
+    --dk-ctl-raise-hover: #EDEFF1;
     --dk-ctl-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%2361697A' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
     --dk-scrim: rgba(20,37,73,.32);
     --dk-shadow-float: 0 2px 8px rgba(20,37,73,.06);

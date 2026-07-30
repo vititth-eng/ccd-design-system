@@ -56,12 +56,12 @@
 
 /* Secondary — the neutral default. White surface, rule border. */
 .btn--secondary { background: var(--ctl-raise); color: var(--ink); border-color: var(--rule); }
-.btn--secondary:hover:not(:disabled)  { background: var(--divider); border-color: var(--muted); }
+.btn--secondary:hover:not(:disabled)  { background: var(--ctl-raise-hover); border-color: var(--muted); }
 .btn--secondary:active:not(:disabled) { filter: brightness(.96); }
 
 /* Ghost — tertiary / toolbar. No chrome until hovered. */
 .btn--ghost { background: transparent; color: var(--ink); }
-.btn--ghost:hover:not(:disabled)  { background: var(--divider); }
+.btn--ghost:hover:not(:disabled)  { background: var(--ctl-raise-hover); }
 .btn--ghost:active:not(:disabled) { filter: brightness(.96); }
 
 /* Danger — destructive. Uses the accessible fill red, not the dot red. */
