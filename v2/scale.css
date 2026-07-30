@@ -4,7 +4,7 @@
    SECOND consumer (onboarding check-up forms). Mechanics ported
    verbatim; nothing re-tuned on the way in.
 
-   One question = one .li row (number + text + .scale).
+   One question = one .qitem row (number + text + .scale).
    The five level names are stated ONCE in a .shead above the list —
    printing them under every row is 5 labels × n items of the same
    five words. Only at n = 1 may they sit under the circles, via
@@ -18,7 +18,7 @@
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: var(--s-2);
-  /* left pad clears the .liNo gutter so the labels sit over the circles */
+  /* left pad clears the .qitem__num gutter so the labels sit over the circles */
   padding: var(--s-2) 0 var(--s-2) calc(22px + var(--s-3));
   border-bottom: 1px solid var(--rule);
   margin-bottom: var(--s-2);
@@ -31,26 +31,26 @@
 }
 
 /* ── one item ──
-   `.li` IS THE WORST NAME IN THE DS and it is staying for now. It means "one
-   rating-question row", but bare `.li` at specificity (0,1,0) claims the abbreviation
-   every developer alive reaches for when they mean a list item — and because the DS
-   arrives by CDN after an app's own stylesheet, a tie goes to the DS: someone else's
-   list item silently becomes a two-column grid with a top border.
-   Not renamed because it is not currently a collision — it is CORRECTLY used:
-   ccd-brb-onboarding's survey page wraps .liNo + .liQ + .scale in it, exactly as
-   intended. Renaming to .qrow means editing the DS and that consumer in one batch
-   (memory feedback_atomic_token_rollout: no aliases), and onboarding is pinned at
-   v2.2.0 so nothing is urgent. Logged on CCD-174; do it with the next onboarding
-   change, not before (Codex audit 2026-07-30). */
-.li {
+   Renamed in v2.5.0 from `.li` / `.liNo` / `.liQ` (BREAKING, no alias). The old
+   name was the abbreviation every developer reaches for when they mean a list
+   item, at specificity (0,1,0) — and the DS arrives by CDN AFTER an app's own
+   stylesheet, so a tie goes to the DS and someone else's list item silently
+   became a two-column grid with a top border.
+
+   `.qrow` was the proposed replacement and was rejected on measurement:
+   ccd-brb-onboarding already owns `.qrow` for its dashboard question-average row
+   (a 1fr/200px/42px grid), so that name would have re-created the same collision
+   inside the first consumer. Check the consumers before picking a name — a DS
+   name is only free if it is free everywhere. */
+.qitem {
   display: grid;
   grid-template-columns: 22px 1fr;
   gap: var(--s-3);
   padding: var(--s-4) 0;
   border-top: 1px solid var(--divider);
 }
-.shead + .li { border-top: 0; }
-.liNo {
+.shead + .qitem { border-top: 0; }
+.qitem__num {
   font-size: var(--fs-caption);
   color: var(--muted);
   font-variant-numeric: tabular-nums;
@@ -58,7 +58,7 @@
 }
 /* doubled class: consumers set the question with a type role (.t-body),
    whose own margin would otherwise win on order. */
-.liQ.liQ { margin: 0 0 var(--s-3); line-height: var(--lh-normal); }
+.qitem__text.qitem__text { margin: 0 0 var(--s-3); line-height: var(--lh-normal); }
 
 /* ── the five circles ── */
 .scale {
@@ -140,7 +140,7 @@
 @media (max-width: 560px) {
   .shead { display: none; }
   .skey div { grid-template-columns: 1fr; gap: 0; }
-  .li { grid-template-columns: 1fr; gap: 0; }
-  .liNo { padding: 0 0 2px; }
+  .qitem { grid-template-columns: 1fr; gap: 0; }
+  .qitem__num { padding: 0 0 2px; }
   .scale { gap: var(--s-1); }
 }

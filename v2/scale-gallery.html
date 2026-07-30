@@ -26,15 +26,15 @@
     <p class="lede">A 1–5 agreement scale for respondent forms. The five level names are stated <b>once</b> in a <code>.shead</code> above the list — repeating them under every row prints the same five words n times. The <code>.scale--solo</code> variant puts them back under the circles, and is legal <b>only at one question</b>.</p>
 
     <div class="demo">
-      <p class="demo__cap">List — header once, then items (<code>.shead</code> + <code>.li</code> + <code>.scale</code>)</p>
+      <p class="demo__cap">List — header once, then items (<code>.shead</code> + <code>.qitem</code> + <code>.scale</code>)</p>
       <div class="card">
         <div class="shead">
           <span>Strongly disagree</span><span>Disagree</span><span>Neutral</span><span>Agree</span><span>Strongly agree</span>
         </div>
-        <div class="li">
-          <span class="liNo">1</span>
+        <div class="qitem">
+          <span class="qitem__num">1</span>
           <div>
-            <p class="t-body liQ">ฉันรู้สึกว่าตัวเองปรับตัวเข้ากับองค์กรได้ดี</p>
+            <p class="t-body qitem__text">ฉันรู้สึกว่าตัวเองปรับตัวเข้ากับองค์กรได้ดี</p>
             <div class="scale">
               <input class="sradio" type="radio" name="q1" id="q1-1" /><label class="sbtn" for="q1-1"><span class="sbtnN">1</span></label>
               <input class="sradio" type="radio" name="q1" id="q1-2" /><label class="sbtn" for="q1-2"><span class="sbtnN">2</span></label>
@@ -44,10 +44,10 @@
             </div>
           </div>
         </div>
-        <div class="li">
-          <span class="liNo">2</span>
+        <div class="qitem">
+          <span class="qitem__num">2</span>
           <div>
-            <p class="t-body liQ">ฉันเข้าใจบทบาทและความรับผิดชอบของตัวเองอย่างชัดเจน</p>
+            <p class="t-body qitem__text">ฉันเข้าใจบทบาทและความรับผิดชอบของตัวเองอย่างชัดเจน</p>
             <div class="scale">
               <input class="sradio" type="radio" name="q2" id="q2-1" /><label class="sbtn" for="q2-1"><span class="sbtnN">1</span></label>
               <input class="sradio" type="radio" name="q2" id="q2-2" /><label class="sbtn" for="q2-2"><span class="sbtnN">2</span></label>

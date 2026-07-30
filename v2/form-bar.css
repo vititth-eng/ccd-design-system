@@ -2,7 +2,12 @@
    (360°, onboarding, DISC, สำรวจ …). ONE constant frame, swappable right slot.
    Left = CCD mark + form name (name is a prop). Right = an optional slot module.
    Graduated 2026-07-05 from the per-app rater bar (.rbar) → cross-tool .fbar.
-   Slots shipped: __save, __subject. Add __prog / __help on first real use. */
+   Slots shipped: __save. Add __prog / __help on first real use.
+
+   __subject was RETIRED in v2.5.0. It named who the form was about, which is
+   real information but not chrome: the bar carries the CCD mark, the form name
+   and the save state, nothing else. Who the form is about belongs in the form
+   area, where onboarding's survey page already states it. */
 
 .fbar {
   position: sticky; top: 0; z-index: var(--z-sticky);
@@ -21,30 +26,11 @@
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 
-/* ── brand slot: subject — WHO the form is about ──
-   Rater forms ask "The new hire …" in every item, so with no name in the chrome
-   a supervisor holding three links cannot tell which person this one is. Lives
-   in the brand group, not the right slot: it qualifies the form name.
-   Never substitute the name INTO the question text — questionnaire wording is
-   verbatim source. The bar carries the identity instead. */
-.fbar__subject {
-  font-size: var(--fs-caption); color: var(--muted);
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-.fbar__subject::before { content: "·"; margin: 0 var(--s-2); }
-
 /* ── right slot: save state (long, auto-saved forms) ── */
 .fbar__save {
   display: inline-flex; align-items: center; gap: 6px; flex: 0 0 auto;
   font-size: var(--fs-caption); color: var(--pos-strong);
 }
 
-/* Phone: the bar cannot hold form name AND subject on one line, and truncating
-   both loses the subject — the one thing a multi-link rater needs. Wrap it. */
-@media (max-width: 560px) {
-  .fbar { align-items: flex-start; }
-  .fbar__brand { flex-wrap: wrap; }
-  .fbar__name { white-space: normal; }
-  .fbar__subject { flex: 1 0 100%; margin-left: calc(24px + var(--s-2)); }
-  .fbar__subject::before { content: none; }
-}
+/* No phone block. It existed only to wrap __subject onto a second line; with
+   mark + name + save the bar is a single row at every width. */
