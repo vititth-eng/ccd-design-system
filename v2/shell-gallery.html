@@ -26,9 +26,13 @@
 
    Here the rail is not drawn at all while collapsed, the reservation goes, and
    one button in the head opens the drawer that already exists. A scrim closes
-   it, because a drawer whose only exit is a control inside itself is a trap on
-   a touch screen. Desktop is untouched: the button is display:none above 720px
-   and the rail behaves exactly as it does now. */
+   it from anywhere on the page.
+
+   GATED ON A FINGER, NOT ON A NARROW WINDOW. The reason to drop the rail is
+   that 64px is a sixth of a phone; a 660px browser window on a laptop has a
+   mouse and is exactly the case the 56px rail was invented for. So the trigger
+   is `max-width: 720px AND pointer: coarse` -- narrow the window on a desktop
+   and you keep the sidebar you have always had. */
 .shell__menu {
   display: none;                     /* phone only -- see the media query */
   width: 34px; height: 34px; flex: 0 0 auto;
@@ -40,27 +44,19 @@
 .shell__menu:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 /* The scrim only exists while the drawer is out, and only on a phone. */
 .shell__scrim { display: none; }
-/* Phone-only exit, sitting in the drawer's own header where the eye already is
-   after it opens. Muted, because it is the way OUT of the panel, not a thing to
-   do in it. */
-.shell__close {
-  display: none;
-  width: 34px; height: 34px; flex: 0 0 auto; margin-left: auto;
-  align-items: center; justify-content: center;
-  padding: 0; border: 0; border-radius: var(--r-base);
-  background: none; color: var(--muted); cursor: pointer;
-}
-.shell__close svg { width: 18px; height: 18px; }
-.shell__close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* No phone-only close button. The drawer is modal -- the scrim closes it from
+   anywhere -- and the sidebar's own collapse row is already a labelled,
+   focusable way out, which a scrim is not. Adding a second one made the phone
+   shell a different component instead of the desktop one under a media query. */
 
-/* Both of these are the ONLY way in and out of navigation on a phone, so they
-   answer to the same 44px shell.css gives .shell__item and .shell__user. They
-   are new elements, so the rule there cannot reach them. */
+/* The only way IN to navigation on a phone, so it answers to the same 44px
+   shell.css gives .shell__item and .shell__collapse. It is a new element, so
+   the rule there cannot reach it. */
 @media (pointer: coarse) {
-  .shell__menu, .shell__close { width: 44px; height: 44px; }
+  .shell__menu { width: 44px; height: 44px; }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 720px) and (pointer: coarse) {
   .shell__menu { display: inline-flex; order: -1; }
   /* .shell__menu:hover is deliberately absent: a phone has nothing to move the
      pointer away with, so the tint would stick after the tap. Same trap the
@@ -80,12 +76,6 @@
      over a dimmed page, with its own scroll if a consumer ever has more items
      than fit. */
   .shell:not(.shell--collapsed) .shell__sidebar { width: 240px; }
-  /* "Collapse" is a desktop word: there it shrinks the sidebar to an icon rail
-     that still exists. A phone has no rail left to shrink to, so the control
-     would name a state this screen does not have. The close button replaces it. */
-  .shell__collapse { display: none; }
-  .shell__close { display: inline-flex; }
-
   .shell:not(.shell--collapsed) .shell__scrim {
     display: block; position: absolute; inset: 0;
     z-index: calc(var(--z-drawer) - 1);
@@ -106,13 +96,6 @@
           <span class="shell__mark"></span>
         </a>
         <span class="shell__appname">360 Multi-Rater</span>
-        <!-- PROTOTYPE: phone-only. Hidden above 720px, where Collapse still applies. -->
-        <!-- The collapse chevron, not an X: the panel slides away to the left,
-             which is what this glyph already means everywhere else in the shell.
-             An X reads as dismissing a dialog. -->
-        <button class="shell__close" id="closebtn" aria-label="ปิดเมนู">
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5 7 10l5 5"/></svg>
-        </button>
       </div>
 
       <nav class="shell__nav" aria-label="เมนูหลัก">
@@ -217,7 +200,6 @@
     closeMenus();
   }
   document.getElementById('scrim').addEventListener('click', shut);
-  document.getElementById('closebtn').addEventListener('click', shut);
 
   // Disclosure menus: trigger toggles, outside click / Esc closes.
   var menus = [
