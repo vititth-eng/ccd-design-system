@@ -53,7 +53,10 @@
    shell.css gives .shell__item and .shell__collapse. It is a new element, so
    the rule there cannot reach it. */
 @media (pointer: coarse) {
-  .shell__menu { width: 44px; height: 44px; }
+  .shell__menu { width: 44px; height: 44px; -webkit-tap-highlight-color: transparent; }
+  /* Same swap shell.css makes for its own controls: kill the UA's dark flash,
+     which draws above the drawer, and put a real :active in its place. */
+  .shell__menu:active { background: var(--accent-tint); }
 }
 
 @media (max-width: 720px) and (pointer: coarse) {
