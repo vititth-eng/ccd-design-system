@@ -214,6 +214,20 @@
 @media (pointer: coarse) {
   .shell__item, .shell__collapse { height: 44px; }
   .shell__user { height: 44px; }
+
+  /* iOS paints its own dark flash on a tapped element, and the browser draws it
+     ABOVE page content -- so tapping a control in the head made a black rectangle
+     appear over the drawer sliding out beneath it, which reads as a rendering
+     fault rather than as feedback.
+     Replaced, not deleted: hover is off on touch (above), so removing the flash
+     outright would leave a tap with no acknowledgement at all until the page
+     changed. :active only paints while the finger is down, so unlike hover it
+     cannot stick. */
+  .shell__home, .shell__item, .shell__collapse, .shell__user { -webkit-tap-highlight-color: transparent; }
+  .shell__item:active:not(.shell__item--on),
+  .shell__collapse:active,
+  .shell__user:active { background: var(--accent-tint); }
+  .shell__home:active { opacity: .7; }
 }
 
 /* ── PHONE: the sidebar becomes a DRAWER ───────────────────── */
