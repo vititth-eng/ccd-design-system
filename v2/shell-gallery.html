@@ -14,10 +14,84 @@
 <link rel="stylesheet" href="./nav.css" />
 <link rel="stylesheet" href="./menu.css" />
 <link rel="stylesheet" href="./shell.css" />
-<style>* { box-sizing: border-box; } html,body { height:100%; } body { margin:0; overflow:hidden; }</style>
+<style>* { box-sizing: border-box; } html,body { height:100%; } body { margin:0; overflow:hidden; }
+
+/* ══ PROTOTYPE, not yet in shell.css ═════════════════════════════════════════
+   Phone navigation: a menu button instead of a permanent icon rail.
+
+   Today the phone sidebar already floats OVER the content, but .shell__main
+   still reserves calc(56px + var(--s-2)) so the rail never covers the page.
+   On a 375px screen that is 64px -- a sixth of the width -- spent on six
+   glyphs, permanently, on the axis a phone has least of.
+
+   Here the rail is not drawn at all while collapsed, the reservation goes, and
+   one button in the head opens the drawer that already exists. A scrim closes
+   it, because a drawer whose only exit is a control inside itself is a trap on
+   a touch screen. Desktop is untouched: the button is display:none above 720px
+   and the rail behaves exactly as it does now. */
+.shell__menu {
+  display: none;                     /* phone only -- see the media query */
+  width: 34px; height: 34px; flex: 0 0 auto;
+  align-items: center; justify-content: center;
+  padding: 0; border: 0; border-radius: var(--r-base);
+  background: none; color: var(--ink); cursor: pointer;
+}
+.shell__menu svg { width: 20px; height: 20px; }
+.shell__menu:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* The scrim only exists while the drawer is out, and only on a phone. */
+.shell__scrim { display: none; }
+/* Phone-only exit, sitting in the drawer's own header where the eye already is
+   after it opens. Muted, because it is the way OUT of the panel, not a thing to
+   do in it. */
+.shell__close {
+  display: none;
+  width: 34px; height: 34px; flex: 0 0 auto; margin-left: auto;
+  align-items: center; justify-content: center;
+  padding: 0; border: 0; border-radius: var(--r-base);
+  background: none; color: var(--muted); cursor: pointer;
+}
+.shell__close svg { width: 18px; height: 18px; }
+.shell__close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+@media (max-width: 720px) {
+  .shell__menu { display: inline-flex; order: -1; }
+  /* .shell__menu:hover is deliberately absent: a phone has nothing to move the
+     pointer away with, so the tint would stick after the tap. Same trap the
+     calendar hit -- see @media (hover: hover) in the consumer. */
+
+  /* Head becomes: [button] [title] / [actions]. The title can no longer take a
+     whole row of its own (it would push the button onto a line by itself), so
+     the actions take one instead -- which is where they already sat. */
+  .shell__title { flex: 1 1 0; }
+  .shell__actions { flex: 1 0 100%; }
+
+  /* The rail is gone, so nothing needs reserving. */
+  .shell__main { margin-left: 0; }
+  /* Collapsed now means ABSENT, not a 56px strip of unlabelled glyphs. */
+  .shell--collapsed .shell__sidebar { display: none; }
+  /* Open: the drawer is a real panel, not a rail that grew -- 208px of labels
+     over a dimmed page, with its own scroll if a consumer ever has more items
+     than fit. */
+  .shell:not(.shell--collapsed) .shell__sidebar { width: 240px; }
+  /* "Collapse" is a desktop word: there it shrinks the sidebar to an icon rail
+     that still exists. A phone has no rail left to shrink to, so the control
+     would name a state this screen does not have. The close button replaces it. */
+  .shell__collapse { display: none; }
+  .shell__close { display: inline-flex; }
+
+  .shell:not(.shell--collapsed) .shell__scrim {
+    display: block; position: absolute; inset: 0;
+    z-index: calc(var(--z-drawer) - 1);
+    background: color-mix(in srgb, var(--ink) 38%, transparent);
+  }
+}
+</style>
 </head>
 <body>
   <div class="shell" id="shell">
+    <!-- PROTOTYPE: closes the drawer by tapping the page it covers. -->
+    <div class="shell__scrim" id="scrim"></div>
+
     <!-- SIDEBAR -->
     <aside class="shell__sidebar">
       <div class="shell__brand">
@@ -25,6 +99,10 @@
           <span class="shell__mark"></span>
         </a>
         <span class="shell__appname">360 Multi-Rater</span>
+        <!-- PROTOTYPE: phone-only. Hidden above 720px, where Collapse still applies. -->
+        <button class="shell__close" id="closebtn" aria-label="ปิดเมนู">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9"/></svg>
+        </button>
       </div>
 
       <nav class="shell__nav" aria-label="เมนูหลัก">
@@ -64,6 +142,10 @@
     <!-- MAIN -->
     <main class="shell__main">
       <div class="shell__head">
+        <!-- PROTOTYPE: the phone's whole navigation, in 34px. -->
+        <button class="shell__menu" id="menubtn" aria-label="เปิดเมนู" aria-expanded="false">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3.5 6h13M3.5 10h13M3.5 14h13"/></svg>
+        </button>
         <div class="shell__title">
           <h1 class="t-title">แดชบอร์ด</h1>
           <p class="t-sub">รอบการประเมิน Q4 / 2026</p>
@@ -106,10 +188,26 @@
   </div>
 
 <script>
+  var shell = document.getElementById('shell');
   document.getElementById('collapse').addEventListener('click', function(){
-    document.getElementById('shell').classList.toggle('shell--collapsed');
+    shell.classList.toggle('shell--collapsed');
     closeMenus();
   });
+
+  // PROTOTYPE: menu button opens the drawer, scrim or Esc closes it.
+  var menubtn = document.getElementById('menubtn');
+  menubtn.addEventListener('click', function(){
+    var open = shell.classList.toggle('shell--collapsed') === false;
+    menubtn.setAttribute('aria-expanded', open);
+    closeMenus();
+  });
+  function shut(){
+    shell.classList.add('shell--collapsed');
+    menubtn.setAttribute('aria-expanded', 'false');
+    closeMenus();
+  }
+  document.getElementById('scrim').addEventListener('click', shut);
+  document.getElementById('closebtn').addEventListener('click', shut);
 
   // Disclosure menus: trigger toggles, outside click / Esc closes.
   var menus = [
@@ -134,8 +232,12 @@
     if (!menus.some(function(m){ return m.menu.contains(e.target); })) closeMenus();
   });
   document.addEventListener('keydown', function(e){
-    if (e.key === 'Escape') closeMenus();
+    if (e.key === 'Escape') { closeMenus(); shell.classList.add('shell--collapsed'); }
   });
+
+  // PROTOTYPE: a phone opens with the drawer shut -- the button is the entry
+  // point, so anything else would greet you with a menu you did not ask for.
+  if (window.innerWidth <= 720) shell.classList.add('shell--collapsed');
 </script>
 </body>
 </html>
