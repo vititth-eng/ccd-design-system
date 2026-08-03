@@ -53,6 +53,13 @@
 .shell__close svg { width: 18px; height: 18px; }
 .shell__close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
+/* Both of these are the ONLY way in and out of navigation on a phone, so they
+   answer to the same 44px shell.css gives .shell__item and .shell__user. They
+   are new elements, so the rule there cannot reach them. */
+@media (pointer: coarse) {
+  .shell__menu, .shell__close { width: 44px; height: 44px; }
+}
+
 @media (max-width: 720px) {
   .shell__menu { display: inline-flex; order: -1; }
   /* .shell__menu:hover is deliberately absent: a phone has nothing to move the
@@ -100,8 +107,11 @@
         </a>
         <span class="shell__appname">360 Multi-Rater</span>
         <!-- PROTOTYPE: phone-only. Hidden above 720px, where Collapse still applies. -->
+        <!-- The collapse chevron, not an X: the panel slides away to the left,
+             which is what this glyph already means everywhere else in the shell.
+             An X reads as dismissing a dialog. -->
         <button class="shell__close" id="closebtn" aria-label="ปิดเมนู">
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9"/></svg>
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5 7 10l5 5"/></svg>
         </button>
       </div>
 
