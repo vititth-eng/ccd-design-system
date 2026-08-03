@@ -41,7 +41,8 @@
 }
 .shell__home:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 /* Singha lion mark (assets/ccd-mark-full.svg) painted via mask so it takes
-   --ink from tokens (currentColor inside an <img> can't inherit page color). */
+   --ink from tokens (currentColor inside an image element can't inherit page
+   colour, which is why this is not an img tag). */
 .shell__mark {
   width: 28px; height: 28px; flex: 0 0 auto;
   background: var(--ink);
