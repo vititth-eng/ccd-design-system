@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Likert distribution ramp — 4 candidates</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/vititth-eng/ccd-design-system@v2.5.2/v2/tokens.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/vititth-eng/ccd-design-system@v2.5.2/v2/type.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/vititth-eng/ccd-design-system@v2.5.2/v2/cards.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap">
+
+<style>
+/* v2 ships no reset — a standalone page needs these two or the shell double-scrolls. */
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; }
+
+body {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  padding: var(--s-6) var(--s-5) var(--s-8);
+}
+.page { max-width: 1180px; margin: 0 auto; }
+
+.head { display: flex; align-items: baseline; gap: var(--s-4); margin-bottom: var(--s-3); }
+.head h1 { margin: 0; }
+.lede { color: var(--muted); max-width: 62ch; margin: 0 0 var(--s-6); }
+
+button.mode {
+  font: inherit; font-size: var(--fs-sub); cursor: pointer;
+  border: 1px solid var(--divider); background: var(--surface); color: var(--ink);
+  border-radius: var(--r-2); padding: 6px 12px; margin-left: auto;
+}
+
+/* ── The candidates ────────────────────────────────────────────────────────
+   Each variant sets three values. --d5 top box, --d4 second box, --d3 the rest.
+   --stroke is the hairline chart rule 2 demands for any fill under 3:1.        */
+
+/* CONTROL — what ships today. Status DOTS used as chart fills.
+   --neg is annotated DOT-ONLY / fails AA as a fill, and it is a fill here. */
+[data-v="control"] {
+  --d5: var(--pos);
+  --d4: color-mix(in oklab, var(--pos) 38%, var(--divider));
+  --d3: var(--neg);
+  --stroke: transparent;
+}
+
+/* A — the DS's own accessible tier. Zero new tokens: -strong exists precisely
+   for text and fills. Same semantics as today, legal contrast. */
+[data-v="a"] {
+  --d5: var(--pos-strong);
+  --d4: color-mix(in oklab, var(--pos-strong) 30%, var(--divider));
+  --d3: var(--neg-strong);
+  --stroke: transparent;
+}
+
+/* B — a real diverging ramp. Two hues off a neutral middle, neither of them a
+   status hue, neither near --accent blue or --chart-1. */
+[data-v="b"] {
+  --d5: #2E7F72;
+  --d4: #BFDBD5;
+  --d3: #B4543F;
+  --stroke: color-mix(in oklab, var(--d4) 70%, #000);
+}
+
+/* C — exception flag. Positive is achromatic, so the eye is caught ONLY by the
+   part that needs action. The quiet default, one hue of chroma on the page. */
+[data-v="c"] {
+  --d5: #5A6675;
+  --d4: #CDD3DB;
+  --d3: #B4543F;
+  --stroke: color-mix(in oklab, var(--d4) 70%, #000);
+}
+
+/* D — diverging built FROM the categorical palette. Zero new tokens: the ramp
+   borrows chart-3's teal and chart-2's rose as its two ends. */
+[data-v="d"] {
+  --d5: var(--chart-3);
+  --d4: color-mix(in oklab, var(--chart-3) 35%, var(--divider));
+  --d3: var(--chart-2);
+  --stroke: color-mix(in oklab, var(--d4) 70%, #000);
+}
+
+/* E — same idea, blue end instead of teal. chart-1 is the palette's series-1,
+   so this is the most "chart-looking" of the lot — but it sits near --accent. */
+[data-v="e"] {
+  --d5: var(--chart-1);
+  --d4: color-mix(in oklab, var(--chart-1) 32%, var(--divider));
+  --d3: var(--chart-2);
+  --stroke: color-mix(in oklab, var(--d4) 70%, #000);
+}
+
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-5); }
+@media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+
+.card { padding: var(--s-5); }
+.vhead { display: flex; align-items: baseline; gap: var(--s-3); margin-bottom: var(--s-2); }
+.vhead h2 { margin: 0; }
+.tag {
+  font-size: var(--fs-sub); color: var(--muted);
+  border: 1px solid var(--divider); border-radius: var(--r-1); padding: 1px 7px;
+}
+.note { color: var(--muted); font-size: var(--fs-sub); margin: 0 0 var(--s-4); min-height: 3.2em; }
+
+.legend { display: flex; gap: var(--s-4); font-size: var(--fs-sub); color: var(--muted); margin-bottom: var(--s-3); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+.legend .k5 { background: var(--d5); }
+.legend .k4 { background: var(--d4); }
+.legend .k3 { background: var(--d3); }
+
+/* .qrow / .dist are the app-local classes from ccd-brb-onboarding globals.css,
+   copied verbatim so the sandbox measures the real component, not a lookalike. */
+.qrow {
+  display: grid; grid-template-columns: 1fr 200px 42px;
+  align-items: center; gap: var(--s-3);
+  padding: var(--s-2) 0; border-top: 1px solid var(--divider);
+  font-size: var(--fs-body);
+}
+.qrow:first-of-type { border-top: 0; }
+.qrow .avg { text-align: right; font-variant-numeric: tabular-nums; }
+.dist { display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: var(--divider); }
+.dist span { display: block; height: 100%; }
+.d5 { background: var(--d5); }
+.d4 { background: var(--d4); box-shadow: inset 0 0 0 1px var(--stroke); }
+.d3 { background: var(--d3); }
+
+.sub { font-size: var(--fs-sub); color: var(--muted); margin: var(--s-5) 0 var(--s-2); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="head">
+    <h1 class="t-title">Likert distribution ramp</h1>
+    <button class="mode" id="mode">Dark</button>
+  </div>
+  <p class="lede">
+    Four candidates for the <code>.dist</code> bar, rendered on the real numbers.
+    Top block is Orientation Day (64 answers, almost all 5s — tests whether a
+    <em>1-of-64</em> sliver shouts). Bottom block is the check-ups (small n, big
+    negative share — tests whether the ramp still reads when the bad news wins).
+  </p>
+
+  <div class="grid" id="grid"></div>
+</div>
+
+<script>
+// Real distributions, pulled 2026-08-05. n5 / n4 / n<=3.
+const ORIENTATION = [
+  ["I felt welcomed and part of the organization from day one", 4.89, 57, 7, 0],
+  ["All facilitators communicated and presented content effectively", 4.81, 53, 10, 1],
+  ["I received sufficient organizational information", 4.80, 51, 13, 0],
+  ["Overall satisfaction with this orientation session", 4.78, 51, 12, 1],
+  ["The format and media used were appropriate and useful", 4.77, 49, 15, 0],
+  ["The onboarding day activities were engaging and useful", 4.73, 49, 13, 2],
+  ["The timing and flow of activities were appropriate", 4.55, 44, 12, 8],
+];
+
+const CHECKUP = [
+  ["The new hire meets or contacts me regularly", 2.67, 0, 1, 2],
+  ["The new hire meets the expected performance standards", 3.57, 1, 4, 2],
+  ["I am satisfied with the new hire's progress so far", 3.86, 7, 34, 8],
+  ["Overall, the new hire is progressing well in their adjustment", 4.00, 1, 1, 1],
+];
+
+const VARIANTS = [
+  { id: "control", name: "Control", tag: "ships today",
+    note: "Status traffic-light dots used as chart fills. tokens.css marks --neg DOT-ONLY, fails AA as a fill — and the palette doctrine says status is never a chart hue. One dissenting answer out of 64 reads as an alarm." },
+  { id: "a", name: "A · Accessible status tier", tag: "no new tokens",
+    note: "Swaps the dots for --pos-strong / --neg-strong, the tier the DS built for text and fills. Legal contrast, same meaning, smallest possible change. Still spends the status hues on a chart." },
+  { id: "b", name: "B · Diverging ramp", tag: "2 new tokens",
+    note: "What the doctrine actually asks for: two hues off a neutral middle, and Likert is always diverging. Neither hue is a status colour or near --accent, so a bar and a status dot can share a card." },
+  { id: "c", name: "C · Exception flag", tag: "2 new tokens",
+    note: "Positive is achromatic. The only colour on the page is the part that needs action, so the eye lands on Timing & flow without reading anything else first. Quietest option; good news carries no colour." },
+  { id: "d", name: "D · Chart palette · teal ↔ rose", tag: "no new tokens",
+    note: "Diverging ramp built from the categorical palette: chart-3 at the top end, chart-2 at the bottom. Nothing new to graduate, and neither hue is a status colour — so a bar and a status dot can share a card." },
+  { id: "e", name: "E · Chart palette · blue ↔ rose", tag: "no new tokens",
+    note: "Same, with chart-1 as the positive end. Reads most like a chart because blue is series 1 everywhere else — but it sits close to --accent, so links and bars compete." },
+];
+
+const bar = ([text, avg, n5, n4, n3]) => {
+  const n = n5 + n4 + n3;
+  const p = (x) => (n ? (x / n) * 100 : 0);
+  return `<div class="qrow">
+    <span>${text}</span>
+    <span class="dist">
+      <span class="d5" style="width:${p(n5)}%"></span>
+      <span class="d4" style="width:${p(n4)}%"></span>
+      <span class="d3" style="width:${p(n3)}%"></span>
+    </span>
+    <span class="avg">${avg.toFixed(2)}</span>
+  </div>`;
+};
+
+// D and E are the live candidates, so they lead; control sits next to them for
+// the before/after, and A–C trail as the rejected shapes.
+const ORDER = ["d", "e", "control", "b", "c", "a"];
+document.getElementById("grid").innerHTML = ORDER.map((id) => VARIANTS.find((x) => x.id === id)).map((v) => `
+  <section class="card" data-v="${v.id}">
+    <div class="vhead"><h2 class="t-section">${v.name}</h2><span class="tag">${v.tag}</span></div>
+    <p class="note">${v.note}</p>
+    <div class="legend">
+      <span><i class="k5"></i>Strongly agree</span>
+      <span><i class="k4"></i>Agree</span>
+      <span><i class="k3"></i>Neutral or lower</span>
+    </div>
+    <p class="sub">Orientation Day · 64 answers</p>
+    ${ORIENTATION.map(bar).join("")}
+    <p class="sub">Check-ups · small n, negative-heavy</p>
+    ${CHECKUP.map(bar).join("")}
+  </section>`).join("");
+
+// Both modes matter: the bars have to survive the dark canvas too.
+const btn = document.getElementById("mode");
+btn.onclick = () => {
+  const dark = document.documentElement.getAttribute("data-theme") === "dark";
+  document.documentElement.setAttribute("data-theme", dark ? "light" : "dark");
+  btn.textContent = dark ? "Dark" : "Light";
+};
+</script>
+</body>
+</html>

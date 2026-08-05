@@ -147,8 +147,16 @@
          competencies --chart-1..7 throws away the only thing rating data has,
          which is its order, and no legend gives that back;
        status (done / late / at risk) is already owned above — never a chart hue.
-     Neither ramp is built. The first real chart sizes them; do not invent values
-     in a mock. Full rule with the worked cases: PRODUCT.md composition rule 6.
+     Sequential is still unbuilt — the first real magnitude chart sizes it, and do
+     not invent values in a mock. DIVERGING WAS SIZED 2026-08-05, and it is not a
+     new pair of hexes: a Likert bar runs --chart-3 teal at the agree end to
+     --chart-2 rose at the disagree end, middle a pale mix of that teal into
+     --divider, which takes rule 2's hairline. Borrowed, not minted, so the palette
+     stays seven values and neither end is a status hue — reuse that pairing rather
+     than picking two more. Owner call over four alternatives, two of which minted
+     tokens; render v2/likert-ramp-explore.html variant D, first consumer is
+     onboarding /insights + /orientation.
+     Full rule with the worked cases: PRODUCT.md composition rule 6.
 
      WITHIN this categorical job, INDEX ORDER IS THE API — series 1 takes
      --chart-1, series 2 --chart-2. That part is not a taste decision: pick a hue

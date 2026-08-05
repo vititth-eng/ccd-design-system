@@ -100,8 +100,12 @@ scar + why stays in memory.*
    **Diverging** (agree↔disagree, vs target, YoY) → two hues off a neutral middle.
    **Likert is always diverging** — nine competencies painted `--chart-1..7`
    discards the one thing rating data has. **Status** (done/late/at risk) → the
-   status hues, never a chart hue. Sequential and diverging ramps are **not
-   built**: the first real chart sizes them, and a mock must not invent values.
+   status hues, never a chart hue. **Sequential is not built**: the first real
+   magnitude chart sizes it, and a mock must not invent values. **Diverging was
+   sized 2026-08-05 by borrowing, not minting** — `--chart-3` teal at the agree
+   end, `--chart-2` rose at the disagree end, middle a pale mix of that teal into
+   `--divider` carrying rule (b)'s hairline. Reuse that pairing; do not pick two
+   more hues.
    **Most charts want one hue, not seven** — subject in `--chart-1`, context in
    `--chart-7`; five of the seven then never appear.
    **The seven hexes are frozen, so three rules carry the collisions instead** (the
