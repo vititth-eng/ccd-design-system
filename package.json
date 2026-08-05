@@ -1,6 +1,6 @@
 {
   "name": "@ccd/design-system",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "CSS tokens + components for ccd-brb-* apps (v2, CDN). This npm package ships only the retiring v1 React chrome + the glossary; v2 is CSS-only by design.",
   "type": "module",
   "exports": {

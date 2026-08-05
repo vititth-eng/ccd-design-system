@@ -9,7 +9,7 @@ import s from './chrome.module.css';
 // canonical production origin. Empty NEXT_PUBLIC_BASE_URL on Vercel produced
 // bare-path tool links that resolved against whatever origin the page loaded
 // from (e.g. localhost during preview).
-const BASE = process.env.NEXT_PUBLIC_BASE_URL || 'https://ccd-brb.vercel.app';
+const BASE = process.env.NEXT_PUBLIC_BASE_URL || 'https://ccdportal.app';
 
 const TOOLS = [
   { href: `${BASE}/onboarding/`, label: 'Newcomer Motivation Check-Up', status: 'Live', cls: 'live' },
