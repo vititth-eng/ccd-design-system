@@ -152,4 +152,8 @@
      double-toggle. Its checked state is set by the row's handler. */
   pointer-events: none;
 }
-.menu__item:has(input:checked) { font-weight: var(--fw-semi); }
+/* NO weight bump on a checked row — 400 across the whole list. The box already
+   says it, and 600 says it a second time in a way that costs: --fw-semi widens
+   the label ~2px, so rows shift as you pick and the list never sits still. Same
+   reason there is no tint. The ONE place weight is spent in a menu is
+   .menu__item--on, where it marks a single current value. */

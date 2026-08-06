@@ -311,15 +311,12 @@
    owes 4.5:1. So the lock stays full --muted and is marked secondary by SIZE
    (15px against the 19px nav glyphs), which costs no contrast at all. */
 
-/* One line, never a tooltip: hover does not exist on the phones these run on.
-   Matches .shell__group's caption size and muted ink — it belongs to the locked
-   block above it, not to body copy. */
-.shell__note {
-  font-size: var(--fs-caption); color: var(--muted);
-  padding: var(--s-1) var(--s-1) 0; margin: 0; white-space: nowrap;
-}
+/* NO explanatory line under the locked block, and no tooltip. Owner call
+   2026-08-06, after seeing it: the padlock carries it alone. Worth knowing what
+   that costs, because it is not nothing -- .shell__item is already --muted, so a
+   locked row is the SAME ink as any unselected one and the 15px lock is the
+   entire distinction. That is the deal, deliberately made. */
 
 /* The rail is icons only. A padlock with no label to lock reads as another nav
-   glyph, and there is no room for the line — both hide, like every other string. */
+   glyph, so it hides with every other string. */
 .shell--collapsed .shell__item svg.shell__lock { display: none; }
-.shell--collapsed .shell__note { height: 0; padding: 0; overflow: hidden; visibility: hidden; }

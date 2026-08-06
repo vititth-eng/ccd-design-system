@@ -53,6 +53,15 @@
       <div style="margin: var(--s-5) 0 var(--s-3)">
         <p class="note" style="margin-bottom: var(--s-2)"><b>Multi-select mode</b> — a real <code>&lt;input type="checkbox"&gt;</code> in front of each row. For set-valued fields whose options have no mark to draw (company names, cohort slugs, role names); anything with an icon takes <code>.grants</code> in forms.css instead.</p>
         <div class="menu is-open" style="position: static; display: block; max-width: 260px">
+          <!-- Select-all at the TOP, and as ONE tri-state row rather than a
+               "Select all / Clear all" pair. It is a scope-setter: you decide all
+               or none BEFORE scanning the list, so at the bottom you scroll past
+               everything to reach it and it falls below the fold on a long list.
+               One row also REPORTS state — dashed when the selection is partial —
+               where "Clear all" would sit there as a no-op with nothing selected.
+               No new CSS: .menu__sep and the checkbox rule already exist. -->
+          <button class="menu__item" id="g-all"><input type="checkbox" tabindex="-1" aria-hidden="true">ทั้งหมด</button>
+          <div class="menu__sep"></div>
           <button class="menu__item"><input type="checkbox" tabindex="-1" aria-hidden="true" checked>บริษัท บุญรอดบริวเวอรี่</button>
           <button class="menu__item"><input type="checkbox" tabindex="-1" aria-hidden="true" checked>บริษัท สิงห์ คอร์เปอเรชั่น</button>
           <button class="menu__item"><input type="checkbox" tabindex="-1" aria-hidden="true">สิงห์ปาร์ค</button>
@@ -186,5 +195,27 @@
       themeSeg.querySelectorAll('.seg__opt').forEach((x) => x.classList.toggle('seg__opt--active', x === b));
     });
   </script>
+<script>
+  // Gallery only — shows the three states of the All row. A consumer wires this
+  // to its own state; `indeterminate` is a PROPERTY, not an attribute, so it can
+  // only ever be set from script.
+  (() => {
+    const menu = document.getElementById('g-all').closest('.menu');
+    const all = menu.querySelector('#g-all input');
+    const rows = [...menu.querySelectorAll('.menu__item:not(#g-all) input')];
+    const sync = () => {
+      const n = rows.filter(r => r.checked).length;
+      all.checked = n === rows.length;
+      all.indeterminate = n > 0 && n < rows.length;
+    };
+    menu.querySelectorAll('.menu__item').forEach(b => b.addEventListener('click', () => {
+      const box = b.querySelector('input');
+      if (b.id === 'g-all') { const to = !(all.checked); rows.forEach(r => r.checked = to); }
+      else box.checked = !box.checked;
+      sync();
+    }));
+    sync();
+  })();
+</script>
 </body>
 </html>

@@ -179,7 +179,7 @@ select.control {
    them into one block was tried and rejected: a joined block reads as a
    segmented control, which means "pick one of these", and that is a different
    promise entirely. */
-.grants { display: inline-flex; gap: 6px; }
+.grants { display: inline-flex; gap: var(--s-1); }
 
 .grant {
   width: var(--ctl-h); height: var(--ctl-h); flex: 0 0 auto;
