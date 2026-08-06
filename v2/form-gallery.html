@@ -136,5 +136,45 @@
       </div>
     </div>
   </section>
+
+  <!-- 9 · Grants — capability toggles ------------------------------ -->
+  <section style="max-width: 620px">
+    <p class="t-section lbl">9 · Grants <span>— set-valued access, one square per thing granted</span></p>
+    <p class="t-body" style="margin: 0 0 var(--s-3); color: var(--muted)">
+      Muted until granted, brand when granted. Fixed width, so a column of these
+      does not reflow row to row — which is what lets an access matrix live inside
+      a table cell. Use only where each option has a mark people recognise: apps,
+      sections, resources. For company names, cohort slugs or role names there is
+      nothing to draw — those take the checkbox menu (menu.css <code>.menu__item</code>
+      with an <code>&lt;input type="checkbox"&gt;</code>).
+    </p>
+    <div class="grants">
+      <button class="grant" aria-pressed="true" aria-label="Overview" title="Overview"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="6" height="6" rx="1"/><rect x="11" y="3" width="6" height="6" rx="1"/><rect x="3" y="11" width="6" height="6" rx="1"/><rect x="11" y="11" width="6" height="6" rx="1"/></svg></button>
+      <button class="grant" aria-pressed="true" aria-label="Meeting rooms" title="Meeting rooms"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2.5" y="4.5" width="15" height="13" rx="1.6"/><path d="M2.5 8.5h15M6.5 2.5v4M13.5 2.5v4"/></svg></button>
+      <button class="grant" aria-pressed="false" aria-label="Company car" title="Company car"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M2.5 13.6h15v-3.3l-1.5-3.5a1.6 1.6 0 00-1.5-1h-9a1.6 1.6 0 00-1.5 1L2.5 10.3v3.3z"/><circle cx="6" cy="13.6" r="1.2"/><circle cx="14" cy="13.6" r="1.2"/></svg></button>
+      <button class="grant" aria-pressed="false" aria-label="People" title="People" disabled><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7.3" cy="7" r="2.7"/><path d="M2.5 16c0-2.6 2.1-4.2 4.8-4.2s4.8 1.6 4.8 4.2"/></svg></button>
+    </div>
+    <p class="t-caption" style="margin: var(--s-2) 0 var(--s-4); color: var(--muted)">
+      granted · granted · not granted · disabled
+    </p>
+
+    <div class="grants grants--sm">
+      <button class="grant" aria-pressed="true" aria-label="Overview"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="6" height="6" rx="1"/><rect x="11" y="3" width="6" height="6" rx="1"/><rect x="3" y="11" width="6" height="6" rx="1"/><rect x="11" y="11" width="6" height="6" rx="1"/></svg></button>
+      <button class="grant" aria-pressed="false" aria-label="Meeting rooms"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2.5" y="4.5" width="15" height="13" rx="1.6"/><path d="M2.5 8.5h15M6.5 2.5v4M13.5 2.5v4"/></svg></button>
+      <button class="grant" aria-pressed="true" aria-label="Company car"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M2.5 13.6h15v-3.3l-1.5-3.5a1.6 1.6 0 00-1.5-1h-9a1.6 1.6 0 00-1.5 1L2.5 10.3v3.3z"/><circle cx="6" cy="13.6" r="1.2"/><circle cx="14" cy="13.6" r="1.2"/></svg></button>
+    </div>
+    <p class="t-caption" style="margin: var(--s-2) 0 0; color: var(--muted)">
+      <code>.grants--sm</code> — for dense table rows. Both sizes take the 44px
+      floor under <code>pointer: coarse</code>.
+    </p>
+
+    <p class="t-body" style="margin: var(--s-5) 0 0; color: var(--muted)">
+      <b style="color: var(--ink)">A ladder is not a set.</b> Where the column is
+      ordered — cowork's <code>booking</code> is one enum,
+      <code>none &lt; rooms &lt; rooms_car</code> — the squares still render
+      separately and the coupling lives in the handler. Joining them into one
+      block reads as a segmented control, which promises "pick one of these".
+    </p>
+  </section>
 </body>
 </html>

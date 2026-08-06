@@ -50,6 +50,17 @@
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4.5h10M6.5 4V3h3v1M5 4.5l.5 8h5l.5-8" /></svg>Delete
         </button>
       </div>
+      <div style="margin: var(--s-5) 0 var(--s-3)">
+        <p class="note" style="margin-bottom: var(--s-2)"><b>Multi-select mode</b> — a real <code>&lt;input type="checkbox"&gt;</code> in front of each row. For set-valued fields whose options have no mark to draw (company names, cohort slugs, role names); anything with an icon takes <code>.grants</code> in forms.css instead.</p>
+        <div class="menu is-open" style="position: static; display: block; max-width: 260px">
+          <button class="menu__item"><input type="checkbox" tabindex="-1" aria-hidden="true" checked>บริษัท บุญรอดบริวเวอรี่</button>
+          <button class="menu__item"><input type="checkbox" tabindex="-1" aria-hidden="true" checked>บริษัท สิงห์ คอร์เปอเรชั่น</button>
+          <button class="menu__item"><input type="checkbox" tabindex="-1" aria-hidden="true">สิงห์ปาร์ค</button>
+          <button class="menu__item"><input type="checkbox" tabindex="-1" aria-hidden="true">บุญรอดเทรดดิ้ง</button>
+        </div>
+        <p class="note" style="margin-top: var(--s-2)">One component, two modes, and the difference carries meaning: <code>--on</code> tints the ONE current value; a checkbox marks each of MANY and takes no tint — tinting every checked row turns the menu into a block of colour and stops the tint meaning "this one". The menu stays open on pick; the trigger carries the summary.</p>
+      </div>
+
       <p class="note"><b>Slots:</b> <code>.menu__item</code> (button or link) · <code>--on</code> current choice (accent tint) · <code>--danger</code> destructive · <code>.menu__sep</code> divider. Disclosure pattern: trigger toggles <code>.is-open</code>, outside-click / Esc closes.</p>
     </section>
 

@@ -260,3 +260,66 @@
 @media (prefers-reduced-motion: reduce) {
   .shell__sidebar, .shell__collapse svg { transition: none; }
 }
+
+/* ── Locked section ─────────────────────────────────────────────────────────
+   A role that cannot reach a section still SEES it, greyed and padlocked, with
+   a line saying who to ask. Hiding is quieter and teaches nothing: somebody who
+   SHOULD have access never learns the section exists, so they never think to
+   ask, and the app looks smaller than it is to the only person who could fix
+   that. Ruled 2026-08-06, cowork CCD-198; doctrine in wiki/auth-playbook.md.
+
+   Render a <span>, not a disabled <a> or <button>: no destination is being
+   withheld — the route would only bounce back — so nothing should look
+   clickable, take focus, or answer hover. A span also stays out of the tab
+   order without tabIndex.
+
+   Presentation only. It grants nothing and hiding it protected nothing; the
+   route must still redirect and RLS must still fence the rows.
+
+   Graduated from ccd-brb-cowork app.css (d7566b6) unchanged. It lives here
+   rather than in the consumer because it is a STATE of .shell__item, which this
+   file already owns — the shape was never the consumer's to invent. */
+/* Specificity is counted, not guessed — the rules these must beat live in this
+   same file and two of them are heavier than a lone class:
+     .shell__item svg                        (0,1,1)  line 89
+     .shell__item:hover:not(.shell__item--on) (0,3,0)  line 209
+     .shell__item:active:not(.shell__item--on)(0,3,0)  line 227
+   A bare `.shell__item--locked:hover` (0,2,0) loses to the third, so a locked
+   row would still light up under the pointer. Matching :not() makes it (0,4,0). */
+.shell__item--locked { color: var(--muted); background: transparent; cursor: default; }
+.shell__item--locked:hover:not(.shell__item--on),
+.shell__item--locked:active:not(.shell__item--on) {
+  color: var(--muted); background: transparent;
+}
+
+/* Trailing, so the padlocks align as a column instead of chasing each label.
+   Dimmer than the name it follows: it marks state, and a mark as loud as the
+   label competes with it.
+   `.shell__item svg.shell__lock` (0,2,1), because `.shell__item svg` above is
+   (0,1,1) and sets width, height AND margin — a lone `.shell__lock` loses all
+   three, so the lock would render at 19px with 4.5px side margins and never
+   reach the trailing edge. */
+.shell__item svg.shell__lock {
+  margin: 0 0 0 auto; width: 15px; height: 15px;
+}
+/* NO opacity on the lock, and no dimming of the row either. `.shell__item` is
+   ALREADY --muted, so "locked = muted" changes nothing: a locked row and an
+   ordinary unselected row are the same ink, and the padlock is the entire
+   differentiator. Fading the one thing carrying the distinction is backwards --
+   at .55 (the first attempt) it sat near 2:1 on white, under the 3:1 floor a
+   non-text mark needs. Dimming the label instead is worse: it is body text and
+   owes 4.5:1. So the lock stays full --muted and is marked secondary by SIZE
+   (15px against the 19px nav glyphs), which costs no contrast at all. */
+
+/* One line, never a tooltip: hover does not exist on the phones these run on.
+   Matches .shell__group's caption size and muted ink — it belongs to the locked
+   block above it, not to body copy. */
+.shell__note {
+  font-size: var(--fs-caption); color: var(--muted);
+  padding: var(--s-1) var(--s-1) 0; margin: 0; white-space: nowrap;
+}
+
+/* The rail is icons only. A padlock with no label to lock reads as another nav
+   glyph, and there is no room for the line — both hide, like every other string. */
+.shell--collapsed .shell__item svg.shell__lock { display: none; }
+.shell--collapsed .shell__note { height: 0; padding: 0; overflow: hidden; visibility: hidden; }

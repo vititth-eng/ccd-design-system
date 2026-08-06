@@ -155,3 +155,54 @@ select.control {
   .form { max-width: 100%; }                          /* full-width on phone */
   .row2 { grid-template-columns: 1fr; }              /* field pairs stack */
 }
+
+/* ── Grants — a row of capability toggles ───────────────────────────────────
+   One square per thing that can be granted, muted until it is. The glyph IS
+   the grant rather than a word about it, which is what lets a whole access
+   matrix sit inside a table cell: the row is a fixed width, so the column does
+   not reflow from person to person. A chip list cannot do that — chips wrap,
+   the column changes width per row, and the table stops lining up.
+
+   Use it ONLY where each option has a mark people already recognise: apps,
+   sections, resources. Company names, cohort slugs and role names have nothing
+   to draw, and an invented icon per company makes five things nobody can tell
+   apart. Those get `.menu--multi` (menu.css) instead.
+
+   Named `.grants`/`.grant` and not `.caps`/`.cap`: `.cap` is already cowork's
+   caption class, ten uses, and a DS class that collides silently restyles a
+   consumer's text (see the `.qrow` scar).
+
+   A LADDER IS NOT A SET. Where the underlying column is ordered — cowork's
+   `booking` is one enum, none < rooms < rooms_car, so Car cannot be held
+   without Rooms — the squares still render separately and the coupling lives in
+   the handler (granting Car grants Rooms; revoking Rooms revokes Car). Joining
+   them into one block was tried and rejected: a joined block reads as a
+   segmented control, which means "pick one of these", and that is a different
+   promise entirely. */
+.grants { display: inline-flex; gap: 6px; }
+
+.grant {
+  width: var(--ctl-h); height: var(--ctl-h); flex: 0 0 auto;
+  display: grid; place-items: center; padding: 0;
+  font: inherit; cursor: pointer;
+  color: var(--muted); background: var(--ctl-face);
+  border: 1px solid var(--rule); border-radius: var(--r-base);
+}
+.grant svg { width: 18px; height: 18px; }
+.grant:hover:not(:disabled) { background: var(--ctl-raise-hover); }
+.grant:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* Granted. --accent-tint is the same selection fill nav and menus use, so a lit
+   square reads as "chosen" rather than as a status colour. */
+.grant[aria-pressed="true"] {
+  color: var(--accent); background: var(--accent-tint); border-color: var(--accent);
+}
+.grant:disabled { cursor: not-allowed; opacity: .55; }
+
+.grants--sm .grant { width: var(--ctl-h-sm); height: var(--ctl-h-sm); }
+.grants--sm .grant svg { width: 15px; height: 15px; }
+
+/* Touch: same 44px floor the shell and calendar rows take. */
+@media (pointer: coarse) {
+  .grant { width: 44px; height: 44px; }
+  .grants--sm .grant { width: 38px; height: 38px; }
+}

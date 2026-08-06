@@ -125,3 +125,31 @@
    lands on whole pixels at both sizes (15px / 12px), which matters on the
    1366 Windows screens these tools run on. */
 .menu-btn--kebab svg { width: calc(var(--h) / 2); height: calc(var(--h) / 2); }
+
+/* ── Multi-select mode ──────────────────────────────────────────────────────
+   The same menu, with a real checkbox in front of every row. Set-valued fields
+   whose options have no icon to draw (company names, cohort slugs, role names)
+   land here rather than in a `.grants` row.
+
+   One component, two modes, and the distinction is load-bearing:
+     .menu__item--on   marks the ONE current value  → keeps its accent tint
+     input[type=checkbox] marks each of MANY        → no tint
+   Tinting every checked row turns a five-item menu into a block of colour and
+   stops the tint meaning "this one".
+
+   A real <input>, not a drawn box: an unchecked option has to be VISIBLE and
+   hittable, and the platform's checkbox already is. The first attempt drew a
+   <span> with `border: 1px solid var(--ctl-chevron)` — invalid, because that
+   token holds a url(), so the browser dropped the declaration and the empty box
+   rendered as nothing at all.
+
+   The menu stays open on pick (a multi-select that closes after one choice is
+   a single-select wearing checkboxes); the trigger carries the summary. */
+.menu__item input[type="checkbox"] {
+  width: 16px; height: 16px; margin: 0; flex: 0 0 auto;
+  accent-color: var(--accent);
+  /* The row is the hit target, so the input must not swallow the click and
+     double-toggle. Its checked state is set by the row's handler. */
+  pointer-events: none;
+}
+.menu__item:has(input:checked) { font-weight: var(--fw-semi); }
