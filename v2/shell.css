@@ -297,11 +297,19 @@
      pointer away with, so the tint would stick after the tap. Same trap the
      rooms calendar hit — see @media (hover: hover) above. */
 
-  /* Head becomes: [button] [title] / [actions]. The title can no longer take a
-     whole row of its own (it would push the button onto a line by itself), so
-     the actions take one instead — which is where they already sat. */
-  .shell__title { flex: 1 1 0; }
-  .shell__actions { flex: 1 0 100%; }
+  /* Head becomes ONE row: [button] [title] ......... [actions].
+     The title can no longer take a whole row of its own (it would push the menu
+     button onto a line by itself), and the actions no longer take one either:
+     a page-head action here is a single one-word primary ("Request", "Book",
+     "New project"), so a second row spent on it costs the phone ~56px of the
+     axis it has least of, permanently, on every page.
+     The floor is what keeps this honest. With `min-width: 0` the heading would
+     shrink to nothing rather than let the button wrap, so a long title plus a
+     long label would silently crush the title to one letter per line. 96px is
+     roughly one title-sized word: below that the flex line has no room left and
+     `flex-wrap` (set in the block above) drops the actions to their own row —
+     the old two-row layout, but only when it is actually needed. */
+  .shell__title { flex: 1 1 auto; min-width: 96px; }
 
   /* The rail is gone, so nothing needs reserving. */
   .shell__main { margin-left: 0; }
