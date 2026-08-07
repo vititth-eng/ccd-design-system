@@ -15,81 +15,15 @@
 <link rel="stylesheet" href="./menu.css" />
 <link rel="stylesheet" href="./shell.css" />
 <style>* { box-sizing: border-box; } html,body { height:100%; } body { margin:0; overflow:hidden; }
-
-/* ══ PROTOTYPE, not yet in shell.css ═════════════════════════════════════════
-   Phone navigation: a menu button instead of a permanent icon rail.
-
-   Today the phone sidebar already floats OVER the content, but .shell__main
-   still reserves calc(56px + var(--s-2)) so the rail never covers the page.
-   On a 375px screen that is 64px -- a sixth of the width -- spent on six
-   glyphs, permanently, on the axis a phone has least of.
-
-   Here the rail is not drawn at all while collapsed, the reservation goes, and
-   one button in the head opens the drawer that already exists. A scrim closes
-   it from anywhere on the page.
-
-   GATED ON A FINGER, NOT ON A NARROW WINDOW. The reason to drop the rail is
-   that 64px is a sixth of a phone; a 660px browser window on a laptop has a
-   mouse and is exactly the case the 56px rail was invented for. So the trigger
-   is `max-width: 720px AND pointer: coarse` -- narrow the window on a desktop
-   and you keep the sidebar you have always had. */
-.shell__menu {
-  display: none;                     /* phone only -- see the media query */
-  width: 34px; height: 34px; flex: 0 0 auto;
-  align-items: center; justify-content: center;
-  padding: 0; border: 0; border-radius: var(--r-base);
-  background: none; color: var(--ink); cursor: pointer;
-}
-.shell__menu svg { width: 20px; height: 20px; }
-.shell__menu:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-/* The scrim only exists while the drawer is out, and only on a phone. */
-.shell__scrim { display: none; }
-/* No phone-only close button. The drawer is modal -- the scrim closes it from
-   anywhere -- and the sidebar's own collapse row is already a labelled,
-   focusable way out, which a scrim is not. Adding a second one made the phone
-   shell a different component instead of the desktop one under a media query. */
-
-/* The only way IN to navigation on a phone, so it answers to the same 44px
-   shell.css gives .shell__item and .shell__collapse. It is a new element, so
-   the rule there cannot reach it. */
-@media (pointer: coarse) {
-  .shell__menu { width: 44px; height: 44px; -webkit-tap-highlight-color: transparent; }
-  /* Same swap shell.css makes for its own controls: kill the UA's dark flash,
-     which draws above the drawer, and put a real :active in its place. */
-  .shell__menu:active { background: var(--accent-tint); }
-}
-
-@media (max-width: 720px) and (pointer: coarse) {
-  .shell__menu { display: inline-flex; order: -1; }
-  /* .shell__menu:hover is deliberately absent: a phone has nothing to move the
-     pointer away with, so the tint would stick after the tap. Same trap the
-     calendar hit -- see @media (hover: hover) in the consumer. */
-
-  /* Head becomes: [button] [title] / [actions]. The title can no longer take a
-     whole row of its own (it would push the button onto a line by itself), so
-     the actions take one instead -- which is where they already sat. */
-  .shell__title { flex: 1 1 0; }
-  .shell__actions { flex: 1 0 100%; }
-
-  /* The rail is gone, so nothing needs reserving. */
-  .shell__main { margin-left: 0; }
-  /* Collapsed now means ABSENT, not a 56px strip of unlabelled glyphs. */
-  .shell--collapsed .shell__sidebar { display: none; }
-  /* Open: the drawer is a real panel, not a rail that grew -- 208px of labels
-     over a dimmed page, with its own scroll if a consumer ever has more items
-     than fit. */
-  .shell:not(.shell--collapsed) .shell__sidebar { width: 240px; }
-  .shell:not(.shell--collapsed) .shell__scrim {
-    display: block; position: absolute; inset: 0;
-    z-index: calc(var(--z-drawer) - 1);
-    background: color-mix(in srgb, var(--ink) 38%, transparent);
-  }
-}
+/* Gallery preflight only. The phone menu button and scrim are SHIPPED in
+   shell.css as of v2.6.0 — nothing about them is overridden here. Open this
+   page at <=720px on a touch device (or Chrome device emulation) to see the
+   drawer; a narrow window with a mouse keeps the 56px rail on purpose. */
 </style>
 </head>
 <body>
   <div class="shell" id="shell">
-    <!-- PROTOTYPE: closes the drawer by tapping the page it covers. -->
+    <!-- Phone drawer: closes by tapping the page it covers. Inert above 720px. -->
     <div class="shell__scrim" id="scrim"></div>
 
     <!-- SIDEBAR -->
@@ -150,7 +84,7 @@
     <!-- MAIN -->
     <main class="shell__main">
       <div class="shell__head">
-        <!-- PROTOTYPE: the phone's whole navigation, in 34px. -->
+        <!-- The phone's whole navigation, in 34px. Hidden unless phone + finger. -->
         <button class="shell__menu" id="menubtn" aria-label="เปิดเมนู" aria-expanded="false">
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3.5 6h13M3.5 10h13M3.5 14h13"/></svg>
         </button>
@@ -202,7 +136,7 @@
     closeMenus();
   });
 
-  // PROTOTYPE: menu button opens the drawer, scrim or Esc closes it.
+  // Menu button opens the drawer, scrim or Esc closes it.
   var menubtn = document.getElementById('menubtn');
   menubtn.addEventListener('click', function(){
     var open = shell.classList.toggle('shell--collapsed') === false;
@@ -242,8 +176,8 @@
     if (e.key === 'Escape') { closeMenus(); shell.classList.add('shell--collapsed'); }
   });
 
-  // PROTOTYPE: a phone opens with the drawer shut -- the button is the entry
-  // point, so anything else would greet you with a menu you did not ask for.
+  // A phone opens with the drawer shut -- the button is the entry point, so
+  // anything else would greet you with a menu you did not ask for.
   if (window.innerWidth <= 720) shell.classList.add('shell--collapsed');
 </script>
 </body>
