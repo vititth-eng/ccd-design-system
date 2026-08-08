@@ -75,6 +75,12 @@ scar + why stays in memory.*
    it causes a misread. Ladder: rewrite the label → trust the visual → move to
    tooltip → one legend at top → keep one line. Policy disclaimers and
    thin-data/confidence notes always survive.
+   **A page header is the title alone — never an eyebrow above it.** No kicker,
+   overline, or caption line preceding a page title, in any app. `.t-sub` and
+   `.t-caption` both exist and both sit happily above a title, so the shape is
+   one copy-paste away; it is a composition ban, not a missing component. If the
+   context genuinely needs stating, it belongs in the nav that got you here or in
+   a line *below* the title, never stacked on top of it.
 4. **Shallow hierarchy on dense surfaces.** Section heads rise by weight + color,
    not size jumps. KPI numerals use the KPI token, never the display scale. The
    section owns the gap below its head, not the type role — `.t-section` ships
@@ -93,6 +99,12 @@ scar + why stays in memory.*
    data, then take hues in order inside it — a hue chosen per chart by taste makes
    the same plant blue on one card and green on the next, and the reader re-learns
    every chart.
+   **An institutional legend handed over is DATA, not a palette to improve.** When
+   the source is an existing report the organisation already reads — a band scale,
+   a risk key, a grading ramp — the label, the range, the order AND the hue all
+   come across verbatim. Remap the hue to the token nearest it; never remap what a
+   band means to reach a nicer hue. Readers have learnt that key elsewhere, and a
+   "better" palette silently renames every band for them.
    **Categorical** (people, plants, departments — identity only) → `--chart-1..7`
    by index; `--chart-7` grey is Other/Unassigned, never a real series.
    **Sequential** (headcount, spend, % done) → one hue, light→dark; the magnitude
