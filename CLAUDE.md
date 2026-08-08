@@ -7,6 +7,8 @@ Doctrine (flat/quiet/2-ink + anti-references): `v2/PRODUCT.md`
 
 Source of truth for tokens, voice, interaction, React chrome. Tokens ship via CDN or vendored copy; components as a git-URL package (consumers add `transpilePackages` and bump explicitly). Never edit tokens/components from a tool repo.
 
+**Before cutting a tag** run `node v2/build-bundle.mjs` and commit the result. `v2/bundle.css` is the generated single-file build every consumer links instead of one `<link>` per sheet; a stale bundle is invisible — consumers keep rendering the previous release while the source sheets show the new one, and nothing errors. `node v2/build-bundle.mjs --check` exits non-zero when it is out of date.
+
 **Before cutting a tag** read `~/Desktop/Superpowers/wiki/app-design-method.md` · *Version numbering*. It is NOT plain semver: the major digit is the DS **generation** (`v2.x` = second generation), so breaking changes ride the **minor** slot with `BREAKING:` opening the message, and `v3` is reserved for a real third generation. Always `git tag -a` — the annotated tag message is the changelog, there is no CHANGELOG.md.
 
 **A class name is only free if it is free in EVERY consumer.** Before shipping or renaming any class, grep the candidate across all of `~/Desktop/Superpowers/code`, not just this repo. The DS loads *after* an app's own stylesheet by CDN, so a shared name at equal specificity is decided by link order — which is not a guarantee. Element names are full words (`__num`, `__text`), never initials. The near-miss that produced this rule, and the shipped-element count, live in CCD-174 and workspace memory `feedback_ds_name_free_in_every_consumer` — not here; a law file holds the rule, never the incident.
