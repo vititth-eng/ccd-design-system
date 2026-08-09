@@ -12,5 +12,12 @@
         "reason": "Inter is the DS brand face (tokens.css), fixed Thai+Latin pairing with Noto Sans Thai across all 10 apps"
       }
     ]
+  },
+  "hook": {
+    "enabled": true,
+    "limits": {
+      "maxFindings": 5,
+      "maxChars": 8000
+    }
   }
 }
