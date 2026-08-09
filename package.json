@@ -1,10 +1,11 @@
 {
   "name": "@ccd/design-system",
   "version": "0.8.0",
-  "description": "CSS tokens + components for ccd-brb-* apps (v2, CDN). This npm package ships only the retiring v1 React chrome + the glossary; v2 is CSS-only by design.",
+  "description": "CSS tokens + components for ccd-brb-* apps (v2, CDN). v2 is CSS-first: the ./v2 entry point carries only behaviour a stylesheet cannot express, for components whose CSS the DS already ships. The root entry is the retiring v1 React chrome + the glossary.",
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
+    "./v2": "./src/v2/index.ts",
     "./glossary": "./src/glossary.ts"
   },
   "files": [
