@@ -1696,7 +1696,14 @@ select.control {
   font-size: var(--fs-caption); font-weight: var(--fw-semi);
   overflow: hidden;   /* clip a photo child to the pill */
 }
-.shell__avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* object-position: the CSS default is `center center`, which frames these staff
+   photos low — they are top-heavy portraits, so a centred crop cuts the forehead
+   and leaves a band of shirt. `center top` puts the face where a face belongs.
+   Graduated from cowork's app-local override 2026-08-09, once the avatar became
+   a shared component: the same photo set now renders in every app, so the crop
+   is a property of the photos, not of one consumer. Matches cowork's .pface, so
+   a face reads the same in the sidebar and in the roster. */
+.shell__avatar img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
 .shell__who { min-width: max-content; }   /* don't shrink — like .shell__item, the sidebar's overflow clips it (clip-wipe), so text never re-lays-out mid-animation. min-width:0 let it shrink and the two lines "unravelled" on expand. */
 .shell__who .nm { font-size: var(--fs-body); font-weight: var(--fw-semi); color: var(--ink); overflow: hidden; white-space: nowrap; }   /* clip-wipe, no ellipsis — see .shell__appname */
 .shell__who .rl { font-size: var(--fs-caption); color: var(--muted); overflow: hidden; white-space: nowrap; }
