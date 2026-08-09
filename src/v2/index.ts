@@ -7,3 +7,4 @@
 export { UserMenu } from './UserMenu';
 export type { UserMenuProps, MenuUser, ThemeCookie, Theme } from './UserMenu';
 export { avatarUrl, AVATAR_BASE } from './avatar';
+export { formalName, initialsFrom } from './name';
