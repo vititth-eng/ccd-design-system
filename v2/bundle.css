@@ -238,7 +238,23 @@
   --chart-7: #C6C8CC;   /* grey    — Other / Unassigned, never a real series */
 
   /* ── TYPE ──────────────────────────────────────────────── */
-  --font-sans: "Inter", "Noto Sans Thai", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  /* PILOT LINE — this tag exists to try Bai Jamjuree on ONE consumer (landing)
+     without moving main. Cut from v2.6.3 so the pilot carries the typeface and
+     nothing else; bumping a consumer to 2.7.x would have dragged three releases
+     of component changes along with it.
+     ONE family, both scripts: Bai Jamjuree draws Thai and Latin, so the second
+     family the old stack needed for Thai is gone. Do not re-add a Thai fallback
+     ahead of the system stack — it would only ever render if Bai Jamjuree failed
+     to load, and then the two scripts would disagree anyway.
+     The Thai here is LOOPED (traditional หัว), where Noto Sans Thai was loopless.
+     That is the substance of the pilot, not the Latin: looped reads as more
+     legible to every age group and measurably faster for older readers, which is
+     most of the plant floor. Judge the pilot on whether Thai got easier to read.
+     Known reservation: Bai Jamjuree descends from Eurostile, so its Latin is
+     squared and its 1/4/7 carry more personality than data usually wants. If the
+     Latin tires before the Thai wins, the next thing to try is Bai Jamjuree Thai
+     with IBM Plex Sans for Latin — their metrics sit within 3.4%. */
+  --font-sans: "Bai Jamjuree", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
   /* 5 sizes. Body 14 is the workhorse; 12 used sparingly (Thai floor is 14-gray). */
   --fs-kpi:     30px;   /* hero number — the ONLY 700 */
