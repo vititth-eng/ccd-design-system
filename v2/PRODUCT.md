@@ -135,10 +135,15 @@ scar + why stays in memory.*
    never a new line-height token.
 8. **One-off surfaces borrow mechanics, not shape.** Tokens, focus ring,
    active-state, motion flow in; proportions and header height stay bespoke.
-   **A generated scaffold is a one-off surface too.** `data:build-dashboard` and
-   anything like it may supply what the DS has no component for — chart
-   rendering, sortable headers, a filter bar, a dashboard grid, a freshness
-   stamp, number formatting. It may never supply a value or a name the DS
+   **A generated scaffold is a one-off surface too.** A dashboard scaffold may
+   supply what the DS has no component for — sortable headers, a filter bar, a
+   dashboard grid, a freshness stamp, number formatting. **Charts are not on that
+   list:** they belong to the bundled `dataviz` skill, which is design-system-
+   agnostic by construction and consumes `--chart-*` as parameters. Its rules
+   outrank any scaffold's — never dual-axis, categorical hues in fixed order
+   never cycled (a scaffold's `COLORS[i % n]` is exactly the banned shape), and
+   its palette validator runs rather than being eyeballed.
+   A scaffold may never supply a value or a name the DS
    already owns: KPI cards are `.kpi`/`.kpi-bar`/`.kpi__delta`, frames `.card`,
    tables `.tbl` + `.tbl-scroll`, quantity `.meter`, status `.st-pill`, empty
    `.state`, chrome `.shell*`, controls `.field`/`.control`, colour `--chart-*`.
