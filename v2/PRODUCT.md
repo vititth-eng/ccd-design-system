@@ -135,6 +135,18 @@ scar + why stays in memory.*
    never a new line-height token.
 8. **One-off surfaces borrow mechanics, not shape.** Tokens, focus ring,
    active-state, motion flow in; proportions and header height stay bespoke.
+   **A generated scaffold is a one-off surface too.** `data:build-dashboard` and
+   anything like it may supply what the DS has no component for — chart
+   rendering, sortable headers, a filter bar, a dashboard grid, a freshness
+   stamp, number formatting. It may never supply a value or a name the DS
+   already owns: KPI cards are `.kpi`/`.kpi-bar`/`.kpi__delta`, frames `.card`,
+   tables `.tbl` + `.tbl-scroll`, quantity `.meter`, status `.st-pill`, empty
+   `.state`, chrome `.shell*`, controls `.field`/`.control`, colour `--chart-*`.
+   Re-declaring one of those is the bug the scaffold walks in with, and it
+   arrives looking like new work. What the scaffold genuinely adds is a **DS
+   candidate, not a private component** — `TODO-DS` on first use, graduate on
+   second (rule in `CLAUDE.md`, scar in `feedback_ds_graduation_discipline`).
+   Dashboards are therefore *composed*, and the DS grows from what they needed.
 
 ## Voice
 - **English-first chrome.** UI strings are English; Thai arrives later via
