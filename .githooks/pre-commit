@@ -1,0 +1,21 @@
+#!/bin/sh
+# Refuses a commit that would ship one of the two failures you cannot see.
+#
+# This directory is COMMITTED so the hook survives a clone, but git does not
+# read it until the clone is told to:  git config core.hooksPath .githooks
+# That line is per-clone, is not itself committable, and is in the repo
+# CLAUDE.md. A clone that skips it gets no hook and no warning.
+#
+# Both checks read the WORKING TREE, not the staged snapshot. With `git add -p`
+# or a partial stage they can pass on a file whose committed half is broken.
+# `git commit -a` and whole-file staging -- how this repo is actually used --
+# are exact.
+#
+# Bypass with `git commit --no-verify` when you genuinely mean to. That is a
+# real escape hatch, not a bug: a work-in-progress commit on a wip/ branch has
+# no business being blocked by a stale bundle.
+set -e
+
+echo "pre-commit: checking the design system…"
+node v2/build-bundle.mjs --check
+node v2/check-tokens.mjs
