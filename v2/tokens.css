@@ -232,22 +232,27 @@
   --chart-7: #C6C8CC;   /* grey    — Other / Unassigned, never a real series */
 
   /* ── TYPE ──────────────────────────────────────────────── */
-  /* One superfamily, two scripts: IBM Plex Sans draws the Latin, IBM Plex Sans
-     Thai Looped draws the Thai. Order is load-bearing — the browser resolves
-     per glyph, so Plex Sans has to sit first or the Thai face would also serve
-     the Latin. Do not add a third family: the two are designed together and
-     share metrics, so a mixed line does not step.
-     The substance is the THAI, not the Latin. Noto Sans Thai is loopless; this
-     is looped (traditional หัว), which every age group perceives as more
-     legible and which older readers measurably read faster — most of the plant
-     floor. Judge a consumer's swap on whether Thai got easier to read.
-     Bai Jamjuree held this slot for one day (v2.7.3, landing only, never
-     reachable) and was dropped: it descends from Eurostile, so the Latin is
-     squared and 1/4/7 carry more personality than data wants. Plex was the
-     reservation already on record — within 3.4% on x-height, so the swap stays
-     a token edit and --fs-body does not move.
+  /* Two families, one per script: Inter draws the Latin, Noto Sans Thai Looped
+     draws the Thai. Order is load-bearing — the browser resolves per glyph, so
+     Inter has to sit first or the Thai face would also serve the Latin. Do not
+     add a third family; two faces are already one seam more than a superfamily
+     would need, and a third makes the seam a pattern.
+     The substance is the THAI, not the Latin. Plain Noto Sans Thai is loopless;
+     this is the Looped cut (traditional หัว), which every age group perceives
+     as more legible and which older readers measurably read faster — most of
+     the plant floor. Judge a consumer's swap on whether Thai got easier to read.
+     Two families held this slot before and were dropped, both within one week
+     of v2.7.5: Bai Jamjuree (v2.7.3, landing only, never reachable) descends
+     from Eurostile, so the Latin is squared and 1/4/7 carry more personality
+     than data wants; IBM Plex Sans + Plex Sans Thai Looped (v2.7.4) was a true
+     superfamily but the Latin reads narrower and more editorial than the dense
+     tables want. Inter is the face this system was drawn against originally,
+     so --fs-body does not move and the swap stays a token edit.
+     Inter and Noto Sans Thai Looped are NOT metric-matched. That is the price
+     of this pairing and it is paid knowingly: a mixed Thai/Latin line steps
+     very slightly. Check a mixed line before changing --fs-body or --lh-normal.
      Consumers pin by tag, so this reaches an app only when its pin moves. */
-  --font-sans: "IBM Plex Sans", "IBM Plex Sans Thai Looped", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-sans: "Inter", "Noto Sans Thai Looped", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
   /* 5 sizes. Body 14 is the workhorse; 12 used sparingly (Thai floor is 14-gray). */
   --fs-kpi:     30px;   /* hero number — the ONLY 700 */
