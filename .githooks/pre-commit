@@ -17,5 +17,5 @@
 set -e
 
 echo "pre-commit: checking the design system…"
-node v2/build-bundle.mjs --check
-node v2/check-tokens.mjs
+node v2/tools/build-bundle.mjs --check
+node v2/tools/check-tokens.mjs

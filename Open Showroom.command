@@ -3,4 +3,4 @@
 cd "$(dirname "$0")"
 (python3 -m http.server 8765 &>/dev/null &)
 sleep 0.5
-open "http://localhost:8765/v2/showroom.html"
+open "http://localhost:8765/v2/gallery/showroom.html"
