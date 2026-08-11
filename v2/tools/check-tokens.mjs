@@ -38,14 +38,15 @@
  * purpose; bundle.css is generated and is build-bundle.mjs's problem.
  *
  * Usage:
- *   node v2/check-tokens.mjs             # rules 1 and 2; exit 1 on a violation
- *   node v2/check-tokens.mjs --spacing   # also list raw padding/margin/gap
+ *   node v2/tools/check-tokens.mjs             # rules 1 and 2; exit 1 on a violation
+ *   node v2/tools/check-tokens.mjs --spacing   # also list raw padding/margin/gap
  */
 import { readFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const V2 = dirname(fileURLToPath(import.meta.url));
+// This script lives in v2/tools/; the sheets it checks live one level up.
+const V2 = join(dirname(fileURLToPath(import.meta.url)), '..');
 const GENERATED = 'bundle.css';
 const MINTS_LITERALS = 'tokens.css';
 
