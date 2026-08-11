@@ -1,6 +1,6 @@
 # ccd-design-system
 
-Workspace doctrine: @/Users/vitit/dev/code/SUPERPOWER.md
+Workspace doctrine: @/Users/vitit/Desktop/Superpowers/CLAUDE.md
 Linear: **Design System** project
 Facts: `~/Desktop/Superpowers/facts/design.yml` · `~/Desktop/Superpowers/facts/tools.yml#design-system`
 Doctrine (flat/quiet/2-ink + anti-references): `v2/PRODUCT.md`
