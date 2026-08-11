@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chart palette — everything, before deciding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&family=Noto+Sans+Thai:wght@100..900&display=swap" />
+<style>
+  * { box-sizing:border-box; }
+  body { margin:0; padding:30px 24px 90px; background:#fff; color:#142549;
+         font-family:"Inter","Noto Sans Thai",ui-sans-serif,system-ui,sans-serif; }
+  .page { max-width:1100px; margin:0 auto; }
+  h1 { font-size:28px; line-height:1.18; font-weight:600; margin:0 0 10px; }
+  h2 { font-size:19px; line-height:1.35; font-weight:600; margin:0 0 4px; }
+  .sec { border-top:1px solid #CBD1DF; padding-top:22px; margin-top:42px; }
+  .n { font-size:12px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+       color:#4068CA; margin:0 0 6px; }
+  p.t { font-size:16px; line-height:1.6; color:#61697A; margin:0 0 8px; max-width:34rem; }
+  p.t b { color:#142549; font-weight:600; }
+
+  .sw { display:grid; grid-template-columns:repeat(auto-fill,minmax(132px,1fr)); gap:12px; margin-top:16px; }
+  .sw__i { height:56px; border-radius:6px; border:1px solid rgba(0,0,0,.08); }
+  .sw__n { font-size:13px; font-weight:600; margin:6px 0 0; }
+  .sw__m { font-size:12px; line-height:1.45; color:#61697A; margin:1px 0 0;
+           font-family:ui-monospace,Menlo,monospace; }
+  .drop .sw__i { opacity:.32; }
+  .drop .sw__n { color:#61697A; text-decoration:line-through; }
+  .tagdrop { display:inline-block; font-size:11px; font-weight:600; background:#FBE9E7;
+             color:#C4372C; border-radius:3px; padding:1px 6px; margin-left:4px; }
+  .tagkeep { display:inline-block; font-size:11px; font-weight:600; background:#E7F5EC;
+             color:#1A7F37; border-radius:3px; padding:1px 6px; margin-left:4px; }
+
+  .two { display:grid; grid-template-columns:1fr 1fr; gap:22px; margin-top:16px; }
+  @media (max-width:860px){ .two{ grid-template-columns:1fr; } }
+  .box { border:1px solid #CBD1DF; border-radius:8px; padding:16px; }
+  .box h3 { font-size:15px; font-weight:600; margin:0 0 2px; }
+  .box .cap { font-size:12px; line-height:1.5; color:#61697A; margin:0 0 12px; }
+
+  /* Likert — the only chart CCD actually ships today */
+  .lk { margin-top:10px; }
+  .lk__row { display:flex; align-items:center; gap:10px; margin-bottom:7px; }
+  .lk__lab { font-size:13px; width:104px; flex:none; color:#142549; }
+  .lk__bar { flex:1; display:flex; height:22px; border-radius:3px; overflow:hidden; }
+  .lk__bar i { display:block; }
+  .lk__leg { display:flex; gap:14px; margin-top:10px; font-size:12px; color:#61697A; }
+  .lk__leg span { display:flex; align-items:center; gap:5px; }
+  .lk__leg i { width:11px; height:11px; border-radius:2px; display:block; }
+
+  .heat { display:grid; grid-template-columns:repeat(5,1fr); gap:5px; margin-top:8px; }
+  .heat i { height:38px; border-radius:4px; display:flex; align-items:center;
+            justify-content:center; font-size:12px; font-family:ui-monospace,Menlo,monospace; }
+
+  table { border-collapse:collapse; width:100%; font-size:14px; margin-top:12px; }
+  th,td { text-align:left; padding:7px 10px 7px 0; border-bottom:1px solid #EDEFF1; }
+  th { font-weight:600; font-size:12px; color:#61697A; text-transform:uppercase; letter-spacing:.04em; }
+  .fail { color:#C4372C; font-weight:600; }
+  .ok { color:#1A7F37; font-weight:600; }
+  .chip { display:inline-block; width:15px; height:15px; border-radius:3px;
+          vertical-align:-3px; margin-right:6px; border:1px solid rgba(0,0,0,.08); }
+  code { font-family:ui-monospace,Menlo,monospace; font-size:13px; }
+  .usage { font-size:14px; line-height:1.7; margin:12px 0 0; }
+  .usage b { font-family:ui-monospace,Menlo,monospace; }
+</style>
+</head>
+<body><div class="page">
+
+<h1>Chart palette — everything, before deciding</h1>
+<p class="t">Every measurement on this page is taken live in your browser, resolving colours through a canvas rather than <code>getComputedStyle</code>, which returns <code>oklch()</code> verbatim and silently produced wrong numbers earlier today.</p>
+
+<!-- 1 ────────────────────────────────────────────── -->
+<section class="sec">
+  <p class="n">1 · what ships today</p>
+  <h2>Seven categorical hues — and what actually uses them</h2>
+  <p class="t">Frozen by owner call in v2 after three replacement sets were rendered and rejected. The question now is not whether the hexes are good, but whether seven is the right <b>number</b>.</p>
+  <div class="sw" id="current"></div>
+  <p class="usage" id="usage"></p>
+</section>
+
+<!-- 2 ────────────────────────────────────────────── -->
+<section class="sec">
+  <p class="n">2 · the one chart CCD actually ships</p>
+  <h2>Likert — and what a colour-blind reader sees</h2>
+  <p class="t">Onboarding's insights pages are the only real chart use in any repo. Today it runs <b>teal → rose</b>. The proposal is <b>blue → rose</b>. Right-hand column simulates deuteranopia, the most common colour-vision deficiency — roughly 1 in 12 men.</p>
+  <div class="two" id="likert"></div>
+</section>
+
+<!-- 3 ────────────────────────────────────────────── -->
+<section class="sec">
+  <p class="n">3 · the gap</p>
+  <h2>Sequential — "how much", which CCD has never built</h2>
+  <p class="t">A magnitude needs one hue stepping light to dark. Painting it in categorical hues throws away the only thing the data has. Five steps derived from <code>--chart-1</code> blue.</p>
+  <div class="two" id="seq"></div>
+</section>
+
+<!-- 4 ────────────────────────────────────────────── -->
+<section class="sec">
+  <p class="n">4 · the numbers</p>
+  <h2>Every hue measured</h2>
+  <p class="t">A fill under <b>3:1</b> on its ground is a shape you cannot locate. Two colours under <b>ΔE 10</b> are the same colour to most people. <code>--destructive</code> is <code>#C4372C</code>, the delete button.</p>
+  <div id="measure"></div>
+</section>
+
+<!-- 5 ────────────────────────────────────────────── -->
+<section class="sec">
+  <p class="n">5 · the proposal</p>
+  <h2>Three hues, a grey, and a ramp</h2>
+  <p class="t">v3 only — v2 keeps all seven, so onboarding's live charts do not move.</p>
+  <div class="sw" id="proposed"></div>
+</section>
+
+<script>
+const cvs = document.createElement('canvas'); cvs.width = cvs.height = 1;
+const ctx = cvs.getContext('2d', { willReadFrequently: true });
+const toRgb = c => { ctx.fillStyle='#000'; ctx.fillStyle=c; ctx.fillRect(0,0,1,1);
+  const d = ctx.getImageData(0,0,1,1).data; return [d[0],d[1],d[2]]; };
+const hexOf = r => '#' + r.map(v=>Math.round(v).toString(16).padStart(2,'0')).join('').toUpperCase();
+const srgb = c => { c/=255; return c<=0.04045 ? c/12.92 : Math.pow((c+0.055)/1.055,2.4); };
+const lin  = c => { c/=255; return c<=0.03928 ? c/12.92 : Math.pow((c+0.055)/1.055,2.4); };
+const L = r => 0.2126*lin(r[0])+0.7152*lin(r[1])+0.0722*lin(r[2]);
+const contrast = (a,b) => { const x=L(toRgb(a)), y=L(toRgb(b));
+  return (Math.max(x,y)+0.05)/(Math.min(x,y)+0.05); };
+const lab = r => { const [R,G,B]=r.map(srgb);
+  const l=Math.cbrt(0.4122214708*R+0.5363325363*G+0.0514459929*B);
+  const m=Math.cbrt(0.2119034982*R+0.6806995451*G+0.1073969566*B);
+  const s=Math.cbrt(0.0883024619*R+0.2817188376*G+0.6299787005*B);
+  return [0.2104542553*l+0.7936177850*m-0.0040720468*s,
+          1.9779984951*l-2.4285922050*m+0.4505937099*s,
+          0.0259040371*l+0.7827717662*m-0.8086757660*s]; };
+const dEr = (A,B) => { const a=lab(A), b=lab(B);
+  return Math.hypot(a[0]-b[0],a[1]-b[1],a[2]-b[2])*100; };
+const dE = (a,b) => dEr(toRgb(a), toRgb(b));
+const deut = c => { const [R,G,B]=toRgb(c).map(srgb);
+  const back = v => { v = v<=0.0031308 ? v*12.92 : 1.055*Math.pow(v,1/2.4)-0.055;
+    return Math.max(0,Math.min(255,v*255)); };
+  return [back(0.625*R+0.375*G), back(0.700*R+0.300*G), back(0.300*G+0.700*B)]; };
+const deutHex = c => hexOf(deut(c));
+
+const P = {
+  blue:'#5B8DEF', rose:'#E8637F', teal:'#5CBDB4', orange:'#E89B3C',
+  violet:'#9B51F0', yellow:'#F4CF4A', grey:'#C6C8CC'
+};
+/* Every non-chart colour a chart mark could be confused with. The status tier is
+   the dangerous neighbour, not just the destructive button: a chart hue that
+   lands near --caution or --positive makes a data mark read as a state. */
+const RIVALS = {
+  'primary':          '#4068CA',
+  'positive dot':     '#27C93F',
+  'caution dot':      '#FFBD2E',
+  'negative dot':     '#FF5F56',
+  'positive strong':  '#1A7F37',
+  'caution strong':   '#CF741E',
+  'negative strong':  '#C4372C',   /* === --destructive */
+};
+const USED = { blue:0, rose:12, teal:11, orange:0, violet:0, yellow:0, grey:0 };
+const KEEP = ['blue','rose','orange','grey'];
+
+/* 1 — current palette */
+document.getElementById('current').innerHTML = Object.entries(P).map(([n,hex],i) => {
+  const keep = KEEP.includes(n);
+  return '<div class="' + (keep?'':'drop') + '">'
+    + '<div class="sw__i" style="background:'+hex+'"></div>'
+    + '<p class="sw__n">' + (i+1) + ' ' + n
+      + (keep ? '<span class="tagkeep">keep</span>' : '<span class="tagdrop">drop</span>') + '</p>'
+    + '<p class="sw__m">' + hex + '<br>' + contrast(hex,'#fff').toFixed(2) + ':1 on white'
+    + '<br>' + (USED[n] ? USED[n] + ' uses' : 'never used') + '</p></div>';
+}).join('');
+document.getElementById('usage').innerHTML =
+  'Across every repo, only <b>onboarding</b> uses chart colour at all, and only <b>--chart-2</b> and '
+  + '<b>--chart-3</b> — the Likert pair. The other five hues have never been used by any app.';
+
+/* 2 — Likert, both pairings, normal + deuteranopia */
+const ROWS = [['ความเข้าใจ', 62, 20, 18], ['การสื่อสาร', 48, 22, 30], ['ภาระงาน', 31, 24, 45]];
+const mid = (a,b) => { const A=toRgb(a), B=toRgb(b);
+  return hexOf([0,1,2].map(i => A[i]*0.28 + B[i]*0.28 + 237*0.44)); };
+const likert = (lo, hi, sim) => {
+  const f = c => sim ? deutHex(c) : c;
+  const m = mid(lo, hi);
+  return '<div class="lk">' + ROWS.map(([lab,a,n,d]) =>
+    '<div class="lk__row"><span class="lk__lab">'+lab+'</span><span class="lk__bar">'
+    + '<i style="background:'+f(lo)+';width:'+a+'%"></i>'
+    + '<i style="background:'+f(m)+';width:'+n+'%"></i>'
+    + '<i style="background:'+f(hi)+';width:'+d+'%"></i></span></div>').join('')
+    + '<div class="lk__leg">'
+    + '<span><i style="background:'+f(lo)+'"></i>เห็นด้วย</span>'
+    + '<span><i style="background:'+f(m)+'"></i>เฉย ๆ</span>'
+    + '<span><i style="background:'+f(hi)+'"></i>ไม่เห็นด้วย</span></div></div>';
+};
+document.getElementById('likert').innerHTML =
+    '<div class="box"><h3>Today — teal → rose</h3><p class="cap">normal vision</p>'
+  + likert(P.teal, P.rose, false)
+  + '<p class="cap" style="margin-top:16px">deuteranopia — ΔE ' + dEr(deut(P.teal), deut(P.rose)).toFixed(1) + '</p>'
+  + likert(P.teal, P.rose, true) + '</div>'
+  + '<div class="box"><h3>Proposed — blue → rose</h3><p class="cap">normal vision</p>'
+  + likert(P.blue, P.rose, false)
+  + '<p class="cap" style="margin-top:16px">deuteranopia — ΔE ' + dEr(deut(P.blue), deut(P.rose)).toFixed(1) + '</p>'
+  + likert(P.blue, P.rose, true) + '</div>';
+
+/* 3 — sequential ramp from chart-1 blue */
+const toLch = hex => { const [l,a,b]=lab(toRgb(hex));
+  return { l, c:Math.hypot(a,b), h:(Math.atan2(b,a)*180/Math.PI+360)%360 }; };
+const STEPS = [[0.90,0.30],[0.80,0.58],[0.69,0.82],[0.58,1.00],[0.47,0.98]];
+const b0 = toLch(P.blue);
+const RAMP = STEPS.map(([l,cs]) =>
+  'oklch(' + l.toFixed(3) + ' ' + (b0.c*cs).toFixed(3) + ' ' + b0.h.toFixed(1) + ')');
+const VALS = ['12%','29%','47%','68%','91%'];
+document.getElementById('seq').innerHTML =
+    '<div class="box"><h3>The ramp</h3><p class="cap">five steps, lightness descending, hue held</p>'
+  + '<div class="heat">' + RAMP.map((c,i) =>
+      '<i style="background:'+c+';color:'+(i>2?'#fff':'#142549')+'">'+VALS[i]+'</i>').join('')
+  + '</div><p class="cap" style="margin-top:12px">deuteranopia — lightness survives, so it still reads</p>'
+  + '<div class="heat">' + RAMP.map((c,i) =>
+      '<i style="background:'+deutHex(c)+';color:'+(i>2?'#fff':'#142549')+'">'+VALS[i]+'</i>').join('')
+  + '</div></div>'
+  + '<div class="box"><h3>Why not categorical for this</h3>'
+  + '<p class="cap">the same five values in categorical hues</p>'
+  + '<div class="heat">' + [P.blue,P.rose,P.teal,P.orange,P.violet].map((c,i) =>
+      '<i style="background:'+c+';color:#fff">'+VALS[i]+'</i>').join('')
+  + '</div><p class="cap" style="margin-top:12px">Nothing tells you 91% is bigger than 12%. The order is in the data and not on the screen.</p></div>';
+
+/* 4 — full measurement table */
+let rows = '';
+Object.entries(P).forEach(([n,hex]) => {
+  const cr = contrast(hex,'#fff');
+  // nearest UI/status colour — the "does this data mark read as a state" test
+  let rW = Infinity, rN = '';
+  Object.entries(RIVALS).forEach(([rn,rh]) => {
+    const d = dE(hex, rh); if (d < rW) { rW = d; rN = rn; } });
+  // nearest sibling hue once colour vision is reduced
+  let worst = Infinity, wn = '';
+  Object.entries(P).forEach(([n2,h2]) => { if (n2===n) return;
+    const d = dEr(deut(hex), deut(h2)); if (d < worst) { worst = d; wn = n2; } });
+  rows += '<tr><td><span class="chip" style="background:'+hex+'"></span>'+n+'</td>'
+    + '<td><code>'+hex+'</code></td>'
+    + '<td class="'+(cr<3?'fail':'ok')+'">'+cr.toFixed(2)+':1</td>'
+    + '<td class="'+(rW<10?'fail':(rW<14?'':'ok'))+'">'+rW.toFixed(1)
+      + ' <span style="color:#61697A">vs '+rN+'</span></td>'
+    + '<td class="'+(worst<10?'fail':'')+'">'+worst.toFixed(1)+' <span style="color:#61697A">vs '+wn+'</span></td>'
+    + '<td>'+(USED[n]?USED[n]:'—')+'</td></tr>';
+});
+document.getElementById('measure').innerHTML =
+  '<table><thead><tr><th>hue</th><th>hex</th><th>on white</th>'
+  + '<th>nearest UI / status colour</th><th>nearest hue, deuteranopia</th><th>uses</th>'
+  + '</tr></thead><tbody>' + rows + '</tbody></table>'
+  + '<p class="t" style="margin-top:12px">Checked against all seven: <code>--primary</code>, the three '
+  + 'status dots (green / amber / red) and the three darkened status colours. A chart mark that lands '
+  + 'near one of these stops reading as data and starts reading as a <b>state</b>.</p>';
+
+/* 5 — proposal */
+const PROP = [
+  ['--chart-1', P.blue, 'subject · positive end'],
+  ['--chart-2', P.rose, 'negative end'],
+  ['--chart-3', P.orange, 'third series, when needed'],
+  ['--chart-other', P.grey, 'Other / Unassigned — named, not numbered'],
+];
+document.getElementById('proposed').innerHTML =
+  PROP.map(([t,hex,job]) =>
+    '<div><div class="sw__i" style="background:'+hex+'"></div>'
+    + '<p class="sw__n"><code>'+t+'</code></p>'
+    + '<p class="sw__m">'+hex+'<br>'+job+'</p></div>').join('')
+  + '<div><div class="sw__i" style="background:linear-gradient(90deg,'+RAMP.join(',')+')"></div>'
+    + '<p class="sw__n"><code>--seq-1…5</code></p>'
+    + '<p class="sw__m">from chart-1<br>how much</p></div>';
+</script>
+</div></body></html>

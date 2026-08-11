@@ -9,7 +9,7 @@
         "rule": "overused-font",
         "value": "inter",
         "createdAt": "2026-07-29T03:51:11.007Z",
-        "reason": "Inter is the DS brand face (tokens.css), fixed Thai+Latin pairing with Noto Sans Thai across all 10 apps"
+        "reason": "Inter is the DS brand face (tokens.css v2.7.5), paired with Noto Sans Thai Looped for Thai across every v2 app"
       }
     ]
   },

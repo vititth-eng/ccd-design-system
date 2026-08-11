@@ -1,0 +1,452 @@
+/* ============================================================
+   CCD Design System v3 — COLOUR
+
+   shadcn's token set, carrying CCD's values. Structure is re-judged;
+   the hexes are not re-invented — they are brand (#142549 is fixed) and
+   accessibility decisions that were measured and picked by eye.
+
+   Three modes: light, forced dark, system dark. Values are declared ONCE
+   as --d-* and mapped, rather than written into each selector, because
+   the same set is needed in three places and a fourth (print) has to
+   undo them. Two blocks of pure `--token: var(--d-token)` lines cannot
+   drift into a wrong colour — only into a visible diff.
+   ============================================================ */
+
+/* shadcn ships `@custom-variant dark (&:is(.dark *))`. CCD signals the mode
+   with an attribute on :root instead, and carries a third state — "system",
+   which follows the OS. Both are declared here so `dark:` utilities work in
+   every mode without a component knowing which is active.
+
+   SCOPED TO :root, AND THAT IS LOAD-BEARING. Written bare, `[data-theme]`
+   matches ANY element carrying the attribute, so a control that used
+   data-theme as its own click target re-themed ITSELF — a theme switch once
+   painted its own "Dark" label in near-white on a light track, reading as
+   disabled, with nothing wrong in the component. The attribute is a mode
+   declaration for the document, never a data slot. */
+@custom-variant dark {
+  &:where(:root[data-theme="dark"], :root[data-theme="dark"] *) { @slot; }
+  @media (prefers-color-scheme: dark) {
+    &:where(:root[data-theme="system"], :root[data-theme="system"] *) { @slot; }
+  }
+}
+
+:root {
+  /* ── SURFACES ────────────────────────────────────────────
+     Flat white, separation by line. A block of content never gets a
+     background — group it with a rule, a gap, or a heading. That is why
+     background, card and popover are the SAME value here: white is the
+     ceiling, so light mode's lightness step is zero and the border does
+     the work. Dark takes real steps and the same rule still holds.
+
+     This is what makes a stock shadcn Card look like a CCD card without
+     touching the component: it reads --card, and --card is white. */
+  --background: #FFFFFF;
+  --foreground: #142549;          /* Boonrawd navy — the fixed brand anchor */
+  --card: #FFFFFF;
+  --card-foreground: #142549;
+  --popover: #FFFFFF;             /* transient overlay: menu, dialog, toast */
+  --popover-foreground: #142549;
+
+  /* ── ACTIONS ─────────────────────────────────────────────
+     FILLS DO NOT INVERT, and this is the one rule most likely to be
+     "fixed" by someone helping. --primary and --destructive each carry
+     text on top, so they must stay dark enough to hold white in BOTH
+     modes. Lifting them for dark turned the destructive button into a
+     pale slab with dark text — the only inverted element on the screen,
+     louder than primary at 6.73:1 against primary's 5.18:1. Destroy was
+     out-shouting save. Found by rendering, not by reading.
+     Identical in both modes ON PURPOSE. */
+  --primary: #4068CA;
+  --primary-foreground: #FFFFFF;
+  --destructive: #C4372C;         /* the accessible red, never the #FF5F56 dot red */
+  --destructive-foreground: #FFFFFF;   /* shadcn ships no pair for destructive; CCD needs one */
+
+  /* ── QUIET SURFACES ──────────────────────────────────────
+     shadcn's `accent` is a FALSE FRIEND: there it means the hover/active
+     surface, a light neutral. CCD's accent is the one meaning colour and
+     maps to `primary` above. Read the shadcn name, not the CCD one.
+
+     secondary is white + border rather than shadcn's grey, per the flat
+     rule. muted is the near-neutral used for tracks, disabled controls
+     and thin header rows — as a FILL it is small elements only, never a
+     content panel. */
+  --secondary: #FFFFFF;
+  --secondary-foreground: #142549;
+  --muted: #EDEFF1;
+  --muted-foreground: #61697A;    /* slate — AA 5.51:1 on white */
+  --accent: #EDEFF1;              /* hover face, NOT the CCD accent */
+  --accent-foreground: #142549;
+
+  /* ── LINES ───────────────────────────────────────────────
+     border and input share a value: a field's edge and a card's edge are
+     the same line at this scale, and splitting them invites drift. */
+  --border: #CBD1DF;
+  --input: #CBD1DF;
+  --ring: #4068CA;
+
+  /* ── STATUS ──────────────────────────────────────────────
+     No shadcn slot for any of this; added through @theme inline below.
+     The bright trio are DOTS ONLY — they fail AA as text or as a fill.
+     The -strong tier is the darkened, readable version for glyphs, marks
+     and small coloured text; the -tint tier is its pill background.
+
+     caution does not hold one hue across the tiers, deliberately: the dot
+     stays yellow (41°) while strong and tint move to orange (~28°),
+     because every yellow dark enough to read is gold or olive. The dot
+     cannot follow it into orange without colliding with the negative dot.
+     They never meet — the dot lives in pills whose text is ink, the
+     strong lives in glyphs. */
+  --positive: #27C93F;
+  --caution: #FFBD2E;
+  --negative: #FF5F56;
+  --positive-strong: #1A7F37;     /* 5.08:1 on white */
+  --caution-strong: #CF741E;      /* 3.40:1 — GLYPHS AND MARKS ONLY, never a paragraph */
+  --negative-strong: #C4372C;
+  --positive-tint: #E7F5EC;
+  --caution-tint: #FDEEE2;
+  --negative-tint: #FBE9E7;
+
+  /* ── CHARTS ──────────────────────────────────────────────
+     Seven, frozen by owner call after three replacement sets were
+     rendered and rejected. shadcn names five; six and seven are added.
+     One set for BOTH modes — all seven clear 3:1 on dark canvas and dark
+     card, and it is only white they struggle against.
+
+     INDEX ORDER IS THE API: series 1 takes chart-1. Pick a hue per chart
+     and the same plant is blue on one card and green on the next.
+     chart-7 grey is Other/Unassigned and never a real series.
+     Most charts want ONE hue — subject in chart-1, context in chart-7. */
+  /* ── THE AXIS — blue is positive, rose is negative ──────
+     Reserved. These two never appear as categorical series, because they
+     carry DIRECTION: more/less, agree/disagree, over/under. Their ramps
+     below are what every rating scale is built from.
+
+     Rose sits ΔE 6.5 from the negative status dot (#FF5F56). That is the
+     one accepted collision in this palette and it is not solved, only
+     mitigated: a status mark and a chart mark never share a card, and the
+     dot is a 9px circle inside a pill rather than a fill beside a bar.
+     The clean alternative was magenta (ΔE 23 from everything), rejected
+     because it stops reading as "bad". Reopen only with that trade in
+     view. */
+  --chart-blue: #5B8DEF;
+  --chart-rose: #E8637F;
+  --chart-grey: #C6C8CC;   /* neutral centre · Other · "not the subject" */
+
+  /* ── THE RAMPS — FIXED VALUES, NEVER A FORMULA ─────────
+     Index 2 IS the source hue, exactly. Steps are 0.10 OKLCH lightness
+     apart, which puts adjacent steps at ΔE 10 and mirrors blue against
+     rose within 0.013 luminance at every index — that symmetry is what
+     makes a diverging scale read as one scale.
+
+     These were generated twice from a recipe before being frozen, and the
+     two versions drifted to different lightness ranges while NEITHER
+     contained its own source colour (closest step ΔE 4.3–5.0 away, so the
+     blue in the charts was not the blue in the palette). A token is a
+     value. Regenerating it from a formula in two places is how one colour
+     gets two definitions. */
+  --chart-blue-1: #B7D0FE;   /* palest  · 1.56:1 on white */
+  --chart-blue-2: #87AFFA;   /*            2.20:1 */
+  --chart-blue-3: #5B8DEF;   /* = --chart-blue · 3.23:1 */
+  --chart-blue-4: #3E6ECD;   /*            4.86:1 — the scale ENDPOINT */
+  --chart-blue-5: #2951A3;   /* darkest · 7.50:1 — too heavy for a bar end */
+
+  --chart-rose-1: #FFC1CA;   /*            1.53:1 */
+  --chart-rose-2: #F992A3;   /*            2.17:1 */
+  --chart-rose-3: #E8637F;   /* = --chart-rose · 3.22:1 */
+  --chart-rose-4: #C54362;   /*            4.82:1 — the scale ENDPOINT */
+  --chart-rose-5: #9C2B48;   /*            7.36:1 */
+
+  /* ── CATEGORICAL — "which one is this" ─────────────────
+     Kept in full. Index order is the API: series 1 takes --chart-1.
+     Never `COLORS[i % n]`.
+
+     Two carry a caveat at the moment of use, because the status tier owns
+     the warm end of the wheel and these are warm:
+       --chart-4 orange  ΔE 9.7 from the caution dot
+       --chart-6 yellow  ΔE 4.3 from the caution dot, and 1.51:1 on white
+     Neither is banned; both are wrong on a screen that also shows status.
+     Reach for teal and violet first — they measure 16.4 and 15.0 clear.
+
+     Under deuteranopia this set does not survive: teal↔violet is 3.9 and
+     both sit near blue. Colour-blind readers get the AXIS reliably and the
+     categorical series not at all, which is why colour is never the only
+     channel. Deprioritised by owner call (known internal audience). */
+  --chart-1: #5CBDB4;   /* teal   — clean against status */
+  --chart-2: #9B51F0;   /* violet — clean against status */
+  --chart-3: #C6C8CC;   /* grey   — Other / Unassigned, never a real series */
+  --chart-4: #E89B3C;   /* orange — deferred, see caveat */
+  --chart-5: #F4CF4A;   /* yellow — deferred, see caveat */
+  --chart-6: #5B8DEF;   /* blue   — borrowed from the axis; only when a chart has no direction */
+  --chart-7: #E8637F;   /* rose   — borrowed from the axis; same condition */
+
+  /* ── SIDEBAR ─────────────────────────────────────────────
+     shadcn gives the sidebar its own seven tokens so it can be a
+     different surface. CCD has no second surface — the flat rule applies
+     to a sidebar exactly as it applies to a page — so these point at the
+     same values. They exist so shadcn's Sidebar renders correctly
+     unmodified, not because CCD has a sidebar palette. */
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #142549;
+  --sidebar-primary: #4068CA;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #EDEFF1;
+  --sidebar-accent-foreground: #142549;
+  --sidebar-border: #CBD1DF;
+  --sidebar-ring: #4068CA;
+
+  /* ── RADIUS ──────────────────────────────────────────────
+     One base, shadcn's derived ladder. 8px is an owner call picked by eye
+     against the 34px control height: 6 read hard, 10 read consumer-SaaS
+     friendly, which is on the anti-reference list. */
+  --radius: 0.5rem;
+
+  --scrim: rgba(20, 37, 73, .32);   /* dialog backdrop — tuned to dim WHITE */
+}
+
+/* ── DARK VALUES ───────────────────────────────────────────
+   Declared, not applied. The mapping blocks below apply them.
+
+   Surfaces take a solid step; controls take a FILM. A surface must be
+   opaque — a dialog has to hide what is behind it. A control cannot use
+   a fixed step, because it appears at many depths: a button sits on a
+   card, in a dialog, on a toolbar, and one absolute value is right at
+   exactly one of them. A --float secondary button inside a --float
+   dialog was once literally the same colour. So these are translucent
+   and land one step off whatever they sit on. */
+:root {
+  --d-background: #191A1D;
+  --d-foreground: #E9EAEC;
+  --d-card: #212327;
+  --d-popover: #32353C;
+  --d-muted: #26282C;
+  --d-muted-foreground: #A2A6AD;
+  --d-border: #383B41;
+  --d-secondary: rgba(255, 255, 255, .07);
+  --d-accent: rgba(255, 255, 255, .13);
+  --d-ring: #6E9BF0;              /* the accent LIFTS for its text/focus job */
+  --d-positive-strong: #5FD787;
+  --d-caution-strong: #FFB978;
+  --d-negative-strong: #FF8A80;
+  --d-positive-tint: rgba(39, 201, 63, .14);
+  --d-caution-tint: rgba(255, 170, 90, .14);
+  --d-negative-tint: rgba(255, 95, 86, .14);
+  --d-scrim: rgba(0, 0, 0, .66);
+}
+
+/* ── THE TWO MAPPING BLOCKS ────────────────────────────────
+   These MUST stay identical. They exist twice because an OS colour
+   preference is a fact only the browser knows, so it can only be tested
+   by a media query — and a media query cannot be added to an existing
+   selector. Both are pure mapping lines, so a drift between them is a
+   visible diff, never a wrong colour.
+
+   --primary and --destructive are absent from both ON PURPOSE. See the
+   fills-do-not-invert note above before adding them. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --background: var(--d-background);  --foreground: var(--d-foreground);
+  --card: var(--d-card);              --card-foreground: var(--d-foreground);
+  --popover: var(--d-popover);        --popover-foreground: var(--d-foreground);
+  --secondary: var(--d-secondary);    --secondary-foreground: var(--d-foreground);
+  --muted: var(--d-muted);            --muted-foreground: var(--d-muted-foreground);
+  --accent: var(--d-accent);          --accent-foreground: var(--d-foreground);
+  --border: var(--d-border);          --input: var(--d-border);
+  --ring: var(--d-ring);
+  --positive-strong: var(--d-positive-strong);
+  --caution-strong: var(--d-caution-strong);
+  --negative-strong: var(--d-negative-strong);
+  --positive-tint: var(--d-positive-tint);
+  --caution-tint: var(--d-caution-tint);
+  --negative-tint: var(--d-negative-tint);
+  --sidebar: var(--d-card);           --sidebar-foreground: var(--d-foreground);
+  --sidebar-accent: var(--d-accent);  --sidebar-accent-foreground: var(--d-foreground);
+  --sidebar-border: var(--d-border);  --sidebar-ring: var(--d-ring);
+  --scrim: var(--d-scrim);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="system"] {
+    color-scheme: dark;
+    --background: var(--d-background);  --foreground: var(--d-foreground);
+    --card: var(--d-card);              --card-foreground: var(--d-foreground);
+    --popover: var(--d-popover);        --popover-foreground: var(--d-foreground);
+    --secondary: var(--d-secondary);    --secondary-foreground: var(--d-foreground);
+    --muted: var(--d-muted);            --muted-foreground: var(--d-muted-foreground);
+    --accent: var(--d-accent);          --accent-foreground: var(--d-foreground);
+    --border: var(--d-border);          --input: var(--d-border);
+    --ring: var(--d-ring);
+    --positive-strong: var(--d-positive-strong);
+    --caution-strong: var(--d-caution-strong);
+    --negative-strong: var(--d-negative-strong);
+    --positive-tint: var(--d-positive-tint);
+    --caution-tint: var(--d-caution-tint);
+    --negative-tint: var(--d-negative-tint);
+    --sidebar: var(--d-card);           --sidebar-foreground: var(--d-foreground);
+    --sidebar-accent: var(--d-accent);  --sidebar-accent-foreground: var(--d-foreground);
+    --sidebar-border: var(--d-border);  --sidebar-ring: var(--d-ring);
+    --scrim: var(--d-scrim);
+  }
+}
+
+/* Expose every token to Tailwind. Without this block a --token is inert:
+   it is the mapping here that mints bg-*, text-*, border-* and ring-*. */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-positive: var(--positive);
+  --color-caution: var(--caution);
+  --color-negative: var(--negative);
+  --color-positive-strong: var(--positive-strong);
+  --color-caution-strong: var(--caution-strong);
+  --color-negative-strong: var(--negative-strong);
+  --color-positive-tint: var(--positive-tint);
+  --color-caution-tint: var(--caution-tint);
+  --color-negative-tint: var(--negative-tint);
+
+  --color-chart-blue: var(--chart-blue);
+  --color-chart-rose: var(--chart-rose);
+  --color-chart-grey: var(--chart-grey);
+
+  --color-chart-blue-1: var(--chart-blue-1);
+  --color-chart-blue-2: var(--chart-blue-2);
+  --color-chart-blue-3: var(--chart-blue-3);
+  --color-chart-blue-4: var(--chart-blue-4);
+  --color-chart-blue-5: var(--chart-blue-5);
+  --color-chart-rose-1: var(--chart-rose-1);
+  --color-chart-rose-2: var(--chart-rose-2);
+  --color-chart-rose-3: var(--chart-rose-3);
+  --color-chart-rose-4: var(--chart-rose-4);
+  --color-chart-rose-5: var(--chart-rose-5);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
+  --color-chart-7: var(--chart-7);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+}
+
+@layer base {
+  * { @apply border-border outline-ring/50; }
+  body { @apply bg-background text-foreground; }
+}
+
+/* ════════════════════════════════════════════════════════════
+   THE SCALE STANDARD — how to colour a rating scale of N points
+
+   Built only from the two ramps and the grey, so a 4-point and a
+   7-point survey read as the same system. Rendered specimen for every
+   count: explore/scale-standard.html.
+
+     N   segments, most positive first
+     ─   ────────────────────────────────────────────────────────
+     2   blue-3                                          rose-3
+     3   blue-3                    grey                  rose-3
+     4   blue-4  blue-2                    rose-2  rose-4
+     5   blue-4  blue-2            grey    rose-2  rose-4
+     6   blue-4  blue-3  blue-2            rose-2  rose-3  rose-4
+     7   blue-4  blue-3  blue-2    grey    rose-2  rose-3  rose-4
+
+   THREE RULES BEHIND THAT TABLE
+
+   1. Intensity is LIGHTNESS, direction is HUE. Strongest opinion
+      darkest, mildest palest. Never signal strength by changing hue.
+
+   2. An odd count takes GREY at the centre — never a blue/rose blend,
+      which is mud, and never one side's palest step, which reads as a
+      weak opinion rather than no opinion. Grey already means "neither".
+
+   3. The endpoint is step 4, NOT step 5. Step 5 measures 7.50:1 on white
+      and reads as heavy at the end of a bar (owner call 2026-08-11, by
+      eye). Step 4 is 4.86:1.
+
+   UNBALANCED SCALES ARE NOT DIVERGING. "ดีมาก / ดี / แย่" has two
+   positive options and one negative, so there is no centre and grey has
+   no place: take consecutive steps of one ramp for the heavy side and
+   the other hue for the light side.
+
+   ONE MEASURE WITH NO DIRECTION IS SEQUENTIAL, not diverging — the blue
+   ramp alone, palest to darkest. It is the only form here that survives
+   greyscale, because its lightness is monotonic.
+
+   THE LIMIT, MEASURED. A diverging scale carries NOTHING in greyscale:
+   the sides are deliberately symmetric, so matching steps have matching
+   luminance (2-point measures 0.275 against 0.276). Order and labels
+   carry a rating scale; colour reinforces. Keep the sequence fixed and
+   always label both ends.
+
+   And 6- and 7-point sit exactly on the ΔE 10 floor between adjacent
+   segments, because three consecutive ramp steps are one lightness step
+   apart by construction. No margin. Revisit if a 7-point survey ships.
+   ════════════════════════════════════════════════════════════ */
+
+/* PRINT — --foreground is near-white in dark mode and would print invisible.
+   A page printed from a dark app must come out as the light app.
+
+   This resets the dark VALUES rather than the mapped tokens, so one block
+   covers forced-dark and system-dark alike and cannot go stale when a token
+   is added to the mapping.
+
+   color-scheme is a PROPERTY, not a --d-* value, so resetting the values
+   above does not reach it: both mapping blocks set `color-scheme: dark`
+   directly and it survives into print, leaving native controls, scrollbars
+   and spellcheck underlines dark on a white page. The selector list below is
+   deliberate — `:root` alone is specificity (0,1,0) against the (0,2,0) of
+   `:root[data-theme="dark"]` and would lose. Matching the selectors exactly
+   ties specificity, and this block is later in the file, so it wins. Keep the
+   list in step if a fourth mode is ever added. */
+@media print {
+  :root {
+    --d-background: #FFFFFF; --d-foreground: #142549;
+    --d-card: #FFFFFF; --d-popover: #FFFFFF;
+    --d-muted: #EDEFF1; --d-muted-foreground: #61697A;
+    --d-border: #CBD1DF;
+    --d-secondary: #FFFFFF; --d-accent: #EDEFF1;
+    --d-ring: #4068CA;
+    --d-positive-strong: #1A7F37;
+    --d-caution-strong: #CF741E;
+    --d-negative-strong: #C4372C;
+    --d-positive-tint: #E7F5EC;
+    --d-caution-tint: #FDEEE2;
+    --d-negative-tint: #FBE9E7;
+    --d-scrim: rgba(20, 37, 73, .32);
+  }
+  :root,
+  :root[data-theme="dark"],
+  :root[data-theme="system"] {
+    color-scheme: light;
+  }
+}

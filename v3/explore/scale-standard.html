@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>v3 — the scale standard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&family=Noto+Sans+Thai:wght@100..900&display=swap" />
+<style>
+  * { box-sizing:border-box; }
+  body { margin:0; padding:30px 24px 90px; background:#fff; color:#142549;
+         font-family:"Inter","Noto Sans Thai",ui-sans-serif,system-ui,sans-serif; }
+  .page { max-width:1040px; margin:0 auto; }
+  h1 { font-size:28px; line-height:1.18; font-weight:600; margin:0 0 10px; }
+  h2 { font-size:19px; line-height:1.35; font-weight:600; margin:0 0 4px; }
+  h3 { font-size:15px; font-weight:600; margin:0 0 3px; }
+  .sec { border-top:1px solid #CBD1DF; padding-top:22px; margin-top:40px; }
+  .n { font-size:12px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+       color:#4068CA; margin:0 0 6px; }
+  p.t { font-size:16px; line-height:1.6; color:#61697A; margin:0 0 8px; max-width:34rem; }
+  p.t b { color:#142549; font-weight:600; }
+  .cap { font-size:12px; line-height:1.5; color:#61697A; margin:0 0 10px; }
+
+  .box { border:1px solid #CBD1DF; border-radius:8px; padding:16px; margin-top:14px; }
+  .ramp { display:flex; border-radius:5px; overflow:hidden; margin-top:8px; }
+  .ramp i { flex:1; height:44px; display:flex; align-items:center; justify-content:center;
+            font-size:11px; font-family:ui-monospace,Menlo,monospace; }
+
+  /* a scale specimen: the swatch strip, then the same scale as a stacked bar */
+  .sc { margin-top:20px; }
+  .sc__h { display:flex; align-items:baseline; gap:10px; margin-bottom:6px; }
+  .sc__n { font-size:14px; font-weight:600; }
+  .sc__q { font-size:12px; color:#61697A; }
+  .sc__strip { display:flex; gap:3px; }
+  .sc__strip > div { flex:1; }
+  .sc__strip i { display:block; height:38px; border-radius:4px; }
+  .sc__strip p { font-size:11px; line-height:1.35; color:#61697A; margin:5px 0 0; text-align:center; }
+  .sc__bar { display:flex; height:24px; border-radius:3px; overflow:hidden; margin-top:10px; }
+  .sc__bar i { display:block; }
+
+  .two { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  @media (max-width:840px){ .two{ grid-template-columns:1fr; } }
+
+  .defer { display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+  .defer > div { width:112px; }
+  .defer i { display:block; height:40px; border-radius:5px; border:1px solid rgba(0,0,0,.08); }
+  .defer p { font-size:11px; line-height:1.4; color:#61697A; margin:5px 0 0; }
+  .defer p b { display:block; color:#142549; font-size:12px; }
+  .defer .flag { color:#CF741E; font-weight:600; }
+
+  table { border-collapse:collapse; width:100%; font-size:14px; margin-top:10px; }
+  th,td { text-align:left; padding:7px 10px 7px 0; border-bottom:1px solid #EDEFF1; vertical-align:top; }
+  th { font-weight:600; font-size:12px; color:#61697A; text-transform:uppercase; letter-spacing:.04em; }
+  code { font-family:ui-monospace,Menlo,monospace; font-size:13px; }
+</style>
+</head>
+<body><div class="page">
+
+<h1>v3 — the scale standard</h1>
+<p class="t">Two ramps and a grey. <b>Blue is positive, rose is negative, grey is neutral or unhighlighted.</b> Every rating scale is built from those, so a 4-point and a 7-point survey read as the same system.</p>
+
+<section class="sec">
+  <p class="n">the ingredients</p>
+  <h2>Two ramps, one grey</h2>
+  <p class="t">Intensity lives in <b>lightness</b>: the strongest opinion is darkest, the mildest is palest. Hue only says which direction.</p>
+  <div id="ramps"></div>
+</section>
+
+<section class="sec">
+  <p class="n">the standard</p>
+  <h2>Symmetric scales — equal options each side</h2>
+  <p class="t"><b>Even counts are the easy case:</b> split down the middle, darkest at each extreme. <b>Odd counts need a true centre</b>, and that centre is <b>grey</b> — not a blend of blue and rose, which is mud. Grey already means “neither / unhighlighted”, which is exactly what a midpoint is.</p>
+  <div id="sym"></div>
+</section>
+
+<section class="sec">
+  <p class="n">the harder case</p>
+  <h2>Asymmetric scales — the options aren't balanced</h2>
+  <p class="t">“ดีมาก / ดี / แย่” is not a diverging scale — two of three are positive, so there is no centre to put grey at. Use <b>steps of one ramp</b> for the levels on the heavy side, and the other ramp for the light side. No grey, because nothing is neutral.</p>
+  <div class="two" id="asym"></div>
+</section>
+
+<section class="sec">
+  <p class="n">the rule, short</p>
+  <h2>How to pick, every time</h2>
+  <div id="rule"></div>
+</section>
+
+<section class="sec">
+  <p class="n">the catch, stated up front</p>
+  <h2>A diverging scale carries nothing in greyscale</h2>
+  <p class="t">Because the two sides are deliberately symmetric, matching steps have <b>matching lightness</b>. Measured on these ramps:</p>
+  <div class="box">
+    <table><thead><tr><th>scale</th><th>luminance, left to right</th><th></th></tr></thead><tbody>
+      <tr><td>2-point</td><td><code>0.275 · 0.276</code></td><td>blue and rose are luminance twins</td></tr>
+      <tr><td>4-point</td><td><code>0.12 · 0.51 · 0.493 · 0.11</code></td><td>the two mild steps mirror</td></tr>
+      <tr><td>7-point</td><td><code>0.12 · 0.271 · 0.51 · 0.577 · 0.493 · 0.255 · 0.11</code></td><td>symmetric around grey</td></tr>
+    </tbody></table>
+    <p class="cap" style="margin-top:12px">This is not a flaw in the ramps — it is what “diverging” means. Every diverging scale in every system has it. The consequence is the rule: <b style="color:#142549">order and labels carry a rating scale; colour is the reinforcement.</b> Keep the sequence fixed (most positive always at one end), always label the ends, and never rely on hue alone to say which side a segment is on. A sequential ramp does not have this problem — its lightness is monotonic, so it survives greyscale intact.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <p class="n">still in the palette</p>
+  <h2>Deferred hues — kept, not led with</h2>
+  <p class="t">These stay available for genuine categorical work. They are not the default reach, and two carry a caveat worth knowing at the moment you use them.</p>
+  <div class="defer" id="defer"></div>
+</section>
+
+<script>
+const cvs=document.createElement('canvas'); cvs.width=cvs.height=1;
+const ctx=cvs.getContext('2d',{willReadFrequently:true});
+const toRgb=c=>{ctx.fillStyle='#000';ctx.fillStyle=c;ctx.fillRect(0,0,1,1);
+  const d=ctx.getImageData(0,0,1,1).data;return [d[0],d[1],d[2]]};
+const srgb=c=>{c/=255;return c<=0.04045?c/12.92:Math.pow((c+0.055)/1.055,2.4)};
+const lab=r=>{const[R,G,B]=r.map(srgb);
+ const l=Math.cbrt(0.4122214708*R+0.5363325363*G+0.0514459929*B);
+ const m=Math.cbrt(0.2119034982*R+0.6806995451*G+0.1073969566*B);
+ const s=Math.cbrt(0.0883024619*R+0.2817188376*G+0.6299787005*B);
+ return [0.2104542553*l+0.7936177850*m-0.0040720468*s,
+         1.9779984951*l-2.4285922050*m+0.4505937099*s,
+         0.0259040371*l+0.7827717662*m-0.8086757660*s]};
+const toLch=h=>{const[l,a,b]=lab(toRgb(h));
+  return {l,c:Math.hypot(a,b),h:(Math.atan2(b,a)*180/Math.PI+360)%360}};
+
+const BLUE='#5B8DEF', ROSE='#E8637F', GREY='#C6C8CC';
+
+/* FIXED VALUES, not a formula. Generating these from a recipe is exactly how the
+   two mocks drifted apart: written twice with different lightness ranges, and
+   NEITHER contained its own source colour (the closest step was ΔE 4.3-5.0 away,
+   so the blue in the charts was not the blue in the palette).
+
+   Index 2 IS the source hue, exactly. Steps sit +-0.10 OKLCH lightness apart, so
+   adjacent steps are ΔE 10 (distinguishable) and blue mirrors rose within 0.013
+   luminance at every index, which is what keeps a diverging scale symmetric. */
+const RAMP = {
+  blue: ['#B7D0FE', '#87AFFA', '#5B8DEF', '#3E6ECD', '#2951A3'],
+  rose: ['#FFC1CA', '#F992A3', '#E8637F', '#C54362', '#9C2B48']
+};
+
+/* Which steps a side uses, by how many levels it needs. Hardcoded rather than
+   computed, and every entry is measured against the GREY centre as well as its
+   own neighbours — the failure mode is a scale whose middle segments are one
+   washed colour.
+
+   THE ENDPOINT IS INDEX 3, NOT 4. Index 4 (#2951A3 / #9C2B48) measures 7.50:1 on
+   white and reads as heavy at the ends of a bar; index 3 lands at 4.86:1. Owner
+   call 2026-08-11, by eye.
+
+   [4,2,0] was the obvious even spacing and it fails outright: the palest blue
+   sits ΔE 6.8 from grey and the palest rose 8.2, so a 7-point bar has three
+   indistinguishable middle segments.
+
+   With the lighter endpoint, 4- and 5-point clear comfortably (19.6 / 13.6) but
+   6- and 7-point land at exactly 10.0 — the floor, no margin, because three
+   consecutive ramp steps are one lightness step apart by construction. Acceptable
+   only because the standard already says order and labels carry a rating scale.
+   Revisit if a 7-point survey ever actually ships. */
+const PICK = { 1: [2], 2: [3, 1], 3: [3, 2, 1] };
+const side = (which, k, strongestFirst) => {
+  const idx = PICK[k] || PICK[3];
+  const out = idx.map(i => RAMP[which][i]);
+  return strongestFirst ? out : out.slice().reverse();
+};
+
+/* ingredients */
+const show = (label, arr) => '<div class="box"><h3>' + label + '</h3>'
+  + '<div class="ramp">' + arr.map((c,i) =>
+      '<i style="background:'+c+';color:'+(i<2?'#fff':'#142549')+'">'+(i+1)+'</i>').join('')
+  + '</div></div>';
+document.getElementById('ramps').innerHTML =
+    show('Blue — positive / agree / more', RAMP.blue.slice().reverse())
+  + show('Rose — negative / disagree / less', RAMP.rose.slice().reverse())
+  + '<div class="box"><h3>Grey — neutral, or “not the subject”</h3>'
+    + '<div class="ramp"><i style="background:'+GREY+';color:#142549">#C6C8CC</i></div></div>';
+
+/* build an N-point symmetric scale */
+const scale = n => {
+  const odd = n % 2 === 1;
+  const per = Math.floor(n / 2);
+  const pos = side('blue', per, true);      // strongest positive first
+  const neg = side('rose', per, false);     // mildest negative first -> strongest last
+  return odd ? [...pos, GREY, ...neg] : [...pos, ...neg];
+};
+const LABELS = {
+  2: ['เห็นด้วย','ไม่เห็นด้วย'],
+  3: ['เห็นด้วย','เฉย ๆ','ไม่เห็นด้วย'],
+  4: ['เห็นด้วยมาก','เห็นด้วย','ไม่เห็นด้วย','ไม่เห็นด้วยมาก'],
+  5: ['มากที่สุด','มาก','ปานกลาง','น้อย','น้อยที่สุด'],
+  6: ['+3','+2','+1','−1','−2','−3'],
+  7: ['มากที่สุด','มาก','ค่อนข้างมาก','กลาง ๆ','ค่อนข้างน้อย','น้อย','น้อยที่สุด']
+};
+const WIDTHS = { 2:[58,42], 3:[46,22,32], 4:[30,28,24,18], 5:[22,26,20,18,14],
+                 6:[18,22,20,16,14,10], 7:[14,18,16,18,14,12,8] };
+const spec = n => {
+  const cs = scale(n), lab = LABELS[n], w = WIDTHS[n];
+  return '<div class="sc"><div class="sc__h"><span class="sc__n">' + n + '-point</span>'
+    + '<span class="sc__q">' + (n%2 ? '<b>odd</b> — grey holds the centre' : 'even — clean split, no centre needed') + '</span></div>'
+    + '<div class="sc__strip">' + cs.map((c,i) =>
+        '<div><i style="background:'+c+'"></i><p>'+lab[i]+'</p></div>').join('') + '</div>'
+    + '<div class="sc__bar">' + cs.map((c,i) =>
+        '<i style="background:'+c+';width:'+w[i]+'%"></i>').join('') + '</div></div>';
+};
+document.getElementById('sym').innerHTML =
+  '<div class="box">' + [2,3,4,5,6,7].map(spec).join('') + '</div>';
+
+/* asymmetric */
+const asym = (label, note, cs, labels) =>
+  '<div class="box"><h3>' + label + '</h3><p class="cap">' + note + '</p>'
+  + '<div class="sc__strip">' + cs.map((c,i) =>
+      '<div><i style="background:'+c+'"></i><p>'+labels[i]+'</p></div>').join('') + '</div></div>';
+const pos2 = side('blue', 2, true), neg2 = side('rose', 2, false);
+document.getElementById('asym').innerHTML =
+    asym('Two positive, one negative', 'Blue carries both positive levels; rose takes the single negative. No grey — nothing here is neutral.',
+      [pos2[0], pos2[1], ROSE], ['ดีมาก','ดี','แย่'])
+  + asym('One positive, two negative', 'Mirror image: rose carries both negative levels.',
+      [BLUE, neg2[0], neg2[1]], ['ดี','แย่','แย่มาก']);
+
+/* the rule */
+document.getElementById('rule').innerHTML =
+  '<table><thead><tr><th>situation</th><th>what to use</th></tr></thead><tbody>'
+  + [['2 points','blue and rose, nothing else'],
+     ['even count, balanced','split in half — blue steps out from the centre, rose steps out the other way, darkest at both ends'],
+     ['odd count, balanced','same, with <b>grey</b> as the true centre. Never a blue/rose blend — mixing them gives mud'],
+     ['unbalanced options','steps of one ramp for the heavy side, the other hue for the light side. No grey, because no option is neutral'],
+     ['one measure, no direction','the blue ramp alone — this is sequential, not diverging'],
+     ['a subject against context','blue for the subject, grey for everything else']]
+    .map(([a,b])=>'<tr><td>'+a+'</td><td>'+b+'</td></tr>').join('')
+  + '</tbody></table>';
+
+/* deferred */
+document.getElementById('defer').innerHTML = [
+  ['#5CBDB4','teal','clean against status'],
+  ['#9B51F0','violet','clean against status'],
+  ['#E89B3C','orange','<span class="flag">ΔE 9.7 from the caution dot</span> — avoid on screens showing status'],
+  ['#F4CF4A','yellow','<span class="flag">ΔE 4.3 from the caution dot · 1.51:1 on white</span> — needs a hairline, and a label']
+].map(([h,n,note])=>'<div><i style="background:'+h+'"></i><p><b>'+n+'</b>'+note+'</p></div>').join('');
+</script>
+</div></body></html>
