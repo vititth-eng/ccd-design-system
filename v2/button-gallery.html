@@ -72,16 +72,21 @@
     </p>
   </section>
 
-  <!-- 4 · With icon + block --------------------------------------- -->
+  <!-- 4 · With icon ------------------------------------------------ -->
   <section>
-    <p class="t-section lbl">4 · Icon &amp; full-width</p>
-    <div class="rowb" style="align-items:stretch; flex-direction:column; max-width:320px;">
-      <button class="btn btn--primary btn--block">
+    <p class="t-section lbl">4 · Icon <span>— leading glyph, gap from --s-2</span></p>
+    <div class="rowb">
+      <button class="btn btn--primary">
         <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v10M3 8h10"/></svg>
         สร้างรอบประเมินใหม่
       </button>
-      <button class="btn btn--secondary btn--block">ส่งออกเป็น Excel</button>
+      <button class="btn btn--secondary">ส่งออกเป็น Excel</button>
     </div>
+    <p class="t-body note">
+      There is no full-width variant. <code>.btn--block</code> existed until
+      2026-08-11 and no consumer ever used it — a button that fills its container
+      is the container's decision, so the app sets the width where it needs one.
+    </p>
   </section>
 
   <!-- 5 · Contrast note ------------------------------------------- -->

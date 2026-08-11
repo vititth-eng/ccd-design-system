@@ -112,7 +112,7 @@
        sit inside the gallery's own 480px cap. Dashed guides are gallery
        chrome, not DS. -->
   <section style="max-width:none">
-    <p class="t-section lbl">5 · Page measure <span>— .form 480px · .form--wide 720px, centred</span></p>
+    <p class="t-section lbl">5 · Page measure <span>— .form 480px default, centred; widen via --form-measure</span></p>
     <div style="border:1px dashed var(--rule); border-radius: var(--r-base); padding: var(--s-4); margin-bottom: var(--s-4)">
       <div class="form">
         <div class="field">
@@ -122,11 +122,11 @@
       </div>
     </div>
     <div style="border:1px dashed var(--rule); border-radius: var(--r-base); padding: var(--s-4)">
-      <div class="form form--wide">
+      <div class="form" style="--form-measure: 720px">
         <div class="row2">
           <div class="field">
             <label class="field__label" for="m2">Owner</label>
-            <input class="control" id="m2" type="text" placeholder=".form--wide — admin two-column" />
+            <input class="control" id="m2" type="text" placeholder="--form-measure: 720px — admin two-column" />
           </div>
           <div class="field">
             <label class="field__label" for="m3">Department</label>
@@ -158,14 +158,11 @@
       granted · granted · not granted · disabled
     </p>
 
-    <div class="grants grants--sm">
-      <button class="grant" aria-pressed="true" aria-label="Overview"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="6" height="6" rx="1"/><rect x="11" y="3" width="6" height="6" rx="1"/><rect x="3" y="11" width="6" height="6" rx="1"/><rect x="11" y="11" width="6" height="6" rx="1"/></svg></button>
-      <button class="grant" aria-pressed="false" aria-label="Meeting rooms"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2.5" y="4.5" width="15" height="13" rx="1.6"/><path d="M2.5 8.5h15M6.5 2.5v4M13.5 2.5v4"/></svg></button>
-      <button class="grant" aria-pressed="true" aria-label="Company car"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M2.5 13.6h15v-3.3l-1.5-3.5a1.6 1.6 0 00-1.5-1h-9a1.6 1.6 0 00-1.5 1L2.5 10.3v3.3z"/><circle cx="6" cy="13.6" r="1.2"/><circle cx="14" cy="13.6" r="1.2"/></svg></button>
-    </div>
     <p class="t-caption" style="margin: var(--s-2) 0 0; color: var(--muted)">
-      <code>.grants--sm</code> — for dense table rows. Both sizes take the 44px
-      floor under <code>pointer: coarse</code>.
+      One size only. A <code>.grants--sm</code> (24px) existed until 2026-08-11
+      for dense table rows and no consumer ever used it — the compact table
+      density it was built for was never turned on either. The row takes the
+      44px floor under <code>pointer: coarse</code>.
     </p>
 
     <p class="t-body" style="margin: var(--s-5) 0 0; color: var(--muted)">

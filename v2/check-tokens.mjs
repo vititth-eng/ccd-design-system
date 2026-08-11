@@ -25,9 +25,9 @@
  *
  * Rule 2  every var(--x) resolves to a --x defined SOMEWHERE in the sheets.
  *         Component-local properties count as definitions -- .menu-btn mints
- *         --h and .form--wide mints --form-measure, and both are correct. A
- *         var() carrying a fallback, var(--x, 480px), is safe by construction
- *         and is skipped.
+ *         --h, and that is correct. A var() carrying a fallback,
+ *         var(--x, 480px), is safe by construction and is skipped -- which is
+ *         what makes --form-measure legal with no DS-side setter at all.
  *
  * Reported but NOT enforced (`--spacing`): raw lengths in padding/margin/gap.
  * Nine exist today and each is a deliberate micro-value someone chose by eye.

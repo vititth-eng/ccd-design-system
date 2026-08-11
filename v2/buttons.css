@@ -85,6 +85,3 @@
        for --sm is never a reason to make a table compact — that inversion is
        how it spread across five pages in one sitting. */
 .btn--sm { height: var(--ctl-h-sm); padding: 0 var(--s-3); }
-
-/* Full-width — forms, mobile. */
-.btn--block { width: 100%; }

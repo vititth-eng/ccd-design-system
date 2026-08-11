@@ -322,7 +322,6 @@
   /* ── SHADOW ────────────────────────────────────────────── */
   /* Flat system: cards/containers get NO shadow (a line separates them).
      Shadow is reserved for things that FLOAT above the page. */
-  --shadow-none:  none;
   --shadow-float: 0 2px 8px rgba(20, 37, 73, 0.06);    /* floating shell sidebar — tight lift on white (pairs with a faint divider edge) */
   --shadow-pop:   0 4px 12px rgba(20, 37, 73, 0.08);   /* dropdown, menu, popover, toast — softened (was .12) */
   --shadow-modal: 0 12px 32px rgba(20, 37, 73, 0.10);  /* modal / sheet — softened (was 16/40/.16) */

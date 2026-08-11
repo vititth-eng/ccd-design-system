@@ -328,7 +328,6 @@
   /* ── SHADOW ────────────────────────────────────────────── */
   /* Flat system: cards/containers get NO shadow (a line separates them).
      Shadow is reserved for things that FLOAT above the page. */
-  --shadow-none:  none;
   --shadow-float: 0 2px 8px rgba(20, 37, 73, 0.06);    /* floating shell sidebar — tight lift on white (pairs with a faint divider edge) */
   --shadow-pop:   0 4px 12px rgba(20, 37, 73, 0.08);   /* dropdown, menu, popover, toast — softened (was .12) */
   --shadow-modal: 0 12px 32px rgba(20, 37, 73, 0.10);  /* modal / sheet — softened (was 16/40/.16) */
@@ -761,9 +760,6 @@ body {
        how it spread across five pages in one sitting. */
 .btn--sm { height: var(--ctl-h-sm); padding: 0 var(--s-3); }
 
-/* Full-width — forms, mobile. */
-.btn--block { width: 100%; }
-
 /* ===== cards.css ===== */
 /* ============================================================
    CCD Design System v2 — CARD + KPI
@@ -1034,8 +1030,12 @@ select.control {
    change that buys nothing today. If a real collision ever appears, rename here
    AND in the consumer in one batch — never ship an alias. Same call for .li in
    scale.css, which is the riskier name of the three (CCD-174). */
+/* --form-measure is a hook with no DS-side setter: 480px is the respondent
+   default, and a screen that needs a wider column sets the property on the
+   instance. It carried a .form--wide (720px) variant until 2026-08-11 — built,
+   galleried, and used by no consumer in a year, so the variant went and the
+   hook stayed. */
 .form  { max-width: var(--form-measure, 480px); margin-inline: auto; }
-.form--wide { --form-measure: 720px; }          /* admin / dense multi-column forms */
 
 .stack { display: flex; flex-direction: column; gap: var(--s-4); }
 .row2  { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4); }
@@ -1092,13 +1092,9 @@ select.control {
 }
 .grant:disabled { cursor: not-allowed; opacity: .55; }
 
-.grants--sm .grant { width: var(--ctl-h-sm); height: var(--ctl-h-sm); }
-.grants--sm .grant svg { width: 15px; height: 15px; }
-
 /* Touch: same 44px floor the shell and calendar rows take. */
 @media (pointer: coarse) {
   .grant { width: 44px; height: 44px; }
-  .grants--sm .grant { width: 38px; height: 38px; }
 }
 
 /* ===== menu.css ===== */
