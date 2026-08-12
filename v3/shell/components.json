@@ -16,6 +16,7 @@
     "ui": "@/components/ui",
     "lib": "@/lib",
     "utils": "@/lib/utils",
-    "hooks": "@/hooks"
+    "hooks": "@/hooks",
+    "_note": "@/hooks resolves to v3/hooks, NOT shell/hooks. sidebar.tsx imports use-mobile, and a component in the shared store must not reach into the app that renders it — the CLI put it under the shell on first install and it was moved. tsconfig carries the matching path."
   }
 }

@@ -3,22 +3,37 @@
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import * as React from "react";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 import { NAV, OPEN_QUESTIONS } from "../../content/nav";
 
 /**
- * The workbench's own chrome — sidebar, breadcrumb, theme and viewport controls.
+ * The workbench's chrome, built ON shadcn's sidebar rather than beside it.
  *
- * It lives under app/_workbench and NOT in v3/components, and the distinction is
- * the whole store rule: v3/components holds what ships to consumer apps. A nav
- * for inspecting the design system is not part of the design system. If this
- * chrome ever earns a place in the DS it graduates deliberately, as the "Page
- * shell" pattern, not by being convenient here.
+ * The first version of this file hand-rolled the whole rail — and duplicating a
+ * shipped primitive is a bug, not a shortcut. What the real component brings
+ * that the hand-rolled one never would have: collapse to an icon rail, a mobile
+ * drawer, ⌘B, state persisted in a cookie so a reload does not reset it, and a
+ * draggable rail. It also renders all eight --sidebar tokens, which is the only
+ * reason any of them have ever been drawn.
  *
- * The underscore also keeps Next from routing it, and app/ is already inside
- * Tailwind's @source globs, so its classes generate.
+ * It stays in app/_workbench and not in v3/components: what ships to consumer
+ * apps is the sidebar primitive, not a nav for inspecting the design system.
  *
- * It renders in --sidebar, which is the only reason those eight tokens have ever
- * been drawn by anything.
+ * ONE deliberate departure from shadcn, below on SidebarMenuButton.
  */
 
 const WIDTHS = [
@@ -50,7 +65,7 @@ function Segmented<T extends string>({
     <div
       role="group"
       aria-label={label}
-      className="inline-flex rounded-md border border-sidebar-border p-0.5"
+      className="inline-flex rounded-md border border-border p-0.5"
     >
       {options.map((o) => (
         <button
@@ -60,7 +75,7 @@ function Segmented<T extends string>({
           aria-pressed={value === o.id}
           className={`rounded-sm px-2.5 py-1 text-sm font-medium transition-colors ${
             value === o.id
-              ? "bg-sidebar-accent text-sidebar-accent-foreground"
+              ? "bg-accent text-accent-foreground"
               : "text-muted-foreground hover:text-foreground"
           }`}
         >
@@ -68,6 +83,42 @@ function Segmented<T extends string>({
         </button>
       ))}
     </div>
+  );
+}
+
+/**
+ * The one departure from shadcn, and the reason is a rule we already proved.
+ *
+ * shadcn's own sidebar paints hover and current-page with the SAME fill —
+ * hover:bg-sidebar-accent and data-active:bg-sidebar-accent — separated only by
+ * font-medium. So two rows look identical while meaning different things, and
+ * hovering the row you are already on changes nothing at all.
+ *
+ * The dropdown menu taught the fix on 2026-08-12: a fill marks the ONE row the
+ * pointer or keyboard is on, and state that persists gets a second channel. A
+ * menu uses a check mark in a reserved gutter; a nav has no gutter, so this uses
+ * a rail — a 2px bar of --sidebar-primary down the leading edge. Current page
+ * keeps its rail whether hovered or not, and hover still reads as hover.
+ *
+ * Material calls the general form a state layer: the container colour says what
+ * something IS, a translucent overlay says what is happening to it, and the two
+ * stack instead of competing for the same property.
+ */
+function NavLink({ href, name, current }: { href: string; name: string; current: boolean }) {
+  return (
+    <SidebarMenuItem>
+      {/* `render`, not `asChild` — Base UI's composition prop takes the element to
+          render as, where Radix took a child. Everything copied from shadcn's
+          Base UI styles uses this, and the wrong one is a type error rather than
+          a silent miss. */}
+      <SidebarMenuButton
+        isActive={current}
+        className="relative data-active:bg-transparent data-active:hover:bg-sidebar-accent data-active:before:absolute data-active:before:inset-y-1 data-active:before:left-0 data-active:before:w-0.5 data-active:before:rounded-full data-active:before:bg-sidebar-primary"
+        render={<Link href={href} aria-current={current ? "page" : undefined} />}
+      >
+        {name}
+      </SidebarMenuButton>
+    </SidebarMenuItem>
   );
 }
 
@@ -90,9 +141,8 @@ export default function Chrome({ children }: { children: React.ReactNode }) {
 
   /* Read once on mount rather than during render: the server has no localStorage,
      so touching it in the render body would make the first client paint disagree
-     with the HTML it is hydrating. The inline script in layout.tsx has already
-     put the right attribute on <html> before any of this runs — this only syncs
-     the control to it. */
+     with the HTML it is hydrating. The beforeInteractive script in layout.tsx has
+     already put the right attribute on <html>; this only syncs the control to it. */
   React.useEffect(() => {
     const stored = document.documentElement.dataset.theme as ThemeId | undefined;
     if (stored) setTheme(stored);
@@ -104,123 +154,86 @@ export default function Chrome({ children }: { children: React.ReactNode }) {
     localStorage.setItem("ccd-theme", next);
   }
 
-  /* A page rendered inside the width frame drops the chrome and renders bare —
-     otherwise every frame would carry its own sidebar. */
+  /* A page rendered inside the width frame drops the chrome entirely — otherwise
+     every frame would carry its own sidebar inside it. */
   if (framed) return <>{children}</>;
 
   const frame = WIDTHS.find((w) => w.id === width);
   const isFramed = frame && frame.px > 0;
 
   return (
-    <div className="min-h-screen bg-background text-foreground lg:grid lg:grid-cols-[16rem_1fr]">
-      {/* Below lg the sidebar is hidden rather than stacked. A 256px rail plus the
-          content does not fit — the embedded browser pane is about 750px — and the
-          stacked version put a full screen of nav, most of it pages that do not
-          exist yet, above every page. The compact row in the header replaces it and
-          carries only what is reachable. */}
-      <aside className="hidden bg-sidebar text-sidebar-foreground lg:sticky lg:top-0 lg:block lg:h-screen lg:overflow-y-auto lg:border-r lg:border-sidebar-border">
-        <div className="flex items-center gap-2 px-5 py-5">
-          <span className="text-base font-semibold tracking-tight">CCD Design</span>
-          {/* The badge is the one place --sidebar-primary appears. Nothing else in
-              a workbench nav wants a brand fill, and a token nothing draws is a
-              token nobody has checked — this is worth knowing about it: the dark
-              block redefines every sidebar token EXCEPT primary and its
-              foreground, so the same blue carries both modes. Look at it here
-              before deciding that is right. */}
-          <span className="rounded-sm bg-sidebar-primary px-1.5 py-0.5 text-xs font-medium text-sidebar-primary-foreground">
-            v3 pilot
-          </span>
-        </div>
+    <SidebarProvider>
+      <Sidebar collapsible="icon">
+        <SidebarHeader>
+          <div className="flex items-center gap-2 px-2 py-1.5 group-data-[collapsible=icon]:hidden">
+            <span className="text-base font-semibold tracking-tight">CCD Design</span>
+            {/* The only place --sidebar-primary appears, and worth a look: the dark
+                block redefines every sidebar token EXCEPT primary and its
+                foreground, so one blue carries both modes. */}
+            <span className="rounded-sm bg-sidebar-primary px-1.5 py-0.5 text-xs font-medium text-sidebar-primary-foreground">
+              v3 pilot
+            </span>
+          </div>
+        </SidebarHeader>
 
-        <nav className="px-3 pb-6">
+        <SidebarContent>
           {NAV.map((group) => (
-            <div key={group.label} className="mb-5">
-              <div className="px-2 pb-1 text-xs font-medium tracking-wider text-muted-foreground uppercase">
-                {group.label}
-              </div>
-              {group.items.map((item) =>
-                item.href ? (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    aria-current={item.href === pathname ? "page" : undefined}
-                    className={`block rounded-md px-2 py-1.5 text-sm focus-visible:ring-2 focus-visible:ring-sidebar-ring focus-visible:outline-none ${
-                      item.href === pathname
-                        ? "bg-sidebar-accent font-medium text-sidebar-accent-foreground"
-                        : "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                    }`}
-                  >
-                    {item.name}
-                  </Link>
-                ) : (
-                  /* Not a link and not disabled-looking-clickable: a page that does
-                     not exist yet says so, because a dead nav item that highlights
-                     on hover is a promise the app cannot keep. */
-                  <span
-                    key={item.name}
-                    className="block px-2 py-1.5 text-sm text-muted-foreground/60"
-                  >
-                    {item.name}
-                  </span>
-                )
-              )}
-            </div>
+            <SidebarGroup key={group.label}>
+              <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
+              <SidebarMenu>
+                {group.items.map((item) =>
+                  item.href ? (
+                    <NavLink
+                      key={item.name}
+                      href={item.href}
+                      name={item.name}
+                      current={item.href === pathname}
+                    />
+                  ) : (
+                    /* Not a link, and not a disabled button either: a page that does
+                       not exist says so plainly. A dead nav row that lights up on
+                       hover is a promise the app cannot keep. */
+                    <SidebarMenuItem key={item.name}>
+                      <div className="px-2 py-1.5 text-sm text-muted-foreground/60">
+                        {item.name}
+                      </div>
+                    </SidebarMenuItem>
+                  )
+                )}
+              </SidebarMenu>
+            </SidebarGroup>
           ))}
 
           {OPEN_QUESTIONS.length > 0 && (
-            <div className="mb-5">
-              <div className="px-2 pb-1 text-xs font-medium tracking-wider text-muted-foreground uppercase">
-                Open questions
-              </div>
-              {OPEN_QUESTIONS.map((q) => (
-                <div
-                  key={q.name}
-                  className="flex items-center justify-between gap-2 px-2 py-1.5 text-sm"
-                >
-                  <span>{q.name}</span>
-                  <span className="font-mono text-xs text-muted-foreground">{q.issue}</span>
-                </div>
-              ))}
-            </div>
+            <SidebarGroup>
+              <SidebarGroupLabel>Open questions</SidebarGroupLabel>
+              <SidebarMenu>
+                {OPEN_QUESTIONS.map((q) => (
+                  <SidebarMenuItem key={q.name}>
+                    <div className="px-2 py-1.5 text-sm">{q.name}</div>
+                    <SidebarMenuBadge className="font-mono text-xs">{q.issue}</SidebarMenuBadge>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroup>
           )}
-        </nav>
-      </aside>
+        </SidebarContent>
 
-      <div className="min-w-0">
-        <header className="sticky top-0 z-40 border-b border-sidebar-border bg-background/90 px-6 py-3 backdrop-blur">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="text-sm text-muted-foreground">
-              <span className="font-medium text-foreground">{currentName(pathname)}</span>
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <Segmented
-                value={width}
-                onChange={setWidth}
-                options={WIDTHS}
-                label="Viewport width"
-              />
-              <Segmented value={theme} onChange={applyTheme} options={THEMES} label="Theme" />
-            </div>
+        {/* The drag handle on the rail's edge, and the reason the sidebar is worth
+            pulling rather than writing: none of this is CSS. */}
+        <SidebarRail />
+      </Sidebar>
+
+      <SidebarInset>
+        <header className="sticky top-0 z-40 flex flex-wrap items-center justify-between gap-3 border-b border-border bg-background/90 px-4 py-3 backdrop-blur">
+          <div className="flex items-center gap-2">
+            <SidebarTrigger />
+            <span className="text-sm font-medium">{currentName(pathname)}</span>
           </div>
-
-          <nav className="mt-2 flex flex-wrap items-center gap-1 lg:hidden">
-            {NAV.flatMap((g) => g.items)
-              .filter((i) => i.href)
-              .map((i) => (
-                <Link
-                  key={i.name}
-                  href={i.href!}
-                  aria-current={i.href === pathname ? "page" : undefined}
-                  className={`rounded-md px-2 py-1 text-sm ${
-                    i.href === pathname
-                      ? "bg-sidebar-accent font-medium text-sidebar-accent-foreground"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {i.name}
-                </Link>
-              ))}
-          </nav>
+          <div className="flex flex-wrap items-center gap-2">
+            <Segmented value={width} onChange={setWidth} options={WIDTHS} label="Viewport width" />
+            <Segmented value={theme} onChange={applyTheme} options={THEMES} label="Theme" />
+          </div>
         </header>
 
         {isFramed ? (
@@ -229,7 +242,7 @@ export default function Chrome({ children }: { children: React.ReactNode }) {
              every responsive rule stays on the desktop branch — a mobile preview
              that silently shows the desktop layout is worse than none. The frame
              loads the same route with the chrome switched off. */
-          <div className="flex justify-center px-6 py-6">
+          <div className="flex justify-center px-4 py-6">
             <iframe
               key={`${pathname}-${frame.px}`}
               title={`${currentName(pathname)} at ${frame.px}px`}
@@ -241,7 +254,7 @@ export default function Chrome({ children }: { children: React.ReactNode }) {
         ) : (
           children
         )}
-      </div>
-    </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
