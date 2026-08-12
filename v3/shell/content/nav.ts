@@ -16,13 +16,27 @@ export type NavItem = { name: string; href?: string; todo?: boolean };
 export type NavGroup = { label: string; items: NavItem[] };
 
 export const NAV: NavGroup[] = [
+  /**
+   * Patterns lead, and the order is the argument.
+   *
+   * A pattern answers "what shape does this job take". A component answers
+   * "what does this control look like". Listing components first taught every
+   * reader — including me — to shop for parts and assemble a screen out of
+   * them, which is exactly how CCD's apps ended up with 28 bespoke components
+   * in cowork alone. Components are now reference material for a pattern that
+   * already decided it needs them.
+   *
+   * The unlinked entries are the jobs already named, not a wishlist. Each one
+   * is a screen that exists today in some v2 app and has never been designed.
+   */
   {
-    label: "Foundations",
+    label: "Patterns",
     items: [
-      { name: "Tokens", href: "/" },
-      { name: "Colour", todo: true },
-      { name: "Type", todo: true },
-      { name: "Icons", todo: true },
+      { name: "Likert scale", href: "/likert" },
+      { name: "Admin table", todo: true },
+      { name: "Create form", todo: true },
+      { name: "Dashboard", todo: true },
+      { name: "Empty & error states", todo: true },
     ],
   },
   {
@@ -32,19 +46,14 @@ export const NAV: NavGroup[] = [
       { name: "Card", href: "/card" },
       { name: "Dialog", href: "/dialog" },
       { name: "Dropdown menu", href: "/menu" },
-      { name: "Status", todo: true },
-      { name: "Field", todo: true },
-      { name: "Select", todo: true },
-      { name: "Table", todo: true },
-      { name: "Toast", todo: true },
     ],
   },
   {
-    label: "Patterns",
+    label: "Foundations",
     items: [
-      { name: "Page shell", todo: true },
-      { name: "Form", todo: true },
-      { name: "Empty states", todo: true },
+      { name: "Tokens", href: "/" },
+      { name: "Colour", todo: true },
+      { name: "Type", todo: true },
     ],
   },
   {
@@ -52,6 +61,20 @@ export const NAV: NavGroup[] = [
     items: [{ name: "Base UI probe", href: "/probe" }],
   },
 ];
+
+/**
+ * The fixture controls belong to pattern pages and nowhere else.
+ *
+ * A component page is a specimen — its copy is chosen to exercise the
+ * component, not to stand in for a user's data — so a language toggle above it
+ * would sit there reading EN while the card below it stayed in Thai. A control
+ * that visibly changes nothing is the same defect as a dead utility class: it
+ * reports a state the page does not have, and nothing errors.
+ */
+export function isPatternRoute(pathname: string): boolean {
+  const patterns = NAV.find((g) => g.label === "Patterns");
+  return patterns?.items.some((i) => i.href === pathname) ?? false;
+}
 
 /** Open questions only. Answered ones are removed, not marked. */
 export const OPEN_QUESTIONS: { name: string; issue: string }[] = [

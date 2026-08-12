@@ -18,7 +18,10 @@ import {
   SidebarRail,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { NAV, OPEN_QUESTIONS } from "../../content/nav";
+import { NAV, OPEN_QUESTIONS, isPatternRoute } from "../../content/nav";
+import { FixtureBar } from "./fixture-bar";
+import { FIXTURE_KEYS } from "./fixtures";
+import { Segmented } from "./segmented";
 
 /**
  * The workbench's chrome, built ON shadcn's sidebar rather than beside it.
@@ -49,42 +52,6 @@ const THEMES = [
 ] as const;
 
 type ThemeId = (typeof THEMES)[number]["id"];
-
-function Segmented<T extends string>({
-  value,
-  onChange,
-  options,
-  label,
-}: {
-  value: T;
-  onChange: (v: T) => void;
-  options: readonly { id: T; label: string }[];
-  label: string;
-}) {
-  return (
-    <div
-      role="group"
-      aria-label={label}
-      className="inline-flex rounded-md border border-border p-0.5"
-    >
-      {options.map((o) => (
-        <button
-          key={o.id}
-          type="button"
-          onClick={() => onChange(o.id)}
-          aria-pressed={value === o.id}
-          className={`rounded-sm px-2.5 py-1 text-sm font-medium transition-colors ${
-            value === o.id
-              ? "bg-accent text-accent-foreground"
-              : "text-muted-foreground hover:text-foreground"
-          }`}
-        >
-          {o.label}
-        </button>
-      ))}
-    </div>
-  );
-}
 
 /**
  * The one departure from shadcn, and the reason is a rule we already proved.
@@ -161,6 +128,16 @@ export default function Chrome({ children }: { children: React.ReactNode }) {
   const frame = WIDTHS.find((w) => w.id === width);
   const isFramed = frame && frame.px > 0;
 
+  /* The frame must carry the fixture across with it. Miss this and the preview
+     renders the DEFAULT fixture while the controls above it read otherwise —
+     a wrong answer wearing a correct label, which is worse than no preview. */
+  const frameParams = new URLSearchParams({ frame: "1" });
+  for (const key of FIXTURE_KEYS) {
+    const value = searchParams.get(key);
+    if (value) frameParams.set(key, value);
+  }
+  const frameSrc = `${pathname}?${frameParams}`;
+
   return (
     <SidebarProvider>
       <Sidebar collapsible="icon">
@@ -225,16 +202,23 @@ export default function Chrome({ children }: { children: React.ReactNode }) {
       </Sidebar>
 
       <SidebarInset>
-        <header className="sticky top-0 z-40 flex flex-wrap items-center justify-between gap-3 border-b border-border bg-background/90 px-4 py-3 backdrop-blur">
-          <div className="flex items-center gap-2">
-            <SidebarTrigger />
-            <span className="text-sm font-medium">{currentName(pathname)}</span>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <Segmented value={width} onChange={setWidth} options={WIDTHS} label="Viewport width" />
-            <Segmented value={theme} onChange={applyTheme} options={THEMES} label="Theme" />
-          </div>
-        </header>
+        {/* Two strips, not one row. The header's controls change how you are
+            LOOKING at a scene; the fixture bar's change WHAT SCENE it is. Five
+            identical pill groups in a single row would hide that split, and the
+            split is the whole reason the fixture axes exist. */}
+        <div className="sticky top-0 z-40 bg-background/90 backdrop-blur">
+          <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-3">
+            <div className="flex items-center gap-2">
+              <SidebarTrigger />
+              <span className="text-sm font-medium">{currentName(pathname)}</span>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <Segmented value={width} onChange={setWidth} options={WIDTHS} label="Viewport width" />
+              <Segmented value={theme} onChange={applyTheme} options={THEMES} label="Theme" />
+            </div>
+          </header>
+          {isPatternRoute(pathname) && <FixtureBar />}
+        </div>
 
         {isFramed ? (
           /* A real iframe, not a narrowed div. Media queries answer to the
@@ -246,7 +230,7 @@ export default function Chrome({ children }: { children: React.ReactNode }) {
             <iframe
               key={`${pathname}-${frame.px}`}
               title={`${currentName(pathname)} at ${frame.px}px`}
-              src={`${pathname}?frame=1`}
+              src={frameSrc}
               style={{ width: frame.px }}
               className="h-[80vh] rounded-lg border border-border bg-background"
             />
