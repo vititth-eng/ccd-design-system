@@ -41,6 +41,51 @@ const TYPE = [
   { cls: "text-3xl", note: "display number" },
 ];
 
+/* The derived ladder from theme.css: one --radius base, shadcn's calc() steps
+   off it. rounded-full is Tailwind's own and derives from nothing, which is why
+   it is labelled differently below. */
+const RADIUS = [
+  { cls: "rounded-sm", note: "0.6 × base" },
+  { cls: "rounded-md", note: "0.8 × base — what most components ask for" },
+  { cls: "rounded-lg", note: "the base itself" },
+  { cls: "rounded-xl", note: "1.4 × base — dialog, sheet" },
+  { cls: "rounded-full", note: "Tailwind's, not derived — pills and avatars" },
+];
+
+/* Tailwind's shadow scale exactly as shipped. shadcn tokenises no shadow at
+   all, so nothing in theme.css touches these — what renders here is the
+   upstream default, which is the point of showing it. */
+const ELEVATION = [
+  { cls: "shadow-xs", note: "card, button, input — resting surfaces" },
+  { cls: "shadow-sm", note: "sidebar" },
+  { cls: "shadow-md", note: "dropdown menu" },
+  { cls: "shadow-lg", note: "dialog, sheet, submenu" },
+];
+
+const SPACING = ["size-1", "size-2", "size-3", "size-4", "size-6", "size-8", "size-12"];
+
+const MOTION = [
+  { cls: "duration-100", note: "menu open/close" },
+  { cls: "duration-150", note: "sidebar rail" },
+  { cls: "duration-200", note: "dialog, sheet" },
+];
+
+/* Who decides each material. Ownership, never values — a value belongs in the
+   file that mints it, and a second copy here would keep looking right after
+   that file moved on. This table exists because an unlisted material reads as
+   a material nobody thought about, when in fact four of these are deliberately
+   left to Tailwind. */
+const OWNERSHIP = [
+  { material: "Colour", owner: "CCD, on shadcn's neutral base", file: "theme.css" },
+  { material: "Curve", owner: "one CCD base, shadcn's derived ladder", file: "theme.css" },
+  { material: "Type", owner: "CCD — shadcn ships no type token", file: "type.css" },
+  { material: "Elevation", owner: "Tailwind, untouched", file: "—" },
+  { material: "Spacing", owner: "Tailwind, untouched", file: "—" },
+  { material: "Motion", owner: "Tailwind, untouched", file: "—" },
+  { material: "Layering", owner: "Tailwind, picked per component", file: "—" },
+  { material: "Breakpoints", owner: "Tailwind, untouched", file: "—" },
+];
+
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mt-12">
@@ -137,6 +182,99 @@ export default function Page() {
             Four, and the namespace is closed — Tailwind&apos;s other five render at the inherited
             400. <code className="font-mono">v3/tools/check-type.mjs</code> fails the commit if one
             appears in source.
+          </p>
+        </Section>
+
+        <Section title="Curve — from theme.css">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {RADIUS.map((r) => (
+              <div key={r.cls} className="min-w-0">
+                <div className={`${r.cls} bg-secondary border border-border h-16`} />
+                <div className="text-xs font-mono text-muted-foreground mt-2">{r.cls}</div>
+                <div className="text-xs text-muted-foreground">{r.note}</div>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-muted-foreground mt-3">
+            One base value in <code className="font-mono">theme.css</code>; every step above is a{" "}
+            <code className="font-mono">calc()</code> off it, so changing the base moves the whole
+            ladder. That derivation is shadcn&apos;s, not ours.
+          </p>
+        </Section>
+
+        <Section title="Elevation — Tailwind's, untouched">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {ELEVATION.map((e) => (
+              <div key={e.cls} className="min-w-0">
+                <div className={`${e.cls} bg-card border border-border rounded-md h-16`} />
+                <div className="text-xs font-mono text-muted-foreground mt-3">{e.cls}</div>
+                <div className="text-xs text-muted-foreground">{e.note}</div>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-muted-foreground mt-3">
+            Nothing in <code className="font-mono">theme.css</code> touches these — shadcn tokenises
+            no shadow at all, so what renders here is the upstream default. Worth knowing that v2
+            put no shadow on a resting card or button; it reserved lift for something that had
+            genuinely left the page.
+          </p>
+        </Section>
+
+        <Section title="Spacing — Tailwind's, untouched">
+          <div className="flex flex-wrap items-end gap-4">
+            {SPACING.map((s) => (
+              <div key={s} className="flex flex-col items-center gap-2">
+                <div className={`${s} bg-primary rounded-xs`} />
+                <span className="text-xs font-mono text-muted-foreground">{s}</span>
+              </div>
+            ))}
+          </div>
+        </Section>
+
+        <Section title="Motion — Tailwind's, untouched">
+          <div className="flex flex-wrap gap-3">
+            {MOTION.map((m) => (
+              <div key={m.cls} className="min-w-0">
+                <div
+                  className={`${m.cls} bg-secondary hover:bg-primary transition-colors h-16 w-32 rounded-md border border-border`}
+                />
+                <div className="text-xs font-mono text-muted-foreground mt-2">{m.cls}</div>
+                <div className="text-xs text-muted-foreground">{m.note}</div>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-muted-foreground mt-3">
+            Hover each one. Three different speeds are in use across the copied components and
+            none of them was chosen by CCD — they arrived with the components.
+          </p>
+        </Section>
+
+        <Section title="Who owns each material">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-muted-foreground">
+                <th className="text-left font-medium py-2 pr-6">material</th>
+                <th className="text-left font-medium py-2 pr-6">values decided by</th>
+                <th className="text-left font-medium py-2">lives in</th>
+              </tr>
+            </thead>
+            <tbody>
+              {OWNERSHIP.map((o) => (
+                <tr key={o.material} className="border-t border-border">
+                  <th scope="row" className="text-left font-medium py-2 pr-6 whitespace-nowrap">
+                    {o.material}
+                  </th>
+                  <td className="py-2 pr-6">{o.owner}</td>
+                  <td className="font-mono py-2">{o.file}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className="text-xs text-muted-foreground mt-3">
+            Five of the eight are Tailwind&apos;s on purpose. shadcn&apos;s theming doc tokenises
+            colour and radius and leaves the rest alone, because those are not what a theme varies.
+            A material with no CCD file behind it is that decision, not an oversight — the one
+            CCD adds is type, because shadcn ships no type token and Thai forces the question.
           </p>
         </Section>
 
