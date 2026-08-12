@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { version as reactRuntime } from "react";
 import nextPkg from "next/package.json";
 import twPkg from "tailwindcss/package.json";
@@ -42,17 +41,6 @@ const TYPE = [
   { cls: "text-3xl", note: "display number" },
 ];
 
-/* One page per component, plus the unstyled behaviour probe. Each page says
-   what it is for at the top of its own file; this list only has to get you
-   there. */
-const PAGES = [
-  { href: "/button", name: "Button", what: "six variants, four sizes, real focus and disabled" },
-  { href: "/card", name: "Card", what: "--card and --card-foreground, first drawn by a component" },
-  { href: "/dialog", name: "Dialog", what: "--scrim and --popover; collision #4, patched" },
-  { href: "/menu", name: "Dropdown menu", what: "--accent; selection vs hover, answered" },
-  { href: "/probe", name: "Behaviour probe", what: "Base UI unstyled — focus trap, Escape, restore" },
-];
-
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mt-12">
@@ -73,23 +61,6 @@ export default function Page() {
           Step 2: Tailwind compiles the real token files. Everything below is a token, not a
           literal.
         </p>
-
-        <Section title="Pages">
-          <ul className="rounded-lg border border-border divide-y divide-border">
-            {PAGES.map((p) => (
-              <li key={p.href}>
-                <Link
-                  href={p.href}
-                  className="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-4 py-3 hover:bg-accent hover:text-accent-foreground"
-                >
-                  <span className="text-sm font-medium">{p.name}</span>
-                  <code className="text-xs font-mono text-muted-foreground">{p.href}</code>
-                  <span className="text-sm text-muted-foreground basis-full">{p.what}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </Section>
 
         <Section title="Stack">
           <table className="w-full text-sm">
