@@ -86,6 +86,60 @@ const OWNERSHIP = [
   { material: "Breakpoints", owner: "Tailwind, untouched", file: "—" },
 ];
 
+/* The comparison specimen. Thai chosen for the marks rather than the meaning:
+   ผู้ ฝ่าย ปี่ ซอฟต์ each stack something above the cap line or below the
+   baseline, which is the whole reason type.css sets its own leading. */
+const LEADING_ROWS = [
+  { name: "ผู้จัดการฝ่ายบุคคล", meta: "ประเมินกลางปี · 31 ส.ค. 2569", value: "82%" },
+  { name: "ทีมวิศวกรรมซอฟต์แวร์", meta: "รอบที่ 2 · ปิดรับ 14 ก.ย.", value: "76%" },
+  { name: "ฝ่ายปฏิบัติการโรงงาน", meta: "ยังไม่เริ่ม · 40 ข้อ", value: "—" },
+];
+
+/**
+ * Two leadings, one markup. Only the line-height differs, so any difference
+ * you see is the leading and nothing else.
+ *
+ * The stock ratios are Tailwind's own expressions — 1.25/0.875 for text-sm,
+ * 1/0.75 for text-xs, 1.5/1 for text-base — computed here rather than typed as
+ * decimals, so they stay legible as the thing they came from. They go on as
+ * inline style because a utility would be overridden by the class that sets
+ * the size, which is the whole point of comparing them.
+ */
+const STOCK = { xs: 1 / 0.75, sm: 1.25 / 0.875, base: 1.5 / 1 };
+
+function LeadingSpecimen({ stock }: { stock: boolean }) {
+  const s = (r: number) => (stock ? { lineHeight: r } : undefined);
+  return (
+    <div className="rounded-lg border border-border">
+      <div className="border-b border-border px-4 py-3">
+        <div className="text-base font-semibold" style={s(STOCK.base)}>
+          แบบประเมินรอบกลางปี
+        </div>
+        <p className="text-sm text-muted-foreground mt-1" style={s(STOCK.sm)}>
+          ผู้ประเมินต้องตอบให้ครบทุกข้อภายในรอบนี้ ระบบจะบันทึกอัตโนมัติทุกครั้งที่เปลี่ยนคำตอบ
+        </p>
+      </div>
+      <div className="divide-y divide-border">
+        {LEADING_ROWS.map((r) => (
+          <div key={r.name} className="flex items-baseline gap-3 px-4 py-2">
+            <div className="min-w-0 flex-1">
+              <div className="text-sm" style={s(STOCK.sm)}>
+                {r.name}
+              </div>
+              <div className="text-xs text-muted-foreground" style={s(STOCK.xs)}>
+                {r.meta}
+              </div>
+            </div>
+            <div className="text-sm font-medium" style={s(STOCK.sm)}>
+              {r.value}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mt-12">
@@ -182,6 +236,31 @@ export default function Page() {
             Four, and the namespace is closed — Tailwind&apos;s other five render at the inherited
             400. <code className="font-mono">v3/tools/check-type.mjs</code> fails the commit if one
             appears in source.
+          </p>
+        </Section>
+
+        <Section title="Leading — CCD against stock">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <div className="text-xs font-mono text-muted-foreground mb-2">CCD — type.css</div>
+              <LeadingSpecimen stock={false} />
+            </div>
+            <div>
+              <div className="text-xs font-mono text-muted-foreground mb-2">
+                stock Tailwind / vega
+              </div>
+              <LeadingSpecimen stock />
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground mt-3">
+            Identical markup; only line-height differs. Every SIZE on this page is Tailwind&apos;s
+            ladder unmodified — the difference between a CCD screen and a stock shadcn one is
+            leading alone. It runs looser at the small sizes, where nearly all UI text lives, and
+            tighter at the headings, so the two ends move toward each other.{" "}
+            <code className="font-mono">type.css</code> gives the reason: leading is set for Thai,
+            which stacks tone marks above the cap line and vowels below the baseline, and a
+            Latin-tuned leading collides on the first dense Thai table. The rows above are the test
+            case — the question is whether the room is worth what it costs on every screen.
           </p>
         </Section>
 
