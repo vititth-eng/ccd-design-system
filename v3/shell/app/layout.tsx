@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    /* data-theme is a document-level mode, which is what colors.css requires:
+    /* data-theme is a document-level mode, which is what theme.css requires:
        its dark variant matches :root[data-theme="dark"], never a nested class,
        so there is no such thing as a dark island inside a light page. "system"
        defers to the OS; the shell's own toggle will swap this attribute. */
@@ -29,9 +29,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
        THIS element's attributes only, not for the tree below it. */
     <html lang="en" data-theme="system" suppressHydrationWarning>
       <head>
-        {/* The exact request tokens.css documents, character for character, and the
+        {/* The exact request type.css documents, character for character, and the
             same one every v3/explore page uses — so what renders here is what was
-            measured there. tokens.css can only NAME the families; a CSS variable
+            measured there. type.css can only NAME the families; a CSS variable
             never fetches a font, so a shell that skips this link renders in
             whatever happens to be installed on the machine and nothing errors.
             It did exactly that until 2026-08-12: Inter resolved to a local copy
@@ -39,7 +39,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 
             The axes are the reason the URL looks like this. Ask for a plain
             weight list and the browser gets static instances, so the variable
-            file buys nothing and the four weights in tokens.css stop being free.
+            file buys nothing and the four weights in type.css stop being free.
             opsz is Latin-only — Noto Sans Thai carries no such axis. */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />

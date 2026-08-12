@@ -63,7 +63,7 @@
      tone marks above the cap line and vowels below the baseline, so it loses
      legibility as size drops faster than Latin does — the same sentence that
      is merely small in Latin at 12px is compressed in Thai. v2 wrote the floor
-     down (tokens.css:257, "Thai floor is 14") and it did not survive the port
+     down (type.css:257, "Thai floor is 14") and it did not survive the port
      until it was put back on 2026-08-12, having been checked against shadcn's
      `base-lyra` style, whose every button label is 12px. Anything a person
      reads to act — a button, a label, a field — starts at 14. */

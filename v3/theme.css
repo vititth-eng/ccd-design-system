@@ -1,5 +1,13 @@
 /* ============================================================
-   CCD Design System v3 — COLOUR
+   CCD Design System v3 — THEME (colour and radius)
+
+   Named for shadcn's own scope, not ours. Their theming doc lists exactly
+   two materials as theme tokens — the colour pairs, and `radius` as one base
+   with a derived scale — and leaves shadow, spacing, z-index and motion to
+   Tailwind's defaults, because those are not what varies between themes.
+   This file holds that same pair. Type is the one material CCD has to add,
+   because shadcn ships no type token at all and Thai forces the question;
+   it lives next door in type.css.
 
    shadcn's `neutral` base theme, carrying CCD's colour on top of it.
    Owner call 2026-08-12, after all seven shadcn base themes were rendered

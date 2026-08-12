@@ -4,9 +4,9 @@
    Tailwind build; everything they declare (@theme, @theme inline,
    @custom-variant, @utility, @layer base) is exercised here or nowhere.
 
-   Order matters: Tailwind first so its own theme exists, then tokens.css
+   Order matters: Tailwind first so its own theme exists, then type.css
    (which clears the default --text-* namespace and mints the type scale),
-   then colors.css (which maps colour into Tailwind's namespace with
+   then theme.css (which maps colour into Tailwind's namespace with
    @theme inline and registers the dark variant). */
 
 @import "tailwindcss";
@@ -38,8 +38,8 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@import "../../tokens.css";
-@import "../../colors.css";
+@import "../../type.css";
+@import "../../theme.css";
 
 /* Tailwind v4 generates only the classes it FINDS by scanning source files, and
    these globs are relative to this stylesheet — so they have to reach up out of

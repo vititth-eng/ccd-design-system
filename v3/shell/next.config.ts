@@ -3,9 +3,9 @@ import type { NextConfig } from "next";
 
 /**
  * Turbopack refuses to resolve a file above its project root — it does not
- * warn, it panics: `FileSystemPath("").join("../tokens.css") leaves the
+ * warn, it panics: `FileSystemPath("").join("../type.css") leaves the
  * filesystem root`. By default that root is this folder, which puts
- * v3/tokens.css and v3/colors.css out of reach.
+ * v3/type.css and v3/theme.css out of reach.
  *
  * Raising the root to v3/ is what lets the shell import the REAL token files
  * instead of a vendored copy. The copy is the tempting fix and it is the wrong

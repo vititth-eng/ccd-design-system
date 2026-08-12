@@ -49,12 +49,19 @@ export const NAV: NavGroup[] = [
     ],
   },
   {
+    /**
+     * One row, because there is one page and it renders every foundation
+     * there is. The dead "Colour" and "Type" rows that used to sit here
+     * promised pages that did not exist, next to a row called "Tokens" that
+     * already showed both — three labels for one thing, two of them lying.
+     *
+     * There is no shadow, spacing or motion row, and that is shadcn's shape
+     * rather than an omission: their theming doc tokenises colour and radius
+     * and leaves the rest to Tailwind's defaults. CCD adds type on top and
+     * nothing else.
+     */
     label: "Foundations",
-    items: [
-      { name: "Tokens", href: "/" },
-      { name: "Colour", todo: true },
-      { name: "Type", todo: true },
-    ],
+    items: [{ name: "Tokens", href: "/" }],
   },
   {
     label: "Behaviour",

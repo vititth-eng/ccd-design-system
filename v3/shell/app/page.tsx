@@ -6,7 +6,7 @@ import shellPkg from "../package.json";
 /**
  * Step 2: Tailwind compiles, and the v3 token files compile with it.
  *
- * Every colour and size here comes from v3/colors.css or v3/tokens.css,
+ * Every colour and size here comes from v3/theme.css or v3/type.css,
  * imported by relative path — no copy, no strip. Nothing on this page mints a
  * value. A swatch that renders transparent or a size that collapses means the
  * token did not survive the build, which is the point of rendering it rather
@@ -29,9 +29,9 @@ const SURFACES = [
   { token: "--destructive", cls: "bg-destructive" },
 ];
 
-/* The real ladder from tokens.css. Six sizes on Tailwind's own names — 2xl is
+/* The real ladder from type.css. Six sizes on Tailwind's own names — 2xl is
    deliberately absent, and inventing a name here would render nothing at all,
-   because tokens.css clears --text-* before minting these. */
+   because type.css clears --text-* before minting these. */
 const TYPE = [
   { cls: "text-xs", note: "caption, timestamp, table meta" },
   { cls: "text-sm", note: "secondary line, dense table cell" },
@@ -85,7 +85,7 @@ export default function Page() {
           </table>
         </Section>
 
-        <Section title="Surfaces — from colors.css">
+        <Section title="Surfaces — from theme.css">
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {SURFACES.map((s) => (
               <div key={s.token} className="rounded-lg border border-border overflow-hidden">
@@ -98,7 +98,7 @@ export default function Page() {
           </div>
         </Section>
 
-        <Section title="Type scale — from tokens.css">
+        <Section title="Type scale — from type.css">
           <div className="rounded-lg border border-border divide-y divide-border">
             {TYPE.map((t) => (
               <div key={t.cls} className="px-4 py-3">
@@ -114,7 +114,7 @@ export default function Page() {
           </div>
         </Section>
 
-        <Section title="Weights — from tokens.css">
+        <Section title="Weights — from type.css">
           <div className="rounded-lg border border-border divide-y divide-border">
             {[
               { cls: "font-normal", job: "body" },
@@ -145,7 +145,7 @@ export default function Page() {
             This page follows your OS setting, because{" "}
             <code className="font-mono">&lt;html data-theme=&quot;system&quot;&gt;</code>. There is
             deliberately no way to force a dark block inside a light page:{" "}
-            <code className="font-mono">colors.css</code> scopes its dark variant to{" "}
+            <code className="font-mono">theme.css</code> scopes its dark variant to{" "}
             <code className="font-mono">:root[data-theme=&quot;dark&quot;]</code> and says why — the
             attribute is a mode declaration for the document, never a data slot. A shell toggle will
             swap the attribute on <code className="font-mono">&lt;html&gt;</code>; side-by-side

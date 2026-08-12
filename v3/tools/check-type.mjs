@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Checks v3 source against the two type namespaces that are CLOSED in
- * tokens.css, plus one rule about colour — three failures that render
+ * type.css, plus one rule about colour — three failures that render
  * without erring.
  *
  * WHY THIS EXISTS: `--text-*: initial` and `--font-weight-*: initial` delete
@@ -17,7 +17,7 @@
  * node_modules that only exists inside v3/shell.
  *
  * WHY IT NEVER HOLDS A LIST OF SANCTIONED NAMES: the allowed set is READ from
- * tokens.css on every run. A copied list here would be the same fact in two
+ * type.css on every run. A copied list here would be the same fact in two
  * stores and would rot the first time a size or weight is added — which is
  * exactly the drift this exists to catch. Mint a token, and this script
  * accepts it with no edit.
@@ -75,14 +75,14 @@ function walk(dir, out = []) {
   return out;
 }
 
-const tokensPath = path.join(V3, "tokens.css");
-const css = fs.readFileSync(tokensPath, "utf8");
+const typePath = path.join(V3, "type.css");
+const css = fs.readFileSync(typePath, "utf8");
 
 const sizes = mintedFrom(css, "text", TW_SIZES);
 const weights = mintedFrom(css, "font-weight", TW_WEIGHTS);
 
 if (sizes.size === 0 || weights.size === 0) {
-  console.error(`check-type: read no ${sizes.size === 0 ? "sizes" : "weights"} from tokens.css — refusing to pass a check that would accept everything.`);
+  console.error(`check-type: read no ${sizes.size === 0 ? "sizes" : "weights"} from type.css — refusing to pass a check that would accept everything.`);
   process.exit(1);
 }
 
@@ -136,7 +136,7 @@ if (kinds.has("weight")) {
   console.error(`  minted weights: ${[...weights].map((w) => "font-" + w).join(", ")}`);
 }
 if (kinds.has("size") || kinds.has("weight")) {
-  console.error(`  → mint it in v3/tokens.css if it belongs on the ladder, or use one above.`);
+  console.error(`  → mint it in v3/type.css if it belongs on the ladder, or use one above.`);
 }
 if (kinds.has("colour")) {
   console.error(
