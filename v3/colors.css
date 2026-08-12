@@ -1,9 +1,26 @@
 /* ============================================================
    CCD Design System v3 — COLOUR
 
-   shadcn's token set, carrying CCD's values. Structure is re-judged;
-   the hexes are not re-invented — they are brand (#142549 is fixed) and
-   accessibility decisions that were measured and picked by eye.
+   shadcn's `neutral` base theme, carrying CCD's colour on top of it.
+   Owner call 2026-08-12, after all seven shadcn base themes were rendered
+   in full (explore/shadcn-base-themes.html): the neutral family is
+   shadcn's, unmodified — true grey, chroma 0, both modes. CCD supplies
+   what shadcn declines to ship, which is nearly all of the colour.
+
+   The seven base themes are almost the same theme — the largest gap
+   between any two is ΔE 4.0, on secondary text. Backgrounds, cards and
+   popovers are byte-identical across all of them. `neutral` was picked
+   as the one with no tint at all.
+
+   TAKEN FROM SHADCN: every neutral — background, foreground, card,
+   popover, secondary, muted, accent, border, input, and all dark
+   surfaces. Boonrawd navy #142549 no longer sets text; it is a brand
+   colour, not the reading colour.
+
+   KEPT FROM CCD, with the reason at each: --primary and --ring (brand
+   blue, owner instruction), --destructive (shadcn's collides with the
+   status tier), the dark secondary/accent films, the whole status tier,
+   and the chart tier — shadcn ships no slot for the last two.
 
    Three modes: light, forced dark, system dark. Values are declared ONCE
    as --d-* and mapped, rather than written into each selector, because
@@ -39,13 +56,20 @@
      the work. Dark takes real steps and the same rule still holds.
 
      This is what makes a stock shadcn Card look like a CCD card without
-     touching the component: it reads --card, and --card is white. */
+     touching the component: it reads --card, and --card is white.
+
+     The foreground is shadcn's #0A0A0A, not Boonrawd navy. Navy was the
+     reading colour through v1 and v2; from v3 it is the brand colour and
+     nothing more. This was raised as a loss and taken anyway — the whole
+     neutral family is shadcn's or none of it is, and half-swapping is
+     how a palette ends up with two greys that disagree. Navy still
+     exists for brand surfaces; it is simply not what text is set in. */
   --background: #FFFFFF;
-  --foreground: #142549;          /* Boonrawd navy — the fixed brand anchor */
+  --foreground: #0A0A0A;          /* 19.80:1 on white */
   --card: #FFFFFF;
-  --card-foreground: #142549;
+  --card-foreground: #0A0A0A;
   --popover: #FFFFFF;             /* transient overlay: menu, dialog, toast */
-  --popover-foreground: #142549;
+  --popover-foreground: #0A0A0A;
 
   /* ── ACTIONS ─────────────────────────────────────────────
      FILLS DO NOT INVERT, and this is the one rule most likely to be
@@ -55,9 +79,20 @@
      pale slab with dark text — the only inverted element on the screen,
      louder than primary at 6.73:1 against primary's 5.18:1. Destroy was
      out-shouting save. Found by rendering, not by reading.
-     Identical in both modes ON PURPOSE. */
-  --primary: #4068CA;
+     Identical in both modes ON PURPOSE.
+
+     --primary and --ring are the two slots where CCD's colour goes back in.
+     shadcn ships #171717 and #A1A1A1 here — a black button and a grey focus
+     ring — because it declines to have a brand. CCD has one. */
+  --primary: #4068CA;             /* 5.18:1 on white · white text on it 5.18:1 */
   --primary-foreground: #FFFFFF;
+
+  /* DESTRUCTIVE IS CCD'S, NOT SHADCN'S, AND THIS IS THE ONE PLACE THE SWAP
+     WAS REFUSED. shadcn ships #E7000B. That measures ΔE 6.8 from
+     --negative-strong below — under the floor — so a danger button and an
+     error pill would be two different reds that read as a rendering fault.
+     shadcn cannot know this: it has no status tier to collide with.
+     #C4372C serves both jobs at 5.34:1, against shadcn's 4.77:1. */
   --destructive: #C4372C;         /* the accessible red, never the #FF5F56 dot red */
   --destructive-foreground: #FFFFFF;   /* shadcn ships no pair for destructive; CCD needs one */
 
@@ -66,23 +101,36 @@
      surface, a light neutral. CCD's accent is the one meaning colour and
      maps to `primary` above. Read the shadcn name, not the CCD one.
 
-     secondary is white + border rather than shadcn's grey, per the flat
-     rule. muted is the near-neutral used for tracks, disabled controls
-     and thin header rows — as a FILL it is small elements only, never a
-     content panel. */
-  --secondary: #FFFFFF;
-  --secondary-foreground: #142549;
-  --muted: #EDEFF1;
-  --muted-foreground: #61697A;    /* slate — AA 5.51:1 on white */
-  --accent: #EDEFF1;              /* hover face, NOT the CCD accent */
-  --accent-foreground: #142549;
+     secondary is now shadcn's grey rather than the white-plus-border v2
+     used. That is a visible change to every secondary button: it gains a
+     fill instead of being a white slab with an edge. The flat rule still
+     governs CONTENT surfaces — a panel of content never gets a background
+     — but a control is not a content surface, and shadcn's own components
+     assume a fill here.
+
+     muted is the near-neutral used for tracks, disabled controls and thin
+     header rows — as a FILL it is small elements only, never a content
+     panel. */
+  --secondary: #F5F5F5;
+  --secondary-foreground: #171717;
+  --muted: #F5F5F5;
+  --muted-foreground: #737373;    /* AA 4.74:1 on white — was 5.51:1 under v2's slate */
+  --accent: #F5F5F5;              /* hover face, NOT the CCD accent */
+  --accent-foreground: #171717;
 
   /* ── LINES ───────────────────────────────────────────────
-     border and input share a value: a field's edge and a card's edge are
-     the same line at this scale, and splitting them invites drift. */
-  --border: #CBD1DF;
-  --input: #CBD1DF;
-  --ring: #4068CA;
+     border and input share a value in LIGHT: a field's edge and a card's
+     edge are the same line at this scale. In DARK they do not — shadcn
+     splits them there and the split is kept, see the dark block.
+
+     #E5E5E5 is 1.26:1 on white, against v2's #CBD1DF at 1.53:1. This was
+     raised as a cost before the swap and taken anyway: CCD's surfaces are
+     flat white separated by line, so a lighter line is a weaker card edge.
+     If cards start reading as one continuous sheet, this token is the
+     first place to look — not the card component. */
+  --border: #E5E5E5;
+  --input: #E5E5E5;
+  --ring: #4068CA;                /* shadcn ships #A1A1A1; the focus ring is brand blue */
 
   /* ── STATUS ──────────────────────────────────────────────
      No shadcn slot for any of this; added through @theme inline below.
@@ -184,14 +232,19 @@
      different surface. CCD has no second surface — the flat rule applies
      to a sidebar exactly as it applies to a page — so these point at the
      same values. They exist so shadcn's Sidebar renders correctly
-     unmodified, not because CCD has a sidebar palette. */
+     unmodified, not because CCD has a sidebar palette.
+
+     This is the one part of the neutral theme NOT taken verbatim: shadcn
+     puts its sidebar one step off the page (#FAFAFA against #FFFFFF),
+     which is a second surface, which is what the flat rule exists to
+     forbid. The values below are shadcn's, remapped flat. */
   --sidebar: #FFFFFF;
-  --sidebar-foreground: #142549;
+  --sidebar-foreground: #0A0A0A;
   --sidebar-primary: #4068CA;
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #EDEFF1;
-  --sidebar-accent-foreground: #142549;
-  --sidebar-border: #CBD1DF;
+  --sidebar-accent: #F5F5F5;
+  --sidebar-accent-foreground: #171717;
+  --sidebar-border: #E5E5E5;
   --sidebar-ring: #4068CA;
 
   /* ── RADIUS ──────────────────────────────────────────────
@@ -200,7 +253,11 @@
      friendly, which is on the anti-reference list. */
   --radius: 0.5rem;
 
-  --scrim: rgba(20, 37, 73, .32);   /* dialog backdrop — tuned to dim WHITE */
+  /* Dialog backdrop, tuned to dim WHITE. Was rgba(20,37,73,.32) — a navy
+     wash — which is now the only navy left in a palette with no navy in
+     it. Neutralised to match. Revert this line alone if the dim reads
+     too flat; it is independent of everything above. */
+  --scrim: rgba(10, 10, 10, .32);
 }
 
 /* ── DARK VALUES ───────────────────────────────────────────
@@ -214,13 +271,27 @@
    dialog was once literally the same colour. So these are translucent
    and land one step off whatever they sit on. */
 :root {
-  --d-background: #191A1D;
-  --d-foreground: #E9EAEC;
-  --d-card: #212327;
-  --d-popover: #32353C;
-  --d-muted: #26282C;
-  --d-muted-foreground: #A2A6AD;
-  --d-border: #383B41;
+  --d-background: #0A0A0A;
+  --d-foreground: #FAFAFA;
+  --d-card: #171717;
+  --d-popover: #171717;           /* shadcn gives popover the card value, not a third step */
+  --d-muted: #262626;
+  --d-muted-foreground: #A1A1A1;  /* 7.66:1 on the page, 6.94:1 on a card */
+
+  /* shadcn's dark border is ALPHA, not a solid grey, and adopting that is
+     the best thing in this swap. A solid border has to pick one depth and
+     is wrong at the others; white-at-10% lands correctly on the page, on
+     a card, and inside a dialog, because it takes its contrast from
+     whatever it is drawn over. shadcn also splits input from border here
+     — a field's edge is asked to be findable, a card's edge is not. */
+  --d-border: rgba(255, 255, 255, .10);
+  --d-input:  rgba(255, 255, 255, .15);
+
+  /* NOT shadcn's, and the second refusal. shadcn ships solid #262626 for
+     both, which equals --d-muted exactly — so a secondary button sitting
+     on a muted surface is invisible, 1.00:1. That is the scar this file
+     already records. Films land one step off whatever they sit on and
+     cannot produce that failure at any depth. */
   --d-secondary: rgba(255, 255, 255, .07);
   --d-accent: rgba(255, 255, 255, .13);
   --d-ring: #6E9BF0;              /* the accent LIFTS for its text/focus job */
@@ -250,7 +321,7 @@
   --secondary: var(--d-secondary);    --secondary-foreground: var(--d-foreground);
   --muted: var(--d-muted);            --muted-foreground: var(--d-muted-foreground);
   --accent: var(--d-accent);          --accent-foreground: var(--d-foreground);
-  --border: var(--d-border);          --input: var(--d-border);
+  --border: var(--d-border);          --input: var(--d-input);
   --ring: var(--d-ring);
   --positive-strong: var(--d-positive-strong);
   --caution-strong: var(--d-caution-strong);
@@ -273,7 +344,7 @@
     --secondary: var(--d-secondary);    --secondary-foreground: var(--d-foreground);
     --muted: var(--d-muted);            --muted-foreground: var(--d-muted-foreground);
     --accent: var(--d-accent);          --accent-foreground: var(--d-foreground);
-    --border: var(--d-border);          --input: var(--d-border);
+    --border: var(--d-border);          --input: var(--d-input);
     --ring: var(--d-ring);
     --positive-strong: var(--d-positive-strong);
     --caution-strong: var(--d-caution-strong);
@@ -430,11 +501,11 @@
    list in step if a fourth mode is ever added. */
 @media print {
   :root {
-    --d-background: #FFFFFF; --d-foreground: #142549;
+    --d-background: #FFFFFF; --d-foreground: #0A0A0A;
     --d-card: #FFFFFF; --d-popover: #FFFFFF;
-    --d-muted: #EDEFF1; --d-muted-foreground: #61697A;
-    --d-border: #CBD1DF;
-    --d-secondary: #FFFFFF; --d-accent: #EDEFF1;
+    --d-muted: #F5F5F5; --d-muted-foreground: #737373;
+    --d-border: #E5E5E5; --d-input: #E5E5E5;
+    --d-secondary: #F5F5F5; --d-accent: #F5F5F5;
     --d-ring: #4068CA;
     --d-positive-strong: #1A7F37;
     --d-caution-strong: #CF741E;

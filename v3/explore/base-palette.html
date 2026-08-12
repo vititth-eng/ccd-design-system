@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>v3 — the base palette, measured</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&family=Noto+Sans+Thai:wght@100..900&display=swap" />
+<style>
+  * { box-sizing:border-box; }
+  body { margin:0; padding:30px 24px 90px; background:#fff; color:#142549;
+         font-family:"Inter","Noto Sans Thai",ui-sans-serif,system-ui,sans-serif; }
+  .page { max-width:1040px; margin:0 auto; }
+  h1 { font-size:28px; line-height:1.18; font-weight:600; margin:0 0 10px; }
+  h2 { font-size:19px; line-height:1.35; font-weight:600; margin:0 0 4px; }
+  h3 { font-size:15px; font-weight:600; margin:0 0 3px; }
+  .sec { border-top:1px solid #CBD1DF; padding-top:22px; margin-top:40px; }
+  .n { font-size:12px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+       color:#4068CA; margin:0 0 6px; }
+  p.t { font-size:16px; line-height:1.6; color:#61697A; margin:0 0 8px; max-width:34rem; }
+  p.t b { color:#142549; font-weight:600; }
+  .cap { font-size:12px; line-height:1.5; color:#61697A; margin:0 0 10px; }
+  .fail { color:#C4372C; font-weight:600; }
+  .ok { color:#1A7F37; font-weight:600; }
+  .warn { color:#CF741E; font-weight:600; }
+  .new { color:#4068CA; font-weight:600; }
+
+  .box { border:1px solid #CBD1DF; border-radius:8px; padding:16px; margin-top:14px; }
+  .box--dark { background:#191A1D; border-color:#383B41; color:#E9EAEC; }
+  .box--dark .cap { color:#A2A6AD; } .box--dark h3 { color:#E9EAEC; }
+
+  table { border-collapse:collapse; width:100%; font-size:14px; margin-top:10px; }
+  th,td { text-align:left; padding:7px 10px 7px 0; border-bottom:1px solid #EDEFF1; vertical-align:top; }
+  th { font-weight:600; font-size:12px; color:#61697A; text-transform:uppercase; letter-spacing:.04em; }
+  td.num { font-family:ui-monospace,Menlo,monospace; font-size:13px; text-align:right; padding-right:14px; white-space:nowrap; }
+  code { font-family:ui-monospace,Menlo,monospace; font-size:13px; }
+  .chip { display:inline-block; width:13px; height:13px; border-radius:3px; vertical-align:-2px;
+          margin-right:7px; border:1px solid rgba(0,0,0,.10); }
+
+  .two { display:grid; grid-template-columns:1fr 1fr; gap:22px; }
+  @media (max-width:860px){ .two{ grid-template-columns:1fr; } }
+
+  /* the ramp: one row per step, width shows lightness */
+  .ramp { margin-top:12px; }
+  .ramp__r { display:flex; align-items:center; gap:12px; padding:3px 0; }
+  .ramp__sw { width:120px; height:34px; border-radius:5px; border:1px solid rgba(0,0,0,.10); flex:none; }
+  .box--dark .ramp__sw { border-color:rgba(255,255,255,.12); }
+  .ramp__L { font-family:ui-monospace,Menlo,monospace; font-size:12px; color:#61697A; width:70px; flex:none; }
+  .box--dark .ramp__L { color:#A2A6AD; }
+  .ramp__hex { font-family:ui-monospace,Menlo,monospace; font-size:13px; width:82px; flex:none; }
+  .ramp__job { font-size:13px; color:#61697A; }
+  .box--dark .ramp__job { color:#A2A6AD; }
+  .ramp__gap { border:1px dashed #C4372C; border-radius:6px; background:rgba(196,55,44,.04);
+               padding:8px 10px; margin:6px 0; }
+  .ramp__gap p { margin:0; font-size:13px; color:#C4372C; font-weight:600; }
+  .ramp__gap ul { margin:6px 0 0; padding-left:18px; font-size:13px; color:#61697A; line-height:1.6; }
+  .ramp__r--new .ramp__hex { color:#4068CA; }
+  .ramp__r--new .ramp__sw { border-color:#4068CA; border-width:2px; }
+
+  .pairs { display:flex; gap:0; margin-top:10px; border-radius:6px; overflow:hidden; max-width:420px; }
+  .pairs i { display:block; flex:1; height:56px; }
+
+  /* mini UI specimens */
+  .ui { border:1px solid #CBD1DF; border-radius:8px; overflow:hidden; margin-top:10px; }
+  .ui__row { display:flex; align-items:center; gap:10px; padding:9px 13px; font-size:13px;
+             border-bottom:1px solid #EDEFF1; }
+  .ui__row:last-child { border-bottom:0; }
+  .ui__row b { font-weight:500; flex:1; }
+  .ui__row span { font-size:11px; color:#61697A; }
+
+  .verdict { border:1px solid #CBD1DF; border-radius:8px; padding:16px; margin-top:16px; }
+  .verdict p { margin:0 0 8px; font-size:15px; line-height:1.55; }
+  .verdict p:last-child { margin-bottom:0; }
+</style>
+</head>
+<body><div class="page">
+
+<h1>v3 — the base palette, measured</h1>
+<p class="t">Not the chart tier. The tokens every screen touches: the neutrals, the navy, the action
+blue, the lines, the status trio. All of it was carried over from v2 without being re-judged, and
+<b>this is the first time it has been measured as a system rather than one colour at a time.</b></p>
+
+<!-- ═══════════════════════════════════════════════ -->
+<div class="sec">
+<p class="n">1 · Too much, or too small?</p>
+<h2>Neither. It is the right size and the wrong shape</h2>
+<p class="t"><code>v3/colors.css</code> declares <b>150 token lines</b> carrying <b>41 distinct
+colour values</b>. That is not bloat — shadcn ships 30 tokens on a smaller job, and most of CCD's
+extra lines are aliases that exist so a stock shadcn component renders correctly without being
+edited.</p>
+<p class="t">The problem is not the count. It is <b>where the values sit</b>: the neutral ramp — the
+part of a palette that does the most work on the most screens — has five steps and a hole in the
+middle, and every colour a UI reaches for next falls into that hole.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<div class="sec">
+<p class="n">2 · The neutral ramp</p>
+<h2>Five steps, and a canyon between two of them</h2>
+<p class="t">Lightness is OKLCh <b>L</b> — a perceptual scale where equal steps look equally far
+apart. A usable ramp steps evenly. This one does not.</p>
+
+<div class="ramp">
+  <div class="ramp__r"><div class="ramp__sw" style="background:#FFFFFF"></div><div class="ramp__L">L 1.000</div><div class="ramp__hex">#FFFFFF</div><div class="ramp__job">page, card, popover — the flat rule means all three</div></div>
+  <div class="ramp__r"><div class="ramp__sw" style="background:#EDEFF1"></div><div class="ramp__L">L 0.951</div><div class="ramp__hex">#EDEFF1</div><div class="ramp__job">muted fill, hover face, control track · step 0.049</div></div>
+  <div class="ramp__r"><div class="ramp__sw" style="background:#CBD1DF"></div><div class="ramp__L">L 0.860</div><div class="ramp__hex">#CBD1DF</div><div class="ramp__job">border, input edge, gridline · step 0.091</div></div>
+
+  <div class="ramp__gap">
+    <p>↓ nothing here — a 0.340 gap, larger than the rest of the ramp put together</p>
+    <ul>
+      <li><b>disabled text</b> wants L 0.670 (3.0:1)</li>
+      <li><b>placeholder text</b> wants L 0.630 (3.5:1)</li>
+      <li><b>icons and chart axis labels</b> want L 0.670 (3.0:1)</li>
+      <li><b>a hover / focus border</b> wants L 0.780 (2.0:1)</li>
+      <li><b>a heavier divider</b> — table header rule, section break — wants L 0.780</li>
+    </ul>
+  </div>
+
+  <div class="ramp__r"><div class="ramp__sw" style="background:#61697A"></div><div class="ramp__L">L 0.520</div><div class="ramp__hex">#61697A</div><div class="ramp__job">muted text — 5.51:1, an AA body colour</div></div>
+  <div class="ramp__r"><div class="ramp__sw" style="background:#142549"></div><div class="ramp__L">L 0.272</div><div class="ramp__hex">#142549</div><div class="ramp__job">ink — Boonrawd navy, the fixed brand anchor · step 0.249</div></div>
+</div>
+
+<p class="t" style="margin-top:18px">All five of those jobs land <b>inside the gap</b>. That was
+checked by solving for the lightness each one needs and asking whether it falls between L 0.520 and
+L 0.860 — every one does. So today each is resolved by whoever is building: <code>#61697A</code>
+used at 5.51:1 where 3:1 was wanted (too heavy — disabled text that reads as enabled), or
+<code>#CBD1DF</code> at 1.53:1 where 3:1 was wanted (invisible), or a one-off hex that belongs to no
+ramp at all.</p>
+
+<div class="box">
+  <h3>What the gap looks like in use</h3>
+  <div class="two" style="margin-top:12px">
+    <div>
+      <p class="cap"><b>Today</b> — disabled row painted with <code>#61697A</code>, the only grey available</p>
+      <div class="ui">
+        <div class="ui__row"><b>Wave 1 · 60 days</b><span>Sent</span></div>
+        <div class="ui__row" style="color:#61697A"><b>Wave 2 · 180 days</b><span style="color:#61697A">Not yet due</span></div>
+        <div class="ui__row"><b>Wave 3 · 360 days</b><span>Draft</span></div>
+      </div>
+      <p class="cap" style="margin-top:8px">The disabled row is barely lighter than the live ones. At
+      5.51:1 it is a legitimate body colour, so it does not read as switched off.</p>
+    </div>
+    <div>
+      <p class="cap"><b>With the missing step</b> — <code>#949BAB</code> at 2.79:1</p>
+      <div class="ui">
+        <div class="ui__row"><b>Wave 1 · 60 days</b><span>Sent</span></div>
+        <div class="ui__row" style="color:#949BAB"><b>Wave 2 · 180 days</b><span style="color:#949BAB">Not yet due</span></div>
+        <div class="ui__row"><b>Wave 3 · 360 days</b><span>Draft</span></div>
+      </div>
+      <p class="cap" style="margin-top:8px">Reads as unavailable at a glance, still legible up close.
+      Nothing about the other two rows changed.</p>
+    </div>
+  </div>
+</div>
+
+<h3 style="margin-top:26px">Dark mode has the identical hole</h3>
+<div class="box box--dark">
+  <div class="ramp">
+    <div class="ramp__r"><div class="ramp__sw" style="background:#191A1D"></div><div class="ramp__L">L 0.218</div><div class="ramp__hex">#191A1D</div><div class="ramp__job">page</div></div>
+    <div class="ramp__r"><div class="ramp__sw" style="background:#212327"></div><div class="ramp__L">L 0.256</div><div class="ramp__hex">#212327</div><div class="ramp__job">card</div></div>
+    <div class="ramp__r"><div class="ramp__sw" style="background:#26282C"></div><div class="ramp__L">L 0.276</div><div class="ramp__hex">#26282C</div><div class="ramp__job">muted fill</div></div>
+    <div class="ramp__r"><div class="ramp__sw" style="background:#32353C"></div><div class="ramp__L">L 0.329</div><div class="ramp__hex">#32353C</div><div class="ramp__job">popover</div></div>
+    <div class="ramp__r"><div class="ramp__sw" style="background:#383B41"></div><div class="ramp__L">L 0.352</div><div class="ramp__hex">#383B41</div><div class="ramp__job">border</div></div>
+    <div class="ramp__gap" style="border-color:#FF8A80;background:rgba(255,138,128,.07)">
+      <p style="color:#FF8A80">↓ a 0.372 gap — same five jobs, same absence</p>
+    </div>
+    <div class="ramp__r"><div class="ramp__sw" style="background:#A2A6AD"></div><div class="ramp__L">L 0.724</div><div class="ramp__hex">#A2A6AD</div><div class="ramp__job">muted text</div></div>
+    <div class="ramp__r"><div class="ramp__sw" style="background:#E9EAEC"></div><div class="ramp__L">L 0.937</div><div class="ramp__hex">#E9EAEC</div><div class="ramp__job">foreground</div></div>
+  </div>
+  <p class="cap" style="margin-top:12px">Dark has <em>four</em> steps crowded into L 0.22–0.35 — page,
+  card, muted and popover are within 0.058 of each other — and then nothing at all until 0.724.
+  The bottom of the ramp is over-specified and the middle is empty.</p>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<div class="sec">
+<p class="n">3 · Two things the neutrals disagree about</p>
+
+<div class="two">
+  <div>
+    <h3>The blue tilt is inconsistent between modes</h3>
+    <p class="cap">Every neutral in the system sits at hue 262–271 — one blue-grey family, matching
+    the navy (263) and the action blue (265). That part is coherent. <b>Chroma is not.</b></p>
+    <table>
+      <tr><th>Light</th><th style="text-align:right">C</th><th>Dark</th><th style="text-align:right">C</th></tr>
+      <tr><td>#EDEFF1</td><td class="num">0.003</td><td>#191A1D</td><td class="num">0.006</td></tr>
+      <tr><td>#CBD1DF</td><td class="num">0.020</td><td>#212327</td><td class="num">0.008</td></tr>
+      <tr><td>#61697A</td><td class="num">0.029</td><td>#383B41</td><td class="num">0.011</td></tr>
+      <tr><td>#142549</td><td class="num">0.071</td><td>#E9EAEC</td><td class="num">0.003</td></tr>
+    </table>
+    <p class="cap" style="margin-top:10px">Light neutrals <b>get bluer as they darken</b>, ×24 from
+    top to bottom — a deliberate-looking technique. Dark neutrals stay flat at ~0.010 throughout.
+    Two different intents, one system. Whichever is right, it should be the same one twice.</p>
+  </div>
+  <div>
+    <h3>Selection and structure are the same colour</h3>
+    <p class="cap">v2 ships two tokens here and its own comment says they were split on purpose,
+    “so structure ≠ selection”: <code>--divider #EDEFF1</code> for hairlines and tracks,
+    <code>--accent-tint #E9F1FC</code> for selected rows and sidebar hover.</p>
+    <div class="pairs">
+      <i style="background:#EDEFF1"></i><i style="background:#E9F1FC"></i>
+    </div>
+    <p class="cap" style="margin-top:8px"><code>#EDEFF1</code> · <code>#E9F1FC</code> —
+    <b class="fail">ΔE 1.4</b>. Below any threshold at which two people would call them different
+    colours. The split was declared and never rendered.</p>
+    <p class="cap">v3 dropped the second token when it adopted shadcn's naming, so it now has one
+    value doing both jobs — <b>more honest, and equally unable to show a selected row.</b> Neither
+    generation can.</p>
+    <div class="ui" style="margin-top:12px">
+      <div class="ui__row"><b>Somchai P.</b><span>Wave 1</span></div>
+      <div class="ui__row" style="background:#EDEFF1"><b>Nattaya S.</b><span>Wave 1</span></div>
+      <div class="ui__row" style="background:#E9F1FC"><b>Wichai T.</b><span>Wave 2</span></div>
+      <div class="ui__row"><b>Preeda K.</b><span>Wave 2</span></div>
+    </div>
+    <p class="cap" style="margin-top:8px">Row 2 is hovered, row 3 is selected. Point at the difference.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<div class="sec">
+<p class="n">4 · One thing worth knowing about the status trio</p>
+<h2>They are the macOS window buttons</h2>
+<div class="box">
+  <table>
+    <tr><th>CCD</th><th>macOS traffic light</th><th style="text-align:right">ΔE</th></tr>
+    <tr><td><span class="chip" style="background:#27C93F"></span><code>--positive #27C93F</code></td><td><span class="chip" style="background:#28C840"></span>zoom <code>#28C840</code></td><td class="num">0.31</td></tr>
+    <tr><td><span class="chip" style="background:#FFBD2E"></span><code>--caution #FFBD2E</code></td><td><span class="chip" style="background:#FEBC2E"></span>minimise <code>#FEBC2E</code></td><td class="num">0.30</td></tr>
+    <tr><td><span class="chip" style="background:#FF5F56"></span><code>--negative #FF5F56</code></td><td><span class="chip" style="background:#FF5F57"></span>close <code>#FF5F57</code></td><td class="num">0.11</td></tr>
+  </table>
+  <p class="cap" style="margin-top:12px">Effectively the same three values — v2's own comment calls
+  them “terminal green / yellow / red”, so this was known, if not written down as a decision. They
+  work, they are instantly readable, and the whole <code>-strong</code> / <code>-tint</code>
+  apparatus was built on top of them because none of the three can hold text.</p>
+  <p class="cap">Nothing is broken. It is simply the one part of the palette that is somebody else's
+  and reads as generic-Mac rather than as Boonrawd — worth a decision rather than an inheritance.</p>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<div class="sec">
+<p class="n">5 · Proposal</p>
+<h2>Fill the gap. Move nothing that exists.</h2>
+<p class="t">Every value in the ramp today keeps its exact hex. Three new steps go into the hole in
+each mode, generated to sit on the same hue and to continue the same chroma trend, so they read as
+part of the ramp rather than as arrivals.</p>
+
+<div class="two">
+  <div>
+    <h3>Light — three new steps</h3>
+    <div class="ramp">
+      <div class="ramp__r"><div class="ramp__sw" style="background:#CBD1DF"></div><div class="ramp__L">L 0.860</div><div class="ramp__hex">#CBD1DF</div><div class="ramp__job">border · 1.53:1</div></div>
+      <div class="ramp__r ramp__r--new"><div class="ramp__sw" style="background:#AFB6C5"></div><div class="ramp__L">L 0.775</div><div class="ramp__hex">#AFB6C5</div><div class="ramp__job"><span class="new">new</span> — border-strong, heavy divider · 2.03:1</div></div>
+      <div class="ramp__r ramp__r--new"><div class="ramp__sw" style="background:#949BAB"></div><div class="ramp__L">L 0.690</div><div class="ramp__hex">#949BAB</div><div class="ramp__job"><span class="new">new</span> — disabled text, placeholder · 2.79:1</div></div>
+      <div class="ramp__r ramp__r--new"><div class="ramp__sw" style="background:#7A8292"></div><div class="ramp__L">L 0.605</div><div class="ramp__hex">#7A8292</div><div class="ramp__job"><span class="new">new</span> — icons, axis labels · 3.86:1</div></div>
+      <div class="ramp__r"><div class="ramp__sw" style="background:#61697A"></div><div class="ramp__L">L 0.520</div><div class="ramp__hex">#61697A</div><div class="ramp__job">muted text · 5.51:1</div></div>
+    </div>
+  </div>
+  <div>
+    <h3>Dark — three new steps</h3>
+    <div class="box box--dark" style="margin-top:12px;padding:12px 14px">
+      <div class="ramp" style="margin-top:0">
+        <div class="ramp__r"><div class="ramp__sw" style="background:#383B41"></div><div class="ramp__L">L 0.352</div><div class="ramp__hex">#383B41</div><div class="ramp__job">border · 1.40:1</div></div>
+        <div class="ramp__r ramp__r--new"><div class="ramp__sw" style="background:#51545A"></div><div class="ramp__L">L 0.445</div><div class="ramp__hex" style="color:#6E9BF0">#51545A</div><div class="ramp__job">border-strong · 2.07:1</div></div>
+        <div class="ramp__r ramp__r--new"><div class="ramp__sw" style="background:#6B6E75"></div><div class="ramp__L">L 0.538</div><div class="ramp__hex" style="color:#6E9BF0">#6B6E75</div><div class="ramp__job">disabled, placeholder · 3.08:1</div></div>
+        <div class="ramp__r ramp__r--new"><div class="ramp__sw" style="background:#868991"></div><div class="ramp__L">L 0.631</div><div class="ramp__hex" style="color:#6E9BF0">#868991</div><div class="ramp__job">icons, axis labels · 4.50:1</div></div>
+        <div class="ramp__r"><div class="ramp__sw" style="background:#A2A6AD"></div><div class="ramp__L">L 0.724</div><div class="ramp__hex">#A2A6AD</div><div class="ramp__job">muted text · 6.44:1</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="t" style="margin-top:22px">That is the whole change: <b>six values, three per mode, nothing
+existing touched.</b> It is additive, so no shipped screen can move.</p>
+
+<h3 style="margin-top:24px">Two questions it does not answer</h3>
+<div class="box">
+  <p class="cap" style="margin-bottom:14px"><b>1 · Should a selected row look different from a hovered
+  one?</b> Below are the two candidates at three strengths. The left column is the current
+  neutral; the right three are progressively bluer. ΔE from the neutral is under each.</p>
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <div style="width:120px"><div style="height:44px;border-radius:5px;background:#EDEFF1;border:1px solid rgba(0,0,0,.08)"></div><p class="cap" style="margin-top:6px"><code>#EDEFF1</code><br>neutral — hover</p></div>
+    <div style="width:120px"><div style="height:44px;border-radius:5px;background:#E1ECFF;border:1px solid rgba(0,0,0,.08)"></div><p class="cap" style="margin-top:6px"><code>#E1ECFF</code><br>ΔE 2.7</p></div>
+    <div style="width:120px"><div style="height:44px;border-radius:5px;background:#D7E5FF;border:1px solid rgba(0,0,0,.08)"></div><p class="cap" style="margin-top:6px"><code>#D7E5FF</code><br>ΔE 4.7</p></div>
+    <div style="width:120px"><div style="height:44px;border-radius:5px;background:#D2E2FF;border:1px solid rgba(0,0,0,.08)"></div><p class="cap" style="margin-top:6px"><code>#D2E2FF</code><br>ΔE 5.7</p></div>
+  </div>
+  <div class="ui" style="margin-top:14px;max-width:460px">
+    <div class="ui__row"><b>Somchai P.</b><span>Wave 1</span></div>
+    <div class="ui__row" style="background:#EDEFF1"><b>Nattaya S.</b><span>hovered</span></div>
+    <div class="ui__row" style="background:#D7E5FF"><b>Wichai T.</b><span>selected</span></div>
+    <div class="ui__row"><b>Preeda K.</b><span>Wave 2</span></div>
+  </div>
+  <p class="cap" style="margin-top:14px"><b>2 · Does the light ramp's growing blue tilt stay?</b>
+  Either dark mode adopts it, or light mode drops it. Right now they contradict each other and
+  nobody has decided which is the house style.</p>
+</div>
+
+<div class="verdict">
+  <p><b>Recommended:</b> take the six new steps now — they are additive, they close a hole that is
+  currently filled by guesswork, and nothing shipped can regress.</p>
+  <p>Leave the status trio alone. It works, and replacing three known-readable colours with
+  Boonrawd-derived ones is a real project with a real risk, not a tidy-up.</p>
+</div>
+</div>
+
+</div></body>
+</html>

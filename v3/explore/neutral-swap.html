@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>v3 — shadcn neutral + CCD brand blue</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&family=Noto+Sans+Thai:wght@100..900&display=swap" />
+<style>
+  * { box-sizing:border-box; }
+  body { margin:0; padding:30px 24px 90px; background:#fff; color:#0A0A0A;
+         font-family:"Inter","Noto Sans Thai",ui-sans-serif,system-ui,sans-serif; }
+  .page { max-width:1080px; margin:0 auto; }
+  h1 { font-size:28px; line-height:1.18; font-weight:600; margin:0 0 10px; }
+  h2 { font-size:19px; line-height:1.35; font-weight:600; margin:0 0 4px; }
+  h3 { font-size:15px; font-weight:600; margin:0 0 3px; }
+  .sec { border-top:1px solid #E5E5E5; padding-top:22px; margin-top:40px; }
+  .n { font-size:12px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+       color:#4068CA; margin:0 0 6px; }
+  p.t { font-size:16px; line-height:1.6; color:#737373; margin:0 0 8px; max-width:34rem; }
+  p.t b { color:#0A0A0A; font-weight:600; }
+  .cap { font-size:12px; line-height:1.5; color:#737373; margin:0 0 10px; }
+  .fail { color:#C4372C; font-weight:600; }
+  .ok { color:#1A7F37; font-weight:600; }
+  .warn { color:#CF741E; font-weight:600; }
+
+  table.tok { border-collapse:collapse; width:100%; font-size:13px; margin-top:10px; }
+  table.tok th, table.tok td { text-align:left; padding:6px 10px 6px 0; border-bottom:1px solid #F0F0F0; vertical-align:middle; }
+  table.tok th { font-weight:600; font-size:11px; color:#737373; text-transform:uppercase; letter-spacing:.04em; }
+  table.tok td.hex { font-family:ui-monospace,Menlo,monospace; white-space:nowrap; }
+  .sw { display:inline-block; width:22px; height:14px; border-radius:3px; vertical-align:-2px;
+        margin-right:7px; border:1px solid rgba(0,0,0,.12); }
+  .arrow { color:#A1A1A1; }
+  code { font-family:ui-monospace,Menlo,monospace; font-size:13px; }
+
+  .two { display:grid; grid-template-columns:1fr 1fr; gap:22px; }
+  @media (max-width:900px){ .two{ grid-template-columns:1fr; } }
+
+  /* ── the two candidate themes, as scoped variable sets ── */
+  .demo { border-radius:10px; padding:18px; }
+  .demo * { box-sizing:border-box; }
+
+  .navy {
+    --bg:#FFFFFF; --fg:#142549; --card:#FFFFFF; --muted:#F5F5F5; --mutedfg:#737373;
+    --border:#E5E5E5; --primary:#4068CA; --onprimary:#FFFFFF; --destructive:#C4372C; --ring:#4068CA;
+  }
+  .black {
+    --bg:#FFFFFF; --fg:#0A0A0A; --card:#FFFFFF; --muted:#F5F5F5; --mutedfg:#737373;
+    --border:#E5E5E5; --primary:#4068CA; --onprimary:#FFFFFF; --destructive:#C4372C; --ring:#4068CA;
+  }
+  .navy-d {
+    --bg:#0A0A0A; --fg:#E9EAEC; --card:#171717; --muted:#262626; --mutedfg:#A1A1A1;
+    --border:rgba(255,255,255,.10); --primary:#4068CA; --onprimary:#FFFFFF; --destructive:#C4372C; --ring:#6E9BF0;
+  }
+  .today {
+    --bg:#FFFFFF; --fg:#142549; --card:#FFFFFF; --muted:#EDEFF1; --mutedfg:#61697A;
+    --border:#CBD1DF; --primary:#4068CA; --onprimary:#FFFFFF; --destructive:#C4372C; --ring:#4068CA;
+  }
+  .today-d {
+    --bg:#191A1D; --fg:#E9EAEC; --card:#212327; --muted:#26282C; --mutedfg:#A2A6AD;
+    --border:#383B41; --primary:#4068CA; --onprimary:#FFFFFF; --destructive:#C4372C; --ring:#6E9BF0;
+  }
+
+  .demo { background:var(--bg); color:var(--fg); border:1px solid var(--border); }
+  .demo h4 { font-size:11px; font-weight:600; letter-spacing:.07em; text-transform:uppercase;
+             color:var(--mutedfg); margin:0 0 12px; }
+  .dcard { background:var(--card); border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+  .dcard__h { display:flex; align-items:baseline; justify-content:space-between;
+              padding:12px 14px; border-bottom:1px solid var(--border); }
+  .dcard__h b { font-size:14px; font-weight:600; }
+  .dcard__h span { font-size:11px; color:var(--mutedfg); }
+  .drow { display:flex; align-items:center; gap:10px; padding:9px 14px; font-size:13px;
+          border-bottom:1px solid var(--border); }
+  .drow:last-child { border-bottom:0; }
+  .drow b { font-weight:500; flex:1; }
+  .drow em { font-style:normal; font-size:11px; color:var(--mutedfg); }
+  .drow--sel { background:var(--muted); }
+
+  .btns { display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
+  .b { font:inherit; font-size:13px; font-weight:500; padding:7px 14px; border-radius:6px;
+       border:1px solid transparent; cursor:default; }
+  .b--p { background:var(--primary); color:var(--onprimary); }
+  .b--s { background:var(--card); color:var(--fg); border-color:var(--border); }
+  .b--d { background:var(--destructive); color:#fff; }
+  .b--g { background:transparent; color:var(--mutedfg); }
+
+  .fld { margin-top:14px; }
+  .fld label { display:block; font-size:11px; color:var(--mutedfg); margin-bottom:4px; }
+  .fld input { font:inherit; font-size:13px; width:100%; padding:7px 10px; border-radius:6px;
+               border:1px solid var(--border); background:var(--card); color:var(--fg); }
+  .fld input.focus { border-color:var(--ring); box-shadow:0 0 0 3px color-mix(in srgb, var(--ring) 28%, transparent); }
+  .fld input::placeholder { color:var(--mutedfg); }
+
+  .pills { display:flex; gap:7px; flex-wrap:wrap; margin-top:14px; }
+  .pill { display:inline-flex; align-items:center; gap:6px; border-radius:999px;
+          padding:4px 11px 4px 8px; font-size:12px; color:var(--fg); }
+  .pill i { width:8px; height:8px; border-radius:50%; display:block; }
+
+  .meta { display:flex; gap:14px; flex-wrap:wrap; margin-top:14px; font-size:11px; color:var(--mutedfg); }
+
+  .verdict { border:1px solid #E5E5E5; border-radius:8px; padding:16px; margin-top:16px; }
+  .verdict p { margin:0 0 8px; font-size:15px; line-height:1.55; }
+  .verdict p:last-child { margin-bottom:0; }
+  .box { border:1px solid #E5E5E5; border-radius:8px; padding:16px; margin-top:14px; }
+</style>
+</head>
+<body><div class="page">
+
+<h1>v3 — shadcn neutral, CCD brand blue</h1>
+<p class="t">Swap the neutral ramp for shadcn's <code>neutral</code> base theme — pure grey, chroma 0 —
+and put <code>#4068CA</code> back into the slots shadcn leaves near-black. Everything below is
+rendered from the actual values, not described.</p>
+
+<!-- ═══════════════════════════════════════════════ -->
+<div class="sec">
+<p class="n">1 · The swap, token by token</p>
+<h2>Four values move. One of them a lot.</h2>
+
+<table class="tok">
+  <tr><th>Slot</th><th>CCD today</th><th></th><th>shadcn neutral</th><th style="text-align:right">ΔE</th><th>Effect</th></tr>
+  <tr><td><code>--background</code> / <code>--card</code></td>
+      <td class="hex"><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td><td class="arrow">→</td>
+      <td class="hex"><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td><td style="text-align:right">0.0</td><td>identical</td></tr>
+  <tr><td><code>--muted</code> / <code>--accent</code></td>
+      <td class="hex"><span class="sw" style="background:#EDEFF1"></span>#EDEFF1</td><td class="arrow">→</td>
+      <td class="hex"><span class="sw" style="background:#F5F5F5"></span>#F5F5F5</td><td style="text-align:right">1.9</td><td>invisible</td></tr>
+  <tr><td><code>--muted-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#61697A"></span>#61697A</td><td class="arrow">→</td>
+      <td class="hex"><span class="sw" style="background:#737373"></span>#737373</td><td style="text-align:right">4.6</td><td>subtle · <span class="warn">5.51:1 → 4.74:1</span></td></tr>
+  <tr><td><code>--border</code> / <code>--input</code></td>
+      <td class="hex"><span class="sw" style="background:#CBD1DF"></span>#CBD1DF</td><td class="arrow">→</td>
+      <td class="hex"><span class="sw" style="background:#E5E5E5"></span>#E5E5E5</td><td style="text-align:right">6.5</td><td>visible · <span class="warn">1.53:1 → 1.26:1</span></td></tr>
+  <tr><td><code>--foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#142549"></span>#142549</td><td class="arrow">→</td>
+      <td class="hex"><span class="sw" style="background:#0A0A0A"></span>#0A0A0A</td><td style="text-align:right"><b>14.5</b></td><td><b>the real decision</b></td></tr>
+  <tr><td><code>--primary</code> / <code>--ring</code></td>
+      <td class="hex"><span class="sw" style="background:#4068CA"></span>#4068CA</td><td class="arrow">→</td>
+      <td class="hex"><span class="sw" style="background:#4068CA"></span>#4068CA</td><td style="text-align:right">—</td><td>kept · shadcn ships #171717 / #A1A1A1 here</td></tr>
+  <tr><td>status trio + tiers</td>
+      <td colspan="4">unchanged — shadcn has no slot for any of it</td><td></td></tr>
+</table>
+
+<p class="t" style="margin-top:16px">The brand blue survives the move intact: <b>5.18:1</b> on white,
+4.75:1 on the new muted fill, and white text on it is 5.18:1. On the dark side it reads 3.82:1 on the
+page and 3.46:1 on the card — but only <b>2.92:1 on the dark muted fill</b>, so dark mode still needs
+the lifted <code>#6E9BF0</code> for focus rings and links, exactly as it does today.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<div class="sec">
+<p class="n">2 · The one decision — what is <code>--foreground</code>?</p>
+<h2>Boonrawd navy, or shadcn's near-black</h2>
+<p class="t">Everything else in this swap is minor. This one is 14.5 ΔE and it is the colour every
+word on every screen is set in. Both panels below are otherwise identical.</p>
+
+<div class="two">
+  <div>
+    <div class="demo navy">
+      <h4>A · navy kept — #142549</h4>
+      <div class="dcard">
+        <div class="dcard__h"><b>Onboarding · Wave 2</b><span>180 days</span></div>
+        <div class="drow"><b>Somchai P.</b><em>Completed</em></div>
+        <div class="drow drow--sel"><b>Nattaya S.</b><em>In progress</em></div>
+        <div class="drow"><b>Wichai T.</b><em>Not started</em></div>
+      </div>
+      <div class="btns">
+        <button class="b b--p">Send reminder</button>
+        <button class="b b--s">Export</button>
+        <button class="b b--g">Cancel</button>
+      </div>
+      <div class="fld"><label>Search employee</label><input class="focus" value="" placeholder="employee code or name" /></div>
+      <div class="pills">
+        <span class="pill" style="background:#E7F5EC"><i style="background:#27C93F"></i>On track</span>
+        <span class="pill" style="background:#FDEEE2"><i style="background:#FFBD2E"></i>Review</span>
+        <span class="pill" style="background:#FBE9E7"><i style="background:#FF5F56"></i>Blocked</span>
+      </div>
+      <div class="meta"><span>15.10:1 on white</span><span>hue 263 · chroma 0.071</span></div>
+    </div>
+    <p class="cap" style="margin-top:10px">The navy carries into every heading, label and table cell.
+    Against pure-grey neutrals it reads slightly warmer and more deliberate — the page has a colour
+    even where nothing is coloured.</p>
+  </div>
+
+  <div>
+    <div class="demo black">
+      <h4>B · shadcn near-black — #0A0A0A</h4>
+      <div class="dcard">
+        <div class="dcard__h"><b>Onboarding · Wave 2</b><span>180 days</span></div>
+        <div class="drow"><b>Somchai P.</b><em>Completed</em></div>
+        <div class="drow drow--sel"><b>Nattaya S.</b><em>In progress</em></div>
+        <div class="drow"><b>Wichai T.</b><em>Not started</em></div>
+      </div>
+      <div class="btns">
+        <button class="b b--p">Send reminder</button>
+        <button class="b b--s">Export</button>
+        <button class="b b--g">Cancel</button>
+      </div>
+      <div class="fld"><label>Search employee</label><input class="focus" value="" placeholder="employee code or name" /></div>
+      <div class="pills">
+        <span class="pill" style="background:#E7F5EC"><i style="background:#27C93F"></i>On track</span>
+        <span class="pill" style="background:#FDEEE2"><i style="background:#FFBD2E"></i>Review</span>
+        <span class="pill" style="background:#FBE9E7"><i style="background:#FF5F56"></i>Blocked</span>
+      </div>
+      <div class="meta"><span>19.80:1 on white</span><span>chroma 0 · no hue</span></div>
+    </div>
+    <p class="cap" style="margin-top:10px">Higher contrast and completely neutral. The blue button
+    becomes the only colour on the screen, which makes it louder. Boonrawd navy survives only as the
+    brand mark, not as the reading colour.</p>
+  </div>
+</div>
+
+<div class="box">
+  <p class="cap" style="margin:0"><b>Worth knowing:</b> <code>#142549</code> is named in
+  <code>colors.css</code> as “the fixed brand anchor”, and it is the one value in the palette that is
+  Boonrawd's rather than a design choice. Option B does not delete it — it demotes it from
+  <em>the colour text is set in</em> to <em>a colour used for the brand</em>. That is a real change in
+  what the apps look like, and it is not reversible cheaply once screens are built on it.</p>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<div class="sec">
+<p class="n">3 · Against what ships today</p>
+<h2>Side by side with the current palette</h2>
+<div class="two">
+  <div>
+    <div class="demo today">
+      <h4>today — CCD blue-grey neutrals</h4>
+      <div class="dcard">
+        <div class="dcard__h"><b>Onboarding · Wave 2</b><span>180 days</span></div>
+        <div class="drow"><b>Somchai P.</b><em>Completed</em></div>
+        <div class="drow drow--sel"><b>Nattaya S.</b><em>In progress</em></div>
+        <div class="drow"><b>Wichai T.</b><em>Not started</em></div>
+      </div>
+      <div class="btns"><button class="b b--p">Send reminder</button><button class="b b--s">Export</button></div>
+      <div class="meta"><span>border 1.53:1</span><span>muted-fg 5.51:1</span></div>
+    </div>
+  </div>
+  <div>
+    <div class="demo navy">
+      <h4>proposed — shadcn neutral + navy + brand blue</h4>
+      <div class="dcard">
+        <div class="dcard__h"><b>Onboarding · Wave 2</b><span>180 days</span></div>
+        <div class="drow"><b>Somchai P.</b><em>Completed</em></div>
+        <div class="drow drow--sel"><b>Nattaya S.</b><em>In progress</em></div>
+        <div class="drow"><b>Wichai T.</b><em>Not started</em></div>
+      </div>
+      <div class="btns"><button class="b b--p">Send reminder</button><button class="b b--s">Export</button></div>
+      <div class="meta"><span>border 1.26:1</span><span>muted-fg 4.74:1</span></div>
+    </div>
+  </div>
+</div>
+
+<h3 style="margin-top:26px">The cost, and it is a real one</h3>
+<p class="t">CCD's whole surface strategy is <b>flat white separated by line</b> — cards, popovers and
+the page are all <code>#FFFFFF</code>, so the border is the only thing making a card a card. shadcn's
+border is <b>lighter than CCD's</b>: 1.26:1 against 1.53:1.</p>
+<div class="box">
+  <div class="two">
+    <div>
+      <p class="cap">Card edge at <code>#E5E5E5</code> — shadcn</p>
+      <div style="border:1px solid #E5E5E5;border-radius:8px;padding:14px;font-size:13px">A card, on the page it sits on.</div>
+      <div style="border:1px solid #E5E5E5;border-radius:8px;padding:14px;font-size:13px;margin-top:10px">A second card below it.</div>
+    </div>
+    <div>
+      <p class="cap">Card edge at <code>#CBD1DF</code> — CCD today</p>
+      <div style="border:1px solid #CBD1DF;border-radius:8px;padding:14px;font-size:13px">A card, on the page it sits on.</div>
+      <div style="border:1px solid #CBD1DF;border-radius:8px;padding:14px;font-size:13px;margin-top:10px">A second card below it.</div>
+    </div>
+  </div>
+  <p class="cap" style="margin-top:14px">shadcn can afford a fainter line because its cards are
+  allowed a background step. CCD's are not. <b>Taking shadcn's neutrals wholesale weakens the one
+  device the flat rule depends on</b> — so the recommendation below keeps shadcn's ramp but holds the
+  border at CCD's weight.</p>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<div class="sec">
+<p class="n">4 · Dark mode</p>
+<h2>shadcn goes considerably darker, and borders become alpha</h2>
+<div class="two">
+  <div>
+    <div class="demo today-d">
+      <h4>today — #191A1D page, #212327 card</h4>
+      <div class="dcard">
+        <div class="dcard__h"><b>Onboarding · Wave 2</b><span>180 days</span></div>
+        <div class="drow"><b>Somchai P.</b><em>Completed</em></div>
+        <div class="drow drow--sel"><b>Nattaya S.</b><em>In progress</em></div>
+        <div class="drow"><b>Wichai T.</b><em>Not started</em></div>
+      </div>
+      <div class="btns"><button class="b b--p">Send reminder</button><button class="b b--s">Export</button></div>
+      <div class="meta"><span>solid border #383B41</span></div>
+    </div>
+  </div>
+  <div>
+    <div class="demo navy-d">
+      <h4>shadcn — #0A0A0A page, #171717 card</h4>
+      <div class="dcard">
+        <div class="dcard__h"><b>Onboarding · Wave 2</b><span>180 days</span></div>
+        <div class="drow"><b>Somchai P.</b><em>Completed</em></div>
+        <div class="drow drow--sel"><b>Nattaya S.</b><em>In progress</em></div>
+        <div class="drow"><b>Wichai T.</b><em>Not started</em></div>
+      </div>
+      <div class="btns"><button class="b b--p">Send reminder</button><button class="b b--s">Export</button></div>
+      <div class="meta"><span>border rgba(255,255,255,.10)</span></div>
+    </div>
+  </div>
+</div>
+<p class="t" style="margin-top:16px">shadcn's dark page is <code>#0A0A0A</code> — near-black, against
+CCD's <code>#191A1D</code>. More noticeably, its border is <code>oklch(1 0 0 / 10%)</code>: <b>white at
+10% opacity, not a solid grey.</b> That is the same alpha architecture found in its components, and it
+is genuinely better here — one border value lands correctly on the page, on a card, and inside a
+dialog, where a solid grey is right at exactly one depth.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<div class="sec">
+<p class="n">5 · Recommendation</p>
+<h2>Take the swap. Keep navy. Hold the border.</h2>
+<div class="verdict">
+  <p><b>Take shadcn's neutral ramp</b> for <code>muted</code>, <code>muted-foreground</code>,
+  <code>secondary</code>, <code>accent</code> and the dark surfaces, and adopt its
+  <b>alpha borders in dark mode</b> — that last one fixes a problem CCD has today, where one solid
+  grey has to serve a page, a card and a dialog.</p>
+  <p><b>Keep <code>#142549</code> as <code>--foreground</code>.</b> It is the only Boonrawd-owned value
+  in the palette, it is what makes CCD screens not look like every other shadcn app, and the thing
+  gained by dropping it — 19.80:1 instead of 15.10:1 — is contrast nobody was short of.</p>
+  <p><b>Keep the border at CCD's weight</b>, <code>#CBD1DF</code> rather than <code>#E5E5E5</code>.
+  Flat-white-separated-by-line only works if the line is visible, and shadcn's is a third weaker
+  because its cards are allowed a background CCD's are not.</p>
+  <p><b>Keep <code>--destructive</code> at <code>#C4372C</code></b> rather than shadcn's
+  <code>#E7000B</code>, and keep the status trio — shadcn has no slot for two of the three, and CCD's
+  red was measured for text and fills, which shadcn's was not.</p>
+  <p style="color:#737373">Net: the neutral family goes from blue-grey to true grey, the navy and the
+  brand blue stay, the border holds, and dark mode gains alpha borders. That answers the open
+  chroma-inconsistency question by picking <b>flat</b> — both modes now agree.</p>
+</div>
+</div>
+
+</div></body>
+</html>

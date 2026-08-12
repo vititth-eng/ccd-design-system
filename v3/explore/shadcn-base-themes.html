@@ -1,0 +1,974 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>shadcn — all 7 base themes, in full</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&family=Noto+Sans+Thai:wght@100..900&display=swap" />
+<style>
+* { box-sizing:border-box; }
+body { margin:0; padding:30px 24px 90px; background:#fff; color:#0A0A0A;
+       font-family:"Inter","Noto Sans Thai",ui-sans-serif,system-ui,sans-serif; }
+.page { max-width:1180px; margin:0 auto; }
+h1 { font-size:28px; line-height:1.18; font-weight:600; margin:0 0 10px; }
+h2 { font-size:19px; font-weight:600; margin:0 0 4px; }
+h3 { font-size:15px; font-weight:600; margin:22px 0 3px; }
+.sec { border-top:1px solid #E5E5E5; padding-top:22px; margin-top:40px; }
+.n { font-size:12px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:#4068CA; margin:0 0 6px; }
+p.t { font-size:16px; line-height:1.6; color:#737373; margin:0 0 8px; max-width:34rem; }
+p.t b { color:#0A0A0A; font-weight:600; }
+.cap { font-size:12px; line-height:1.5; color:#737373; margin:0 0 10px; }
+.warn { color:#CF741E; font-weight:600; }
+code { font-family:ui-monospace,Menlo,monospace; font-size:12px; }
+
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px; margin-top:14px; }
+.demo { background:var(--bg); color:var(--fg); border:1px solid var(--border); border-radius:10px; padding:14px; }
+.demo h4 { font-size:11px; font-weight:600; letter-spacing:.07em; text-transform:uppercase;
+           color:var(--mutedfg); margin:0 0 10px; }
+.dcard { background:var(--card); border:1px solid var(--border); border-radius:7px; overflow:hidden; }
+.dcard__h { display:flex; align-items:baseline; justify-content:space-between; padding:9px 11px; border-bottom:1px solid var(--border); }
+.dcard__h b { font-size:13px; font-weight:600; } .dcard__h span { font-size:10px; color:var(--mutedfg); }
+.drow { display:flex; align-items:center; gap:8px; padding:7px 11px; font-size:12px; border-bottom:1px solid var(--border); }
+.drow:last-child { border-bottom:0; }
+.drow b { font-weight:500; flex:1; } .drow em { font-style:normal; font-size:10px; color:var(--mutedfg); }
+.drow--sel { background:var(--muted); }
+.btns { display:flex; gap:6px; margin-top:11px; }
+.b { font:inherit; font-size:12px; font-weight:500; padding:6px 11px; border-radius:6px; border:1px solid transparent; cursor:default; }
+.b--p { background:var(--primary); color:#fff; }
+.b--s { background:var(--card); color:var(--fg); border-color:var(--border); }
+.fld { margin-top:10px; }
+.fld input { font:inherit; font-size:12px; width:100%; padding:6px 9px; border-radius:6px;
+             border:1px solid var(--ring); background:var(--card); color:var(--fg);
+             box-shadow:0 0 0 3px color-mix(in srgb, var(--ring) 26%, transparent); }
+.fld input::placeholder { color:var(--mutedfg); }
+.meta { display:flex; flex-direction:column; gap:2px; margin-top:10px; font-size:10px;
+        font-family:ui-monospace,Menlo,monospace; color:var(--mutedfg); }
+
+table.tok { border-collapse:collapse; width:100%; font-size:12px; }
+table.tok th,table.tok td { text-align:left; padding:4px 8px 4px 0; border-bottom:1px solid #F2F2F2; }
+table.tok th { font-size:10px; text-transform:uppercase; letter-spacing:.05em; color:#737373; }
+table.tok td.hex { font-family:ui-monospace,Menlo,monospace; white-space:nowrap; }
+.sw { display:inline-block; width:20px; height:13px; border-radius:3px; vertical-align:-2px;
+      margin-right:6px; border:1px solid rgba(0,0,0,.14); }
+.sw--d { border-color:rgba(0,0,0,.25); }
+.tokgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(310px,1fr)); gap:26px; margin-top:14px; }
+.tokgrid > div > h3 { margin-top:0; }
+
+table.d { border-collapse:collapse; font-size:13px; margin-top:10px; }
+table.d th,table.d td { text-align:left; padding:6px 16px 6px 0; border-bottom:1px solid #F2F2F2; }
+table.d th { font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:#737373; }
+td.num { font-family:ui-monospace,Menlo,monospace; text-align:right; }
+
+.mfrow { display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+.mf { width:132px; } .mf i { display:block; height:44px; border-radius:5px; border:1px solid rgba(0,0,0,.10); }
+.mf p { font-size:10px; line-height:1.5; color:#737373; margin:6px 0 0; font-family:ui-monospace,Menlo,monospace; }
+.mf p b { display:block; font-family:"Inter",sans-serif; font-size:12px; color:#0A0A0A; }
+.box { border:1px solid #E5E5E5; border-radius:8px; padding:16px; margin-top:14px; }
+</style></head><body><div class="page">
+
+<h1>shadcn — all 7 base themes, in full</h1>
+<p class="t">Every token of every base theme, light and dark, read from the registry
+(<code>ui.shadcn.com/r/colors/&lt;name&gt;.json</code>). The specimens carry CCD's brand blue in
+<code>--primary</code> and <code>--ring</code>; everything else is shadcn's, unmodified.</p>
+
+<div class="sec">
+<p class="n">1 · The headline</p>
+<h2>They are nearly the same theme</h2>
+<p class="t">Distance from <code>neutral</code>, measured on the four tokens that carry any tint.
+Ten is the floor at which two people call something a different colour.</p>
+<table class="d">
+<tr><th>theme</th><th style="text-align:right">foreground</th><th style="text-align:right">muted</th><th style="text-align:right">muted-fg</th><th style="text-align:right">border</th></tr>
+<tr><td><b>stone</b></td><td class="num">0.5</td><td class="num">0.1</td><td class="num">1.4</td><td class="num">0.3</td></tr>
+<tr><td><b>zinc</b></td><td class="num">0.6</td><td class="num">0.3</td><td class="num">1.6</td><td class="num">0.5</td></tr>
+<tr><td><b>mauve</b></td><td class="num">0.8</td><td class="num">1.0</td><td class="num warn">3.6</td><td class="num">0.5</td></tr>
+<tr><td><b>olive</b></td><td class="num">1.0</td><td class="num">0.7</td><td class="num warn">4.0</td><td class="num">1.0</td></tr>
+<tr><td><b>mist</b></td><td class="num">0.5</td><td class="num">0.8</td><td class="num">2.2</td><td class="num">0.6</td></tr>
+<tr><td><b>taupe</b></td><td class="num">0.5</td><td class="num">1.1</td><td class="num">2.3</td><td class="num">0.5</td></tr>
+</table>
+<p class="t" style="margin-top:14px"><b>Nothing reaches 5.</b> The largest gap in the whole set is
+olive's secondary text at 4.0. Backgrounds, cards and popovers are byte-identical across all seven.
+Choosing a base theme is choosing the temperature of your grey text — not a look.</p>
+</div>
+
+<div class="sec">
+<p class="n">2 · Where the difference actually lives</p>
+<h2><code>--muted-foreground</code>, all seven</h2>
+<div class="mfrow"><div class="mf"><i style="background:#737373"></i><p><b>neutral</b>#737373<br>C 0.000 · h 90<br>4.74:1</p></div>
+<div class="mf"><i style="background:#79716B"></i><p><b>stone</b>#79716B<br>C 0.014 · h 59<br>4.79:1</p></div>
+<div class="mf"><i style="background:#71717B"></i><p><b>zinc</b>#71717B<br>C 0.015 · h 286<br>4.83:1</p></div>
+<div class="mf"><i style="background:#79697B"></i><p><b>mauve</b>#79697B<br>C 0.034 · h 323<br>5.10:1</p></div>
+<div class="mf"><i style="background:#7C7C67"></i><p><b>olive</b>#7C7C67<br>C 0.031 · h 107<br>4.25:1</p></div>
+<div class="mf"><i style="background:#67787C"></i><p><b>mist</b>#67787C<br>C 0.021 · h 214<br>4.61:1</p></div>
+<div class="mf"><i style="background:#7C6D67"></i><p><b>taupe</b>#7C6D67<br>C 0.021 · h 43<br>4.95:1</p></div></div>
+<p class="cap" style="margin-top:12px">Every one clears AA on white. This is the row that separates the
+themes; the rest is rounding.</p>
+</div>
+
+<div class="sec">
+<p class="n">3 · Rendered — light</p>
+<h2>The same screen, seven times</h2>
+<div class="grid">
+<div class="demo" style="--bg:#FFFFFF;--fg:#0A0A0A;--card:#FFFFFF;--muted:#F5F5F5;--mutedfg:#737373;--border:#E5E5E5;--primary:#4068CA;--ring:#4068CA;">
+  <h4>neutral</h4>
+  <div class="dcard">
+    <div class="dcard__h"><b>Wave 2</b><span>180 days</span></div>
+    <div class="drow"><b>Somchai P.</b><em>Completed</em></div>
+    <div class="drow drow--sel"><b>Nattaya S.</b><em>In progress</em></div>
+    <div class="drow"><b>Wichai T.</b><em>Not started</em></div>
+  </div>
+  <div class="btns"><button class="b b--p">Send</button><button class="b b--s">Export</button></div>
+  <div class="fld"><input class="focus" placeholder="employee code" /></div>
+  <div class="meta"><span>fg #0A0A0A</span><span>muted-fg #737373</span></div>
+</div>
+
+<div class="demo" style="--bg:#FFFFFF;--fg:#0C0A09;--card:#FFFFFF;--muted:#F5F5F4;--mutedfg:#79716B;--border:#E7E5E4;--primary:#4068CA;--ring:#4068CA;">
+  <h4>stone</h4>
+  <div class="dcard">
+    <div class="dcard__h"><b>Wave 2</b><span>180 days</span></div>
+    <div class="drow"><b>Somchai P.</b><em>Completed</em></div>
+    <div class="drow drow--sel"><b>Nattaya S.</b><em>In progress</em></div>
+    <div class="drow"><b>Wichai T.</b><em>Not started</em></div>
+  </div>
+  <div class="btns"><button class="b b--p">Send</button><button class="b b--s">Export</button></div>
+  <div class="fld"><input class="focus" placeholder="employee code" /></div>
+  <div class="meta"><span>fg #0C0A09</span><span>muted-fg #79716B</span></div>
+</div>
+
+<div class="demo" style="--bg:#FFFFFF;--fg:#09090B;--card:#FFFFFF;--muted:#F4F4F5;--mutedfg:#71717B;--border:#E4E4E7;--primary:#4068CA;--ring:#4068CA;">
+  <h4>zinc</h4>
+  <div class="dcard">
+    <div class="dcard__h"><b>Wave 2</b><span>180 days</span></div>
+    <div class="drow"><b>Somchai P.</b><em>Completed</em></div>
+    <div class="drow drow--sel"><b>Nattaya S.</b><em>In progress</em></div>
+    <div class="drow"><b>Wichai T.</b><em>Not started</em></div>
+  </div>
+  <div class="btns"><button class="b b--p">Send</button><button class="b b--s">Export</button></div>
+  <div class="fld"><input class="focus" placeholder="employee code" /></div>
+  <div class="meta"><span>fg #09090B</span><span>muted-fg #71717B</span></div>
+</div>
+
+<div class="demo" style="--bg:#FFFFFF;--fg:#0C090C;--card:#FFFFFF;--muted:#F3F1F3;--mutedfg:#79697B;--border:#E7E4E7;--primary:#4068CA;--ring:#4068CA;">
+  <h4>mauve</h4>
+  <div class="dcard">
+    <div class="dcard__h"><b>Wave 2</b><span>180 days</span></div>
+    <div class="drow"><b>Somchai P.</b><em>Completed</em></div>
+    <div class="drow drow--sel"><b>Nattaya S.</b><em>In progress</em></div>
+    <div class="drow"><b>Wichai T.</b><em>Not started</em></div>
+  </div>
+  <div class="btns"><button class="b b--p">Send</button><button class="b b--s">Export</button></div>
+  <div class="fld"><input class="focus" placeholder="employee code" /></div>
+  <div class="meta"><span>fg #0C090C</span><span>muted-fg #79697B</span></div>
+</div>
+
+<div class="demo" style="--bg:#FFFFFF;--fg:#0C0C09;--card:#FFFFFF;--muted:#F4F4F0;--mutedfg:#7C7C67;--border:#E8E8E3;--primary:#4068CA;--ring:#4068CA;">
+  <h4>olive</h4>
+  <div class="dcard">
+    <div class="dcard__h"><b>Wave 2</b><span>180 days</span></div>
+    <div class="drow"><b>Somchai P.</b><em>Completed</em></div>
+    <div class="drow drow--sel"><b>Nattaya S.</b><em>In progress</em></div>
+    <div class="drow"><b>Wichai T.</b><em>Not started</em></div>
+  </div>
+  <div class="btns"><button class="b b--p">Send</button><button class="b b--s">Export</button></div>
+  <div class="fld"><input class="focus" placeholder="employee code" /></div>
+  <div class="meta"><span>fg #0C0C09</span><span>muted-fg #7C7C67</span></div>
+</div>
+
+<div class="demo" style="--bg:#FFFFFF;--fg:#090B0C;--card:#FFFFFF;--muted:#F1F3F3;--mutedfg:#67787C;--border:#E3E7E8;--primary:#4068CA;--ring:#4068CA;">
+  <h4>mist</h4>
+  <div class="dcard">
+    <div class="dcard__h"><b>Wave 2</b><span>180 days</span></div>
+    <div class="drow"><b>Somchai P.</b><em>Completed</em></div>
+    <div class="drow drow--sel"><b>Nattaya S.</b><em>In progress</em></div>
+    <div class="drow"><b>Wichai T.</b><em>Not started</em></div>
+  </div>
+  <div class="btns"><button class="b b--p">Send</button><button class="b b--s">Export</button></div>
+  <div class="fld"><input class="focus" placeholder="employee code" /></div>
+  <div class="meta"><span>fg #090B0C</span><span>muted-fg #67787C</span></div>
+</div>
+
+<div class="demo" style="--bg:#FFFFFF;--fg:#0C0A09;--card:#FFFFFF;--muted:#F3F1F1;--mutedfg:#7C6D67;--border:#E8E4E3;--primary:#4068CA;--ring:#4068CA;">
+  <h4>taupe</h4>
+  <div class="dcard">
+    <div class="dcard__h"><b>Wave 2</b><span>180 days</span></div>
+    <div class="drow"><b>Somchai P.</b><em>Completed</em></div>
+    <div class="drow drow--sel"><b>Nattaya S.</b><em>In progress</em></div>
+    <div class="drow"><b>Wichai T.</b><em>Not started</em></div>
+  </div>
+  <div class="btns"><button class="b b--p">Send</button><button class="b b--s">Export</button></div>
+  <div class="fld"><input class="focus" placeholder="employee code" /></div>
+  <div class="meta"><span>fg #0C0A09</span><span>muted-fg #7C6D67</span></div>
+</div></div>
+</div>
+
+<div class="sec">
+<p class="n">4 · Rendered — dark</p>
+<h2>Same again, dark</h2>
+<div class="grid">
+<div class="demo" style="--bg:#0A0A0A;--fg:#FAFAFA;--card:#171717;--muted:#262626;--mutedfg:#A1A1A1;--border:rgba(255,255,255,0.1);--primary:#4068CA;--ring:#6E9BF0;">
+  <h4>neutral · dark</h4>
+  <div class="dcard">
+    <div class="dcard__h"><b>Wave 2</b><span>180 days</span></div>
+    <div class="drow"><b>Somchai P.</b><em>Completed</em></div>
+    <div class="drow drow--sel"><b>Nattaya S.</b><em>In progress</em></div>
+    <div class="drow"><b>Wichai T.</b><em>Not started</em></div>
+  </div>
+  <div class="btns"><button class="b b--p">Send</button><button class="b b--s">Export</button></div>
+  <div class="fld"><input class="focus" placeholder="employee code" /></div>
+  <div class="meta"><span>fg #FAFAFA</span><span>muted-fg #A1A1A1</span></div>
+</div>
+
+<div class="demo" style="--bg:#0C0A09;--fg:#FAFAF9;--card:#1C1917;--muted:#292524;--mutedfg:#A6A09B;--border:rgba(255,255,255,0.1);--primary:#4068CA;--ring:#6E9BF0;">
+  <h4>stone · dark</h4>
+  <div class="dcard">
+    <div class="dcard__h"><b>Wave 2</b><span>180 days</span></div>
+    <div class="drow"><b>Somchai P.</b><em>Completed</em></div>
+    <div class="drow drow--sel"><b>Nattaya S.</b><em>In progress</em></div>
+    <div class="drow"><b>Wichai T.</b><em>Not started</em></div>
+  </div>
+  <div class="btns"><button class="b b--p">Send</button><button class="b b--s">Export</button></div>
+  <div class="fld"><input class="focus" placeholder="employee code" /></div>
+  <div class="meta"><span>fg #FAFAF9</span><span>muted-fg #A6A09B</span></div>
+</div>
+
+<div class="demo" style="--bg:#09090B;--fg:#FAFAFA;--card:#18181B;--muted:#27272A;--mutedfg:#9F9FA9;--border:rgba(255,255,255,0.1);--primary:#4068CA;--ring:#6E9BF0;">
+  <h4>zinc · dark</h4>
+  <div class="dcard">
+    <div class="dcard__h"><b>Wave 2</b><span>180 days</span></div>
+    <div class="drow"><b>Somchai P.</b><em>Completed</em></div>
+    <div class="drow drow--sel"><b>Nattaya S.</b><em>In progress</em></div>
+    <div class="drow"><b>Wichai T.</b><em>Not started</em></div>
+  </div>
+  <div class="btns"><button class="b b--p">Send</button><button class="b b--s">Export</button></div>
+  <div class="fld"><input class="focus" placeholder="employee code" /></div>
+  <div class="meta"><span>fg #FAFAFA</span><span>muted-fg #9F9FA9</span></div>
+</div>
+
+<div class="demo" style="--bg:#0C090C;--fg:#FAFAFA;--card:#1D161E;--muted:#2A212C;--mutedfg:#A89EA9;--border:rgba(255,255,255,0.1);--primary:#4068CA;--ring:#6E9BF0;">
+  <h4>mauve · dark</h4>
+  <div class="dcard">
+    <div class="dcard__h"><b>Wave 2</b><span>180 days</span></div>
+    <div class="drow"><b>Somchai P.</b><em>Completed</em></div>
+    <div class="drow drow--sel"><b>Nattaya S.</b><em>In progress</em></div>
+    <div class="drow"><b>Wichai T.</b><em>Not started</em></div>
+  </div>
+  <div class="btns"><button class="b b--p">Send</button><button class="b b--s">Export</button></div>
+  <div class="fld"><input class="focus" placeholder="employee code" /></div>
+  <div class="meta"><span>fg #FAFAFA</span><span>muted-fg #A89EA9</span></div>
+</div>
+
+<div class="demo" style="--bg:#0C0C09;--fg:#FBFBF9;--card:#1D1D16;--muted:#2B2B22;--mutedfg:#ABAB9C;--border:rgba(255,255,255,0.1);--primary:#4068CA;--ring:#6E9BF0;">
+  <h4>olive · dark</h4>
+  <div class="dcard">
+    <div class="dcard__h"><b>Wave 2</b><span>180 days</span></div>
+    <div class="drow"><b>Somchai P.</b><em>Completed</em></div>
+    <div class="drow drow--sel"><b>Nattaya S.</b><em>In progress</em></div>
+    <div class="drow"><b>Wichai T.</b><em>Not started</em></div>
+  </div>
+  <div class="btns"><button class="b b--p">Send</button><button class="b b--s">Export</button></div>
+  <div class="fld"><input class="focus" placeholder="employee code" /></div>
+  <div class="meta"><span>fg #FBFBF9</span><span>muted-fg #ABAB9C</span></div>
+</div>
+
+<div class="demo" style="--bg:#090B0C;--fg:#F9FBFB;--card:#161B1D;--muted:#22292B;--mutedfg:#9CA8AB;--border:rgba(255,255,255,0.1);--primary:#4068CA;--ring:#6E9BF0;">
+  <h4>mist · dark</h4>
+  <div class="dcard">
+    <div class="dcard__h"><b>Wave 2</b><span>180 days</span></div>
+    <div class="drow"><b>Somchai P.</b><em>Completed</em></div>
+    <div class="drow drow--sel"><b>Nattaya S.</b><em>In progress</em></div>
+    <div class="drow"><b>Wichai T.</b><em>Not started</em></div>
+  </div>
+  <div class="btns"><button class="b b--p">Send</button><button class="b b--s">Export</button></div>
+  <div class="fld"><input class="focus" placeholder="employee code" /></div>
+  <div class="meta"><span>fg #F9FBFB</span><span>muted-fg #9CA8AB</span></div>
+</div>
+
+<div class="demo" style="--bg:#0C0A09;--fg:#FBFAF9;--card:#1D1816;--muted:#2B2422;--mutedfg:#ABA09C;--border:rgba(255,255,255,0.1);--primary:#4068CA;--ring:#6E9BF0;">
+  <h4>taupe · dark</h4>
+  <div class="dcard">
+    <div class="dcard__h"><b>Wave 2</b><span>180 days</span></div>
+    <div class="drow"><b>Somchai P.</b><em>Completed</em></div>
+    <div class="drow drow--sel"><b>Nattaya S.</b><em>In progress</em></div>
+    <div class="drow"><b>Wichai T.</b><em>Not started</em></div>
+  </div>
+  <div class="btns"><button class="b b--p">Send</button><button class="b b--s">Export</button></div>
+  <div class="fld"><input class="focus" placeholder="employee code" /></div>
+  <div class="meta"><span>fg #FBFAF9</span><span>muted-fg #ABA09C</span></div>
+</div></div>
+<p class="cap" style="margin-top:14px">Dark borders are <code>rgba(255,255,255,.10)</code> in every
+theme — alpha, not a solid grey. Dark <code>--input</code> is the same white at 15%.</p>
+</div>
+
+<div class="sec">
+<p class="n">5 · Every token, every theme</p>
+<h2>The full tables</h2>
+<div class="tokgrid">
+<div><h3>neutral</h3><table class="tok"><tr><th>token</th><th>light</th><th>dark</th></tr><tr><td><code>--background</code></td>
+      <td class="hex"><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td>
+      <td class="hex"><span class="sw sw--d" style="background:#0A0A0A"></span>#0A0A0A</td></tr>
+<tr><td><code>--foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#0A0A0A"></span>#0A0A0A</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAFA"></span>#FAFAFA</td></tr>
+<tr><td><code>--card</code></td>
+      <td class="hex"><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td>
+      <td class="hex"><span class="sw sw--d" style="background:#171717"></span>#171717</td></tr>
+<tr><td><code>--card-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#0A0A0A"></span>#0A0A0A</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAFA"></span>#FAFAFA</td></tr>
+<tr><td><code>--popover</code></td>
+      <td class="hex"><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td>
+      <td class="hex"><span class="sw sw--d" style="background:#171717"></span>#171717</td></tr>
+<tr><td><code>--popover-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#0A0A0A"></span>#0A0A0A</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAFA"></span>#FAFAFA</td></tr>
+<tr><td><code>--primary</code></td>
+      <td class="hex"><span class="sw" style="background:#171717"></span>#171717</td>
+      <td class="hex"><span class="sw sw--d" style="background:#E5E5E5"></span>#E5E5E5</td></tr>
+<tr><td><code>--primary-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#FAFAFA"></span>#FAFAFA</td>
+      <td class="hex"><span class="sw sw--d" style="background:#171717"></span>#171717</td></tr>
+<tr><td><code>--secondary</code></td>
+      <td class="hex"><span class="sw" style="background:#F5F5F5"></span>#F5F5F5</td>
+      <td class="hex"><span class="sw sw--d" style="background:#262626"></span>#262626</td></tr>
+<tr><td><code>--secondary-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#171717"></span>#171717</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAFA"></span>#FAFAFA</td></tr>
+<tr><td><code>--muted</code></td>
+      <td class="hex"><span class="sw" style="background:#F5F5F5"></span>#F5F5F5</td>
+      <td class="hex"><span class="sw sw--d" style="background:#262626"></span>#262626</td></tr>
+<tr><td><code>--muted-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#737373"></span>#737373</td>
+      <td class="hex"><span class="sw sw--d" style="background:#A1A1A1"></span>#A1A1A1</td></tr>
+<tr><td><code>--accent</code></td>
+      <td class="hex"><span class="sw" style="background:#F5F5F5"></span>#F5F5F5</td>
+      <td class="hex"><span class="sw sw--d" style="background:#262626"></span>#262626</td></tr>
+<tr><td><code>--accent-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#171717"></span>#171717</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAFA"></span>#FAFAFA</td></tr>
+<tr><td><code>--destructive</code></td>
+      <td class="hex"><span class="sw" style="background:#E7000B"></span>#E7000B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FF6467"></span>#FF6467</td></tr>
+<tr><td><code>--border</code></td>
+      <td class="hex"><span class="sw" style="background:#E5E5E5"></span>#E5E5E5</td>
+      <td class="hex"><span class="sw sw--d" style="background:rgba(255,255,255,0.1)"></span>rgba(255,255,255,0.1)</td></tr>
+<tr><td><code>--input</code></td>
+      <td class="hex"><span class="sw" style="background:#E5E5E5"></span>#E5E5E5</td>
+      <td class="hex"><span class="sw sw--d" style="background:rgba(255,255,255,0.15)"></span>rgba(255,255,255,0.15)</td></tr>
+<tr><td><code>--ring</code></td>
+      <td class="hex"><span class="sw" style="background:#A1A1A1"></span>#A1A1A1</td>
+      <td class="hex"><span class="sw sw--d" style="background:#737373"></span>#737373</td></tr>
+<tr><td><code>--chart-1</code></td>
+      <td class="hex"><span class="sw" style="background:#D4D4D4"></span>#D4D4D4</td>
+      <td class="hex"><span class="sw sw--d" style="background:#D4D4D4"></span>#D4D4D4</td></tr>
+<tr><td><code>--chart-2</code></td>
+      <td class="hex"><span class="sw" style="background:#737373"></span>#737373</td>
+      <td class="hex"><span class="sw sw--d" style="background:#737373"></span>#737373</td></tr>
+<tr><td><code>--chart-3</code></td>
+      <td class="hex"><span class="sw" style="background:#525252"></span>#525252</td>
+      <td class="hex"><span class="sw sw--d" style="background:#525252"></span>#525252</td></tr>
+<tr><td><code>--chart-4</code></td>
+      <td class="hex"><span class="sw" style="background:#404040"></span>#404040</td>
+      <td class="hex"><span class="sw sw--d" style="background:#404040"></span>#404040</td></tr>
+<tr><td><code>--chart-5</code></td>
+      <td class="hex"><span class="sw" style="background:#262626"></span>#262626</td>
+      <td class="hex"><span class="sw sw--d" style="background:#262626"></span>#262626</td></tr>
+<tr><td><code>--sidebar</code></td>
+      <td class="hex"><span class="sw" style="background:#FAFAFA"></span>#FAFAFA</td>
+      <td class="hex"><span class="sw sw--d" style="background:#171717"></span>#171717</td></tr>
+<tr><td><code>--sidebar-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#0A0A0A"></span>#0A0A0A</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAFA"></span>#FAFAFA</td></tr>
+<tr><td><code>--sidebar-primary</code></td>
+      <td class="hex"><span class="sw" style="background:#171717"></span>#171717</td>
+      <td class="hex"><span class="sw sw--d" style="background:#1447E6"></span>#1447E6</td></tr>
+<tr><td><code>--sidebar-primary-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#FAFAFA"></span>#FAFAFA</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAFA"></span>#FAFAFA</td></tr>
+<tr><td><code>--sidebar-accent</code></td>
+      <td class="hex"><span class="sw" style="background:#F5F5F5"></span>#F5F5F5</td>
+      <td class="hex"><span class="sw sw--d" style="background:#262626"></span>#262626</td></tr>
+<tr><td><code>--sidebar-accent-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#171717"></span>#171717</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAFA"></span>#FAFAFA</td></tr>
+<tr><td><code>--sidebar-border</code></td>
+      <td class="hex"><span class="sw" style="background:#E5E5E5"></span>#E5E5E5</td>
+      <td class="hex"><span class="sw sw--d" style="background:rgba(255,255,255,0.1)"></span>rgba(255,255,255,0.1)</td></tr>
+<tr><td><code>--sidebar-ring</code></td>
+      <td class="hex"><span class="sw" style="background:#A1A1A1"></span>#A1A1A1</td>
+      <td class="hex"><span class="sw sw--d" style="background:#737373"></span>#737373</td></tr></table></div>
+<div><h3>stone</h3><table class="tok"><tr><th>token</th><th>light</th><th>dark</th></tr><tr><td><code>--background</code></td>
+      <td class="hex"><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td>
+      <td class="hex"><span class="sw sw--d" style="background:#0C0A09"></span>#0C0A09</td></tr>
+<tr><td><code>--foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#0C0A09"></span>#0C0A09</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAF9"></span>#FAFAF9</td></tr>
+<tr><td><code>--card</code></td>
+      <td class="hex"><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td>
+      <td class="hex"><span class="sw sw--d" style="background:#1C1917"></span>#1C1917</td></tr>
+<tr><td><code>--card-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#0C0A09"></span>#0C0A09</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAF9"></span>#FAFAF9</td></tr>
+<tr><td><code>--popover</code></td>
+      <td class="hex"><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td>
+      <td class="hex"><span class="sw sw--d" style="background:#1C1917"></span>#1C1917</td></tr>
+<tr><td><code>--popover-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#0C0A09"></span>#0C0A09</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAF9"></span>#FAFAF9</td></tr>
+<tr><td><code>--primary</code></td>
+      <td class="hex"><span class="sw" style="background:#1C1917"></span>#1C1917</td>
+      <td class="hex"><span class="sw sw--d" style="background:#E7E5E4"></span>#E7E5E4</td></tr>
+<tr><td><code>--primary-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#FAFAF9"></span>#FAFAF9</td>
+      <td class="hex"><span class="sw sw--d" style="background:#1C1917"></span>#1C1917</td></tr>
+<tr><td><code>--secondary</code></td>
+      <td class="hex"><span class="sw" style="background:#F5F5F4"></span>#F5F5F4</td>
+      <td class="hex"><span class="sw sw--d" style="background:#292524"></span>#292524</td></tr>
+<tr><td><code>--secondary-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#1C1917"></span>#1C1917</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAF9"></span>#FAFAF9</td></tr>
+<tr><td><code>--muted</code></td>
+      <td class="hex"><span class="sw" style="background:#F5F5F4"></span>#F5F5F4</td>
+      <td class="hex"><span class="sw sw--d" style="background:#292524"></span>#292524</td></tr>
+<tr><td><code>--muted-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#79716B"></span>#79716B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#A6A09B"></span>#A6A09B</td></tr>
+<tr><td><code>--accent</code></td>
+      <td class="hex"><span class="sw" style="background:#F5F5F4"></span>#F5F5F4</td>
+      <td class="hex"><span class="sw sw--d" style="background:#292524"></span>#292524</td></tr>
+<tr><td><code>--accent-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#1C1917"></span>#1C1917</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAF9"></span>#FAFAF9</td></tr>
+<tr><td><code>--destructive</code></td>
+      <td class="hex"><span class="sw" style="background:#E7000B"></span>#E7000B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FF6467"></span>#FF6467</td></tr>
+<tr><td><code>--border</code></td>
+      <td class="hex"><span class="sw" style="background:#E7E5E4"></span>#E7E5E4</td>
+      <td class="hex"><span class="sw sw--d" style="background:rgba(255,255,255,0.1)"></span>rgba(255,255,255,0.1)</td></tr>
+<tr><td><code>--input</code></td>
+      <td class="hex"><span class="sw" style="background:#E7E5E4"></span>#E7E5E4</td>
+      <td class="hex"><span class="sw sw--d" style="background:rgba(255,255,255,0.15)"></span>rgba(255,255,255,0.15)</td></tr>
+<tr><td><code>--ring</code></td>
+      <td class="hex"><span class="sw" style="background:#A6A09B"></span>#A6A09B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#79716B"></span>#79716B</td></tr>
+<tr><td><code>--chart-1</code></td>
+      <td class="hex"><span class="sw" style="background:#D6D3D1"></span>#D6D3D1</td>
+      <td class="hex"><span class="sw sw--d" style="background:#D6D3D1"></span>#D6D3D1</td></tr>
+<tr><td><code>--chart-2</code></td>
+      <td class="hex"><span class="sw" style="background:#79716B"></span>#79716B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#79716B"></span>#79716B</td></tr>
+<tr><td><code>--chart-3</code></td>
+      <td class="hex"><span class="sw" style="background:#57534D"></span>#57534D</td>
+      <td class="hex"><span class="sw sw--d" style="background:#57534D"></span>#57534D</td></tr>
+<tr><td><code>--chart-4</code></td>
+      <td class="hex"><span class="sw" style="background:#44403B"></span>#44403B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#44403B"></span>#44403B</td></tr>
+<tr><td><code>--chart-5</code></td>
+      <td class="hex"><span class="sw" style="background:#292524"></span>#292524</td>
+      <td class="hex"><span class="sw sw--d" style="background:#292524"></span>#292524</td></tr>
+<tr><td><code>--sidebar</code></td>
+      <td class="hex"><span class="sw" style="background:#FAFAF9"></span>#FAFAF9</td>
+      <td class="hex"><span class="sw sw--d" style="background:#1C1917"></span>#1C1917</td></tr>
+<tr><td><code>--sidebar-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#0C0A09"></span>#0C0A09</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAF9"></span>#FAFAF9</td></tr>
+<tr><td><code>--sidebar-primary</code></td>
+      <td class="hex"><span class="sw" style="background:#1C1917"></span>#1C1917</td>
+      <td class="hex"><span class="sw sw--d" style="background:#1447E6"></span>#1447E6</td></tr>
+<tr><td><code>--sidebar-primary-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#FAFAF9"></span>#FAFAF9</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAF9"></span>#FAFAF9</td></tr>
+<tr><td><code>--sidebar-accent</code></td>
+      <td class="hex"><span class="sw" style="background:#F5F5F4"></span>#F5F5F4</td>
+      <td class="hex"><span class="sw sw--d" style="background:#292524"></span>#292524</td></tr>
+<tr><td><code>--sidebar-accent-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#1C1917"></span>#1C1917</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAF9"></span>#FAFAF9</td></tr>
+<tr><td><code>--sidebar-border</code></td>
+      <td class="hex"><span class="sw" style="background:#E7E5E4"></span>#E7E5E4</td>
+      <td class="hex"><span class="sw sw--d" style="background:rgba(255,255,255,0.1)"></span>rgba(255,255,255,0.1)</td></tr>
+<tr><td><code>--sidebar-ring</code></td>
+      <td class="hex"><span class="sw" style="background:#A6A09B"></span>#A6A09B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#79716B"></span>#79716B</td></tr></table></div>
+<div><h3>zinc</h3><table class="tok"><tr><th>token</th><th>light</th><th>dark</th></tr><tr><td><code>--background</code></td>
+      <td class="hex"><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td>
+      <td class="hex"><span class="sw sw--d" style="background:#09090B"></span>#09090B</td></tr>
+<tr><td><code>--foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#09090B"></span>#09090B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAFA"></span>#FAFAFA</td></tr>
+<tr><td><code>--card</code></td>
+      <td class="hex"><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td>
+      <td class="hex"><span class="sw sw--d" style="background:#18181B"></span>#18181B</td></tr>
+<tr><td><code>--card-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#09090B"></span>#09090B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAFA"></span>#FAFAFA</td></tr>
+<tr><td><code>--popover</code></td>
+      <td class="hex"><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td>
+      <td class="hex"><span class="sw sw--d" style="background:#18181B"></span>#18181B</td></tr>
+<tr><td><code>--popover-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#09090B"></span>#09090B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAFA"></span>#FAFAFA</td></tr>
+<tr><td><code>--primary</code></td>
+      <td class="hex"><span class="sw" style="background:#18181B"></span>#18181B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#E4E4E7"></span>#E4E4E7</td></tr>
+<tr><td><code>--primary-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#FAFAFA"></span>#FAFAFA</td>
+      <td class="hex"><span class="sw sw--d" style="background:#18181B"></span>#18181B</td></tr>
+<tr><td><code>--secondary</code></td>
+      <td class="hex"><span class="sw" style="background:#F4F4F5"></span>#F4F4F5</td>
+      <td class="hex"><span class="sw sw--d" style="background:#27272A"></span>#27272A</td></tr>
+<tr><td><code>--secondary-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#18181B"></span>#18181B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAFA"></span>#FAFAFA</td></tr>
+<tr><td><code>--muted</code></td>
+      <td class="hex"><span class="sw" style="background:#F4F4F5"></span>#F4F4F5</td>
+      <td class="hex"><span class="sw sw--d" style="background:#27272A"></span>#27272A</td></tr>
+<tr><td><code>--muted-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#71717B"></span>#71717B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#9F9FA9"></span>#9F9FA9</td></tr>
+<tr><td><code>--accent</code></td>
+      <td class="hex"><span class="sw" style="background:#F4F4F5"></span>#F4F4F5</td>
+      <td class="hex"><span class="sw sw--d" style="background:#27272A"></span>#27272A</td></tr>
+<tr><td><code>--accent-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#18181B"></span>#18181B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAFA"></span>#FAFAFA</td></tr>
+<tr><td><code>--destructive</code></td>
+      <td class="hex"><span class="sw" style="background:#E7000B"></span>#E7000B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FF6467"></span>#FF6467</td></tr>
+<tr><td><code>--border</code></td>
+      <td class="hex"><span class="sw" style="background:#E4E4E7"></span>#E4E4E7</td>
+      <td class="hex"><span class="sw sw--d" style="background:rgba(255,255,255,0.1)"></span>rgba(255,255,255,0.1)</td></tr>
+<tr><td><code>--input</code></td>
+      <td class="hex"><span class="sw" style="background:#E4E4E7"></span>#E4E4E7</td>
+      <td class="hex"><span class="sw sw--d" style="background:rgba(255,255,255,0.15)"></span>rgba(255,255,255,0.15)</td></tr>
+<tr><td><code>--ring</code></td>
+      <td class="hex"><span class="sw" style="background:#9F9FA9"></span>#9F9FA9</td>
+      <td class="hex"><span class="sw sw--d" style="background:#71717B"></span>#71717B</td></tr>
+<tr><td><code>--chart-1</code></td>
+      <td class="hex"><span class="sw" style="background:#D4D4D8"></span>#D4D4D8</td>
+      <td class="hex"><span class="sw sw--d" style="background:#D4D4D8"></span>#D4D4D8</td></tr>
+<tr><td><code>--chart-2</code></td>
+      <td class="hex"><span class="sw" style="background:#71717B"></span>#71717B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#71717B"></span>#71717B</td></tr>
+<tr><td><code>--chart-3</code></td>
+      <td class="hex"><span class="sw" style="background:#52525C"></span>#52525C</td>
+      <td class="hex"><span class="sw sw--d" style="background:#52525C"></span>#52525C</td></tr>
+<tr><td><code>--chart-4</code></td>
+      <td class="hex"><span class="sw" style="background:#3F3F46"></span>#3F3F46</td>
+      <td class="hex"><span class="sw sw--d" style="background:#3F3F46"></span>#3F3F46</td></tr>
+<tr><td><code>--chart-5</code></td>
+      <td class="hex"><span class="sw" style="background:#27272A"></span>#27272A</td>
+      <td class="hex"><span class="sw sw--d" style="background:#27272A"></span>#27272A</td></tr>
+<tr><td><code>--sidebar</code></td>
+      <td class="hex"><span class="sw" style="background:#FAFAFA"></span>#FAFAFA</td>
+      <td class="hex"><span class="sw sw--d" style="background:#18181B"></span>#18181B</td></tr>
+<tr><td><code>--sidebar-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#09090B"></span>#09090B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAFA"></span>#FAFAFA</td></tr>
+<tr><td><code>--sidebar-primary</code></td>
+      <td class="hex"><span class="sw" style="background:#18181B"></span>#18181B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#1447E6"></span>#1447E6</td></tr>
+<tr><td><code>--sidebar-primary-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#FAFAFA"></span>#FAFAFA</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAFA"></span>#FAFAFA</td></tr>
+<tr><td><code>--sidebar-accent</code></td>
+      <td class="hex"><span class="sw" style="background:#F4F4F5"></span>#F4F4F5</td>
+      <td class="hex"><span class="sw sw--d" style="background:#27272A"></span>#27272A</td></tr>
+<tr><td><code>--sidebar-accent-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#18181B"></span>#18181B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAFA"></span>#FAFAFA</td></tr>
+<tr><td><code>--sidebar-border</code></td>
+      <td class="hex"><span class="sw" style="background:#E4E4E7"></span>#E4E4E7</td>
+      <td class="hex"><span class="sw sw--d" style="background:rgba(255,255,255,0.1)"></span>rgba(255,255,255,0.1)</td></tr>
+<tr><td><code>--sidebar-ring</code></td>
+      <td class="hex"><span class="sw" style="background:#9F9FA9"></span>#9F9FA9</td>
+      <td class="hex"><span class="sw sw--d" style="background:#71717B"></span>#71717B</td></tr></table></div>
+<div><h3>mauve</h3><table class="tok"><tr><th>token</th><th>light</th><th>dark</th></tr><tr><td><code>--background</code></td>
+      <td class="hex"><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td>
+      <td class="hex"><span class="sw sw--d" style="background:#0C090C"></span>#0C090C</td></tr>
+<tr><td><code>--foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#0C090C"></span>#0C090C</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAFA"></span>#FAFAFA</td></tr>
+<tr><td><code>--card</code></td>
+      <td class="hex"><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td>
+      <td class="hex"><span class="sw sw--d" style="background:#1D161E"></span>#1D161E</td></tr>
+<tr><td><code>--card-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#0C090C"></span>#0C090C</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAFA"></span>#FAFAFA</td></tr>
+<tr><td><code>--popover</code></td>
+      <td class="hex"><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td>
+      <td class="hex"><span class="sw sw--d" style="background:#1D161E"></span>#1D161E</td></tr>
+<tr><td><code>--popover-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#0C090C"></span>#0C090C</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAFA"></span>#FAFAFA</td></tr>
+<tr><td><code>--primary</code></td>
+      <td class="hex"><span class="sw" style="background:#1D161E"></span>#1D161E</td>
+      <td class="hex"><span class="sw sw--d" style="background:#E7E4E7"></span>#E7E4E7</td></tr>
+<tr><td><code>--primary-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#FAFAFA"></span>#FAFAFA</td>
+      <td class="hex"><span class="sw sw--d" style="background:#1D161E"></span>#1D161E</td></tr>
+<tr><td><code>--secondary</code></td>
+      <td class="hex"><span class="sw" style="background:#F3F1F3"></span>#F3F1F3</td>
+      <td class="hex"><span class="sw sw--d" style="background:#2A212C"></span>#2A212C</td></tr>
+<tr><td><code>--secondary-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#1D161E"></span>#1D161E</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAFA"></span>#FAFAFA</td></tr>
+<tr><td><code>--muted</code></td>
+      <td class="hex"><span class="sw" style="background:#F3F1F3"></span>#F3F1F3</td>
+      <td class="hex"><span class="sw sw--d" style="background:#2A212C"></span>#2A212C</td></tr>
+<tr><td><code>--muted-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#79697B"></span>#79697B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#A89EA9"></span>#A89EA9</td></tr>
+<tr><td><code>--accent</code></td>
+      <td class="hex"><span class="sw" style="background:#F3F1F3"></span>#F3F1F3</td>
+      <td class="hex"><span class="sw sw--d" style="background:#2A212C"></span>#2A212C</td></tr>
+<tr><td><code>--accent-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#1D161E"></span>#1D161E</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAFA"></span>#FAFAFA</td></tr>
+<tr><td><code>--destructive</code></td>
+      <td class="hex"><span class="sw" style="background:#E7000B"></span>#E7000B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FF6467"></span>#FF6467</td></tr>
+<tr><td><code>--border</code></td>
+      <td class="hex"><span class="sw" style="background:#E7E4E7"></span>#E7E4E7</td>
+      <td class="hex"><span class="sw sw--d" style="background:rgba(255,255,255,0.1)"></span>rgba(255,255,255,0.1)</td></tr>
+<tr><td><code>--input</code></td>
+      <td class="hex"><span class="sw" style="background:#E7E4E7"></span>#E7E4E7</td>
+      <td class="hex"><span class="sw sw--d" style="background:rgba(255,255,255,0.15)"></span>rgba(255,255,255,0.15)</td></tr>
+<tr><td><code>--ring</code></td>
+      <td class="hex"><span class="sw" style="background:#A89EA9"></span>#A89EA9</td>
+      <td class="hex"><span class="sw sw--d" style="background:#79697B"></span>#79697B</td></tr>
+<tr><td><code>--chart-1</code></td>
+      <td class="hex"><span class="sw" style="background:#D7D0D7"></span>#D7D0D7</td>
+      <td class="hex"><span class="sw sw--d" style="background:#D7D0D7"></span>#D7D0D7</td></tr>
+<tr><td><code>--chart-2</code></td>
+      <td class="hex"><span class="sw" style="background:#79697B"></span>#79697B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#79697B"></span>#79697B</td></tr>
+<tr><td><code>--chart-3</code></td>
+      <td class="hex"><span class="sw" style="background:#594C5B"></span>#594C5B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#594C5B"></span>#594C5B</td></tr>
+<tr><td><code>--chart-4</code></td>
+      <td class="hex"><span class="sw" style="background:#463947"></span>#463947</td>
+      <td class="hex"><span class="sw sw--d" style="background:#463947"></span>#463947</td></tr>
+<tr><td><code>--chart-5</code></td>
+      <td class="hex"><span class="sw" style="background:#2A212C"></span>#2A212C</td>
+      <td class="hex"><span class="sw sw--d" style="background:#2A212C"></span>#2A212C</td></tr>
+<tr><td><code>--sidebar</code></td>
+      <td class="hex"><span class="sw" style="background:#FAFAFA"></span>#FAFAFA</td>
+      <td class="hex"><span class="sw sw--d" style="background:#1D161E"></span>#1D161E</td></tr>
+<tr><td><code>--sidebar-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#0C090C"></span>#0C090C</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAFA"></span>#FAFAFA</td></tr>
+<tr><td><code>--sidebar-primary</code></td>
+      <td class="hex"><span class="sw" style="background:#1D161E"></span>#1D161E</td>
+      <td class="hex"><span class="sw sw--d" style="background:#1447E6"></span>#1447E6</td></tr>
+<tr><td><code>--sidebar-primary-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#FAFAFA"></span>#FAFAFA</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAFA"></span>#FAFAFA</td></tr>
+<tr><td><code>--sidebar-accent</code></td>
+      <td class="hex"><span class="sw" style="background:#F3F1F3"></span>#F3F1F3</td>
+      <td class="hex"><span class="sw sw--d" style="background:#2A212C"></span>#2A212C</td></tr>
+<tr><td><code>--sidebar-accent-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#1D161E"></span>#1D161E</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FAFAFA"></span>#FAFAFA</td></tr>
+<tr><td><code>--sidebar-border</code></td>
+      <td class="hex"><span class="sw" style="background:#E7E4E7"></span>#E7E4E7</td>
+      <td class="hex"><span class="sw sw--d" style="background:rgba(255,255,255,0.1)"></span>rgba(255,255,255,0.1)</td></tr>
+<tr><td><code>--sidebar-ring</code></td>
+      <td class="hex"><span class="sw" style="background:#A89EA9"></span>#A89EA9</td>
+      <td class="hex"><span class="sw sw--d" style="background:#79697B"></span>#79697B</td></tr></table></div>
+<div><h3>olive</h3><table class="tok"><tr><th>token</th><th>light</th><th>dark</th></tr><tr><td><code>--background</code></td>
+      <td class="hex"><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td>
+      <td class="hex"><span class="sw sw--d" style="background:#0C0C09"></span>#0C0C09</td></tr>
+<tr><td><code>--foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#0C0C09"></span>#0C0C09</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FBFBF9"></span>#FBFBF9</td></tr>
+<tr><td><code>--card</code></td>
+      <td class="hex"><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td>
+      <td class="hex"><span class="sw sw--d" style="background:#1D1D16"></span>#1D1D16</td></tr>
+<tr><td><code>--card-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#0C0C09"></span>#0C0C09</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FBFBF9"></span>#FBFBF9</td></tr>
+<tr><td><code>--popover</code></td>
+      <td class="hex"><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td>
+      <td class="hex"><span class="sw sw--d" style="background:#1D1D16"></span>#1D1D16</td></tr>
+<tr><td><code>--popover-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#0C0C09"></span>#0C0C09</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FBFBF9"></span>#FBFBF9</td></tr>
+<tr><td><code>--primary</code></td>
+      <td class="hex"><span class="sw" style="background:#1D1D16"></span>#1D1D16</td>
+      <td class="hex"><span class="sw sw--d" style="background:#E8E8E3"></span>#E8E8E3</td></tr>
+<tr><td><code>--primary-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#FBFBF9"></span>#FBFBF9</td>
+      <td class="hex"><span class="sw sw--d" style="background:#1D1D16"></span>#1D1D16</td></tr>
+<tr><td><code>--secondary</code></td>
+      <td class="hex"><span class="sw" style="background:#F4F4F0"></span>#F4F4F0</td>
+      <td class="hex"><span class="sw sw--d" style="background:#2B2B22"></span>#2B2B22</td></tr>
+<tr><td><code>--secondary-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#1D1D16"></span>#1D1D16</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FBFBF9"></span>#FBFBF9</td></tr>
+<tr><td><code>--muted</code></td>
+      <td class="hex"><span class="sw" style="background:#F4F4F0"></span>#F4F4F0</td>
+      <td class="hex"><span class="sw sw--d" style="background:#2B2B22"></span>#2B2B22</td></tr>
+<tr><td><code>--muted-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#7C7C67"></span>#7C7C67</td>
+      <td class="hex"><span class="sw sw--d" style="background:#ABAB9C"></span>#ABAB9C</td></tr>
+<tr><td><code>--accent</code></td>
+      <td class="hex"><span class="sw" style="background:#F4F4F0"></span>#F4F4F0</td>
+      <td class="hex"><span class="sw sw--d" style="background:#2B2B22"></span>#2B2B22</td></tr>
+<tr><td><code>--accent-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#1D1D16"></span>#1D1D16</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FBFBF9"></span>#FBFBF9</td></tr>
+<tr><td><code>--destructive</code></td>
+      <td class="hex"><span class="sw" style="background:#E7000B"></span>#E7000B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FF6467"></span>#FF6467</td></tr>
+<tr><td><code>--border</code></td>
+      <td class="hex"><span class="sw" style="background:#E8E8E3"></span>#E8E8E3</td>
+      <td class="hex"><span class="sw sw--d" style="background:rgba(255,255,255,0.1)"></span>rgba(255,255,255,0.1)</td></tr>
+<tr><td><code>--input</code></td>
+      <td class="hex"><span class="sw" style="background:#E8E8E3"></span>#E8E8E3</td>
+      <td class="hex"><span class="sw sw--d" style="background:rgba(255,255,255,0.15)"></span>rgba(255,255,255,0.15)</td></tr>
+<tr><td><code>--ring</code></td>
+      <td class="hex"><span class="sw" style="background:#ABAB9C"></span>#ABAB9C</td>
+      <td class="hex"><span class="sw sw--d" style="background:#7C7C67"></span>#7C7C67</td></tr>
+<tr><td><code>--chart-1</code></td>
+      <td class="hex"><span class="sw" style="background:#D8D8D0"></span>#D8D8D0</td>
+      <td class="hex"><span class="sw sw--d" style="background:#D8D8D0"></span>#D8D8D0</td></tr>
+<tr><td><code>--chart-2</code></td>
+      <td class="hex"><span class="sw" style="background:#7C7C67"></span>#7C7C67</td>
+      <td class="hex"><span class="sw sw--d" style="background:#7C7C67"></span>#7C7C67</td></tr>
+<tr><td><code>--chart-3</code></td>
+      <td class="hex"><span class="sw" style="background:#5B5B4B"></span>#5B5B4B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#5B5B4B"></span>#5B5B4B</td></tr>
+<tr><td><code>--chart-4</code></td>
+      <td class="hex"><span class="sw" style="background:#474739"></span>#474739</td>
+      <td class="hex"><span class="sw sw--d" style="background:#474739"></span>#474739</td></tr>
+<tr><td><code>--chart-5</code></td>
+      <td class="hex"><span class="sw" style="background:#2B2B22"></span>#2B2B22</td>
+      <td class="hex"><span class="sw sw--d" style="background:#2B2B22"></span>#2B2B22</td></tr>
+<tr><td><code>--sidebar</code></td>
+      <td class="hex"><span class="sw" style="background:#FBFBF9"></span>#FBFBF9</td>
+      <td class="hex"><span class="sw sw--d" style="background:#1D1D16"></span>#1D1D16</td></tr>
+<tr><td><code>--sidebar-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#0C0C09"></span>#0C0C09</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FBFBF9"></span>#FBFBF9</td></tr>
+<tr><td><code>--sidebar-primary</code></td>
+      <td class="hex"><span class="sw" style="background:#1D1D16"></span>#1D1D16</td>
+      <td class="hex"><span class="sw sw--d" style="background:#1447E6"></span>#1447E6</td></tr>
+<tr><td><code>--sidebar-primary-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#FBFBF9"></span>#FBFBF9</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FBFBF9"></span>#FBFBF9</td></tr>
+<tr><td><code>--sidebar-accent</code></td>
+      <td class="hex"><span class="sw" style="background:#F4F4F0"></span>#F4F4F0</td>
+      <td class="hex"><span class="sw sw--d" style="background:#2B2B22"></span>#2B2B22</td></tr>
+<tr><td><code>--sidebar-accent-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#1D1D16"></span>#1D1D16</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FBFBF9"></span>#FBFBF9</td></tr>
+<tr><td><code>--sidebar-border</code></td>
+      <td class="hex"><span class="sw" style="background:#E8E8E3"></span>#E8E8E3</td>
+      <td class="hex"><span class="sw sw--d" style="background:rgba(255,255,255,0.1)"></span>rgba(255,255,255,0.1)</td></tr>
+<tr><td><code>--sidebar-ring</code></td>
+      <td class="hex"><span class="sw" style="background:#ABAB9C"></span>#ABAB9C</td>
+      <td class="hex"><span class="sw sw--d" style="background:#7C7C67"></span>#7C7C67</td></tr></table></div>
+<div><h3>mist</h3><table class="tok"><tr><th>token</th><th>light</th><th>dark</th></tr><tr><td><code>--background</code></td>
+      <td class="hex"><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td>
+      <td class="hex"><span class="sw sw--d" style="background:#090B0C"></span>#090B0C</td></tr>
+<tr><td><code>--foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#090B0C"></span>#090B0C</td>
+      <td class="hex"><span class="sw sw--d" style="background:#F9FBFB"></span>#F9FBFB</td></tr>
+<tr><td><code>--card</code></td>
+      <td class="hex"><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td>
+      <td class="hex"><span class="sw sw--d" style="background:#161B1D"></span>#161B1D</td></tr>
+<tr><td><code>--card-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#090B0C"></span>#090B0C</td>
+      <td class="hex"><span class="sw sw--d" style="background:#F9FBFB"></span>#F9FBFB</td></tr>
+<tr><td><code>--popover</code></td>
+      <td class="hex"><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td>
+      <td class="hex"><span class="sw sw--d" style="background:#161B1D"></span>#161B1D</td></tr>
+<tr><td><code>--popover-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#090B0C"></span>#090B0C</td>
+      <td class="hex"><span class="sw sw--d" style="background:#F9FBFB"></span>#F9FBFB</td></tr>
+<tr><td><code>--primary</code></td>
+      <td class="hex"><span class="sw" style="background:#161B1D"></span>#161B1D</td>
+      <td class="hex"><span class="sw sw--d" style="background:#E3E7E8"></span>#E3E7E8</td></tr>
+<tr><td><code>--primary-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#F9FBFB"></span>#F9FBFB</td>
+      <td class="hex"><span class="sw sw--d" style="background:#161B1D"></span>#161B1D</td></tr>
+<tr><td><code>--secondary</code></td>
+      <td class="hex"><span class="sw" style="background:#F1F3F3"></span>#F1F3F3</td>
+      <td class="hex"><span class="sw sw--d" style="background:#22292B"></span>#22292B</td></tr>
+<tr><td><code>--secondary-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#161B1D"></span>#161B1D</td>
+      <td class="hex"><span class="sw sw--d" style="background:#F9FBFB"></span>#F9FBFB</td></tr>
+<tr><td><code>--muted</code></td>
+      <td class="hex"><span class="sw" style="background:#F1F3F3"></span>#F1F3F3</td>
+      <td class="hex"><span class="sw sw--d" style="background:#22292B"></span>#22292B</td></tr>
+<tr><td><code>--muted-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#67787C"></span>#67787C</td>
+      <td class="hex"><span class="sw sw--d" style="background:#9CA8AB"></span>#9CA8AB</td></tr>
+<tr><td><code>--accent</code></td>
+      <td class="hex"><span class="sw" style="background:#F1F3F3"></span>#F1F3F3</td>
+      <td class="hex"><span class="sw sw--d" style="background:#22292B"></span>#22292B</td></tr>
+<tr><td><code>--accent-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#161B1D"></span>#161B1D</td>
+      <td class="hex"><span class="sw sw--d" style="background:#F9FBFB"></span>#F9FBFB</td></tr>
+<tr><td><code>--destructive</code></td>
+      <td class="hex"><span class="sw" style="background:#E7000B"></span>#E7000B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FF6467"></span>#FF6467</td></tr>
+<tr><td><code>--border</code></td>
+      <td class="hex"><span class="sw" style="background:#E3E7E8"></span>#E3E7E8</td>
+      <td class="hex"><span class="sw sw--d" style="background:rgba(255,255,255,0.1)"></span>rgba(255,255,255,0.1)</td></tr>
+<tr><td><code>--input</code></td>
+      <td class="hex"><span class="sw" style="background:#E3E7E8"></span>#E3E7E8</td>
+      <td class="hex"><span class="sw sw--d" style="background:rgba(255,255,255,0.15)"></span>rgba(255,255,255,0.15)</td></tr>
+<tr><td><code>--ring</code></td>
+      <td class="hex"><span class="sw" style="background:#9CA8AB"></span>#9CA8AB</td>
+      <td class="hex"><span class="sw sw--d" style="background:#67787C"></span>#67787C</td></tr>
+<tr><td><code>--chart-1</code></td>
+      <td class="hex"><span class="sw" style="background:#D0D6D8"></span>#D0D6D8</td>
+      <td class="hex"><span class="sw sw--d" style="background:#D0D6D8"></span>#D0D6D8</td></tr>
+<tr><td><code>--chart-2</code></td>
+      <td class="hex"><span class="sw" style="background:#67787C"></span>#67787C</td>
+      <td class="hex"><span class="sw sw--d" style="background:#67787C"></span>#67787C</td></tr>
+<tr><td><code>--chart-3</code></td>
+      <td class="hex"><span class="sw" style="background:#4B585B"></span>#4B585B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#4B585B"></span>#4B585B</td></tr>
+<tr><td><code>--chart-4</code></td>
+      <td class="hex"><span class="sw" style="background:#394447"></span>#394447</td>
+      <td class="hex"><span class="sw sw--d" style="background:#394447"></span>#394447</td></tr>
+<tr><td><code>--chart-5</code></td>
+      <td class="hex"><span class="sw" style="background:#22292B"></span>#22292B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#22292B"></span>#22292B</td></tr>
+<tr><td><code>--sidebar</code></td>
+      <td class="hex"><span class="sw" style="background:#F9FBFB"></span>#F9FBFB</td>
+      <td class="hex"><span class="sw sw--d" style="background:#161B1D"></span>#161B1D</td></tr>
+<tr><td><code>--sidebar-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#090B0C"></span>#090B0C</td>
+      <td class="hex"><span class="sw sw--d" style="background:#F9FBFB"></span>#F9FBFB</td></tr>
+<tr><td><code>--sidebar-primary</code></td>
+      <td class="hex"><span class="sw" style="background:#161B1D"></span>#161B1D</td>
+      <td class="hex"><span class="sw sw--d" style="background:#1447E6"></span>#1447E6</td></tr>
+<tr><td><code>--sidebar-primary-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#F9FBFB"></span>#F9FBFB</td>
+      <td class="hex"><span class="sw sw--d" style="background:#F9FBFB"></span>#F9FBFB</td></tr>
+<tr><td><code>--sidebar-accent</code></td>
+      <td class="hex"><span class="sw" style="background:#F1F3F3"></span>#F1F3F3</td>
+      <td class="hex"><span class="sw sw--d" style="background:#22292B"></span>#22292B</td></tr>
+<tr><td><code>--sidebar-accent-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#161B1D"></span>#161B1D</td>
+      <td class="hex"><span class="sw sw--d" style="background:#F9FBFB"></span>#F9FBFB</td></tr>
+<tr><td><code>--sidebar-border</code></td>
+      <td class="hex"><span class="sw" style="background:#E3E7E8"></span>#E3E7E8</td>
+      <td class="hex"><span class="sw sw--d" style="background:rgba(255,255,255,0.1)"></span>rgba(255,255,255,0.1)</td></tr>
+<tr><td><code>--sidebar-ring</code></td>
+      <td class="hex"><span class="sw" style="background:#9CA8AB"></span>#9CA8AB</td>
+      <td class="hex"><span class="sw sw--d" style="background:#67787C"></span>#67787C</td></tr></table></div>
+<div><h3>taupe</h3><table class="tok"><tr><th>token</th><th>light</th><th>dark</th></tr><tr><td><code>--background</code></td>
+      <td class="hex"><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td>
+      <td class="hex"><span class="sw sw--d" style="background:#0C0A09"></span>#0C0A09</td></tr>
+<tr><td><code>--foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#0C0A09"></span>#0C0A09</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FBFAF9"></span>#FBFAF9</td></tr>
+<tr><td><code>--card</code></td>
+      <td class="hex"><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td>
+      <td class="hex"><span class="sw sw--d" style="background:#1D1816"></span>#1D1816</td></tr>
+<tr><td><code>--card-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#0C0A09"></span>#0C0A09</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FBFAF9"></span>#FBFAF9</td></tr>
+<tr><td><code>--popover</code></td>
+      <td class="hex"><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td>
+      <td class="hex"><span class="sw sw--d" style="background:#1D1816"></span>#1D1816</td></tr>
+<tr><td><code>--popover-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#0C0A09"></span>#0C0A09</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FBFAF9"></span>#FBFAF9</td></tr>
+<tr><td><code>--primary</code></td>
+      <td class="hex"><span class="sw" style="background:#1D1816"></span>#1D1816</td>
+      <td class="hex"><span class="sw sw--d" style="background:#E8E4E3"></span>#E8E4E3</td></tr>
+<tr><td><code>--primary-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#FBFAF9"></span>#FBFAF9</td>
+      <td class="hex"><span class="sw sw--d" style="background:#1D1816"></span>#1D1816</td></tr>
+<tr><td><code>--secondary</code></td>
+      <td class="hex"><span class="sw" style="background:#F3F1F1"></span>#F3F1F1</td>
+      <td class="hex"><span class="sw sw--d" style="background:#2B2422"></span>#2B2422</td></tr>
+<tr><td><code>--secondary-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#1D1816"></span>#1D1816</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FBFAF9"></span>#FBFAF9</td></tr>
+<tr><td><code>--muted</code></td>
+      <td class="hex"><span class="sw" style="background:#F3F1F1"></span>#F3F1F1</td>
+      <td class="hex"><span class="sw sw--d" style="background:#2B2422"></span>#2B2422</td></tr>
+<tr><td><code>--muted-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#7C6D67"></span>#7C6D67</td>
+      <td class="hex"><span class="sw sw--d" style="background:#ABA09C"></span>#ABA09C</td></tr>
+<tr><td><code>--accent</code></td>
+      <td class="hex"><span class="sw" style="background:#F3F1F1"></span>#F3F1F1</td>
+      <td class="hex"><span class="sw sw--d" style="background:#2B2422"></span>#2B2422</td></tr>
+<tr><td><code>--accent-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#1D1816"></span>#1D1816</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FBFAF9"></span>#FBFAF9</td></tr>
+<tr><td><code>--destructive</code></td>
+      <td class="hex"><span class="sw" style="background:#E7000B"></span>#E7000B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FF6467"></span>#FF6467</td></tr>
+<tr><td><code>--border</code></td>
+      <td class="hex"><span class="sw" style="background:#E8E4E3"></span>#E8E4E3</td>
+      <td class="hex"><span class="sw sw--d" style="background:rgba(255,255,255,0.1)"></span>rgba(255,255,255,0.1)</td></tr>
+<tr><td><code>--input</code></td>
+      <td class="hex"><span class="sw" style="background:#E8E4E3"></span>#E8E4E3</td>
+      <td class="hex"><span class="sw sw--d" style="background:rgba(255,255,255,0.15)"></span>rgba(255,255,255,0.15)</td></tr>
+<tr><td><code>--ring</code></td>
+      <td class="hex"><span class="sw" style="background:#ABA09C"></span>#ABA09C</td>
+      <td class="hex"><span class="sw sw--d" style="background:#7C6D67"></span>#7C6D67</td></tr>
+<tr><td><code>--chart-1</code></td>
+      <td class="hex"><span class="sw" style="background:#D8D2D0"></span>#D8D2D0</td>
+      <td class="hex"><span class="sw sw--d" style="background:#D8D2D0"></span>#D8D2D0</td></tr>
+<tr><td><code>--chart-2</code></td>
+      <td class="hex"><span class="sw" style="background:#7C6D67"></span>#7C6D67</td>
+      <td class="hex"><span class="sw sw--d" style="background:#7C6D67"></span>#7C6D67</td></tr>
+<tr><td><code>--chart-3</code></td>
+      <td class="hex"><span class="sw" style="background:#5B4F4B"></span>#5B4F4B</td>
+      <td class="hex"><span class="sw sw--d" style="background:#5B4F4B"></span>#5B4F4B</td></tr>
+<tr><td><code>--chart-4</code></td>
+      <td class="hex"><span class="sw" style="background:#473C39"></span>#473C39</td>
+      <td class="hex"><span class="sw sw--d" style="background:#473C39"></span>#473C39</td></tr>
+<tr><td><code>--chart-5</code></td>
+      <td class="hex"><span class="sw" style="background:#2B2422"></span>#2B2422</td>
+      <td class="hex"><span class="sw sw--d" style="background:#2B2422"></span>#2B2422</td></tr>
+<tr><td><code>--sidebar</code></td>
+      <td class="hex"><span class="sw" style="background:#FBFAF9"></span>#FBFAF9</td>
+      <td class="hex"><span class="sw sw--d" style="background:#1D1816"></span>#1D1816</td></tr>
+<tr><td><code>--sidebar-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#0C0A09"></span>#0C0A09</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FBFAF9"></span>#FBFAF9</td></tr>
+<tr><td><code>--sidebar-primary</code></td>
+      <td class="hex"><span class="sw" style="background:#1D1816"></span>#1D1816</td>
+      <td class="hex"><span class="sw sw--d" style="background:#1447E6"></span>#1447E6</td></tr>
+<tr><td><code>--sidebar-primary-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#FBFAF9"></span>#FBFAF9</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FBFAF9"></span>#FBFAF9</td></tr>
+<tr><td><code>--sidebar-accent</code></td>
+      <td class="hex"><span class="sw" style="background:#F3F1F1"></span>#F3F1F1</td>
+      <td class="hex"><span class="sw sw--d" style="background:#2B2422"></span>#2B2422</td></tr>
+<tr><td><code>--sidebar-accent-foreground</code></td>
+      <td class="hex"><span class="sw" style="background:#1D1816"></span>#1D1816</td>
+      <td class="hex"><span class="sw sw--d" style="background:#FBFAF9"></span>#FBFAF9</td></tr>
+<tr><td><code>--sidebar-border</code></td>
+      <td class="hex"><span class="sw" style="background:#E8E4E3"></span>#E8E4E3</td>
+      <td class="hex"><span class="sw sw--d" style="background:rgba(255,255,255,0.1)"></span>rgba(255,255,255,0.1)</td></tr>
+<tr><td><code>--sidebar-ring</code></td>
+      <td class="hex"><span class="sw" style="background:#ABA09C"></span>#ABA09C</td>
+      <td class="hex"><span class="sw sw--d" style="background:#7C6D67"></span>#7C6D67</td></tr></table></div>
+</div>
+</div>
+
+<div class="sec">
+<p class="n">6 · Reading it</p>
+<div class="box">
+<p class="t" style="margin:0 0 10px"><b>The five chart slots are a grey ramp in all seven themes.</b>
+L 0.87 / 0.556 / 0.439 / 0.371 / 0.269, tinted to the theme. Sequential, not categorical — so CCD's
+chart palette has nothing to inherit here no matter which theme is picked.</p>
+<p class="t" style="margin:0 0 10px"><b>The eight sidebar tokens point at slightly different values
+from their page equivalents</b> — <code>--sidebar</code> is one step off <code>--background</code>.
+CCD's flat rule maps them all back onto the page values, which is why they exist in
+<code>colors.css</code> at all.</p>
+<p class="t" style="margin:0"><b>Only <code>--destructive</code> carries real chroma</b> in any of
+them: 0.245 light, 0.191 dark. It is the single colour shadcn ships.</p>
+</div>
+</div>
+
+</div></body></html>
