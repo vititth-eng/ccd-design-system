@@ -329,6 +329,35 @@ export default function Page() {
           </p>
         </Section>
 
+        <Section title="Focus ring — CCD's blue, not shadcn's grey">
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              className="rounded-md border border-border px-3 py-1.5 text-sm font-medium outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+            >
+              กดแท็บมาที่นี่
+            </button>
+            <input
+              defaultValue="ช่องกรอกข้อความ"
+              className="rounded-md border border-input px-2.5 py-1.5 text-base outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm"
+            />
+            <a
+              href="#top"
+              className="rounded-sm text-sm underline underline-offset-4 outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+            >
+              ลิงก์
+            </a>
+          </div>
+          <p className="text-xs text-muted-foreground mt-3">
+            Tab into these — the ring only appears for the keyboard, never for a mouse click, which
+            is what <code className="font-mono">focus-visible</code> buys. shadcn ships{" "}
+            <code className="font-mono">--ring</code> as a grey because it declines to have a brand;
+            CCD&apos;s is the same blue as <code className="font-mono">--primary</code>. This is the
+            token that decides whether a keyboard user can find their place, and until now nothing
+            on this page drew it.
+          </p>
+        </Section>
+
         <Section title="Curve — from theme.css">
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {RADIUS.map((r) => (
