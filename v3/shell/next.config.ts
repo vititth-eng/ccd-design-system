@@ -34,6 +34,15 @@ const nextConfig: NextConfig = {
    * generated file says so.
    */
   agentRules: false,
+
+  /**
+   * Next's dev badge sits bottom-left by default, which is exactly where the
+   * sidebar's last nav rows are — it was covering the bottom of the Open
+   * questions group. Moved rather than switched off: it reports compilation
+   * state and stale-route errors, which is worth keeping in a workbench whose
+   * whole job is catching things that fail quietly.
+   */
+  devIndicators: { position: "bottom-right" },
 };
 
 export default nextConfig;

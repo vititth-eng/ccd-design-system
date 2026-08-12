@@ -11,14 +11,13 @@ import {
   SidebarHeader,
   SidebarInset,
   SidebarMenu,
-  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
   SidebarRail,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { NAV, OPEN_QUESTIONS, isPatternRoute } from "../../content/nav";
+import { NAV, OPEN_QUESTIONS, OPEN_QUESTIONS_ISSUE, isPatternRoute } from "../../content/nav";
 import { FixtureBar } from "./fixture-bar";
 import { FIXTURE_KEYS } from "./fixtures";
 import { Segmented } from "./segmented";
@@ -183,15 +182,28 @@ export default function Chrome({ children }: { children: React.ReactNode }) {
 
           {OPEN_QUESTIONS.length > 0 && (
             <SidebarGroup>
-              <SidebarGroupLabel>Open questions</SidebarGroupLabel>
-              <SidebarMenu>
+              {/* The id sits on the group, once. Every open question is on the
+                  same issue, so a per-row badge repeated it down a column and
+                  told the reader nothing. */}
+              <SidebarGroupLabel>
+                Open questions
+                <span className="ml-2 font-mono text-xs opacity-70">{OPEN_QUESTIONS_ISSUE}</span>
+              </SidebarGroupLabel>
+              {/* Plain list, not SidebarMenu. SidebarMenuBadge positions itself
+                  absolutely against a SidebarMenuButton — `peer/menu-button` —
+                  and these rows have no button because a question is not a
+                  link. With no peer to anchor to, both badges floated a row
+                  low, which is what made the group look broken. */}
+              <ul className="space-y-1 px-2 py-1">
                 {OPEN_QUESTIONS.map((q) => (
-                  <SidebarMenuItem key={q.name}>
-                    <div className="px-2 py-1.5 text-sm">{q.name}</div>
-                    <SidebarMenuBadge className="font-mono text-xs">{q.issue}</SidebarMenuBadge>
-                  </SidebarMenuItem>
+                  <li
+                    key={q.name}
+                    className="border-l-2 border-sidebar-border py-0.5 pl-2 text-sm text-sidebar-foreground/70"
+                  >
+                    {q.name}
+                  </li>
                 ))}
-              </SidebarMenu>
+              </ul>
             </SidebarGroup>
           )}
         </SidebarContent>

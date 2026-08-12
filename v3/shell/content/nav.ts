@@ -83,8 +83,20 @@ export function isPatternRoute(pathname: string): boolean {
   return patterns?.items.some((i) => i.href === pathname) ?? false;
 }
 
-/** Open questions only. Answered ones are removed, not marked. */
-export const OPEN_QUESTIONS: { name: string; issue: string }[] = [
-  { name: "Chart hues", issue: "CCD-281" },
-  { name: "Admin on mobile", issue: "CCD-281" },
+/**
+ * Open questions only. Answered ones are removed, not marked.
+ *
+ * Every one of these lives on CCD-281, so the id is not repeated per row — the
+ * group carries it once. Two ids reading CCD-281 down the same column looked
+ * like data and carried none.
+ *
+ * "Does the Likert scale keep v2's shape?" belonged here until the pattern page
+ * existed. It is on /likert now, and a question in two places is two places to
+ * answer it.
+ */
+export const OPEN_QUESTIONS_ISSUE = "CCD-281";
+
+export const OPEN_QUESTIONS: { name: string }[] = [
+  { name: "Does the status trio read on shadcn neutrals?" },
+  { name: "Chart hues — three slots, nothing rendered" },
 ];
