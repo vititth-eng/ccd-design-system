@@ -82,7 +82,10 @@ function NavLink({ href, name, current }: { href: string; name: string; current:
         className="relative data-active:bg-transparent data-active:hover:bg-sidebar-accent data-active:before:absolute data-active:before:inset-y-1 data-active:before:left-0 data-active:before:w-0.5 data-active:before:rounded-full data-active:before:bg-sidebar-primary"
         render={<Link href={href} aria-current={current ? "page" : undefined} />}
       >
-        {name}
+        {/* A span, not bare text. The component truncates `span:last-child`, and
+            bare text gives it nothing to match — so a long label wraps instead
+            of ellipsing whenever the rail is narrower than the words. */}
+        <span>{name}</span>
       </SidebarMenuButton>
     </SidebarMenuItem>
   );
@@ -139,7 +142,24 @@ export default function Chrome({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider>
-      <Sidebar collapsible="icon">
+      {/* offcanvas, which is also the component's own default. It was set to
+          "icon" and that was wrong twice over.
+
+          Icon mode squeezes every row to 32px and relies on an ICON filling the
+          rail while `[&>span:last-child]:truncate` hides the label. This nav has
+          no icons, so collapsing left fifteen labels wrapping one or two
+          characters per line down a 30px column. Adding icons would not fix it
+          either: "Admin table" against "Create form" against "Empty & error
+          states" as glyphs is a guessing game, and shadcn's icon rail is built
+          for five or six top-level destinations, not a reference index.
+
+          And the rows that are NOT SidebarMenuButtons — the unbuilt pattern
+          entries, the open questions list — carry none of icon mode's handling
+          at all, so they kept full-height text in a rail that had no room.
+
+          offcanvas is what a workbench wants regardless: you collapse the nav
+          to give the thing you are inspecting the full width. */}
+      <Sidebar collapsible="offcanvas">
         <SidebarHeader>
           <div className="flex items-center gap-2 px-2 py-1.5 group-data-[collapsible=icon]:hidden">
             <span className="text-base font-semibold tracking-tight">CCD Design</span>
