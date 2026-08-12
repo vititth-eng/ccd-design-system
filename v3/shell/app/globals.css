@@ -10,6 +10,34 @@
    @theme inline and registers the dark variant). */
 
 @import "tailwindcss";
+
+/* These two are not optional extras, and skipping them is silent. Copied
+   components lean on both, and every class they own compiles to NOTHING when
+   they are absent — no error, no warning, just a component that quietly does
+   less than it says. Found on 2026-08-12 by scaffolding shadcn's own template
+   in a scratch directory and diffing its globals.css against this file.
+
+   tw-animate-css owns animate-in / animate-out / fade-in-0 / zoom-in-95 /
+   slide-in-from-*. Our components carried 38 uses of those across dialog,
+   sheet, dropdown-menu, tooltip and sidebar, and every open and close was
+   rendering with no animation at all.
+
+   shadcn/tailwind.css owns `no-scrollbar` (the sidebar asks for it and was
+   showing a scrollbar), the shimmer and scroll-fade utilities, and — the part
+   that actually matters — NINE @custom-variants: data-open, data-closed,
+   data-checked, data-unchecked, data-selected, data-disabled, data-active,
+   data-horizontal, data-vertical. Without them Tailwind falls back to bare
+   attribute presence, so `data-active:` matches even when the attribute reads
+   "false", and `data-selected:` does the same where shadcn scopes it to
+   "true" alone. That is a wrong style on a correct DOM, which nothing catches.
+
+   Neither file defines a colour or a type token — the only colours in them are
+   oklch(from currentColor …), derived from the element itself. That is why
+   they can be imported while `shadcn init`, which injects a competing token
+   block, still must not be run. */
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
 @import "../../tokens.css";
 @import "../../colors.css";
 
