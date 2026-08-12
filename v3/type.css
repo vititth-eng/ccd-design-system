@@ -49,7 +49,16 @@
      property that would have helped is unusable (see REJECTED below).
      They are set for Thai, which stacks tone marks well above the cap
      line and vowels well below the baseline. A Latin-tuned leading
-     collides on the first dense Thai table. */
+     collides on the first dense Thai table.
+
+     CONFIRMED BY OWNER 2026-08-12, against a rendered side-by-side of the
+     same dense Thai card at both leadings — the shell's Tokens page still
+     carries it, and the stock column is the version that was rejected.
+     The cost was named and taken: a CCD screen runs about 6.6% taller than
+     the same screen in stock vega, because this ladder runs LOOSER than
+     Tailwind's at 12 and 14 (21.7px against 20px at text-sm) and TIGHTER
+     at 18 and 20. Tightening chrome back toward stock is not an
+     optimisation waiting to be found; it is a decision already made. */
 
   /* Clear Tailwind's 13 defaults before defining ours. Without this line the
      other seven (2xl, 4xl … 9xl) stay available, and an off-ladder size is

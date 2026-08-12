@@ -2,6 +2,7 @@ import { version as reactRuntime } from "react";
 import nextPkg from "next/package.json";
 import twPkg from "tailwindcss/package.json";
 import shellPkg from "../package.json";
+import { LeadingRow } from "./_workbench/leading-row";
 
 /**
  * Step 2: Tailwind compiles, and the v3 token files compile with it.
@@ -64,6 +65,68 @@ const ELEVATION = [
 
 const SPACING = ["size-1", "size-2", "size-3", "size-4", "size-6", "size-8", "size-12"];
 
+/* The nine CCD-only status tokens. shadcn has no slot for any of them, which
+   also means no upstream component will ever render one — so this section is
+   the only place they get drawn at all. Three tiers per hue, and they do
+   different jobs: the bright one is a DOT, too light to carry text or a fill;
+   -strong is the readable version for glyphs and small coloured text; -tint is
+   its pill background.
+
+   Every class is written out in full and never assembled from a variable.
+   Tailwind generates only what it can SEE as literal text, so `bg-${hue}`
+   compiles to nothing at all — a dot with no colour, erroring nowhere. That is
+   the same failure that left this repo's animation utilities dead for a day. */
+const STATUS = [
+  {
+    token: "--positive",
+    dot: "bg-positive",
+    text: "text-positive-strong",
+    tint: "bg-positive-tint",
+    job: "done, passing, on track",
+  },
+  {
+    token: "--caution",
+    dot: "bg-caution",
+    text: "text-caution-strong",
+    tint: "bg-caution-tint",
+    job: "due soon, needs attention",
+  },
+  {
+    token: "--negative",
+    dot: "bg-negative",
+    text: "text-negative-strong",
+    tint: "bg-negative-tint",
+    job: "overdue, failed, blocking",
+  },
+];
+
+/* Every chart slot theme.css mints. Untouched by any component so far — a
+   chart block from the registry colours itself from --primary, so these are
+   ours to wire whenever the first chart lands. */
+const CHART_CATEGORICAL = [
+  "bg-chart-1",
+  "bg-chart-2",
+  "bg-chart-3",
+  "bg-chart-4",
+  "bg-chart-5",
+  "bg-chart-6",
+  "bg-chart-7",
+];
+const CHART_BLUE = [
+  "bg-chart-blue-1",
+  "bg-chart-blue-2",
+  "bg-chart-blue-3",
+  "bg-chart-blue-4",
+  "bg-chart-blue-5",
+];
+const CHART_ROSE = [
+  "bg-chart-rose-1",
+  "bg-chart-rose-2",
+  "bg-chart-rose-3",
+  "bg-chart-rose-4",
+  "bg-chart-rose-5",
+];
+
 const MOTION = [
   { cls: "duration-100", note: "menu open/close" },
   { cls: "duration-150", note: "sidebar rail" },
@@ -85,60 +148,6 @@ const OWNERSHIP = [
   { material: "Layering", owner: "Tailwind, picked per component", file: "—" },
   { material: "Breakpoints", owner: "Tailwind, untouched", file: "—" },
 ];
-
-/* The comparison specimen. Thai chosen for the marks rather than the meaning:
-   ผู้ ฝ่าย ปี่ ซอฟต์ each stack something above the cap line or below the
-   baseline, which is the whole reason type.css sets its own leading. */
-const LEADING_ROWS = [
-  { name: "ผู้จัดการฝ่ายบุคคล", meta: "ประเมินกลางปี · 31 ส.ค. 2569", value: "82%" },
-  { name: "ทีมวิศวกรรมซอฟต์แวร์", meta: "รอบที่ 2 · ปิดรับ 14 ก.ย.", value: "76%" },
-  { name: "ฝ่ายปฏิบัติการโรงงาน", meta: "ยังไม่เริ่ม · 40 ข้อ", value: "—" },
-];
-
-/**
- * Two leadings, one markup. Only the line-height differs, so any difference
- * you see is the leading and nothing else.
- *
- * The stock ratios are Tailwind's own expressions — 1.25/0.875 for text-sm,
- * 1/0.75 for text-xs, 1.5/1 for text-base — computed here rather than typed as
- * decimals, so they stay legible as the thing they came from. They go on as
- * inline style because a utility would be overridden by the class that sets
- * the size, which is the whole point of comparing them.
- */
-const STOCK = { xs: 1 / 0.75, sm: 1.25 / 0.875, base: 1.5 / 1 };
-
-function LeadingSpecimen({ stock }: { stock: boolean }) {
-  const s = (r: number) => (stock ? { lineHeight: r } : undefined);
-  return (
-    <div className="rounded-lg border border-border">
-      <div className="border-b border-border px-4 py-3">
-        <div className="text-base font-semibold" style={s(STOCK.base)}>
-          แบบประเมินรอบกลางปี
-        </div>
-        <p className="text-sm text-muted-foreground mt-1" style={s(STOCK.sm)}>
-          ผู้ประเมินต้องตอบให้ครบทุกข้อภายในรอบนี้ ระบบจะบันทึกอัตโนมัติทุกครั้งที่เปลี่ยนคำตอบ
-        </p>
-      </div>
-      <div className="divide-y divide-border">
-        {LEADING_ROWS.map((r) => (
-          <div key={r.name} className="flex items-baseline gap-3 px-4 py-2">
-            <div className="min-w-0 flex-1">
-              <div className="text-sm" style={s(STOCK.sm)}>
-                {r.name}
-              </div>
-              <div className="text-xs text-muted-foreground" style={s(STOCK.xs)}>
-                {r.meta}
-              </div>
-            </div>
-            <div className="text-sm font-medium" style={s(STOCK.sm)}>
-              {r.value}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -239,28 +248,84 @@ export default function Page() {
           </p>
         </Section>
 
-        <Section title="Leading — CCD against stock">
-          <div className="grid gap-4 sm:grid-cols-2">
+        <Section title="Leading — from type.css">
+          <div className="rounded-lg border border-border divide-y divide-border">
+            {TYPE.map((t) => (
+              <LeadingRow key={t.cls} cls={t.cls} note={t.note} />
+            ))}
+          </div>
+          <p className="text-xs text-muted-foreground mt-3">
+            Sizes are Tailwind&apos;s ladder unmodified; the leading is CCD&apos;s and is the only
+            thing separating a CCD screen from a stock shadcn one. Looser at 12 and 14, where nearly
+            all UI text lives, tighter at 18 and 20 — Thai stacks tone marks above the cap line and
+            hangs vowels below the baseline, so a Latin-tuned leading has the two colliding before a
+            table is dense. Confirmed by owner 2026-08-12; the side-by-side that settled it is under
+            Mocks.
+          </p>
+        </Section>
+
+        <Section title="Status — CCD only, no shadcn slot">
+          <div className="grid gap-4 sm:grid-cols-3">
+            {STATUS.map((s) => (
+              <div key={s.token} className="rounded-lg border border-border p-4">
+                <div className="flex items-center gap-2">
+                  <span className={`${s.dot} size-2.5 rounded-full`} />
+                  <span className={`${s.text} text-sm font-medium`}>ยังไม่ส่งแบบประเมิน</span>
+                </div>
+                <div className="mt-3">
+                  <span
+                    className={`${s.tint} ${s.text} rounded-full px-2 py-0.5 text-xs font-medium`}
+                  >
+                    12 รายการ
+                  </span>
+                </div>
+                <div className="text-xs font-mono text-muted-foreground mt-3">{s.token}</div>
+                <div className="text-xs text-muted-foreground">{s.job}</div>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-muted-foreground mt-3">
+            Three tiers per hue, doing different jobs: the bright one is a <em>dot</em> and fails AA
+            as text or as a fill; <code className="font-mono">-strong</code> is the readable version
+            for glyphs and small coloured text; <code className="font-mono">-tint</code> is its pill
+            background. No shadcn component will ever render one of these, so this is the only place
+            they are drawn — which is why the open question &ldquo;does the trio still read on
+            shadcn neutrals?&rdquo; can be answered here, on both surfaces, in both modes.
+          </p>
+        </Section>
+
+        <Section title="Chart — CCD only, nothing wired yet">
+          <div className="space-y-3">
             <div>
-              <div className="text-xs font-mono text-muted-foreground mb-2">CCD — type.css</div>
-              <LeadingSpecimen stock={false} />
+              <div className="text-xs font-mono text-muted-foreground mb-1">categorical</div>
+              <div className="flex gap-1">
+                {CHART_CATEGORICAL.map((c) => (
+                  <div key={c} className={`${c} h-10 flex-1 rounded-sm`} />
+                ))}
+              </div>
             </div>
             <div>
-              <div className="text-xs font-mono text-muted-foreground mb-2">
-                stock Tailwind / vega
+              <div className="text-xs font-mono text-muted-foreground mb-1">blue ramp</div>
+              <div className="flex gap-1">
+                {CHART_BLUE.map((c) => (
+                  <div key={c} className={`${c} h-10 flex-1 rounded-sm`} />
+                ))}
               </div>
-              <LeadingSpecimen stock />
+            </div>
+            <div>
+              <div className="text-xs font-mono text-muted-foreground mb-1">rose ramp</div>
+              <div className="flex gap-1">
+                {CHART_ROSE.map((c) => (
+                  <div key={c} className={`${c} h-10 flex-1 rounded-sm`} />
+                ))}
+              </div>
             </div>
           </div>
           <p className="text-xs text-muted-foreground mt-3">
-            Identical markup; only line-height differs. Every SIZE on this page is Tailwind&apos;s
-            ladder unmodified — the difference between a CCD screen and a stock shadcn one is
-            leading alone. It runs looser at the small sizes, where nearly all UI text lives, and
-            tighter at the headings, so the two ends move toward each other.{" "}
-            <code className="font-mono">type.css</code> gives the reason: leading is set for Thai,
-            which stacks tone marks above the cap line and vowels below the baseline, and a
-            Latin-tuned leading collides on the first dense Thai table. The rows above are the test
-            case — the question is whether the room is worth what it costs on every screen.
+            A registry chart block colours itself from{" "}
+            <code className="font-mono">var(--primary)</code>, so no upstream component exercises
+            any of this — these slots are ours to wire whenever the first chart lands, and until
+            then this is the only thing that has ever drawn them.
           </p>
         </Section>
 

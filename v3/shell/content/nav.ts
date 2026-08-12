@@ -67,6 +67,23 @@ export const NAV: NavGroup[] = [
     label: "Behaviour",
     items: [{ name: "Base UI probe", href: "/probe" }],
   },
+  {
+    /**
+     * Mocks live on their own routes and never inside a reference page.
+     * Vitit's rule, 2026-08-12.
+     *
+     * A reference page answers "what is true right now" and every row on it is
+     * a live token. A mock answers "what if it were otherwise", so half of what
+     * it renders is deliberately not what ships. Mixed into one page, a reader
+     * has to check each block to learn which kind it is — the exact confusion
+     * this workbench exists to remove.
+     *
+     * A mock stays after its question is answered, because a decision whose
+     * evidence was deleted gets re-opened by the next person to disagree.
+     */
+    label: "Mocks",
+    items: [{ name: "Leading — CCD vs vega", href: "/mocks/leading" }],
+  },
 ];
 
 /**
