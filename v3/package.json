@@ -1,0 +1,9 @@
+{
+  "name": "@ccd/ds-v3",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Workspace root for design system v3. Holds no source of its own — it exists so the dependencies resolve for BOTH the components in v3/components and the workbench in v3/shell. Node resolution only walks up, so a component living beside the workbench rather than inside it cannot see the workbench's node_modules; hoisting here is what makes v3/components the component store and v3/shell merely the thing that renders it.",
+  "workspaces": [
+    "shell"
+  ]
+}

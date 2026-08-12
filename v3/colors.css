@@ -424,6 +424,14 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
+  /* --scrim was defined but never mapped, so `bg-scrim` matched no utility and
+     every dialog backdrop rendered fully transparent with nothing in the
+     console. Found 2026-08-12 the first time a real Base UI dialog was
+     rendered — measured backgroundColor rgba(0, 0, 0, 0) on an element whose
+     class said otherwise. A token nothing can reach is a token that gets
+     re-invented per component. */
+  --color-scrim: var(--scrim);
+
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -513,7 +521,7 @@
     --d-positive-tint: #E7F5EC;
     --d-caution-tint: #FDEEE2;
     --d-negative-tint: #FBE9E7;
-    --d-scrim: rgba(20, 37, 73, .32);
+    --d-scrim: rgba(10, 10, 10, .32);
   }
   :root,
   :root[data-theme="dark"],

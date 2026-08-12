@@ -1,0 +1,26 @@
+/* The shell's only stylesheet. It imports Tailwind and then the two real v3
+   token files, unmodified and by relative path — no copy, no strip, no
+   generated shadow. This is the first time either file has been through a
+   Tailwind build; everything they declare (@theme, @theme inline,
+   @custom-variant, @utility, @layer base) is exercised here or nowhere.
+
+   Order matters: Tailwind first so its own theme exists, then tokens.css
+   (which clears the default --text-* namespace and mints the type scale),
+   then colors.css (which maps colour into Tailwind's namespace with
+   @theme inline and registers the dark variant). */
+
+@import "tailwindcss";
+@import "../../tokens.css";
+@import "../../colors.css";
+
+/* Tailwind v4 generates only the classes it FINDS by scanning source files, and
+   these globs are relative to this stylesheet — so they have to reach up out of
+   the app to v3/components, where the components actually live.
+
+   Getting this wrong does not error. The component compiles, imports fine, and
+   renders with none of its own classes generated: a button with no padding, no
+   background, no border. Cost an inspection round on 2026-08-12 when the first
+   real Button rendered as bare text. Any consumer app copying components to a
+   path outside its scan roots gets the identical silent result. */
+@source "../../components";
+@source "../app";

@@ -3,3 +3,8 @@
 assets/*.zip
 node_modules/
 
+# v3 brings a build to a repo that had none. Both of these are generated,
+# large, and machine-specific; committing them would bury every real diff.
+.next/
+*.tsbuildinfo
+

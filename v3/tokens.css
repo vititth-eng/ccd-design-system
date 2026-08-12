@@ -59,6 +59,14 @@
      One line to delete if it ever gets in the way. */
   --text-*: initial;
 
+  /* 12 is META ONLY, and that is a rule rather than a preference. Thai stacks
+     tone marks above the cap line and vowels below the baseline, so it loses
+     legibility as size drops faster than Latin does — the same sentence that
+     is merely small in Latin at 12px is compressed in Thai. v2 wrote the floor
+     down (tokens.css:257, "Thai floor is 14") and it did not survive the port
+     until it was put back on 2026-08-12, having been checked against shadcn's
+     `base-lyra` style, whose every button label is 12px. Anything a person
+     reads to act — a button, a label, a field — starts at 14. */
   --text-xs: 0.75rem;                 /* 12 — caption, timestamp, table meta */
   --text-xs--line-height: 1.5;
 
@@ -87,12 +95,28 @@
   --text-3xl--line-height: 1.2;
 
   /* ── WEIGHTS ───────────────────────────────────────────────
-     Three. 700 is reserved for the display number so a page has exactly
-     one loudest thing; a heading needing more presence gets size, not
-     weight. */
-  --font-weight-normal: 400;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
+     Four, one job each, and the namespace is closed the same way the size
+     ladder is. Without the clear line Tailwind's other five stay live:
+     measured 2026-08-12 in the workbench, `font-extrabold` rendered 800 and
+     `font-black` 900 while this file declared neither.
+
+     500 is here because shadcn's components are built on it — 22 uses across
+     16 of the 30 components read from their registry, against 4 uses of 600
+     and zero of 700. Minting it is what lets those components arrive
+     unedited; refusing it would mean an edit in 16 components on arrival and
+     again on every re-copy, which is a recurring manual step, and recurring
+     manual steps stop happening.
+
+     The ceiling is the part that matters for Thai. Tone marks stack above the
+     cap line and vowels below the baseline, and past 700 they thicken into
+     the base glyph. shadcn never goes above 600, so closing the namespace
+     costs nothing and removes the heavy end entirely. */
+  --font-weight-*: initial;
+
+  --font-weight-normal: 400;      /* body */
+  --font-weight-medium: 500;      /* UI chrome — buttons, labels, tabs, table headers */
+  --font-weight-semibold: 600;    /* headings */
+  --font-weight-bold: 700;        /* display number only — the one loudest thing */
 
   /* ── MEASURE ───────────────────────────────────────────────
      Line length, which v2 never set — prose ran as wide as its
