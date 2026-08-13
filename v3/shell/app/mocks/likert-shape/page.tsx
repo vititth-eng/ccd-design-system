@@ -1,14 +1,15 @@
 import type { ReactNode } from "react";
 import {
   OptionAnchored,
-  OptionCollapse,
+  OptionFoldAnimated,
   OptionIncumbent,
+  OptionSettle,
   OptionStacked,
 } from "./options";
 
 /**
- * A MOCK. Four shapes for one job, on its own route because that is the rule:
- * a reference page answers "what is true right now", and three of the four
+ * A MOCK. Five shapes for one job, on its own route because that is the rule:
+ * a reference page answers "what is true right now", and four of the five
  * things below are deliberately not what ships.
  *
  * WHAT IS BEING DECIDED: the Likert screen is the most-seen surface CCD owns
@@ -45,8 +46,8 @@ import {
  * Every height below was measured off the rendered card at a 375px viewport
  * with the density control on Long — forty items, Thai, ordinary statements —
  * not derived from a row height and not estimated. They are the CARD's height,
- * so the four are comparable: the progress line, the meta line and the footer
- * are identical in all four and would only add the same ~390px to each.
+ * so the five are comparable: the progress line, the meta line and the footer
+ * are identical in all five and would only add the same ~390px to each.
  *
  * One correction worth carrying, because it was quoted wrong first: the
  * workbench PAGE at that fixture measures 11,928px, and roughly half of that is
@@ -100,7 +101,7 @@ export default function LikertShapeMock() {
     <div className="mx-auto flex max-w-3xl flex-col gap-8 px-4 py-8">
       <div>
         <p className="text-xl leading-snug font-medium text-balance">
-          Four shapes for one job: a rater answering a run of statements about a
+          Five shapes for one job: a rater answering a run of statements about a
           colleague, on a phone, in Thai, without straight-lining and without
           giving up halfway.
         </p>
@@ -109,7 +110,7 @@ export default function LikertShapeMock() {
           before judging any of these — every one uses viewport media queries,
           exactly as the real screens do, so the desktop branch is what you are
           looking at until you frame it. Six items each; the forty-item
-          consequence is stated per option rather than scrolled four times. The
+          consequence is stated per option rather than scrolled five times. The
           fixture controls are live here too — switch to{" "}
           <span className="font-medium">Overflowing</span> to see each shape
           carry a five-line statement.
@@ -120,9 +121,9 @@ export default function LikertShapeMock() {
         letter="A"
         name="The incumbent"
         claim="what v2 ships today"
-        buys="The tightest screen of the four, and the only one where a rater can see several items at once and rate them relative to each other — which is what the instrument asks for when it says จำแนก, rate discriminately."
+        buys="The tightest screen of the five, and the only one where a rater can see several items at once and rate them relative to each other — which is what the instrument asks for when it says จำแนก, rate discriminately."
         costs="Below 560px the five level names are dropped, because five Thai words will not fit five columns. The scale key at the top of the card carries the meaning instead."
-        scale="6,243px — 7.7 phone screens, the shortest of the four. The scale key is off-screen for the last 7 of them, so for almost the whole survey a circle marked 4 has no word attached to it."
+        scale="6,243px — 7.7 phone screens, the shortest any option starts at. The scale key is off-screen for the last 7 of them, so for almost the whole survey a circle marked 4 has no word attached to it."
       >
         <OptionIncumbent />
       </Option>
@@ -142,7 +143,7 @@ export default function LikertShapeMock() {
         letter="C"
         name="Stacked options"
         claim="no matrix at all"
-        buys="Every level carries its own number and its own word, so nothing on the screen needs a legend and nothing is dropped at any width. It is the shape the accessibility guidance points at, and the only one of the four that reads the same to a screen reader as to an eye. Straight-lining is hardest here: picking 4 for the tenth time takes ten separate deliberate taps in ten different places."
+        buys="Every level carries its own number and its own word, so nothing on the screen needs a legend and nothing is dropped at any width. It is the shape the accessibility guidance points at, and the only one of the five that reads the same to a screen reader as to an eye. Straight-lining is hardest here: picking 4 for the tenth time takes ten separate deliberate taps in ten different places."
         costs="By far the tallest — five 44px rows per item where the others spend one 40px row. And nothing can be compared against anything: the rater sees one statement at a time, which is the opposite of what จำแนก asks for."
         scale="14,471px — 17.8 phone screens. Two and a third times the incumbent, and ten more screens than anchored ends."
       >
@@ -150,14 +151,25 @@ export default function LikertShapeMock() {
       </Option>
 
       <Option
-        letter="D"
-        name="Collapse on answer"
-        claim="B, plus the page getting shorter as you work"
-        buys="The only shape whose cost goes DOWN as the survey progresses. An answered item folds to one line carrying its statement and the word it was given, so the remaining work is always what is on screen. It is also the only one that shows a rater their own pattern — a column of folded chips reading เป็นประจำ · เป็นประจำ · เป็นประจำ is straight-lining made visible to the person doing it."
-        costs="The most behaviour of the four, so the most to get wrong: a fold that animates badly, a reopen that loses scroll position, a screen reader that is not told the row changed. Tap the chip on any answered row above to reopen it."
-        scale="Starts at 6,929px and ends at 2,007px — 8.5 phone screens down to 2.5, measured by answering all forty. It is the only option that finishes shorter than the incumbent starts."
+        letter="D1"
+        name="Fold, animated"
+        claim="the page gets shorter as you work"
+        buys="The only shape whose cost goes DOWN as the survey progresses. The row keeps a permanent header — number, competency, and a chip naming the answer — and only the body folds, so the row the thumb just touched stays exactly where it is and the next question rises to meet it. Answer a row, then tap its header to reopen it."
+        costs="The most behaviour of the five, so the most to get wrong. It also hides the answer's position: a chip reading 4 · บ่อยครั้ง tells you what you said, but you can no longer see the shape of what you said across the page."
+        scale="Starts at 6,427px and ends at 1,769px — 7.9 phone screens down to 2.2, measured by answering all forty. It finishes shorter than any other option starts."
       >
-        <OptionCollapse />
+        <OptionFoldAnimated />
+      </Option>
+
+      <Option
+        letter="D2"
+        name="Settle in place"
+        claim="nothing folds, nothing moves"
+        buys="Zero layout shift — nothing below a tapped row ever moves, so a thumb travelling a forty-item list never has the target pulled out from under it. And it turns the answered page into a profile: the picked circles stay in their columns, so scrolling back shows the shape of the answers. A column of marks all in the same place IS straight-lining, made visible to the person doing it, on the screen where they can still fix it — a direct answer to จำแนก, which the incumbent asks for and gives the rater no way to check."
+        costs="The page never gets shorter. A rater on item thirty-nine is still looking at the same nine screens they started with."
+        scale="7,123px throughout — identical to anchored ends, because nothing is ever removed."
+      >
+        <OptionSettle />
       </Option>
 
       <section className="border-t border-border pt-6">

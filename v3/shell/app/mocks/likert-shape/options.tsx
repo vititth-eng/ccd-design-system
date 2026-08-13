@@ -219,19 +219,73 @@ export function OptionStacked() {
   );
 }
 
-/* ── D · collapse on answer ──────────────────────────────────────────────────
-   The anchored matrix, plus one behaviour: an answered item folds to a single
-   line carrying its statement and the word it was given. Tap it to reopen.
+/* ── The two D variants share this ───────────────────────────────────────────
+   Both are the anchored matrix that reacts to being answered. They differ in
+   whether the answered row gives its height back.
 
-   This is the only option whose cost goes DOWN as the survey progresses, which
-   is the whole argument at forty questions — the page a rater is looking at
-   gets shorter with every answer instead of staying fifteen screens long. The
-   research calls this the accordion pattern and pairs it with the finding it is
-   there to fight: past about seven rows, straight-lining rises sharply, because
-   an unanswered grid of forty looks the same whether you read it or not. */
-export function OptionCollapse() {
-  const { th, items, text } = useScene();
+   MOTION GRAMMAR, taken from what is already in the repo rather than invented:
+   shadcn's own sidebar animates with `duration-200 ease-linear` on a NAMED
+   property list, never `transition-all`. Both variants below use exactly that.
+   base-vega's accordion animates height off a `--accordion-panel-height`
+   variable that Base UI measures and sets; the grid-rows technique used here
+   gets the same auto-height animation with no component and no dependency,
+   which is the right trade while the shape is still a candidate. If D wins,
+   the real one pulls `collapsible` from the registry and inherits the
+   accessibility wiring with it.
+
+   Every transition is behind `motion-safe:`. A rater who has asked their
+   operating system to stop animating things gets the state change with no
+   movement at all, and this audience skews older than the one shadcn's
+   defaults were tuned for. */
+function useAnswers() {
   const [answers, setAnswers] = React.useState<Record<number, number>>({ 1: 4, 2: 2 });
+  return [answers, setAnswers] as const;
+}
+
+function Anchors({ lo, hi, dim }: { lo: string; hi: string; dim?: boolean }) {
+  return (
+    <div
+      className={`mt-1 flex justify-between text-xs transition-opacity duration-200 ease-linear motion-reduce:transition-none ${
+        dim ? "text-muted-foreground opacity-0" : "text-muted-foreground opacity-100"
+      }`}
+    >
+      <span>{lo}</span>
+      <span>{hi}</span>
+    </div>
+  );
+}
+
+function Chip({ value, label, shown }: { value: number; label: string; shown: boolean }) {
+  return (
+    <span
+      className={`flex shrink-0 items-center gap-1.5 rounded-full bg-primary/10 py-0.5 pr-2.5 pl-1.5 text-xs font-medium text-primary transition-opacity duration-200 ease-linear motion-reduce:transition-none ${
+        shown ? "opacity-100" : "opacity-0"
+      }`}
+      aria-hidden={!shown}
+    >
+      <span className="grid size-5 place-items-center rounded-full bg-primary tabular-nums text-primary-foreground">
+        {value}
+      </span>
+      {label}
+    </span>
+  );
+}
+
+/* ── D1 · fold, animated ─────────────────────────────────────────────────────
+   The row keeps a permanent header — number, competency, and the chip naming
+   the answer. Only the BODY folds: the statement, the circles, the anchors.
+
+   That split is the whole craft of it. Folding the entire row would move the
+   thing the thumb just touched; folding only what sits below the header means
+   the tapped row stays exactly where it was and the next question rises to
+   meet the thumb. The header is the anchor the animation pivots around.
+
+   grid-template-rows 0fr → 1fr is what animates an auto height without
+   measuring it. The child needs `overflow-hidden` or its content spills out of
+   the collapsed track and the fold does nothing visible. */
+export function OptionFoldAnimated() {
+  const { th, items, text } = useScene();
+  const [answers, setAnswers] = useAnswers();
   const [reopened, setReopened] = React.useState<number | null>(null);
   const lo = th ? bindThai(SCALE[0].th) : SCALE[0].en;
   const hi = th ? bindThai(SCALE[4].th) : SCALE[4].en;
@@ -242,57 +296,136 @@ export function OptionCollapse() {
         const value = answers[item.no];
         const level = SCALE.find((s) => s.value === value);
         const folded = value !== undefined && reopened !== item.no;
-        const rule = i === 0 ? "" : "border-t border-border";
 
-        if (folded) {
-          return (
+        return (
+          <div key={item.no} className={i === 0 ? "" : "border-t border-border"}>
             <button
-              key={item.no}
               type="button"
-              onClick={() => setReopened(item.no)}
-              className={`flex w-full cursor-pointer items-center gap-3 px-6 py-3 text-left outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 ${rule}`}
+              onClick={() => setReopened(folded ? item.no : null)}
+              aria-expanded={!folded}
+              className="flex w-full cursor-pointer items-center gap-3 px-6 pt-3 pb-1 text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
             >
               <span className="w-4 shrink-0 text-xs tabular-nums text-muted-foreground">
                 {item.no}
               </span>
-              <span className="min-w-0 flex-1 truncate text-sm">
+              <span className="min-w-0 flex-1 truncate text-sm font-semibold">
                 {th ? bindThai(item.leadTh) : item.leadEn}
               </span>
-              <span className="flex shrink-0 items-center gap-1.5 rounded-full bg-primary/10 py-0.5 pr-2.5 pl-1.5 text-xs font-medium text-primary">
-                <span className="grid size-5 place-items-center rounded-full bg-primary text-primary-foreground tabular-nums">
-                  {value}
-                </span>
-                {th ? bindThai(level!.th) : level!.en}
-              </span>
+              {level && <Chip value={level.value} label={th ? bindThai(level.th) : level.en} shown={folded} />}
             </button>
-          );
-        }
+
+            <div
+              className={`grid transition-[grid-template-rows] duration-200 ease-linear motion-reduce:transition-none ${
+                folded ? "grid-rows-[0fr]" : "grid-rows-[1fr]"
+              }`}
+            >
+              <div className="overflow-hidden">
+                <div className="px-6 pb-4">
+                  <p className="mb-3 text-base">{text(item)}</p>
+                  <div role="radiogroup" aria-label={text(item)} className="grid grid-cols-5 gap-1 min-[560px]:gap-2">
+                    {SCALE.map((s) => (
+                      <button
+                        key={s.value}
+                        type="button"
+                        role="radio"
+                        aria-checked={value === s.value}
+                        aria-label={`${s.value} · ${th ? s.th : s.en}`}
+                        tabIndex={folded ? -1 : 0}
+                        onClick={() => {
+                          setAnswers((a) => ({ ...a, [item.no]: s.value }));
+                          setReopened(null);
+                        }}
+                        className="group grid cursor-pointer place-items-center outline-none"
+                      >
+                        <Circle n={s.value} on={value === s.value} />
+                      </button>
+                    ))}
+                  </div>
+                  <Anchors lo={lo} hi={hi} />
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </Card>
+  );
+}
+
+/* ── D2 · settle in place ────────────────────────────────────────────────────
+   Nothing folds and nothing moves. An answered row RECEDES: the statement goes
+   to muted, the four circles that were not picked fade back, the anchors drop
+   away, and the one that was picked stays at full strength.
+
+   Two things this buys that folding cannot.
+
+   Zero layout shift. Nothing below a tapped row ever moves, so a thumb
+   travelling down a forty-item list never has the target pulled out from under
+   it — the single most common mis-tap on a long mobile form.
+
+   And it turns the answered page into a PROFILE. The picked circles stay in
+   their columns, so scrolling back shows the shape of the answers: a column of
+   marks all in the same place is straight-lining, made visible to the person
+   doing it, on the screen where they can still fix it. That is a direct answer
+   to จำแนก — rate discriminately — which is the one instruction the incumbent
+   asks for and gives the rater no way to check.
+
+   What it costs is the thing D1 buys: the page never gets shorter. */
+export function OptionSettle() {
+  const { th, items, text } = useScene();
+  const [answers, setAnswers] = useAnswers();
+  const lo = th ? bindThai(SCALE[0].th) : SCALE[0].en;
+  const hi = th ? bindThai(SCALE[4].th) : SCALE[4].en;
+
+  return (
+    <Card className="gap-0">
+      {items.map((item, i) => {
+        const value = answers[item.no];
+        const done = value !== undefined;
 
         return (
-          <div key={item.no} className={`px-6 py-4 ${rule}`}>
-            <span className="text-xs tabular-nums text-muted-foreground">{item.no}</span>
-            <Statement item={item} th={th} text={text} />
-            <div role="radiogroup" aria-label={text(item)} className="grid grid-cols-5 gap-1 min-[560px]:gap-2">
-              {SCALE.map((s) => (
-                <button
-                  key={s.value}
-                  type="button"
-                  role="radio"
-                  aria-checked={value === s.value}
-                  aria-label={`${s.value} · ${th ? s.th : s.en}`}
-                  onClick={() => {
-                    setAnswers((a) => ({ ...a, [item.no]: s.value }));
-                    setReopened(null);
-                  }}
-                  className="group grid cursor-pointer place-items-center outline-none"
-                >
-                  <Circle n={s.value} on={value === s.value} />
-                </button>
-              ))}
-            </div>
-            <div className="mt-1 flex justify-between text-xs text-muted-foreground">
-              <span>{lo}</span>
-              <span>{hi}</span>
+          <div
+            key={item.no}
+            className={`grid gap-0 px-6 py-4 min-[560px]:grid-cols-[22px_1fr] min-[560px]:gap-3 ${
+              i === 0 ? "" : "border-t border-border"
+            }`}
+          >
+            <span className="pt-0.5 text-xs tabular-nums text-muted-foreground">{item.no}</span>
+            <div>
+              <p
+                className={`mb-3 text-base transition-colors duration-200 ease-linear motion-reduce:transition-none ${
+                  done ? "text-muted-foreground" : ""
+                }`}
+              >
+                <b className="font-semibold">{th ? bindThai(item.leadTh) : item.leadEn} </b>
+                {text(item)}
+              </p>
+              <div role="radiogroup" aria-label={text(item)} className="grid grid-cols-5 gap-1 min-[560px]:gap-2">
+                {SCALE.map((s) => {
+                  const on = value === s.value;
+                  return (
+                    <button
+                      key={s.value}
+                      type="button"
+                      role="radio"
+                      aria-checked={on}
+                      aria-label={`${s.value} · ${th ? s.th : s.en}`}
+                      onClick={() => setAnswers((a) => ({ ...a, [item.no]: s.value }))}
+                      /* The unpicked circles recede rather than vanish: at 0 the
+                         row would read as a single mark floating in white and
+                         the scale it belongs to would be gone. 30% keeps the
+                         track legible and still makes the answer the only thing
+                         the eye lands on. */
+                      className={`group grid cursor-pointer place-items-center outline-none transition-opacity duration-200 ease-linear hover:opacity-100 motion-reduce:transition-none ${
+                        done && !on ? "opacity-30" : "opacity-100"
+                      }`}
+                    >
+                      <Circle n={s.value} on={on} />
+                    </button>
+                  );
+                })}
+              </div>
+              <Anchors lo={lo} hi={hi} dim={done} />
             </div>
           </div>
         );
