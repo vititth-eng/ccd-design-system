@@ -5,9 +5,11 @@ import { ContrastProbe } from "../../_workbench/contrast-probe";
  * what it renders is deliberately not what ships. The Tokens page keeps drawing
  * the shipped trio, and it keeps drawing it as it is today.
  *
- * The question: `--caution-strong` was measured against v2's navy. The neutral
- * family is shadcn's now — white cards, #F5F5F5 quiet surfaces — and on those
- * it is the only one of the three that fails AA as text.
+ * The question, now answered: `--caution-strong` was measured against v2's
+ * navy. The neutral family is shadcn's now — white cards, #F5F5F5 quiet
+ * surfaces — and on those it is the only one of the three that fails AA as
+ * text. Owner call 2026-08-13 kept it anyway; the right-hand column is the
+ * rejected alternative and stays because deleted evidence re-opens a decision.
  *
  * WHY THE CANDIDATE IS A SCOPED CUSTOM PROPERTY AND NOT AN INLINE COLOUR.
  * It replaces the LIGHT value only. Dark already clears 6:1 and is not being
@@ -116,16 +118,19 @@ export default function CautionStatusMockPage() {
           <Scene />
         </div>
         <div>
-          <div className="text-xs font-mono text-muted-foreground mb-2">{CANDIDATE} · candidate</div>
+          <div className="text-xs font-mono text-muted-foreground mb-2">{CANDIDATE} · rejected</div>
           <Scene candidate />
         </div>
       </div>
 
       <div className="rounded-lg border border-border p-4">
         <p className="text-sm">
-          <span className="font-medium">Open — this one is Vitit&apos;s.</span> Positive and negative
-          clear AA on both their backgrounds and are untouched here. Caution clears neither, and it
-          is the only token in the set that does not.
+          <span className="font-medium">
+            Owner call, 2026-08-13: keep #CF741E. The candidate was looked at and rejected.
+          </span>{" "}
+          Positive and negative clear AA on both their backgrounds. Caution clears neither, and the
+          cost of that is named and accepted: a caution label in light mode sits below the standard,
+          hardest on low-vision raters, and nothing warns anyone at build time.
         </p>
         <p className="text-sm text-muted-foreground mt-2">
           It is not drift. <code className="font-mono">theme.css</code> already says this token is
@@ -136,11 +141,14 @@ export default function CautionStatusMockPage() {
           exactly that today.
         </p>
         <p className="text-sm text-muted-foreground mt-2">
-          The candidate keeps the hue at 29.2° and only walks the lightness down. It costs the
-          orange some of its warmth against the yellow dot above it, and it buys a set where all
-          three <code className="font-mono">-strong</code> tokens land within a tenth of each other
-          on white — which is what makes the rule sayable in one line instead of one line plus an
-          exception.
+          The rejected column keeps the hue at 29.2° and only walks the lightness down, which is
+          what buys it AA. It costs the orange its warmth against the yellow dot above it. That is
+          the trade that was refused — the column on the right is not an improvement waiting to be
+          adopted, it is the one that was rendered and turned down.
+        </p>
+        <p className="text-sm text-muted-foreground mt-2">
+          Reopen this when a real screen wants caution as <em>text</em> rather than as a dot or a
+          glyph — not before. The rater-facing flows are where that is most likely to come up.
         </p>
         <p className="text-sm text-muted-foreground mt-2">
           Dark mode is not the question and is not changed: every pairing clears 6:1 against the

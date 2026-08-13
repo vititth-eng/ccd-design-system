@@ -85,7 +85,7 @@ export const NAV: NavGroup[] = [
     items: [
       { name: "Likert — five shapes", href: "/mocks/likert-shape" },
       { name: "Leading — CCD vs vega", href: "/mocks/leading" },
-      { name: "Caution — on shadcn neutrals", href: "/mocks/caution-status" },
+      { name: "Caution — #CF741E vs darker", href: "/mocks/caution-status" },
     ],
   },
 ];
@@ -118,6 +118,5 @@ export function isPatternRoute(pathname: string): boolean {
 export const OPEN_QUESTIONS_ISSUE = "CCD-281";
 
 export const OPEN_QUESTIONS: { name: string }[] = [
-  { name: "Does the status trio read on shadcn neutrals?" },
   { name: "Chart hues — three slots, nothing rendered" },
 ];

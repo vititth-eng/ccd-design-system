@@ -156,7 +156,15 @@
   --caution: #FFBD2E;
   --negative: #FF5F56;
   --positive-strong: #1A7F37;     /* 5.08:1 on white */
-  --caution-strong: #CF741E;      /* 3.40:1 — GLYPHS AND MARKS ONLY, never a paragraph */
+  /* 3.40:1 as a label, 3.00:1 on its own tint pill — BOTH under AA's 4.5, so
+     GLYPHS AND MARKS ONLY, never text. Re-measured on shadcn's white
+     2026-08-13 and KEPT: a darker orange at the same hue clears both and was
+     rendered against this one at /mocks/caution-status, then rejected — it
+     costs the warmth that separates this from the negative red. The cost is
+     accepted, not overlooked: a caution label in light mode is below the
+     standard, worst for low-vision raters, and nothing warns at build time.
+     Reopen when a real screen wants caution as text. CCD-281. */
+  --caution-strong: #CF741E;
   --negative-strong: #C4372C;
   --positive-tint: #E7F5EC;
   --caution-tint: #FDEEE2;
