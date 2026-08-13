@@ -82,7 +82,10 @@ export const NAV: NavGroup[] = [
      * evidence was deleted gets re-opened by the next person to disagree.
      */
     label: "Mocks",
-    items: [{ name: "Leading — CCD vs vega", href: "/mocks/leading" }],
+    items: [
+      { name: "Likert — four shapes", href: "/mocks/likert-shape" },
+      { name: "Leading — CCD vs vega", href: "/mocks/leading" },
+    ],
   },
 ];
 
