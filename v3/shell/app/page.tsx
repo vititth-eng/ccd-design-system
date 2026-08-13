@@ -3,6 +3,7 @@ import nextPkg from "next/package.json";
 import twPkg from "tailwindcss/package.json";
 import shellPkg from "../package.json";
 import { LeadingRow } from "./_workbench/leading-row";
+import { ProseRhythm } from "./_workbench/prose-rhythm";
 
 /**
  * Step 2: Tailwind compiles, and the v3 token files compile with it.
@@ -262,6 +263,20 @@ export default function Page() {
             hangs vowels below the baseline, so a Latin-tuned leading has the two colliding before a
             table is dense. Confirmed by owner 2026-08-12; the side-by-side that settled it is under
             Mocks.
+          </p>
+        </Section>
+
+        <Section title="Prose rhythm — from type.css">
+          <ProseRhythm />
+          <p className="text-xs text-muted-foreground mt-3">
+            The last four CCD-owned tokens, and they reach a page only through the{" "}
+            <code>prose-flow</code> utility and <code>max-w-prose</code> — never as three separate
+            values a caller combines. The margins are measured off the block beside them, not read
+            from the file — and margin is all they are: half-leading sits inside each line box, so
+            it never lands between two of them. The gap the eye sees is each margin plus that
+            half-leading on both sides, which is why the written values are odd — 8 / 10 / 28 to
+            render an even 12 / 16 / 32. The heading gap is the tight one on purpose: a heading
+            belongs to the text below it, so it sits closer to that than to the block above.
           </p>
         </Section>
 

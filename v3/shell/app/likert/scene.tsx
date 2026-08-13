@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Body, Muted, Section } from "@/components/typography";
 import { useFixture } from "../_workbench/use-fixture";
 import { COPY, ITEMS, LONG_ITEMS, SCALE, bindThai } from "./fixture";
 
@@ -102,9 +103,6 @@ export function LikertScene() {
         <span className="text-sm text-muted-foreground">· {text(COPY.fn)}</span>
       </p>
 
-      {/* gap-0: this card owns its own internal rhythm, and every rule inside it
-          is load-bearing. Card's default gap would add a second, invisible one
-          on top of the padding each band already carries. */}
       {/* text-base ONCE, on the card, per type.css: 14 is chrome and 16 is
           content, and a card can hold either — so the card that holds content
           says so, rather than every paragraph inside it saying so separately.
@@ -116,13 +114,17 @@ export function LikertScene() {
           invisible one on top of the padding each band already carries. */}
       <Card className="gap-0 text-base">
         <div className="px-6">
-          <h2 className="text-lg font-semibold">
+          {/* Roles, not utilities. `text-lg font-semibold` and Section render
+              the same pixels; only the second one says the markup is a section
+              header, so a later change can move every section header without
+              also moving everything that happens to be 18px. */}
+          <Section>
             {text(COPY.dimension)}{" "}
             <span className="text-sm font-normal text-muted-foreground">
               · items 1–{count}
             </span>
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">{text(COPY.stem)}</p>
+          </Section>
+          <Muted className="mt-1">{text(COPY.stem)}</Muted>
         </div>
 
         {/* ── scale key ─────────────────────────────────────────────────────
@@ -192,8 +194,7 @@ export function LikertScene() {
               {item.no}
             </span>
             <div>
-              {/* No size here: it inherits 16 from the card. */}
-              <p className="mb-3">
+              <Body className="mb-3">
                 {/* The paper prints the competency term as a bold lead-in on
                     every statement, so the row is two registers wrapping as one
                     — and it is OPTIONAL, because only one of the two apps has
@@ -207,7 +208,7 @@ export function LikertScene() {
                   </b>
                 )}
                 {text(item)}
-              </p>
+              </Body>
               <div
                 role="radiogroup"
                 aria-label={th ? bindThai(item.th) : item.en}

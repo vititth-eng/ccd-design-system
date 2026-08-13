@@ -23,6 +23,13 @@ import { cn } from "@/lib/utils"
  * no-op a misspelled CSS class would be.
  *
  * Colour uses the shadcn semantic tokens, which arrive with the colour layer.
+ *
+ * NO ROLE FOR 24. `--text-2xl` was minted 2026-08-13 for one reason: the
+ * registry's blocks use `text-2xl` eight times — a dashboard KPI figure and an
+ * auth screen's h1 — and without the token they rendered at the inherited size.
+ * Nothing CCD authors uses 24 yet, and a role nobody calls is the same lie this
+ * file spent a session being: an export the codebase does not honour. Mint the
+ * role when a CCD screen actually needs that size, not before.
  */
 
 type HeadingLevel = "h1" | "h2" | "h3" | "h4"
