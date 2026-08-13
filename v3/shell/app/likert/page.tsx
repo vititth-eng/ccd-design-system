@@ -1,4 +1,5 @@
 import { PatternPage } from "../_workbench/pattern-page";
+import { LikertScene } from "./scene";
 
 export default function LikertPatternPage() {
   return (
@@ -6,12 +7,12 @@ export default function LikertPatternPage() {
       job="A rater has a run of statements about a colleague to answer, mostly on a phone, and has to get to the end in one sitting without losing their place or their honesty."
       undecided={{
         question:
-          "Does the scale keep v2's shape? This is the most-seen screen in CCD and it is entirely ours — no registry has an opinion about it, so nothing decides it but a look at the real thing in Thai at forty questions.",
+          "Does the scale keep v2's shape? The scene below IS v2's shape, rebuilt on v3's tokens and nothing else — the incumbent on screen so it can be argued with. Set density to Long and width to 375 to see the forty-question case in Thai. shadcn has no Likert and no survey component of any kind, so nothing upstream decides this.",
         issue: "CCD-281",
       }}
-      /* sourcePath goes on once there is a scene file to point it at. The
-         reader itself is proven — checked 2026-08-12 against this very file,
-         which rendered into the Source block from the first cwd anchor. */
-    />
+      sourcePath="app/likert/scene.tsx"
+    >
+      <LikertScene />
+    </PatternPage>
   );
 }

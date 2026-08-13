@@ -36,8 +36,16 @@ export function SceneFrame({ children }: { children?: ReactNode }) {
     );
   }
 
+  /* The frame's own padding drops away below 560px, and that is not cosmetic.
+     At 375 the workbench was spending 80px of the phone's width on chrome — the
+     page's px-4 plus this p-6, both sides — so the scene rendered 82px narrower
+     than it ever will in the real app. A preview that reports the wrong width at
+     the one width the pattern is hardest at is worse than no preview. */
   return (
-    <div lang={fixture.lang} className="rounded-lg border border-border p-6">
+    <div
+      lang={fixture.lang}
+      className="rounded-lg border border-border py-4 min-[560px]:p-6"
+    >
       {children}
     </div>
   );
