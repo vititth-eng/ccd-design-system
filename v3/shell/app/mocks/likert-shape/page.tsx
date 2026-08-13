@@ -156,7 +156,7 @@ export default function LikertShapeMock() {
         claim="the page gets shorter as you work"
         buys="The only shape whose cost goes DOWN as the survey progresses. The row keeps a permanent header — number, competency, and a chip naming the answer — and only the body folds, so the row the thumb just touched stays exactly where it is and the next question rises to meet it. Answer a row, then tap its header to reopen it."
         costs="The most behaviour of the five, so the most to get wrong. It also hides the answer's position: a chip reading 4 · บ่อยครั้ง tells you what you said, but you can no longer see the shape of what you said across the page."
-        scale="Starts at 6,427px and ends at 1,769px — 7.9 phone screens down to 2.2, measured by answering all forty. It finishes shorter than any other option starts."
+        scale="Starts at 6,555px and ends at 1,815px — 8.1 phone screens down to 2.2, measured by answering all forty. It finishes shorter than any other option starts. The folded row is 45px, which clears the 44px touch target a phone-first form wants."
       >
         <OptionFoldAnimated />
       </Option>

@@ -291,7 +291,11 @@ export function OptionFoldAnimated() {
   const hi = th ? bindThai(SCALE[4].th) : SCALE[4].en;
 
   return (
-    <Card className="gap-0">
+    /* py-2, not the card's default py-6. A card of full-bleed rows is not a card
+       of content: 24px above a 42px row is more than half a row of dead space at
+       each end, and it reads as a mistake rather than as padding. 10px matches
+       the row's own vertical padding, so the ends keep the list's rhythm. */
+    <Card className="gap-0 py-2">
       {items.map((item, i) => {
         const value = answers[item.no];
         const level = SCALE.find((s) => s.value === value);
@@ -299,11 +303,18 @@ export function OptionFoldAnimated() {
 
         return (
           <div key={item.no} className={i === 0 ? "" : "border-t border-border"}>
+            {/* Symmetric padding, and that costs something worth naming. The
+                first version used pt-3 pb-1 so the statement would sit tight
+                under its own competency lead when open — but a folded row is
+                the state a rater spends most of the survey looking at, and
+                asymmetric padding makes every one of them read top-heavy. The
+                row is centred now; the open state gets its tightness back from
+                the body carrying no top padding of its own. */}
             <button
               type="button"
               onClick={() => setReopened(folded ? item.no : null)}
               aria-expanded={!folded}
-              className="flex w-full cursor-pointer items-center gap-3 px-6 pt-3 pb-1 text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+              className="flex w-full cursor-pointer items-center gap-3 px-6 py-2.5 text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
             >
               <span className="w-4 shrink-0 text-xs tabular-nums text-muted-foreground">
                 {item.no}
@@ -320,6 +331,9 @@ export function OptionFoldAnimated() {
               }`}
             >
               <div className="overflow-hidden">
+                {/* No top padding: the header's own bottom padding is the gap,
+                    which keeps the statement reading as a continuation of the
+                    competency lead above it rather than as a separate block. */}
                 <div className="px-6 pb-4">
                   <p className="mb-3 text-base">{text(item)}</p>
                   <div role="radiogroup" aria-label={text(item)} className="grid grid-cols-5 gap-1 min-[560px]:gap-2">
