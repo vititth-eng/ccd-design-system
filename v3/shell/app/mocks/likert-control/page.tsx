@@ -1,8 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { Radio as RadioPrimitive } from "@base-ui/react/radio";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { ScaleOption } from "@/components/scale-option";
 import { Card } from "@/components/ui/card";
 import { Body } from "@/components/typography";
 import { ITEMS, SCALE, bindThai } from "../../likert/fixture";
@@ -133,14 +133,12 @@ function OptionA() {
 }
 
 /* ── B and C — CCD's numbered circle ─────────────────────────────────────────
-   The incumbent shape, now on the real primitive. The number lives inside the
-   circle so the five level names can be stated once as a column header instead
-   of under every row.
-
-   Two elements, not one: the Root fills its whole fifth of the row so the
-   tappable box is wider than the circle it draws. That was the reason v2 built
-   it this way and it survives the swap. */
-function NumberedScale({ id, size }: { id: string; size: "size-10" | "size-11" }) {
+   Both render `ScaleOption`, the CCD component, rather than describing it
+   again. The first cut of this page wrote the circle out by hand here, which is
+   how it came to drop disabled, drop invalid, and border a control with the
+   panel token — see the component's own header. A mock that re-types a
+   component cannot tell you the component is wrong. */
+function NumberedScale({ id, size }: { id: string; size: "default" | "lg" }) {
   return (
     <RadioGroup
       id={id}
@@ -148,20 +146,48 @@ function NumberedScale({ id, size }: { id: string; size: "size-10" | "size-11" }
       className="grid grid-cols-5 gap-1 max-w-[360px] min-[560px]:gap-2"
     >
       {SCALE.map((s) => (
-        <RadioPrimitive.Root
+        <ScaleOption
           key={s.value}
           value={String(s.value)}
+          size={size}
           aria-label={`${s.value} · ${bindThai(s.th)}`}
-          className="group grid cursor-pointer place-items-center outline-none"
         >
-          <span
-            className={`grid ${size} place-items-center rounded-full border text-sm font-medium tabular-nums transition-colors group-focus-visible:ring-3 group-focus-visible:ring-ring/50 group-data-checked:border-primary group-data-checked:bg-primary group-data-checked:text-primary-foreground border-border bg-card hover:border-muted-foreground`}
-          >
-            {s.value}
-          </span>
-        </RadioPrimitive.Root>
+          {s.value}
+        </ScaleOption>
       ))}
     </RadioGroup>
+  );
+}
+
+/* The states the component claims, rendered rather than asserted. Each one was
+   in the registry's item and absent from the hand-written circle that replaced
+   it; a claim in a comment is what let them go missing in the first place.
+
+   Disabled is worth looking at twice: Base UI renders the option as a SPAN, so
+   the `disabled:` variant the rest of the house uses can never match it. This
+   row is the proof that the `data-disabled` version does. */
+function States() {
+  return (
+    <div className="flex flex-wrap items-center gap-6">
+      {[
+        { label: "resting", group: <ScaleOption value="1">1</ScaleOption> },
+        { label: "checked", group: <ScaleOption value="2">2</ScaleOption>, checked: true },
+        { label: "disabled", group: <ScaleOption value="3" disabled>3</ScaleOption> },
+        {
+          label: "invalid",
+          group: (
+            <ScaleOption value="4" aria-invalid>
+              4
+            </ScaleOption>
+          ),
+        },
+      ].map((s) => (
+        <div key={s.label} className="grid justify-items-center gap-2">
+          <RadioGroup defaultValue={s.checked ? "2" : undefined}>{s.group}</RadioGroup>
+          <span className="text-xs font-mono text-muted-foreground">{s.label}</span>
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -177,14 +203,14 @@ const OPTIONS = [
     key: "B",
     name: "CCD numbered circle — 40px",
     note: "The incumbent, rebuilt on the real component. Clears WCAG 2.2's 24px floor.",
-    render: <NumberedScale id="opt-b" size="size-10" />,
+    render: <NumberedScale id="opt-b" size="default" />,
     id: "opt-b",
   },
   {
     key: "C",
     name: "CCD numbered circle — 44px",
     note: "The same drawing at the size a phone-first survey conventionally wants.",
-    render: <NumberedScale id="opt-c" size="size-11" />,
+    render: <NumberedScale id="opt-c" size="lg" />,
     id: "opt-c",
   },
 ];
@@ -223,6 +249,23 @@ export default function LikertControlMockPage() {
           <p className="text-xs text-muted-foreground mt-2">{o.note}</p>
         </div>
       ))}
+
+      <div>
+        <div className="text-xs font-mono text-muted-foreground mb-2">
+          ScaleOption — the states it carries
+        </div>
+        <Card className="text-base">
+          <div className="px-6">
+            <States />
+          </div>
+        </Card>
+        <p className="text-xs text-muted-foreground mt-2">
+          Rendered, not claimed. Disabled and invalid are the two the hand-written circle had
+          quietly dropped, and disabled is the one that cannot use the house&apos;s usual selector
+          at all — the option is a span, and <code className="font-mono">disabled:</code> only ever
+          matches a form element.
+        </p>
+      </div>
 
       <div className="rounded-lg border border-border p-4">
         <p className="text-sm">

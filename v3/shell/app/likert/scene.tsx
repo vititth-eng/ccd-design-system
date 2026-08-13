@@ -3,6 +3,8 @@
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { RadioGroup } from "@/components/ui/radio-group";
+import { ScaleOption } from "@/components/scale-option";
 import { Body, Muted, Section } from "@/components/typography";
 import { useFixture } from "../_workbench/use-fixture";
 import { COPY, ITEMS, LONG_ITEMS, SCALE, bindThai } from "./fixture";
@@ -15,12 +17,18 @@ import { COPY, ITEMS, LONG_ITEMS, SCALE, bindThai } from "./fixture";
  * decision is annotated below with the reason v2 gave for it, so a reader can
  * disagree with the reason rather than with the pixels.
  *
- * No component was pulled from the registry to build it. The scale circles are
- * hand-rolled here rather than assembled out of `radio-group` or `toggle-group`
- * for two reasons: the registry has no Likert of any kind (searched 2026-08-13 —
- * `likert` and `survey` both return nothing), and the standing rule is that a
- * component arrives when a DECIDED pattern demands it. Deciding the shape first
- * is the whole point of this page.
+ * The scale was hand-rolled here at first, and correctly so: the registry has
+ * no Likert of any kind (searched 2026-08-13 — `likert` and `survey` both
+ * return nothing), and the standing rule is that a component arrives when a
+ * DECIDED pattern demands it. Deciding the shape first was the point.
+ *
+ * The shape is decided, so the demand exists and the components are in. The
+ * scale is `RadioGroup` from the registry holding CCD's `ScaleOption`, which is
+ * what closed three defects the hand-roll had: 200 tab stops on a forty-item
+ * survey instead of 40, dead arrow keys, and a control drawn with `border-border`
+ * where `border-input` belongs — the two are identical in light and diverge in
+ * dark, so the circles wore a fainter edge than every other control, in one mode
+ * only, and nothing errored.
  */
 
 /* v2 stacks nine items per screen because that is one dimension on the paper
@@ -209,42 +217,29 @@ export function LikertScene() {
                 )}
                 {text(item)}
               </Body>
-              <div
-                role="radiogroup"
+              {/* One RadioGroup per item, and the group is what carries the
+                  keyboard: one tab stop for the five levels, arrows moving
+                  between them. The hand-rolled version this replaces gave every
+                  circle its own tab stop and no arrows at all — measured on the
+                  forty-item fixture, 200 stops where this gives 40. */}
+              <RadioGroup
                 aria-label={th ? bindThai(item.th) : item.en}
+                value={answers[item.no] === undefined ? null : String(answers[item.no])}
+                onValueChange={(v) =>
+                  setAnswers((a) => ({ ...a, [item.no]: Number(v) }))
+                }
                 className={`grid grid-cols-5 gap-1 min-[560px]:gap-2 ${SCALE_WIDTH}`}
               >
-                {SCALE.map((s) => {
-                  const on = answers[item.no] === s.value;
-                  return (
-                    /* Two elements, not one: the button fills its whole fifth of
-                       the row so the hit area is wider than the 40px circle it
-                       draws. On a 375px screen that is the difference between a
-                       67px target and a 40px one. */
-                    <button
-                      key={s.value}
-                      type="button"
-                      role="radio"
-                      aria-checked={on}
-                      aria-label={`${s.value} · ${th ? s.th : s.en}`}
-                      onClick={() =>
-                        setAnswers((a) => ({ ...a, [item.no]: s.value }))
-                      }
-                      className="group grid cursor-pointer place-items-center outline-none"
-                    >
-                      <span
-                        className={`grid size-10 place-items-center rounded-full border text-sm font-medium tabular-nums transition-colors group-focus-visible:ring-3 group-focus-visible:ring-ring/50 ${
-                          on
-                            ? "border-primary bg-primary text-primary-foreground"
-                            : "border-border bg-card hover:border-muted-foreground"
-                        }`}
-                      >
-                        {s.value}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
+                {SCALE.map((s) => (
+                  <ScaleOption
+                    key={s.value}
+                    value={String(s.value)}
+                    aria-label={`${s.value} · ${th ? s.th : s.en}`}
+                  >
+                    {s.value}
+                  </ScaleOption>
+                ))}
+              </RadioGroup>
             </div>
           </div>
         ))}
