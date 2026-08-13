@@ -79,14 +79,57 @@
   --text-xs: 0.75rem;                 /* 12 — caption, timestamp, table meta */
   --text-xs--line-height: 1.5;
 
-  --text-sm: 0.875rem;                /* 14 — secondary line, dense table cell */
+  /* 14 is CHROME'S size, and that is a rule the ladder alone could not tell you.
+     Written down 2026-08-13 after it surfaced as a silent bug rather than as a
+     question: the Likert statement — the one thing on that screen a person
+     actually reads — was rendering at 14, and nothing errored.
+
+     The cause is not a conflict with vega. It is a HOLE in vega, the same hole
+     this file exists to fill for the ladder itself. Measured against the
+     registry 2026-08-13:
+
+       - base-vega ships NO type scale. Its style index carries colour and
+         radius and nothing else, exactly as their theming doc describes. Every
+         size in every component is a raw Tailwind utility.
+       - `text-sm` appears in 11 of 12 components sampled. 14 is simply what
+         their interface is.
+       - `text-base` appears in THREE, each for one nameable reason: Input and
+         Textarea use `text-base md:text-sm`, which is the iOS zoom guard and
+         not a reading choice; Card uses it for its TITLE, dropping back to 14
+         on a small card.
+
+     So vega never answers "how big is authored content", because vega ships no
+     content — it is a kit of controls. Card setting `text-sm` on its ROOT is
+     that same assumption: a card holds chrome, so everything inside inherits
+     chrome's size, label and paragraph alike.
+
+     CCD does ship content, in a script that loses legibility faster than Latin
+     as size drops. So the rule vega leaves unwritten:
+
+       14 — CHROME. Anything the interface says about itself: buttons, labels,
+            menu items, table cells, meta lines, a card's supporting text.
+            Scanned, not read. This is shadcn's default and it stays.
+       16 — CONTENT. Anything authored that a person reads to act on: a survey
+            statement, a question, a letter, an instruction. Running prose.
+
+     A CARD CAN HOLD EITHER, which is why the collision surfaces there. A card
+     of content declares `text-base` ONCE ON THE CARD and lets it inherit —
+     never per paragraph, because the paragraph that gets forgotten renders at
+     14, stays above the Thai floor, errors nowhere, and looks merely slightly
+     small. That is the failure this rule exists to remove.
+
+     The measured cost of getting it wrong the other way is small enough to be
+     worth naming, so nobody re-opens it as an optimisation: at 375px with forty
+     Thai statements, 14 saves 304px of a 6,636px screen — 0.4 of one phone
+     screen — and both wrap to the same two lines. */
+  --text-sm: 0.875rem;                /* 14 — chrome: control, label, table cell */
   --text-sm--line-height: 1.55;
 
   /* 16 is also a mobile floor, not only a reading choice: iOS Safari zooms the
      viewport when a focused input renders below 16px, and the zoom does not
      reverse on blur. Any form control inheriting this size is safe; drop the
      body back to 14 and every field on a phone becomes a zoom trap. */
-  --text-base: 1rem;                  /* 16 — body, the workhorse */
+  --text-base: 1rem;                  /* 16 — content: authored text, read to act */
   --text-base--line-height: 1.6;
 
   --text-lg: 1.125rem;                /* 18 — section header */

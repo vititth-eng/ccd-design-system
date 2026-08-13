@@ -105,7 +105,16 @@ export function LikertScene() {
       {/* gap-0: this card owns its own internal rhythm, and every rule inside it
           is load-bearing. Card's default gap would add a second, invisible one
           on top of the padding each band already carries. */}
-      <Card className="gap-0">
+      {/* text-base ONCE, on the card, per type.css: 14 is chrome and 16 is
+          content, and a card can hold either — so the card that holds content
+          says so, rather than every paragraph inside it saying so separately.
+          shadcn's Card sets text-sm on its root, which is right for a card of
+          labels and wrong for a card whose whole job is statements to read.
+
+          gap-0 because this card owns its own internal rhythm and every rule
+          inside it is load-bearing; Card's default gap would add a second,
+          invisible one on top of the padding each band already carries. */}
+      <Card className="gap-0 text-base">
         <div className="px-6">
           <h2 className="text-lg font-semibold">
             {text(COPY.dimension)}{" "}
@@ -183,12 +192,8 @@ export function LikertScene() {
               {item.no}
             </span>
             <div>
-              {/* text-base stated, not inherited. shadcn's Card sets text-sm on
-                  everything inside it, which silently rendered the statement —
-                  the one thing on the screen a person actually reads — at 14
-                  where v2 ships 16. The card's default is right for a card of
-                  metadata and wrong for a card that is all body copy. */}
-              <p className="mb-3 text-base">
+              {/* No size here: it inherits 16 from the card. */}
+              <p className="mb-3">
                 {/* The paper prints the competency term as a bold lead-in on
                     every statement, so the row is two registers wrapping as one
                     — and it is OPTIONAL, because only one of the two apps has
