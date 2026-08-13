@@ -86,6 +86,7 @@ export const NAV: NavGroup[] = [
       { name: "Likert — five shapes", href: "/mocks/likert-shape" },
       { name: "Leading — CCD vs vega", href: "/mocks/leading" },
       { name: "Caution — #CF741E vs darker", href: "/mocks/caution-status" },
+      { name: "Likert control — how it is drawn", href: "/mocks/likert-control" },
     ],
   },
 ];
