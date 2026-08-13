@@ -1,0 +1,61 @@
+<!--
+  CCD email — base template (v2)
+
+  WHY THIS FILE LOOKS NOTHING LIKE THE REST OF THE DS
+  Email clients strip <style> blocks and cannot resolve var(), so every value here is a
+  literal inline style. That is not a token violation to be fixed — it is the only thing
+  that renders. Keep the literals below in sync with tokens.css BY HAND when the palette
+  moves; nothing automated can do it for you.
+
+  The laws this markup obeys, and the failure each one prevents, are in
+  ~/Desktop/Superpowers/wiki/email-playbook.md. Read it before editing. The short version:
+    · inline style only            — the bgcolor attribute is stripped
+    · fill on the <a> itself       — a coloured wrapper gets dropped, text stays white
+    · colour ALWAYS with background — or dark-mode inversion gives white on white
+    · no HTML comments in the body — conditional comments are removed WITH their contents
+    · no nested tables             — they flatten; flat <div>s only
+    · no line starting "N. "       — Outlook renumbers it into 1. 1. 1.
+    · no SVG                       — PNG at 2x, with width/height attributes
+
+  PLACEHOLDERS
+    {{RECIPIENT_NAME}}   Thai full name, no prefix
+    {{TITLE}}            programme name, e.g. New Gen Bootcamp 2026
+    {{SUBTITLE}}         what this mail is about, one line
+    {{INTRO_1}}          why they got this mail
+    {{INTRO_2}}          what the data is used for
+    {{STEP1_TITLE}} {{STEP1_NOTE}} {{STEP1_URL}} {{STEP1_LABEL}}
+    {{STEP2_TITLE}} {{STEP2_NOTE}} {{STEP2_URL}} {{STEP2_LABEL}}
+    {{DEADLINE}}         e.g. ภายในวันที่ 21 สิงหาคม 2569
+    {{CLOSING_1}} {{CLOSING_2}}
+    {{SIG_NAME}} {{SIG_ROLE}} {{SIG_ORG}} {{SIG_TEL}} {{SIG_EMAIL}}
+
+  A step block is repeatable: copy one, or delete the second if there is only one action.
+  Logo asset + public URL: facts/infra.yml#cloudflare.r2.buckets.ccd-assets
+-->
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;max-width:600px;font-size:15px;line-height:1.5">
+
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;padding:0 0 10px 0"><img src="https://pub-8494788f837745b09f0764fde5435047.r2.dev/learning/email/ccd-logo.png" width="179" height="60" alt="CCD - Corporate Capability Development Group" style="display:block;border:0;outline:none"></div>
+
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;background-color:#ffffff;font-size:20px;font-weight:bold;color:#233D7C;line-height:1.25">{{TITLE}}</div>
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;background-color:#ffffff;font-size:14px;color:#5b6472;line-height:1.3;padding-top:1px">{{SUBTITLE}}</div>
+
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;border-top:1px solid #d7dce3;font-size:1px;line-height:1px;margin:12px 0 14px 0">&nbsp;</div>
+
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;font-size:15px;line-height:1.5">เรียน คุณ<b>{{RECIPIENT_NAME}}</b></div>
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;font-size:15px;line-height:1.5;padding-top:8px">{{INTRO_1}}</div>
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;font-size:15px;line-height:1.5;padding-top:6px">{{INTRO_2}}</div>
+
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#f5f7fa;padding:12px 14px;margin:10px 0 0 0;border-left:4px solid #233D7C"><div style="font-family:Tahoma,'Segoe UI',sans-serif;background-color:#f5f7fa;font-size:13px;font-weight:bold;color:#233D7C;line-height:1.25">ขั้นตอนที่ 1</div><div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#f5f7fa;font-size:15px;font-weight:bold;line-height:1.3;padding-top:2px">{{STEP1_TITLE}}</div><div style="font-family:Tahoma,'Segoe UI',sans-serif;background-color:#f5f7fa;font-size:13px;color:#5b6472;line-height:1.3;padding-top:1px"><i>{{STEP1_NOTE}}</i></div><div style="font-family:Tahoma,'Segoe UI',sans-serif;background-color:#f5f7fa;padding-top:8px"><a href="{{STEP1_URL}}" style="background-color:#233D7C;color:#ffffff;display:inline-block;padding:11px 22px;font-family:Tahoma,sans-serif;font-size:15px;font-weight:bold;text-decoration:none;border-radius:6px">{{STEP1_LABEL}}</a></div></div>
+
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#f5f7fa;padding:12px 14px;margin:10px 0 0 0;border-left:4px solid #233D7C"><div style="font-family:Tahoma,'Segoe UI',sans-serif;background-color:#f5f7fa;font-size:13px;font-weight:bold;color:#233D7C;line-height:1.25">ขั้นตอนที่ 2</div><div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#f5f7fa;font-size:15px;font-weight:bold;line-height:1.3;padding-top:2px">{{STEP2_TITLE}}</div><div style="font-family:Tahoma,'Segoe UI',sans-serif;background-color:#f5f7fa;font-size:13px;color:#5b6472;line-height:1.3;padding-top:1px">{{STEP2_NOTE}}</div><div style="font-family:Tahoma,'Segoe UI',sans-serif;background-color:#f5f7fa;padding-top:8px"><a href="{{STEP2_URL}}" style="background-color:#233D7C;color:#ffffff;display:inline-block;padding:11px 22px;font-family:Tahoma,sans-serif;font-size:15px;font-weight:bold;text-decoration:none;border-radius:6px">{{STEP2_LABEL}}</a></div></div>
+
+<div style="font-family:Tahoma,sans-serif;background-color:#fdf0f0;color:#9b1c1c;font-size:14px;font-weight:bold;line-height:1.3;padding:11px 14px;margin:10px 0 0 0;border-left:4px solid #9b1c1c">กำหนดส่ง: {{DEADLINE}}</div>
+
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;font-size:14px;line-height:1.5;padding-top:14px">{{CLOSING_1}}</div>
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;font-size:14px;line-height:1.5;padding-top:6px">{{CLOSING_2}}</div>
+
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;border-top:1px solid #d7dce3;font-size:1px;line-height:1px;margin:16px 0 12px 0">&nbsp;</div>
+
+<div style="font-family:Tahoma,sans-serif;background-color:#ffffff;font-size:13px;line-height:1.45;color:#5b6472"><b style="color:#1f2328;background-color:#ffffff;font-size:14px">{{SIG_NAME}}</b><br>{{SIG_ROLE}}<br>{{SIG_ORG}}<br>Tel : {{SIG_TEL}}<br>Email : {{SIG_EMAIL}}</div>
+
+</div>
