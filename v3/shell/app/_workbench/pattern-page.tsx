@@ -79,7 +79,7 @@ export async function PatternPage({
   const source = sourcePath ? await readSource(sourcePath) : null;
 
   return (
-    <div className="mx-auto flex max-w-4xl flex-col gap-8 px-4 py-8">
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-8 px-4 py-8">
       <p className="text-xl leading-snug font-medium text-balance">{job}</p>
 
       <Section title="Shape">

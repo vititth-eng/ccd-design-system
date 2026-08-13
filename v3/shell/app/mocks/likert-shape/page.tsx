@@ -98,7 +98,7 @@ function Option({
 
 export default function LikertShapeMock() {
   return (
-    <div className="mx-auto flex max-w-3xl flex-col gap-8 px-4 py-8">
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 py-8">
       <div>
         <p className="text-xl leading-snug font-medium text-balance">
           Five shapes for one job: a rater answering a run of statements about a

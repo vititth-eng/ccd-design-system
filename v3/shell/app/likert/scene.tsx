@@ -27,6 +27,24 @@ import { COPY, ITEMS, LONG_ITEMS, SCALE, bindThai } from "./fixture";
    six-item screen, `long` is the forty-item one Vitit asked to see. */
 const COUNT = { short: 6, long: 40 } as const;
 
+/**
+ * The scale's own width, and it is a measured number rather than a taste call.
+ *
+ * v2 lets the five columns stretch to fill whatever the card is, which on a
+ * 660px reading column puts 77px of white between neighbouring circles. Five
+ * marks that far apart stop reading as ONE control and start reading as five
+ * separate ones — the row the whole screen exists to fill looks unresolved.
+ *
+ * The width was set by the thing that actually needs it. The five level names
+ * are the widest content in those columns, and the widest of them — นาน ๆ ครั้ง
+ * — measures 53px at 12px. 72px per column clears it with 9px of air each side,
+ * so 5 × 72 = 360px. Wider buys nothing; narrower collides the labels.
+ *
+ * Inert on a phone: at 375 the available width is ~293px, so the max-width
+ * never applies and the columns still divide what there is.
+ */
+const SCALE_WIDTH = "max-w-[360px]";
+
 export function LikertScene() {
   const [fixture] = useFixture();
   const th = fixture.lang === "th";
@@ -126,17 +144,19 @@ export function LikertScene() {
             Dropped below 560px, where five names will not fit five columns. The
             key above still carries the meaning and the circles carry the number. */}
         <div
-          className="mb-2 hidden border-b border-border py-2 pr-6 pl-[58px] min-[560px]:grid min-[560px]:grid-cols-5 min-[560px]:gap-2"
+          className="mb-2 hidden border-b border-border py-2 pr-6 pl-[58px] min-[560px]:block"
           aria-hidden="true"
         >
-          {SCALE.map((s) => (
-            <span
-              key={s.value}
-              className="text-center text-xs whitespace-nowrap text-muted-foreground"
-            >
-              {th ? bindThai(s.th) : s.en}
-            </span>
-          ))}
+          <div className={`grid grid-cols-5 gap-2 ${SCALE_WIDTH}`}>
+            {SCALE.map((s) => (
+              <span
+                key={s.value}
+                className="text-center text-xs whitespace-nowrap text-muted-foreground"
+              >
+                {th ? bindThai(s.th) : s.en}
+              </span>
+            ))}
+          </div>
         </div>
 
         {/* ── items ─────────────────────────────────────────────────────────
@@ -149,11 +169,17 @@ export function LikertScene() {
         {items.map((item, i) => (
           <div
             key={item.no}
-            className={`grid gap-0 px-6 py-4 min-[560px]:grid-cols-[22px_1fr] min-[560px]:gap-3 ${
+            /* items-baseline, not a hand-tuned padding. The number is 12px and
+               the statement 16px, so aligning their BOXES leaves the number
+               riding 3px above the line it labels — measured, not guessed. Grid
+               baseline alignment takes the second column's first line box,
+               which is the statement, and puts the two on one line for free at
+               any size either of them is ever set to. */
+            className={`grid gap-0 px-6 py-4 min-[560px]:grid-cols-[22px_1fr] min-[560px]:items-baseline min-[560px]:gap-3 ${
               i === 0 ? "" : "border-t border-border"
             }`}
           >
-            <span className="pt-0.5 text-xs tabular-nums text-muted-foreground">
+            <span className="text-xs tabular-nums text-muted-foreground">
               {item.no}
             </span>
             <div>
@@ -180,7 +206,7 @@ export function LikertScene() {
               <div
                 role="radiogroup"
                 aria-label={th ? bindThai(item.th) : item.en}
-                className="grid grid-cols-5 gap-1 min-[560px]:gap-2"
+                className={`grid grid-cols-5 gap-1 min-[560px]:gap-2 ${SCALE_WIDTH}`}
               >
                 {SCALE.map((s) => {
                   const on = answers[item.no] === s.value;
