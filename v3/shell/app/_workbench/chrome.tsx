@@ -233,7 +233,21 @@ export default function Chrome({ children }: { children: React.ReactNode }) {
         <SidebarRail />
       </Sidebar>
 
-      <SidebarInset>
+      {/* min-w-0, and it is load-bearing rather than defensive.
+
+          SidebarInset is a flex item beside a 256px sidebar, and it ships with
+          `w-full flex-1`. A flex item's automatic minimum size is its CONTENT's
+          minimum, not zero, so the inset refuses to shrink below whatever its
+          widest child demands — it stayed at the full 768 while sitting at
+          left: 256, and the page scrolled sideways by exactly one sidebar
+          width. Measured at 768: scrollWidth 1024, and min-width: 0 takes it
+          back to 768 with the inset at 512.
+
+          It goes here and not in components/ui/sidebar.tsx on purpose. That
+          file is byte-identical to the registry and `shadcn add --diff` is what
+          keeps it honest; a fix that belongs to how WE compose the shell should
+          not turn into a diff we have to re-explain on every re-copy. */}
+      <SidebarInset className="min-w-0">
         {/* Two strips, not one row. The header's controls change how you are
             LOOKING at a scene; the fixture bar's change WHAT SCENE it is. Five
             identical pill groups in a single row would hide that split, and the
