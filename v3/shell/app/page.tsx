@@ -30,15 +30,16 @@ const SURFACES = [
   { token: "--destructive", cls: "bg-destructive" },
 ];
 
-/* The real ladder from type.css. Six sizes on Tailwind's own names — 2xl is
-   deliberately absent, and inventing a name here would render nothing at all,
-   because type.css clears --text-* before minting these. */
+/* The real ladder from type.css, on Tailwind's own names. Every name NOT here
+   is cleared by --text-*: initial and renders at the inherited size, so a class
+   invented in this list would show nothing and say nothing. */
 const TYPE = [
   { cls: "text-xs", note: "caption, timestamp, table meta" },
-  { cls: "text-sm", note: "secondary line, dense table cell" },
-  { cls: "text-base", note: "body, the workhorse" },
+  { cls: "text-sm", note: "chrome — control, label, table cell" },
+  { cls: "text-base", note: "content — authored text, read to act" },
   { cls: "text-lg", note: "section header" },
   { cls: "text-xl", note: "page title" },
+  { cls: "text-2xl", note: "KPI figure, page heading" },
   { cls: "text-3xl", note: "display number" },
 ];
 
