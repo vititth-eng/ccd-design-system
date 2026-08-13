@@ -163,11 +163,18 @@ export function LikertScene() {
                   where v2 ships 16. The card's default is right for a card of
                   metadata and wrong for a card that is all body copy. */}
               <p className="mb-3 text-base">
-                {/* the paper prints the competency term as a bold lead-in on
-                    every statement, so the row is two registers wrapping as one */}
-                <b className="font-semibold">
-                  {th ? bindThai(item.leadTh) : item.leadEn}{" "}
-                </b>
+                {/* The paper prints the competency term as a bold lead-in on
+                    every statement, so the row is two registers wrapping as one
+                    — and it is OPTIONAL, because only one of the two apps has
+                    it. multi-rater's short_label_th is NOT NULL; onboarding's
+                    form fetches only the full question. This layout survives
+                    either way, which is the reason it is the incumbent: nothing
+                    about it depends on a short label existing. */}
+                {(th ? item.leadTh : item.leadEn) && (
+                  <b className="font-semibold">
+                    {th ? bindThai(item.leadTh!) : item.leadEn}{" "}
+                  </b>
+                )}
                 {text(item)}
               </p>
               <div

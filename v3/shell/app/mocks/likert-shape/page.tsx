@@ -113,7 +113,9 @@ export default function LikertShapeMock() {
           consequence is stated per option rather than scrolled five times. The
           fixture controls are live here too — switch to{" "}
           <span className="font-medium">Overflowing</span> to see each shape
-          carry a five-line statement.
+          carry a long statement with <em>no bold competency lead</em> — which is
+          not a stress case but onboarding&rsquo;s actual shape, and the one that
+          separates these five from each other.
         </p>
       </div>
 
@@ -155,7 +157,7 @@ export default function LikertShapeMock() {
         name="Fold, animated"
         claim="the page gets shorter as you work"
         buys="The only shape whose cost goes DOWN as the survey progresses. The row keeps a permanent header — number, competency, and a chip naming the answer — and only the body folds, so the row the thumb just touched stays exactly where it is and the next question rises to meet it. Answer a row, then tap its header to reopen it."
-        costs="The most behaviour of the five, so the most to get wrong. It also hides the answer's position: a chip reading 4 · บ่อยครั้ง tells you what you said, but you can no longer see the shape of what you said across the page."
+        costs="It has a DATA PREREQUISITE the others do not: a folded row must say which item it is in one line, and the only text short enough is a competency lead. multi-rater has one on every item; onboarding has none, and there the folded row falls back to the statement with its end cut off — switch the volume control to Overflowing and read what survives. Measured in that state: between 16% and 32% of each statement, every one cut mid-word. It also hides the answer's position: a chip reading 4 · บ่อยครั้ง tells you what you said, but not the shape of what you said across the page."
         scale="Starts at 6,555px and ends at 1,815px — 8.1 phone screens down to 2.2, measured by answering all forty. It finishes shorter than any other option starts. The folded row is 45px, which clears the 44px touch target a phone-first form wants."
       >
         <OptionFoldAnimated />
@@ -188,6 +190,14 @@ export default function LikertShapeMock() {
             with forty items in Thai, not estimated from a row height. The
             collapse figure was taken by answering all forty and measuring what
             was left.
+          </li>
+          <li>
+            The short-label facts are read off the schemas, not assumed:
+            multi-rater&rsquo;s <code>likert_items.short_label_th</code> is NOT
+            NULL, while onboarding&rsquo;s survey RPC selects only{" "}
+            <code>question_full_en</code> and <code>question_full_th</code> — so
+            its rater screen has no short label available at all, and renders the
+            full question in both languages, one under the other.
           </li>
           <li>
             The one thing no source can settle: straight-lining and abandonment

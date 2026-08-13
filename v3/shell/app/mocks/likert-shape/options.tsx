@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Card } from "@/components/ui/card";
 import { useFixture } from "../../_workbench/use-fixture";
-import { ITEMS, LONG_ITEMS, SCALE, bindThai } from "../../likert/fixture";
+import { ITEMS, LONG_ITEMS, SCALE, bindThai, type Item } from "../../likert/fixture";
 
 /**
  * Four shapes for the same job, rendered live so they can be compared by
@@ -34,18 +34,36 @@ function useScene() {
   return { th, items, text };
 }
 
+/**
+ * The bold competency lead is OPTIONAL, and that is the fixture's hardest fact
+ * rather than a nicety. multi-rater has one on every item — `short_label_th` is
+ * NOT NULL. Onboarding has none: its survey RPC selects only the full question
+ * text, and the form renders it in Thai and English, one under the other.
+ *
+ * So a shape that merely PRINTS the lead degrades gracefully when it is absent,
+ * and a shape that needs the lead to summarise a row does not. Switching the
+ * volume control to Overflowing is what makes the difference visible: those
+ * fixture items carry long statements and no lead, which is onboarding's real
+ * shape.
+ */
+function Lead({ item, th }: { item: Item; th: boolean }) {
+  const lead = th ? item.leadTh : item.leadEn;
+  if (!lead) return null;
+  return <b className="font-semibold">{th ? bindThai(lead) : lead} </b>;
+}
+
 function Statement({
   item,
   th,
   text,
 }: {
-  item: { leadTh: string; leadEn: string; th: string; en: string };
+  item: Item;
   th: boolean;
   text: (t: { th: string; en: string }) => string;
 }) {
   return (
     <p className="mb-3 text-base">
-      <b className="font-semibold">{th ? bindThai(item.leadTh) : item.leadEn} </b>
+      <Lead item={item} th={th} />
       {text(item)}
     </p>
   );
@@ -319,8 +337,19 @@ export function OptionFoldAnimated() {
               <span className="w-4 shrink-0 text-xs tabular-nums text-muted-foreground">
                 {item.no}
               </span>
+              {/* THE PREREQUISITE, and it is the thing to judge this option on.
+                  A folded row has to say which item it is in one line, and the
+                  only text short enough is the competency lead. multi-rater has
+                  one on every item; onboarding has none, and there the folded
+                  row falls back to the statement with the end cut off.
+
+                  Switch the volume control to Overflowing to see what that
+                  actually reads like: forty rows of truncated Thai, each one
+                  ending mid-word, is a summary a rater cannot use to find the
+                  answer they want to change. `truncate` is the honest version —
+                  a two-line clamp only moves where the cut lands. */}
               <span className="min-w-0 flex-1 truncate text-sm font-semibold">
-                {th ? bindThai(item.leadTh) : item.leadEn}
+                {th ? bindThai(item.leadTh ?? item.th) : (item.leadEn ?? item.en)}
               </span>
               {level && <Chip value={level.value} label={th ? bindThai(level.th) : level.en} shown={folded} />}
             </button>
@@ -411,7 +440,11 @@ export function OptionSettle() {
                   done ? "text-muted-foreground" : ""
                 }`}
               >
-                <b className="font-semibold">{th ? bindThai(item.leadTh) : item.leadEn} </b>
+                {/* Prints the lead when there is one and simply omits it when
+                    there is not. Nothing about settling in place depends on a
+                    short label existing, which is the structural difference
+                    between this option and the fold above it. */}
+                <Lead item={item} th={th} />
                 {text(item)}
               </p>
               <div role="radiogroup" aria-label={text(item)} className="grid grid-cols-5 gap-1 min-[560px]:gap-2">

@@ -58,9 +58,23 @@ export const SCALE: Level[] = [
 ];
 
 export type Item = {
-  /** The competency term, printed as a bold lead-in the way the paper form does. */
-  leadTh: string;
-  leadEn: string;
+  /**
+   * The competency term, printed as a bold lead-in the way the paper form does
+   * — and OPTIONAL, which is the whole point of it being optional.
+   *
+   * multi-rater has one on every item: `likert_items.short_label_th` is NOT
+   * NULL. Onboarding does not. Its `questions` table carries a nullable
+   * `question_short_th`, but the survey form's own RPC selects only
+   * `question_full_en, question_full_th` — so the rater-facing screen has no
+   * short label available at all, and renders the full statement in both
+   * languages, one under the other.
+   *
+   * Any shape whose collapsed or summarised state NEEDS a short label works for
+   * one of those two apps and breaks on the other. Checked against the schema
+   * 2026-08-13, not assumed.
+   */
+  leadTh?: string;
+  leadEn?: string;
   th: string;
   en: string;
 };
@@ -190,45 +204,40 @@ export const ITEMS: Item[] = [
 ];
 
 /**
- * The `overflow` volume: statements at the long end of what the instrument
- * allows. Six, not twenty, because past the second one every row is already
- * showing the same thing — how many lines a statement wraps to and whether the
- * five circles still sit where the eye expects them.
+ * The `overflow` volume: the hardest content either app can produce — a long
+ * statement with NO short label. That pairing is not invented for stress: it is
+ * onboarding's actual shape, where the form fetches only the full question text.
+ *
+ * It is the case that separates the five options from each other. Any shape
+ * that folds an answered item has to put SOMETHING in the folded row, and with
+ * no short label the only thing available is the statement itself.
+ *
+ * Six, not twenty, because past the second one every row is already showing the
+ * same thing — how many lines a statement wraps to, and whether the five
+ * circles still sit where the eye expects them.
  */
 export const LONG_ITEMS: Item[] = [
   {
-    leadTh: "การให้ข้อมูลป้อนกลับ",
-    leadEn: "Feedback",
     th: "ให้ข้อมูลป้อนกลับแก่ทีมงานทั้งในเรื่องที่ทำได้ดีและเรื่องที่ต้องปรับปรุง โดยอ้างอิงจากพฤติกรรมที่สังเกตได้จริง ไม่ใช่ความรู้สึกส่วนตัว และเลือกจังหวะเวลาที่ผู้รับพร้อมจะรับฟัง",
     en: "Gives the team feedback on both what went well and what needs to change, grounded in behaviour that was actually observed rather than personal impression, and picks a moment when the person is ready to hear it",
   },
   {
-    leadTh: "การมอบหมายงาน",
-    leadEn: "Delegation",
     th: "มอบหมายงานให้เหมาะกับความสามารถและภาระงานของแต่ละคน พร้อมระบุผลลัพธ์ที่คาดหวัง กรอบเวลา และขอบเขตการตัดสินใจที่ผู้รับมอบหมายมีสิทธิ์ทำได้เอง",
     en: "Delegates in a way that fits each person's capability and current load, stating the expected outcome, the timeframe, and how far they may decide on their own",
   },
   {
-    leadTh: "การบริหารความขัดแย้ง",
-    leadEn: "Managing conflict",
     th: "เมื่อเกิดความขัดแย้งภายในทีมหรือระหว่างหน่วยงาน เข้าไปรับฟังทุกฝ่ายก่อนสรุป และหาทางออกที่ทุกฝ่ายรับได้โดยยึดประโยชน์ขององค์กรเป็นหลัก",
     en: "When conflict arises inside the team or between functions, hears every side before concluding and finds a resolution all sides can accept, with the organisation's interest as the deciding test",
   },
   {
-    leadTh: "การพัฒนาคน",
-    leadEn: "Developing people",
     th: "วางแผนพัฒนาทีมงานเป็นรายบุคคลโดยดูจากจุดแข็งและสิ่งที่ต้องพัฒนาของแต่ละคน และติดตามผลอย่างต่อเนื่องแทนการส่งไปอบรมตามรอบปี",
     en: "Plans development person by person from their individual strengths and gaps, and follows the results through, rather than sending everyone on the annual course",
   },
   {
-    leadTh: "การตัดสินใจ",
-    leadEn: "Decision-making",
     th: "ตัดสินใจในสถานการณ์ที่ข้อมูลไม่ครบถ้วนได้ โดยชั่งน้ำหนักความเสี่ยงกับโอกาส และอธิบายเหตุผลเบื้องหลังการตัดสินใจให้ทีมงานเข้าใจ",
     en: "Can decide when the information is incomplete, weighing the risk against the opportunity, and explains the reasoning behind the decision so the team understands it",
   },
   {
-    leadTh: "การสื่อสาร",
-    leadEn: "Communication",
     th: "สื่อสารเรื่องที่ยากหรือเรื่องที่ไม่เป็นที่พอใจกับทีมงานอย่างตรงไปตรงมา โดยไม่ปล่อยให้ข้อมูลคลาดเคลื่อนไปตามข่าวลือ",
     en: "Delivers difficult or unwelcome news to the team directly, rather than letting the account drift into rumour",
   },
