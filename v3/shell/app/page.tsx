@@ -1,6 +1,9 @@
 import { version as reactRuntime } from "react";
 import nextPkg from "next/package.json";
 import twPkg from "tailwindcss/package.json";
+import baseUiPkg from "@base-ui/react/package.json";
+import tsPkg from "typescript/package.json";
+import lucidePkg from "lucide-react/package.json";
 import shellPkg from "../package.json";
 import { LeadingRow } from "./_workbench/leading-row";
 import { ProseRhythm } from "./_workbench/prose-rhythm";
@@ -15,11 +18,77 @@ import { ProseRhythm } from "./_workbench/prose-rhythm";
  * than asserting it.
  */
 
+/**
+ * Everything v3 stands on, and what each layer decides.
+ *
+ * The `running` column is READ from the installed package, never from the range
+ * beside it — which is the only reason the table is worth having. React is the
+ * standing proof: v3 asks for 19.2.8 and runs a canary Next pins for itself, and
+ * no amount of reading package.json would ever have said so.
+ *
+ * TWO ROWS CANNOT BE READ, and they say so rather than guessing. `shadcn` and
+ * `tw-animate-css` set an `exports` map with no `./package.json` entry, so the
+ * version is unreachable from code — as do clsx, tailwind-merge and
+ * class-variance-authority, which are left off entirely as plumbing inside
+ * `cn()` rather than a decision anyone made. Both unreadable rows are pinned to
+ * an exact version rather than a range, so their two columns cannot diverge:
+ * that is what makes showing one honest instead of a guess dressed as a reading.
+ */
 const VERSIONS = [
-  { name: "Next", asked: shellPkg.dependencies.next, running: nextPkg.version },
-  { name: "React", asked: shellPkg.dependencies.react, running: reactRuntime },
-  { name: "Tailwind", asked: shellPkg.devDependencies.tailwindcss, running: twPkg.version },
-  { name: "Node", asked: "—", running: process.versions.node },
+  {
+    name: "Node",
+    role: "runtime",
+    asked: "—",
+    running: process.versions.node,
+  },
+  {
+    name: "Next",
+    role: "framework, dev server, build",
+    asked: shellPkg.dependencies.next,
+    running: nextPkg.version,
+  },
+  {
+    name: "React",
+    role: "the UI library itself",
+    asked: shellPkg.dependencies.react,
+    running: reactRuntime,
+  },
+  {
+    name: "TypeScript",
+    role: "the type layer check-type.mjs leans on",
+    asked: shellPkg.devDependencies.typescript,
+    running: tsPkg.version,
+  },
+  {
+    name: "Tailwind",
+    role: "compiles every utility, and only what it can see",
+    asked: shellPkg.devDependencies.tailwindcss,
+    running: twPkg.version,
+  },
+  {
+    name: "Base UI",
+    role: "focus, keyboard and ARIA — not Radix",
+    asked: shellPkg.dependencies["@base-ui/react"],
+    running: baseUiPkg.version,
+  },
+  {
+    name: "shadcn",
+    role: "the registry components are copied from",
+    asked: shellPkg.dependencies.shadcn,
+    running: "pinned",
+  },
+  {
+    name: "tw-animate-css",
+    role: "owns animate-in / fade-in-0 / zoom-in-95 — dead without it",
+    asked: shellPkg.dependencies["tw-animate-css"],
+    running: "pinned",
+  },
+  {
+    name: "lucide",
+    role: "every icon",
+    asked: shellPkg.dependencies["lucide-react"],
+    running: lucidePkg.version,
+  },
 ];
 
 const SURFACES = [
@@ -173,6 +242,11 @@ export default function Page() {
         </p>
 
         <Section title="Stack">
+          {/* The role sits UNDER the name rather than in a fourth column. As a
+              column it pushed the table past the reading width, and the wrap
+              then drove every row to four times its height — the version
+              numbers, which are the point, ended up floating in whitespace.
+              Under the name it costs one line and no width. */}
           <table className="w-full text-sm">
             <thead>
               <tr className="text-muted-foreground">
@@ -183,16 +257,36 @@ export default function Page() {
             </thead>
             <tbody>
               {VERSIONS.map((v) => (
-                <tr key={v.name} className="border-t border-border">
-                  <th scope="row" className="text-left font-medium py-2 pr-6 whitespace-nowrap">
-                    {v.name}
+                <tr key={v.name} className="border-t border-border align-baseline">
+                  <th scope="row" className="text-left py-2 pr-6">
+                    <span className="font-medium">{v.name}</span>
+                    <span className="block text-xs font-normal text-muted-foreground">
+                      {v.role}
+                    </span>
                   </th>
-                  <td className="font-mono py-2 pr-6">{v.asked}</td>
-                  <td className="font-mono py-2">{v.running}</td>
+                  <td className="font-mono py-2 pr-6 whitespace-nowrap">{v.asked}</td>
+                  <td
+                    className={`font-mono py-2 ${
+                      v.running === "pinned" ? "text-muted-foreground" : ""
+                    }`}
+                  >
+                    {v.running}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
+          <p className="text-xs text-muted-foreground mt-3">
+            <span className="font-medium text-foreground">running</span> is read off the installed
+            package, not off the range beside it — which is why React shows a canary Next pins for
+            itself against the 19.2.8 asked for. The two reading{" "}
+            <span className="font-mono">pinned</span> block version introspection through their{" "}
+            <span className="font-mono">exports</span> map; both are pinned to an exact version
+            rather than a range, so the two columns cannot drift apart. Not listed:{" "}
+            <span className="font-mono">clsx</span>, <span className="font-mono">tailwind-merge</span>{" "}
+            and <span className="font-mono">class-variance-authority</span>, which are plumbing
+            inside <span className="font-mono">cn()</span> rather than a choice anyone made.
+          </p>
         </Section>
 
         <Section title="Surfaces — from theme.css">
