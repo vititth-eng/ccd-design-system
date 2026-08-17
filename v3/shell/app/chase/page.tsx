@@ -36,7 +36,7 @@ export default function ChasePatternPage() {
           </p>
 
           <p>
-            <strong className="font-semibold">Four breaks to decide.</strong> Set
+            <strong className="font-semibold">Five breaks to decide.</strong> Set
             the width to 375 and the volume to Overflowing before judging any of
             them — the desktop branch is what you are looking at until you frame
             it.
@@ -71,6 +71,20 @@ export default function ChasePatternPage() {
               The surface finds the stalled people and then offers nothing to do
               about them. Whatever that action is, it is the reason the screen
               exists.
+            </li>
+            <li>
+              <strong className="font-semibold">
+                How big is the headline figure?
+              </strong>{" "}
+              <code>18 / 53</code> renders at 30 because that is the
+              <code>Display</code> role. The ladder also mints 24 and calls it
+              &ldquo;KPI figure&rdquo;, but deliberately gives it no role — 24
+              exists so the registry&rsquo;s own blocks do not render at the
+              inherited size, and the rule is to mint the role only when a CCD
+              screen actually needs that size. This is the first CCD screen to
+              want a headline figure, so it is the first chance to say whether
+              30 is right inside a summary card or whether 24 earns its role
+              here.
             </li>
           </ol>
         </div>

@@ -89,11 +89,20 @@ export function ChaseScene() {
         <Progress value={pct} className="flex-col gap-2">
           <div className="flex w-full flex-wrap items-baseline gap-x-3 gap-y-1">
             {/* Display, the role, not raw utilities. Roles exist so drift is
-                findable, and this file bypassed them on the first pass. Worth
-                recording: the ladder mints 24 and annotates it "KPI figure",
-                but no role uses 24 — Display is 30. Using the role rather than
-                reaching past it, and the gap is a question for the type layer,
-                not something to paper over here. */}
+                findable, and this file bypassed them on the first pass.
+
+                It reached for `text-2xl` first, and 24 having no role is
+                DELIBERATE, not a gap — typography.tsx says so: 24 was minted
+                only so the registry's own blocks do not render at the inherited
+                size, and a role nobody calls is the lie that file already spent
+                a session being. So Display (30) is the honest choice here.
+
+                What is open is smaller: this is the first CCD screen to want a
+                headline figure, and the rule for minting the 24 role is "when a
+                CCD screen actually needs that size". Whether 30 is right inside
+                a summary card, or whether this is the screen that earns 24 its
+                role, is a decision for the pattern — not something to settle by
+                reaching past the roles. */}
             <Display>
               {done} / {total}
             </Display>
