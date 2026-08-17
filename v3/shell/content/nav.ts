@@ -31,8 +31,61 @@
  *    update, which is the only kind of status a hand-maintained list keeps.
  */
 
-export type NavItem = { name: string; href?: string; todo?: boolean };
+import { INVENTORY, type ComponentState } from "./inventory";
+
+export type NavItem = {
+  name: string;
+  href?: string;
+  todo?: boolean;
+  /** Shown after the name, quietly. Only where "no page" would otherwise mislead. */
+  note?: string;
+};
 export type NavGroup = { label: string; items: NavItem[] };
+
+/**
+ * The Components rows, built from the inventory rather than written out.
+ *
+ * Order is by state, matching /inventory: what a pattern demanded, then what
+ * merely has a page, then the workbench's own plumbing, then the undecided.
+ * Alphabetical would scatter the five that arrived behind one `sidebar` pull
+ * through the list and lose the only thing worth seeing at a glance.
+ *
+ * Only the states that would be MISREAD carry a note. "demanded" and
+ * "reference" need none — a linked row explains itself, and an unlinked row
+ * beside four linked ones already reads as "no page yet". What needs saying is
+ * when the absence means something else: that it serves the workbench, or that
+ * nobody has decided on it.
+ */
+function componentNav(): NavItem[] {
+  const NOTE: Partial<Record<ComponentState, string>> = {
+    instrument: "workbench",
+    transitive: "undecided",
+    unused: "unused",
+  };
+  const order: ComponentState[] = [
+    "demanded",
+    "reference",
+    "instrument",
+    "transitive",
+    "unused",
+  ];
+  /* The inventory's `name` is the FILENAME — that is what check-inventory
+     matches against disk, so it stays kebab-case there. The rail is read by a
+     person and everything else in it is sentence case, so the two are not the
+     same string. Derived rather than stored as a second field: every registry
+     name is kebab-case, so one transform covers all of them and cannot fall out
+     of sync the way a hand-written label would. */
+  const label = (n: string) =>
+    n.replace(/-/g, " ").replace(/^./, (c) => c.toUpperCase());
+
+  return order.flatMap((state) =>
+    INVENTORY.filter((c) => c.state === state).map((c) => ({
+      name: label(c.name),
+      href: c.href,
+      note: NOTE[state],
+    }))
+  );
+}
 
 /* ── Floor 1 · the system ─────────────────────────────────────────────── */
 
@@ -62,26 +115,28 @@ export const NAV: NavGroup[] = [
   },
   {
     /**
-     * "Everything we hold" leads, and it is the only row here that is complete.
+     * EVERY component we hold is listed here, generated from the inventory.
      *
-     * The four pages below it were the whole of this group until 2026-08-17,
-     * while `components/ui/` held eleven files — so the seven without a page
-     * were invisible, including five that arrived behind a single `sidebar`
-     * pull and that nobody has decided anything about. A group that lists a
-     * third of what exists reads as an inventory and is not one.
+     * Owner call, 2026-08-17: "every component we take from shadcn should live
+     * in this pane." This reverses what I argued for that morning — that rows
+     * without pages do not belong in a rail, because a nav row promises a page
+     * worth opening. He is right and the argument was wrong: the promise a rail
+     * makes is that it shows what exists. Four rows against thirteen files
+     * broke that promise far worse than a row with nothing behind it.
      *
-     * The page cannot be replaced by adding the missing seven as rows: most
-     * have nothing to show, and a nav row promises a page worth opening. What
-     * they need is a state beside a name, which is a table, not a rail.
+     * Generated, never typed. `componentNav()` reads the same INVENTORY the
+     * page reads, so the rail cannot fall behind the filesystem — and
+     * check-inventory.mjs already refuses a commit where INVENTORY disagrees
+     * with what is on disk. Typing this list a second time would have been the
+     * same defect one level up.
+     *
+     * The state suffix is not decoration. Without it a page-less component row
+     * reads exactly like an unbuilt pattern row above it — the same dim text
+     * meaning "not made yet" in one group and "made, undecided" in the other.
+     * One channel, two meanings, which is the ambiguity /menu exists to settle.
      */
     label: "Components",
-    items: [
-      { name: "Everything we hold", href: "/inventory" },
-      { name: "Button", href: "/button" },
-      { name: "Card", href: "/card" },
-      { name: "Dialog", href: "/dialog" },
-      { name: "Dropdown menu", href: "/menu" },
-    ],
+    items: [{ name: "Everything we hold", href: "/inventory" }, ...componentNav()],
   },
   {
     /**

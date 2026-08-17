@@ -80,7 +80,17 @@ type ThemeId = (typeof THEMES)[number]["id"];
  * something IS, a translucent overlay says what is happening to it, and the two
  * stack instead of competing for the same property.
  */
-function NavLink({ href, name, current }: { href: string; name: string; current: boolean }) {
+function NavLink({
+  href,
+  name,
+  note,
+  current,
+}: {
+  href: string;
+  name: string;
+  note?: string;
+  current: boolean;
+}) {
   return (
     <SidebarMenuItem>
       {/* `render`, not `asChild` — Base UI's composition prop takes the element to
@@ -95,7 +105,10 @@ function NavLink({ href, name, current }: { href: string; name: string; current:
         {/* A span, not bare text. The component truncates `span:last-child`, and
             bare text gives it nothing to match — so a long label wraps instead
             of ellipsing whenever the rail is narrower than the words. */}
-        <span>{name}</span>
+        <span>
+          {name}
+          {note && <span className="ml-1.5 text-xs opacity-60">{note}</span>}
+        </span>
       </SidebarMenuButton>
     </SidebarMenuItem>
   );
@@ -184,15 +197,27 @@ export default function Chrome({ children }: { children: React.ReactNode }) {
                       key={item.name}
                       href={item.href}
                       name={item.name}
+                      note={item.note}
                       current={item.href === pathname}
                     />
                   ) : (
                     /* Not a link, and not a disabled button either: a page that does
                        not exist says so plainly. A dead nav row that lights up on
-                       hover is a promise the app cannot keep. */
+                       hover is a promise the app cannot keep.
+
+                       Two different absences render here and they must not read
+                       alike. A Patterns row with no page is a job not yet designed;
+                       a Components row with no page is a component that EXISTS and
+                       has no reference page. The note carries that difference —
+                       without it the same dim text would mean "not made" in one
+                       group and "made, undecided" in the next, which is one channel
+                       doing two jobs. */
                     <SidebarMenuItem key={item.name}>
                       <div className="px-2 py-1.5 text-sm text-muted-foreground/60">
                         {item.name}
+                        {item.note && (
+                          <span className="ml-1.5 text-xs opacity-70">{item.note}</span>
+                        )}
                       </div>
                     </SidebarMenuItem>
                   )
