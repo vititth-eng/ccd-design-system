@@ -118,8 +118,14 @@ export function ChaseScene() {
             <Muted>
               {th ? "ผู้ประเมินตอบแล้ว" : "raters answered"} · {pct}%
             </Muted>
+            {/* Pushed to the far end only once there IS a far end. `ml-auto`
+                unconditionally meant that at 375, where this wraps onto its own
+                line, it got shoved to the right edge — alone, against nothing,
+                out of line with every other thing in the card. A rule that
+                separates two items on one line becomes a rule that strands one
+                item on two. */}
             {stalled > 0 && (
-              <Muted className="ml-auto font-medium text-caution-strong">
+              <Muted className="font-medium text-caution-strong sm:ml-auto">
                 {th
                   ? `${stalled} คนยังไม่มีใครตอบเลย`
                   : `${stalled} with no replies at all`}
@@ -141,7 +147,7 @@ export function ChaseScene() {
         <Table>
           <TableHeader>
             <TableRow className="bg-background">
-              <TableHead className="sticky left-0 z-10 bg-inherit">
+              <TableHead className="sticky left-0 z-10 bg-background">
                 {th ? "ผู้ถูกประเมิน" : "Assessee"}
               </TableHead>
               <TableHead className="text-right">
@@ -162,13 +168,35 @@ export function ChaseScene() {
               return (
                 <TableRow
                   key={p.id}
-                  /* An explicit background on every row, not only the stalled
-                     ones. The frozen cell below inherits it, and a transparent
-                     frozen cell is not frozen at all — the scrolled numbers
-                     slide underneath and print through the name. */
-                  className={isStalled ? "bg-caution-tint" : "bg-background"}
+                  className={
+                    isStalled
+                      ? "group/row bg-caution-tint hover:bg-caution-tint"
+                      : "group/row hover:bg-muted"
+                  }
                 >
-                  <TableCell className="sticky left-0 z-10 bg-inherit font-medium">
+                  {/* The frozen cell paints its OWN opaque base and then the
+                      row's state on top of it, instead of inheriting the row's
+                      background. Inheriting looked right and was wrong twice
+                      over: shadcn's row hover is `bg-muted/50`, half
+                      transparent, and the dark-mode caution tint is
+                      rgba(255,170,90,.14). In both cases the frozen cell stops
+                      being opaque and the scrolled numbers print straight
+                      through the name — the exact failure freezing the column
+                      exists to prevent, visible only on hover or only in dark.
+
+                      background-color carries the opaque base, background-image
+                      carries the state layer. That is the only way one element
+                      paints two colours, and it composites the tint over an
+                      opaque ground exactly as the row composites it over the
+                      page, so the frozen cell and its row stay the same
+                      colour. */}
+                  <TableCell
+                    className={`sticky left-0 z-10 bg-background font-medium ${
+                      isStalled
+                        ? "bg-[image:linear-gradient(var(--caution-tint),var(--caution-tint))]"
+                        : "group-hover/row:bg-muted"
+                    }`}
+                  >
                     {name}
                   </TableCell>
                   <TableCell className="text-right tabular-nums text-muted-foreground">
