@@ -110,6 +110,25 @@ for (const file of walk(V3)) {
     )) {
       violations.push({ file, line: i + 1, cls: m[0], kind: "colour" });
     }
+
+    /* A menu popup sized to its TRIGGER rather than its contents.
+       shadcn ships `w-(--anchor-width)` on DropdownMenuContent, which is right
+       for a select or combobox — the popup should match the field — and wrong
+       for a menu, whose items have nothing to do with how wide the button was.
+       Their own DropdownMenuSubContent uses `w-auto` in the same file, which is
+       what settles it as a defect rather than an intent.
+
+       It hides in English behind a wide trigger and `min-w-32`. It surfaces on
+       an icon trigger (36px) with Thai labels: every item wraps, and the menu
+       looks broken without anything erring. Found 2026-08-17 by Vitit looking
+       at a screenshot of /menu.
+
+       This is a REGISTRY class we deliberately replace, so a re-copy silently
+       reintroduces it — the same shape as the overlay rule above, and the same
+       reason the check has to remember instead of a person. */
+    for (const m of line.matchAll(/\bw-\(--anchor-width\)/g)) {
+      violations.push({ file, line: i + 1, cls: m[0], kind: "anchor-width" });
+    }
   });
 }
 
@@ -142,6 +161,13 @@ if (kinds.has("colour")) {
   console.error(
     `  → absolute colour bypasses every token. Use the token utility instead —\n` +
       `    a shadcn overlay's bg-black/50 becomes bg-scrim, which is mode-aware.`
+  );
+}
+if (kinds.has("anchor-width")) {
+  console.error(
+    `  → a menu popup sized to its trigger, not its contents. Use w-auto, the\n` +
+      `    same class the file's own SubContent uses. On an icon trigger this\n` +
+      `    wraps every label and nothing errors.`
   );
 }
 process.exit(1);

@@ -114,6 +114,7 @@ export const INVENTORY: InventoryItem[] = [
     origin: "registry",
     state: "reference",
     why: "A page exists and settled the selection-vs-hover question. No pattern uses it yet.",
+    edited: "popup is w-auto, not sized to its trigger — the registry's version wrapped every Thai label under an icon button",
     href: "/menu",
   },
   {

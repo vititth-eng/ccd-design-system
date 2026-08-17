@@ -109,7 +109,7 @@ export default function MenuPage() {
         >
           <DropdownMenu>
             <DropdownMenuTrigger render={<Button variant="outline">มุมมอง</Button>} />
-            <DropdownMenuContent className="w-56">
+            <DropdownMenuContent>
               {/* The label goes INSIDE its group, not above it. Base UI renders it as
                   the group's own GroupLabel and wires aria-labelledby from it, so a
                   loose label throws "MenuGroupContext is missing" rather than
@@ -141,7 +141,7 @@ export default function MenuPage() {
         >
           <DropdownMenu>
             <DropdownMenuTrigger render={<Button variant="outline">ส่งออก</Button>} />
-            <DropdownMenuContent className="w-52">
+            <DropdownMenuContent>
               <DropdownMenuItem>ส่งออกทั้งหมด</DropdownMenuItem>
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>เลือกรูปแบบ</DropdownMenuSubTrigger>
@@ -163,7 +163,7 @@ export default function MenuPage() {
         >
           <DropdownMenu>
             <DropdownMenuTrigger render={<Button variant="outline">ที่มีวรรณยุกต์และสระ</Button>} />
-            <DropdownMenuContent className="w-56">
+            <DropdownMenuContent>
               <DropdownMenuItem>ตั้งค่าผู้ใช้งาน</DropdownMenuItem>
               <DropdownMenuItem>รายงานฉบับย่อ</DropdownMenuItem>
               <DropdownMenuItem>ปรับปรุงข้อมูลพนักงาน</DropdownMenuItem>
