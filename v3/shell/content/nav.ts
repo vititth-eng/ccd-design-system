@@ -61,8 +61,22 @@ export const NAV: NavGroup[] = [
     ],
   },
   {
+    /**
+     * "Everything we hold" leads, and it is the only row here that is complete.
+     *
+     * The four pages below it were the whole of this group until 2026-08-17,
+     * while `components/ui/` held eleven files — so the seven without a page
+     * were invisible, including five that arrived behind a single `sidebar`
+     * pull and that nobody has decided anything about. A group that lists a
+     * third of what exists reads as an inventory and is not one.
+     *
+     * The page cannot be replaced by adding the missing seven as rows: most
+     * have nothing to show, and a nav row promises a page worth opening. What
+     * they need is a state beside a name, which is a table, not a rail.
+     */
     label: "Components",
     items: [
+      { name: "Everything we hold", href: "/inventory" },
       { name: "Button", href: "/button" },
       { name: "Card", href: "/card" },
       { name: "Dialog", href: "/dialog" },
