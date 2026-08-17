@@ -59,6 +59,7 @@ export type NavGroup = { label: string; items: NavItem[] };
 function componentNav(): NavItem[] {
   const NOTE: Partial<Record<ComponentState, string>> = {
     instrument: "workbench",
+    quarantined: "deciding",
     transitive: "undecided",
     unused: "unused",
   };
@@ -66,6 +67,7 @@ function componentNav(): NavItem[] {
     "demanded",
     "reference",
     "instrument",
+    "quarantined",
     "transitive",
     "unused",
   ];
@@ -107,6 +109,7 @@ export const NAV: NavGroup[] = [
     label: "Patterns",
     items: [
       { name: "Likert scale", href: "/likert" },
+      { name: "Chase / monitor", href: "/chase" },
       { name: "Admin table", todo: true },
       { name: "Create form", todo: true },
       { name: "Dashboard", todo: true },

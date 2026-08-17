@@ -26,6 +26,7 @@ const ORDER: ComponentState[] = [
   "demanded",
   "reference",
   "instrument",
+  "quarantined",
   "transitive",
   "unused",
 ];
@@ -36,6 +37,7 @@ const TONE: Record<ComponentState, string> = {
   demanded: "border-positive/40",
   reference: "border-border",
   instrument: "border-border",
+  quarantined: "border-caution/50",
   transitive: "border-caution/50",
   unused: "border-caution/50",
 };
@@ -69,18 +71,22 @@ function Row({ item }: { item: InventoryItem }) {
 export default function InventoryPage() {
   const tally = inventoryTally();
   const undecided = INVENTORY.filter(
-    (i) => i.state === "transitive" || i.state === "unused"
+    (i) =>
+      i.state === "transitive" ||
+      i.state === "unused" ||
+      i.state === "quarantined"
   ).length;
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-10">
       <Section>What the system is holding</Section>
       <Body className="mt-2 text-muted-foreground">
-        Every component in the repo and why it is here — the rail lists four
-        component pages, this is all {INVENTORY.filter((i) => i.file).length} of
-        them. The last row is not a component at all but a dependency that ships
-        no file, listed because nothing else would ever show it. A commit that
-        adds or removes a component without updating this list is refused.
+        All {INVENTORY.filter((i) => i.file).length} components in the repo and
+        why each one is here. The rail names them too; this page is where the
+        reason lives. The last row is not a component at all but a dependency
+        that ships no file, listed because nothing else would ever show it. A
+        commit that adds or removes a component without updating this list is
+        refused.
       </Body>
 
       <div className="mt-6 rounded-lg border border-border p-4">

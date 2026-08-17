@@ -37,6 +37,12 @@ export type ComponentState =
   | "instrument"
   /** Arrived transitively behind another pull. Nobody has decided anything. */
   | "transitive"
+  /**
+   * Pulled ON PURPOSE for a pattern that is still being decided. Fence 2: it
+   * stays here until the decision lands, then it is kept or deleted. Different
+   * from `transitive` — someone chose this, and someone owes an answer on it.
+   */
+  | "quarantined"
   /** In package.json, imported by nothing at all. */
   | "unused";
 
@@ -57,6 +63,7 @@ export const STATE_LABEL: Record<ComponentState, string> = {
   demanded: "a decided pattern asked for it",
   reference: "has a page, no pattern uses it yet",
   instrument: "builds the workbench, never ships",
+  quarantined: "pulled for a pattern still being decided",
   transitive: "arrived behind another pull — undecided",
   unused: "nothing imports it",
 };
@@ -98,6 +105,20 @@ export const INVENTORY: InventoryItem[] = [
     origin: "ccd",
     state: "demanded",
     why: "CCD's numbered circle. RadioGroupItem hardcodes its indicator child, so a Likert circle could not use it — this is that component, rebuilt with the registry item's contract.",
+  },
+  {
+    name: "table",
+    file: "ui/table.tsx",
+    origin: "registry",
+    state: "quarantined",
+    why: "Pulled 2026-08-17 for the chase/monitor candidate. Costs no dependencies at all, which is why it was taken instead of the dashboard-01 block. Stays here until that pattern is decided.",
+  },
+  {
+    name: "badge",
+    file: "ui/badge.tsx",
+    origin: "registry",
+    state: "quarantined",
+    why: "Pulled 2026-08-17 alongside table for the chase/monitor candidate, and the candidate does not yet use it. If the decided pattern does not demand it, it goes.",
   },
   {
     name: "dialog",
@@ -175,6 +196,7 @@ export function inventoryTally(): { state: ComponentState; n: number }[] {
     "demanded",
     "reference",
     "instrument",
+    "quarantined",
     "transitive",
     "unused",
   ];
