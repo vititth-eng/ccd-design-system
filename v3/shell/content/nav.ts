@@ -1,19 +1,40 @@
 /**
  * What the sidebar lists, and nothing else.
  *
- * Two rules keep this file from rotting into a second source of truth:
+ * THREE FLOORS, and the split is the point (2026-08-17). This file used to be
+ * one flat list of groups, which put three unlike things at the same rank:
+ * what the system is today, why past choices went the way they did, and the
+ * instruments used to measure. A reader had to re-sort them by eye on every
+ * visit. Worse, it got worse on its own — a settled argument keeps its page
+ * forever, on purpose, so the flat list grows by one permanent row per decision
+ * while the part that ships stays the same size.
  *
- * 1. A page that exists is a link; a page that does not is `todo`. Nothing here
- *    describes what a page CONCLUDED — that belongs to Linear, and a conclusion
- *    copied into a nav label is a copy that keeps looking authoritative after it
- *    stops being true.
- * 2. Open questions carry their Linear id and no status. When one is answered it
- *    is deleted from this list. Deletion IS the update, which is the only kind of
- *    status a hand-maintained list can be trusted to keep.
+ * So rank replaces order:
+ *
+ *   NAV             the system — what is true right now. Top, full weight.
+ *   OPEN_QUESTIONS  live state: asked, not yet answered. Same floor as NAV,
+ *                   because an open question is a fact about today.
+ *   SETTLED         the evidence behind decisions already made. Folded away.
+ *   TOOLS           instruments. Bottom, quietest.
+ *
+ * Three rules keep this file from rotting into a second source of truth:
+ *
+ * 1. A page that exists is a link; a page that does not is `todo`. Nothing in
+ *    NAV describes what a page CONCLUDED — that belongs to Linear, and a
+ *    conclusion copied into a nav label is a copy that keeps looking
+ *    authoritative after it stops being true.
+ * 2. SETTLED is the ONE exception, and it is safe for the opposite reason: a
+ *    settled answer does not change. If one ever does, the row does not get
+ *    edited — it moves back up to OPEN_QUESTIONS, which is a visible event.
+ * 3. Open questions carry their Linear id and no status. When one is answered
+ *    it moves to SETTLED with its answer, or is deleted. Movement IS the
+ *    update, which is the only kind of status a hand-maintained list keeps.
  */
 
 export type NavItem = { name: string; href?: string; todo?: boolean };
 export type NavGroup = { label: string; items: NavItem[] };
+
+/* ── Floor 1 · the system ─────────────────────────────────────────────── */
 
 export const NAV: NavGroup[] = [
   /**
@@ -63,32 +84,6 @@ export const NAV: NavGroup[] = [
     label: "Foundations",
     items: [{ name: "Tokens", href: "/" }],
   },
-  {
-    label: "Behaviour",
-    items: [{ name: "Base UI probe", href: "/probe" }],
-  },
-  {
-    /**
-     * Mocks live on their own routes and never inside a reference page.
-     * Vitit's rule, 2026-08-12.
-     *
-     * A reference page answers "what is true right now" and every row on it is
-     * a live token. A mock answers "what if it were otherwise", so half of what
-     * it renders is deliberately not what ships. Mixed into one page, a reader
-     * has to check each block to learn which kind it is — the exact confusion
-     * this workbench exists to remove.
-     *
-     * A mock stays after its question is answered, because a decision whose
-     * evidence was deleted gets re-opened by the next person to disagree.
-     */
-    label: "Mocks",
-    items: [
-      { name: "Likert — five shapes", href: "/mocks/likert-shape" },
-      { name: "Leading — CCD vs vega", href: "/mocks/leading" },
-      { name: "Caution — #CF741E vs darker", href: "/mocks/caution-status" },
-      { name: "Likert control — how it is drawn", href: "/mocks/likert-control" },
-    ],
-  },
 ];
 
 /**
@@ -105,19 +100,94 @@ export function isPatternRoute(pathname: string): boolean {
   return patterns?.items.some((i) => i.href === pathname) ?? false;
 }
 
+/* ── Floor 1 · still open ─────────────────────────────────────────────── */
+
 /**
- * Open questions only. Answered ones are removed, not marked.
+ * Open questions only. Answered ones move to SETTLED, they are not marked here.
  *
  * Every one of these lives on CCD-281, so the id is not repeated per row — the
  * group carries it once. Two ids reading CCD-281 down the same column looked
  * like data and carried none.
  *
- * "Does the Likert scale keep v2's shape?" belonged here until the pattern page
- * existed. It is on /likert now, and a question in two places is two places to
- * answer it.
+ * Some have a page and some do not, which is why `href` is optional. A question
+ * with a page is not further along than one without — `/mocks/likert-control`
+ * has rendered its three candidates for days and the choice is still parked
+ * until the rater-form surface comes up. Having evidence is not having decided,
+ * and this list is the only place that distinction is visible.
  */
 export const OPEN_QUESTIONS_ISSUE = "CCD-281";
 
-export const OPEN_QUESTIONS: { name: string }[] = [
+export const OPEN_QUESTIONS: { name: string; href?: string }[] = [
+  { name: "Likert control — how it is drawn", href: "/mocks/likert-control" },
   { name: "Chart hues — three slots, nothing rendered" },
 ];
+
+/* ── Floor 2 · decided, folded away ───────────────────────────────────── */
+
+/**
+ * Mocks whose question has been answered. Folded shut by default.
+ *
+ * They are kept forever — Vitit's rule, 2026-08-12: a decision whose evidence
+ * was deleted gets re-opened by the next person to disagree. Folding is what
+ * makes that rule affordable. Nothing is removed and nothing is harder to
+ * reach; the pages simply stop competing with the system for the same glance.
+ *
+ * Each row carries the answer it produced, because that is the only thing a
+ * reader wants from this floor. Without it the row asks you to open the page
+ * to find out whether you care — which is the cost that made the flat list
+ * tiring in the first place.
+ *
+ * `answer` is deliberately the OUTCOME, never the reasoning. The reasoning is
+ * in the page's own header comment and in Linear, and a summary of it here
+ * would be a third copy that drifts.
+ */
+export type SettledItem = { name: string; href: string; answer: string };
+
+export const SETTLED: SettledItem[] = [
+  {
+    name: "Likert — five shapes",
+    href: "/mocks/likert-shape",
+    answer: "matrix, 2026-08-13",
+  },
+  {
+    name: "Leading — CCD vs vega",
+    href: "/mocks/leading",
+    answer: "CCD's leading kept, 2026-08-12",
+  },
+  {
+    name: "Caution — #CF741E vs darker",
+    href: "/mocks/caution-status",
+    answer: "shipped hue kept, 2026-08-13",
+  },
+];
+
+/* ── Floor 3 · instruments ────────────────────────────────────────────── */
+
+/**
+ * How we measure, as opposed to what we built. Bottom of the rail, quietest.
+ *
+ * The probe renders Base UI unstyled to check behaviour with nothing in the
+ * way. It is not a component page and it is not evidence for any decision —
+ * grouping it under "Behaviour" beside the component pages implied it was one
+ * more thing the system ships, which it is not.
+ */
+export const TOOLS: NavItem[] = [{ name: "Base UI probe", href: "/probe" }];
+
+/**
+ * Every named route in the rail, whichever floor it sits on.
+ *
+ * The header label used to read from NAV alone, so it fell back to printing the
+ * raw pathname on every mock and on the probe — the pages most likely to be
+ * open when someone is confused about where they are.
+ */
+export function routeName(pathname: string): string {
+  for (const group of NAV) {
+    for (const item of group.items) {
+      if (item.href === pathname) return item.name;
+    }
+  }
+  for (const item of [...SETTLED, ...TOOLS, ...OPEN_QUESTIONS]) {
+    if (item.href === pathname) return item.name;
+  }
+  return pathname;
+}

@@ -6,6 +6,7 @@ import * as React from "react";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupLabel,
   SidebarHeader,
@@ -15,9 +16,18 @@ import {
   SidebarMenuItem,
   SidebarProvider,
   SidebarRail,
+  SidebarSeparator,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { NAV, OPEN_QUESTIONS, OPEN_QUESTIONS_ISSUE, isPatternRoute } from "../../content/nav";
+import {
+  NAV,
+  OPEN_QUESTIONS,
+  OPEN_QUESTIONS_ISSUE,
+  SETTLED,
+  TOOLS,
+  isPatternRoute,
+  routeName,
+} from "../../content/nav";
 import { FixtureBar } from "./fixture-bar";
 import { FIXTURE_KEYS } from "./fixtures";
 import { Segmented } from "./segmented";
@@ -89,15 +99,6 @@ function NavLink({ href, name, current }: { href: string; name: string; current:
       </SidebarMenuButton>
     </SidebarMenuItem>
   );
-}
-
-function currentName(pathname: string): string {
-  for (const group of NAV) {
-    for (const item of group.items) {
-      if (item.href === pathname) return item.name;
-    }
-  }
-  return pathname;
 }
 
 export default function Chrome({ children }: { children: React.ReactNode }) {
@@ -213,20 +214,107 @@ export default function Chrome({ children }: { children: React.ReactNode }) {
                   absolutely against a SidebarMenuButton — `peer/menu-button` —
                   and these rows have no button because a question is not a
                   link. With no peer to anchor to, both badges floated a row
-                  low, which is what made the group look broken. */}
+                  low, which is what made the group look broken.
+
+                  A question with a page links; one without is plain text. Both
+                  keep the same leading rule, because the rule marks "unanswered"
+                  and that is equally true of both. Linking the ones that have
+                  evidence must not read as ranking them above the ones that do
+                  not — having a page is not being further along. */}
               <ul className="space-y-1 px-2 py-1">
                 {OPEN_QUESTIONS.map((q) => (
                   <li
                     key={q.name}
                     className="border-l-2 border-sidebar-border py-0.5 pl-2 text-sm text-sidebar-foreground/70"
                   >
-                    {q.name}
+                    {q.href ? (
+                      <Link
+                        href={q.href}
+                        aria-current={q.href === pathname ? "page" : undefined}
+                        className="underline-offset-4 hover:underline aria-[current=page]:font-medium aria-[current=page]:text-sidebar-foreground"
+                      >
+                        {q.name}
+                      </Link>
+                    ) : (
+                      q.name
+                    )}
                   </li>
                 ))}
               </ul>
             </SidebarGroup>
           )}
+
+          {/* ── Floor 2 · decided, folded ────────────────────────────────
+              Native <details>, not a Collapsible pull. The stop rule is that
+              no component arrives unless a decided pattern demands it, and
+              this needs disclosure with a keyboard-reachable summary and
+              nothing else — which the element already is, at zero bytes and
+              zero new registry surface.
+
+              Closed on every navigation, because <details> keeps no state
+              across a route change. That is the correct default here rather
+              than a limitation: this floor is a reference you go to on
+              purpose, and one that re-opens itself is back to competing with
+              the system for attention. */}
+          {SETTLED.length > 0 && (
+            <SidebarGroup>
+              <details className="group/settled">
+                <summary className="flex cursor-pointer list-none items-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-medium text-sidebar-foreground/70 outline-none hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring">
+                  {/* Rotates rather than swapping glyphs, so the open and shut
+                      states are the same mark and read as one control. */}
+                  <span className="text-[0.6rem] transition-transform group-open/settled:rotate-90">
+                    ▶
+                  </span>
+                  Decided
+                  <span className="ml-auto tabular-nums opacity-60">{SETTLED.length}</span>
+                </summary>
+                <ul className="mt-1 space-y-1 px-2">
+                  {SETTLED.map((s) => (
+                    <li key={s.href}>
+                      <Link
+                        href={s.href}
+                        aria-current={s.href === pathname ? "page" : undefined}
+                        className="block rounded-md px-2 py-1 text-sm text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground aria-[current=page]:font-medium aria-[current=page]:text-sidebar-foreground"
+                      >
+                        {s.name}
+                        {/* The answer, not the reasoning. It is the only thing
+                            worth reading on a shut question, and without it
+                            every row costs a page-open to find out whether you
+                            care. */}
+                        <span className="mt-0.5 block text-xs text-sidebar-foreground/50">
+                          {s.answer}
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            </SidebarGroup>
+          )}
         </SidebarContent>
+
+        {/* ── Floor 3 · instruments ────────────────────────────────────────
+            SidebarFooter rather than one more SidebarGroup, so the rail's own
+            layout does the pinning: SidebarContent scrolls, the footer does
+            not, and the instruments stay reachable at the bottom however long
+            the pattern list grows. */}
+        {TOOLS.length > 0 && (
+          <SidebarFooter>
+            <SidebarSeparator className="mx-0" />
+            <SidebarMenu>
+              {TOOLS.map((t) =>
+                t.href ? (
+                  <NavLink
+                    key={t.name}
+                    href={t.href}
+                    name={t.name}
+                    current={t.href === pathname}
+                  />
+                ) : null
+              )}
+            </SidebarMenu>
+          </SidebarFooter>
+        )}
 
         {/* The drag handle on the rail's edge, and the reason the sidebar is worth
             pulling rather than writing: none of this is CSS. */}
@@ -256,7 +344,7 @@ export default function Chrome({ children }: { children: React.ReactNode }) {
           <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-3">
             <div className="flex items-center gap-2">
               <SidebarTrigger />
-              <span className="text-sm font-medium">{currentName(pathname)}</span>
+              <span className="text-sm font-medium">{routeName(pathname)}</span>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <Segmented value={width} onChange={setWidth} options={WIDTHS} label="Viewport width" />
@@ -275,7 +363,7 @@ export default function Chrome({ children }: { children: React.ReactNode }) {
           <div className="flex justify-center px-4 py-6">
             <iframe
               key={`${pathname}-${frame.px}`}
-              title={`${currentName(pathname)} at ${frame.px}px`}
+              title={`${routeName(pathname)} at ${frame.px}px`}
               src={frameSrc}
               style={{ width: frame.px }}
               className="h-[80vh] rounded-lg border border-border bg-background"
