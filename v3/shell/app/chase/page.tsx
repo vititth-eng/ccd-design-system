@@ -36,6 +36,18 @@ export default function ChasePatternPage() {
           </p>
 
           <p>
+            <strong className="font-semibold">
+              Decided already: the unit does not render.
+            </strong>{" "}
+            The live screen prints a department beside each name. Owner call,
+            2026-08-17 — nobody chases a department, and the Thai unit names are
+            the widest strings in the table, so they were setting the name
+            column&rsquo;s width for a value that answers nothing the screen
+            asks. The fixture keeps the field, so the overflow axis has not
+            quietly lost its longest string.
+          </p>
+
+          <p>
             <strong className="font-semibold">Five breaks to decide.</strong> Set
             the width to 375 and the volume to Overflowing before judging any of
             them — the desktop branch is what you are looking at until you frame
@@ -45,11 +57,21 @@ export default function ChasePatternPage() {
           <ol className="flex list-decimal flex-col gap-2 pl-5">
             <li>
               <strong className="font-semibold">Seven columns do not fit a phone.</strong>{" "}
-              Five rater groups plus a name plus a total. On the live screen this
-              is a laptop-only surface and the method currently exempts admin
-              screens from the 375px floor — but v3 raised mobile to a standing
-              requirement and left that exemption open. This is the screen that
-              forces the answer.
+              Five rater groups plus a name plus a total. The method exempts
+              admin screens from the 375px floor; v3 raised mobile to a standing
+              requirement and left that exemption open, and this is the screen
+              that forces the answer.{" "}
+              <strong className="font-semibold">Partly handled, 2026-08-17.</strong>{" "}
+              BBC Sport&rsquo;s league table was checked live at 375 — ten
+              numeric columns, an almost entirely phone audience — and it does
+              not build a card stack. It freezes the identity column and puts
+              the number you came for ahead of the ones you did not. Both are
+              now copied here: the name is frozen, and the row total moved from
+              last to second, so &ldquo;who is stalled&rdquo; is answerable
+              without scrolling at all. What is still undecided is the ruling,
+              not the layout: whether admin screens keep the exemption, and
+              therefore whether a sideways scroll is an acceptable answer or a
+              second shape has to exist.
             </li>
             <li>
               <strong className="font-semibold">

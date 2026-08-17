@@ -30,6 +30,15 @@ import { GROUPS, people, type Person, type RaterGroup } from "./fixture";
  * Parity first — the comparison is meant to measure the stack, not taste. Every
  * departure from the live screen is listed on the pattern page as a break to
  * decide, not silently applied here.
+ *
+ * DECIDED, 2026-08-17 — the unit no longer renders beside the name. The live
+ * screen prints it; this one does not. Owner call, and the reason is what the
+ * surface is for: nobody chases a department, and the Thai unit names are the
+ * widest strings in the table (สำนักงานพัฒนาองค์กรและทรัพยากรบุคคลกลาง sets the
+ * name column's width by itself) for a value that answers no question the
+ * screen asks. The fixture keeps the field — dropping it from the DATA would
+ * quietly remove the longest-string stress from the overflow axis, which is a
+ * different decision nobody made.
  */
 
 /* Three renderings for a cell, and the difference matters more than it looks:
@@ -120,19 +129,29 @@ export function ChaseScene() {
         </Progress>
       </Card>
 
+      {/* Sideways scroll with the name frozen, and the row total pulled to the
+          front. Both are copied from BBC Sport's league table, checked live at
+          375 on 2026-08-17: ten numeric columns, an audience that is almost all
+          phones, and they still did not build a card stack. They froze the
+          identity column and moved the number you came for (Pts) ahead of the
+          ones you did not (W/D/L). Here the number you came for is the row
+          total, and it was last — off-screen at 375, which is the only column
+          that answers the question the screen exists to ask. */}
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead>{th ? "ผู้ถูกประเมิน" : "Assessee"}</TableHead>
+            <TableRow className="bg-background">
+              <TableHead className="sticky left-0 z-10 bg-inherit">
+                {th ? "ผู้ถูกประเมิน" : "Assessee"}
+              </TableHead>
+              <TableHead className="text-right">
+                {th ? "ความคืบหน้า" : "Progress"}
+              </TableHead>
               {GROUPS.map((g) => (
                 <TableHead key={g.key} className="text-right tabular-nums">
                   {th ? g.th : g.en}
                 </TableHead>
               ))}
-              <TableHead className="text-right">
-                {th ? "ความคืบหน้า" : "Progress"}
-              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -140,19 +159,20 @@ export function ChaseScene() {
               const [rd, rt] = rowTotals(p);
               const isStalled = rt > 0 && rd === 0;
               const name = th ? p.nameTh : p.nameEn;
-              const unit = th ? p.unitTh : p.unitEn;
               return (
                 <TableRow
                   key={p.id}
-                  className={isStalled ? "bg-caution-tint/60" : undefined}
+                  /* An explicit background on every row, not only the stalled
+                     ones. The frozen cell below inherits it, and a transparent
+                     frozen cell is not frozen at all — the scrolled numbers
+                     slide underneath and print through the name. */
+                  className={isStalled ? "bg-caution-tint" : "bg-background"}
                 >
-                  <TableCell className="font-medium">
+                  <TableCell className="sticky left-0 z-10 bg-inherit font-medium">
                     {name}
-                    {unit && (
-                      <span className="ml-2 font-normal text-muted-foreground">
-                        · {unit}
-                      </span>
-                    )}
+                  </TableCell>
+                  <TableCell className="text-right tabular-nums text-muted-foreground">
+                    {rt === 0 ? "—" : `${rd}/${rt}`}
                   </TableCell>
                   {GROUPS.map((g) => {
                     const [d, t] = p.tally[g.key];
@@ -165,9 +185,6 @@ export function ChaseScene() {
                       </TableCell>
                     );
                   })}
-                  <TableCell className="text-right tabular-nums text-muted-foreground">
-                    {rt === 0 ? "—" : `${rd}/${rt}`}
-                  </TableCell>
                 </TableRow>
               );
             })}
