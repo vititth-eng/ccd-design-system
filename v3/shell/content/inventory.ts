@@ -114,11 +114,11 @@ export const INVENTORY: InventoryItem[] = [
     why: "Pulled 2026-08-17 for the chase/monitor candidate. Costs no dependencies at all, which is why it was taken instead of the dashboard-01 block. Stays here until that pattern is decided.",
   },
   {
-    name: "badge",
-    file: "ui/badge.tsx",
+    name: "progress",
+    file: "ui/progress.tsx",
     origin: "registry",
     state: "quarantined",
-    why: "Pulled 2026-08-17 alongside table for the chase/monitor candidate, and the candidate does not yet use it. If the decided pattern does not demand it, it goes.",
+    why: "Pulled 2026-08-17 for the chase/monitor summary bar, replacing two hand-rolled divs. Zero dependencies, and it carries the progressbar role and value that the hand-rolled version silently did not.",
   },
   {
     name: "dialog",

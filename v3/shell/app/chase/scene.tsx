@@ -9,6 +9,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Display, Muted } from "@/components/typography";
 import { useFixture } from "../_workbench/use-fixture";
 import { GROUPS, people, type Person, type RaterGroup } from "./fixture";
 
@@ -78,27 +80,35 @@ export function ChaseScene() {
           the one addition here, because it is the number the whole surface
           exists to produce and it currently has to be counted by eye. */}
       <Card className="gap-3 p-4">
-        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <span className="text-2xl font-semibold tabular-nums">
-            {done} / {total}
-          </span>
-          <span className="text-sm text-muted-foreground">
-            {th ? "ผู้ประเมินตอบแล้ว" : "raters answered"} · {pct}%
-          </span>
-          {stalled > 0 && (
-            <span className="ml-auto text-sm font-medium text-caution-strong">
-              {th
-                ? `${stalled} คนยังไม่มีใครตอบเลย`
-                : `${stalled} with no replies at all`}
-            </span>
-          )}
-        </div>
-        <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
-          <div
-            className="h-full rounded-full bg-primary"
-            style={{ width: `${pct}%` }}
-          />
-        </div>
+        {/* Progress, not two divs. The first cut of this hand-rolled the bar —
+            which duplicates a shipped primitive, the same mistake the workbench
+            rail already made once and recorded. It costs no dependencies, and
+            the real difference is invisible: Base UI's Root carries the
+            progressbar role and its value, so a screen reader reads "34%" where
+            two divs read nothing at all. */}
+        <Progress value={pct} className="flex-col gap-2">
+          <div className="flex w-full flex-wrap items-baseline gap-x-3 gap-y-1">
+            {/* Display, the role, not raw utilities. Roles exist so drift is
+                findable, and this file bypassed them on the first pass. Worth
+                recording: the ladder mints 24 and annotates it "KPI figure",
+                but no role uses 24 — Display is 30. Using the role rather than
+                reaching past it, and the gap is a question for the type layer,
+                not something to paper over here. */}
+            <Display>
+              {done} / {total}
+            </Display>
+            <Muted>
+              {th ? "ผู้ประเมินตอบแล้ว" : "raters answered"} · {pct}%
+            </Muted>
+            {stalled > 0 && (
+              <Muted className="ml-auto font-medium text-caution-strong">
+                {th
+                  ? `${stalled} คนยังไม่มีใครตอบเลย`
+                  : `${stalled} with no replies at all`}
+              </Muted>
+            )}
+          </div>
+        </Progress>
       </Card>
 
       <div className="overflow-x-auto">
