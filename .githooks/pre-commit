@@ -19,5 +19,5 @@ set -e
 echo "pre-commit: checking the design system…"
 node v2/tools/build-bundle.mjs --check
 node v2/tools/check-tokens.mjs
-node v3/tools/check-type.mjs
-node v3/tools/check-inventory.mjs
+# The two v3 checks left with v3 on 2026-08-19 — it lives in
+# ccdportal/packages/ui now, and that repo runs them from its own hook.
