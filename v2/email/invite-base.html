@@ -29,6 +29,17 @@
     {{CLOSING_1}} {{CLOSING_2}}
     {{SIG_NAME}} {{SIG_ROLE}} {{SIG_ORG}} {{SIG_TEL}} {{SIG_EMAIL}}
 
+  lang="th" SITS ON THE OUTER WRAPPER ONLY, and it is not there for line breaking. Measured
+  2026-08-24 in Chromium, at this template's own 600px, on a full Thai body: the attribute
+  changed ZERO of 15 line-break positions, and 3 of those 15 split a word either way
+  (ไม่|ได้, ค่า|ตอบแทน, ชุด|คำถาม). Chrome breaks Thai from the SCRIPT, so declaring the
+  language buys nothing there — the probe was proved able to see a difference by narrowing
+  the column, which moved every boundary. It stays because a screen reader needs it to pick
+  a Thai voice, because caniemail records every major client preserving it, and because an
+  engine that does need the declaration costs us one attribute. It inherits, so one is
+  enough. Accepted: the English runs inside (Leadership Competency, Tel, Email) inherit th.
+  The wiki's promise of dictionary line-breaking is corrected at wiki/thai-house-style.
+
   A Thai formal letter that opens เรียน closes ขอแสดงความนับถือ, so that line is part of
   the shape and sits above the rule — the block below the rule is the name card, not the
   close. Added 2026-08-24, after four mails were found opening and simply stopping.
@@ -40,7 +51,7 @@
   A step block is repeatable: copy one, or delete the second if there is only one action.
   Logo asset + public URL: facts/infra.yml#cloudflare.r2.buckets.ccd-assets
 -->
-<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;max-width:600px;font-size:15px;line-height:1.5">
+<div lang="th" style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;max-width:600px;font-size:15px;line-height:1.5">
 
 <div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;padding:0 0 10px 0"><img src="https://pub-8494788f837745b09f0764fde5435047.r2.dev/learning/email/ccd-logo.png" width="179" height="60" alt="CCD - Corporate Capability Development Group" style="display:block;border:0;outline:none"></div>
 
