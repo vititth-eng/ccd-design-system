@@ -1,0 +1,111 @@
+<!--
+  CCD email — announcement base template (v2)
+
+  THE EXPLANATORY SIBLING OF invite-base.html. Read that file first; everything it says
+  about why this markup looks nothing like the rest of the DS applies here unchanged —
+  literal inline styles, kept in sync with tokens.css BY HAND, because email clients strip
+  <style> and cannot resolve var().
+
+  WHY A SECOND BASE FILE
+  invite-base.html is an invitation: greeting, two step panels, a deadline, a button. An
+  announcement asks for nothing yet — it arrives before any link exists, and its job is to
+  make sure nobody meets the form cold. Built out of the invitation's parts it comes out as
+  a column of identical panels: every sentence at the same weight, nothing to scan, and on
+  a phone no way in at all. That is what the 360 announcement did until 2026-08-24.
+
+  The fix is three weights, not one:
+    · FACTS   — the ten-second read, at the top. What is being asked, when the link comes,
+                when it is due. Scanned, not read.
+    · PROSE   — the explaining half, on white, opened by a hairline and a small navy label.
+                Read once, probably never again.
+    · PANEL   — the filled block, kept for the ONE thing the reader will have to do. It only
+                works as emphasis while it is rare.
+
+  THE LAWS ARE THE SAME LAWS. ~/Desktop/Superpowers/wiki/email-playbook.md, and the reason
+  this file is flat divs rather than the table layout every published email framework uses
+  is law 5: tables flatten on this channel, and the inner block renders as a small empty
+  coloured square with its text spilling outside.
+    · inline style only            — the bgcolor attribute is stripped
+    · fill on the <a> itself       — a coloured wrapper gets dropped, text stays white
+    · colour ALWAYS with background — or dark-mode inversion gives white on white
+    · no HTML comments in the body — conditional comments are removed WITH their contents
+    · no nested tables             — they flatten; flat <div>s only
+    · no line starting "N. "       — Outlook renumbers it into 1. 1. 1., so a numbered
+                                     part is written "ตอนที่ 1 · ..." with the numeral
+                                     inside the label
+    · no SVG                       — PNG at 2x, with width/height attributes
+
+  NO RED DEADLINE CALLOUT, DELIBERATELY. The red block means act now, and it belongs on the
+  invite and the reminder, which have a button. On a mail whose whole point is that the link
+  has not arrived yet it shouts at someone who cannot do anything. The date is a fact here,
+  in the fact list, printed once — copy it into a second block and the two will drift.
+
+  PLACEHOLDERS
+    {{RECIPIENT_NAME}}   Thai full name, no prefix
+    {{TITLE}}            what is being announced, e.g. การประเมิน Leadership Competency แบบ 360 องศา
+    {{SUBTITLE}}         what this mail is, one line
+    {{INTRO}}            why they got this mail, two sentences at most
+    {{FACT1_LABEL}} {{FACT1_VALUE}} … repeatable, three or four rows is the useful range
+    {{SECTION1_LABEL}} {{SECTION1_TEXT1}} {{SECTION1_TEXT2}}   repeatable
+    {{GROUP1_NAME}} {{GROUP1_ITEMS}}     repeatable — a heading and its members, dot-joined
+    {{PART1_LABEL}} {{PART1_DETAIL}}     repeatable — a named part and what it contains
+    {{PANEL_LABEL}} {{PANEL_LINE1}} {{PANEL_LINE2}} {{PANEL_LINE3}}
+    {{CLOSING_1}} {{CLOSING_2}}
+    {{SIG_NAME}} {{SIG_ROLE}} {{SIG_ORG}} {{SIG_TEL}} {{SIG_EMAIL}}
+
+  Every repeatable block is copy-one-delete-one, like the step block next door.
+  Logo asset + public URL: facts/infra.yml#cloudflare.r2.buckets.ccd-assets
+  Worked example, rendered from this file: ccd-brb-multi-rater lib/email/templates.ts
+-->
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;max-width:600px;font-size:15px;line-height:1.5">
+
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;padding:0 0 10px 0"><img src="https://pub-8494788f837745b09f0764fde5435047.r2.dev/learning/email/ccd-logo.png" width="179" height="60" alt="CCD - Corporate Capability Development Group" style="display:block;border:0;outline:none"></div>
+
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;background-color:#ffffff;font-size:20px;font-weight:bold;color:#233D7C;line-height:1.25">{{TITLE}}</div>
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;background-color:#ffffff;font-size:14px;color:#5b6472;line-height:1.3;padding-top:1px">{{SUBTITLE}}</div>
+
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;border-top:1px solid #d7dce3;font-size:1px;line-height:1px;margin:12px 0 14px 0">&nbsp;</div>
+
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;font-size:15px;line-height:1.5">เรียน คุณ<b>{{RECIPIENT_NAME}}</b></div>
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;font-size:15px;line-height:1.5;padding-top:8px">{{INTRO}}</div>
+
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;border-top:1px solid #d7dce3;font-size:1px;line-height:1px;margin:16px 0 2px 0">&nbsp;</div>
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;background-color:#ffffff;color:#5b6472;font-size:12px;line-height:1.3;padding-top:9px">{{FACT1_LABEL}}</div>
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;background-color:#ffffff;color:#1f2328;font-size:15px;font-weight:bold;line-height:1.35">{{FACT1_VALUE}}</div>
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;background-color:#ffffff;color:#5b6472;font-size:12px;line-height:1.3;padding-top:9px">{{FACT2_LABEL}}</div>
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;background-color:#ffffff;color:#1f2328;font-size:15px;font-weight:bold;line-height:1.35">{{FACT2_VALUE}}</div>
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;background-color:#ffffff;color:#5b6472;font-size:12px;line-height:1.3;padding-top:9px">{{FACT3_LABEL}}</div>
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;background-color:#ffffff;color:#1f2328;font-size:15px;font-weight:bold;line-height:1.35">{{FACT3_VALUE}}</div>
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;border-top:1px solid #d7dce3;font-size:1px;line-height:1px;margin:14px 0 0 0">&nbsp;</div>
+
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;border-top:1px solid #d7dce3;font-size:1px;line-height:1px;margin:20px 0 11px 0">&nbsp;</div>
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;background-color:#ffffff;font-size:13px;font-weight:bold;color:#233D7C;line-height:1.25">{{SECTION1_LABEL}}</div>
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;font-size:15px;line-height:1.5;padding-top:6px">{{SECTION1_TEXT1}}</div>
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;font-size:15px;line-height:1.5;padding-top:6px">{{SECTION1_TEXT2}}</div>
+
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;border-top:1px solid #d7dce3;font-size:1px;line-height:1px;margin:20px 0 11px 0">&nbsp;</div>
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;background-color:#ffffff;font-size:13px;font-weight:bold;color:#233D7C;line-height:1.25">{{SECTION2_LABEL}}</div>
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;font-size:15px;line-height:1.5;padding-top:6px">{{SECTION2_TEXT1}}</div>
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;background-color:#ffffff;color:#1f2328;font-size:14px;line-height:1.45;padding:2px 0 2px 12px;margin-top:8px;border-left:3px solid #d7dce3"><b style="background-color:#ffffff;color:#233D7C">{{GROUP1_NAME}}</b><br>{{GROUP1_ITEMS}}</div>
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;background-color:#ffffff;color:#1f2328;font-size:14px;line-height:1.45;padding:2px 0 2px 12px;margin-top:8px;border-left:3px solid #d7dce3"><b style="background-color:#ffffff;color:#233D7C">{{GROUP2_NAME}}</b><br>{{GROUP2_ITEMS}}</div>
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;font-size:15px;line-height:1.5;padding-top:12px">{{SECTION2_TEXT2}}</div>
+
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;border-top:1px solid #d7dce3;font-size:1px;line-height:1px;margin:20px 0 11px 0">&nbsp;</div>
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;background-color:#ffffff;font-size:13px;font-weight:bold;color:#233D7C;line-height:1.25">{{SECTION3_LABEL}}</div>
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;background-color:#ffffff;color:#233D7C;font-size:14px;font-weight:bold;line-height:1.3;padding-top:12px">{{PART1_LABEL}}</div>
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;background-color:#ffffff;color:#1f2328;font-size:14px;line-height:1.5;padding-top:2px">{{PART1_DETAIL}}</div>
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;background-color:#ffffff;color:#233D7C;font-size:14px;font-weight:bold;line-height:1.3;padding-top:12px">{{PART2_LABEL}}</div>
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;background-color:#ffffff;color:#1f2328;font-size:14px;line-height:1.5;padding-top:2px">{{PART2_DETAIL}}</div>
+
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#f5f7fa;padding:12px 14px;margin:10px 0 0 0;border-left:4px solid #233D7C"><div style="font-family:Tahoma,'Segoe UI',sans-serif;background-color:#f5f7fa;font-size:13px;font-weight:bold;color:#233D7C;line-height:1.25">{{PANEL_LABEL}}</div><div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#f5f7fa;font-size:14px;line-height:1.5;padding-top:4px">{{PANEL_LINE1}}</div><div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#f5f7fa;font-size:14px;line-height:1.5;padding-top:6px">{{PANEL_LINE2}}</div><div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#f5f7fa;font-size:14px;line-height:1.5;padding-top:6px">{{PANEL_LINE3}}</div></div>
+
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;font-size:14px;line-height:1.5;padding-top:14px">{{CLOSING_1}}</div>
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;font-size:14px;line-height:1.5;padding-top:6px">{{CLOSING_2}}</div>
+
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;font-size:14px;line-height:1.5;padding-top:14px">ขอแสดงความนับถือ</div>
+
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;color:#1f2328;background-color:#ffffff;border-top:1px solid #d7dce3;font-size:1px;line-height:1px;margin:16px 0 12px 0">&nbsp;</div>
+
+<div style="font-family:Tahoma,'Segoe UI',sans-serif;background-color:#ffffff;font-size:13px;line-height:1.45;color:#5b6472"><b style="color:#1f2328;background-color:#ffffff;font-size:14px">{{SIG_NAME}}</b><br>{{SIG_ROLE}}<br>{{SIG_ORG}}<br>Tel : {{SIG_TEL}}<br>Email : {{SIG_EMAIL}}</div>
+
+</div>
