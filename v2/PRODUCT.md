@@ -138,11 +138,14 @@ scar + why stays in memory.*
    **A generated scaffold is a one-off surface too.** A dashboard scaffold may
    supply what the DS has no component for — sortable headers, a filter bar, a
    dashboard grid, a freshness stamp, number formatting. **Charts are not on that
-   list:** they belong to the bundled `dataviz` skill, which is design-system-
-   agnostic by construction and consumes `--chart-*` as parameters. Its rules
-   outrank any scaffold's — never dual-axis, categorical hues in fixed order
-   never cycled (a scaffold's `COLORS[i % n]` is exactly the banned shape), and
-   its palette validator runs rather than being eyeballed.
+   list:** chart colour belongs to THIS design system (owner call 2026-08-11,
+   taking it back from the bundled `dataviz` skill, which is not installed and
+   did not earn the authority). Three jobs, never swapped — categorical
+   (`--chart-1..7`, "which one is this"), sequential (one hue light to dark,
+   "how much"), diverging (two hues off a neutral middle; Likert is always
+   diverging). Never dual-axis, and categorical hues keep fixed index order
+   rather than being cycled — a scaffold's `COLORS[i % n]` is exactly the banned
+   shape.
    A scaffold may never supply a value or a name the DS
    already owns: KPI cards are `.kpi`/`.kpi-bar`/`.kpi__delta`, frames `.card`,
    tables `.tbl` + `.tbl-scroll`, quantity `.meter`, status `.st-pill`, empty
