@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Email · v2 component</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai+Looped:wght@400;600;700&display=swap" />
+<link rel="stylesheet" href="../tokens.css" />
+<link rel="stylesheet" href="../type.css" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--canvas); padding: var(--s-6) var(--s-7); }
+  .page-title { margin: 0 0 var(--s-1); }
+  .page-sub   { margin: 0 0 var(--s-6); }
+  .lbl { margin: 0 0 var(--s-3); }
+  .lbl span { color: var(--muted); font-weight: var(--fw-regular); }
+  .mail-frame { width: 100%; max-width: 640px; border: 1px solid var(--line); background: #fff; }
+  .mail-frame iframe { display: block; width: 100%; height: 660px; border: 0; }
+  .laws { max-width: 640px; margin: var(--s-7) 0 0; padding: 0 0 0 var(--s-5); }
+  .laws li { margin: 0 0 var(--s-2); }
+  .laws code { font-size: .92em; }
+</style>
+</head>
+<body>
+  <h1 class="t-title page-title">Email</h1>
+  <p class="t-sub page-sub">Not a CSS component — a standalone HTML file of inline literals. Email strips <code>&lt;style&gt;</code> and cannot resolve <code>var()</code>, so tokens are copied by hand and drift silently. Source: <code>v2/email/invite-base.html</code> · doctrine: <code>wiki/email-playbook.md</code></p>
+
+  <p class="t-section lbl">Invite base <span>— slots shown literally; two step blocks, second is deletable</span></p>
+  <div class="mail-frame"><iframe src="../email/invite-base.html" title="Invite base email template"></iframe></div>
+
+  <p class="t-section lbl" style="margin-top:var(--s-7);">Why it is written this way <span>— each rule is a failure that shipped in testing</span></p>
+  <ul class="t-body laws">
+    <li>Inline <code>style</code> only — the <code>bgcolor</code> attribute is stripped, and a button coloured that way arrives white-on-white.</li>
+    <li>Fill sits on the <code>&lt;a&gt;</code> itself. A coloured wrapper around a plain anchor loses its colour and keeps the white text.</li>
+    <li>Every <code>color</code> is paired with a <code>background-color</code> on the same element. Unpaired, dark-mode inversion erases it.</li>
+    <li>No HTML comments inside the body — conditional comments are removed together with whatever they wrap, so the VML bulletproof-button pattern leaves a hole.</li>
+    <li>No nested tables. They flatten: a callout table rendered as a small empty square with its text outside.</li>
+    <li>No line begins <code>N.&nbsp;</code> — Outlook autoformats it into a list and restarts numbering at every button, giving <code>1. 1. 1.</code></li>
+    <li>No SVG. PNG at 2× with explicit <code>width</code>/<code>height</code>; the logo carries a decided background, never transparency by accident.</li>
+    <li>Line-height 1.5 and one enclosed block per step — 1.7 with loose steps was reported unreadable in Thai.</li>
+  </ul>
+</body>
+</html>
